@@ -98,6 +98,8 @@ STRIPE_SECRET=your-secret-here
 
 ## Public Website
 
+> **FROZEN** — Marketing website is complete. No further changes planned.
+
 | Route | Page | Status |
 |---|---|---|
 | `/` | Home | Live |
@@ -108,6 +110,15 @@ STRIPE_SECRET=your-secret-here
 | `/register` | Register | Live |
 
 Authenticated users are redirected from `/` to `/overview`.
+
+### Advertised MVP Features
+
+| Feature | Scope |
+|---|---|
+| Self Sign PDFs | Upload + sign yourself |
+| Draw or Type Signatures | Signature creation tool |
+| Secure Documents | Local disk, no public exposure |
+| Works Everywhere | Browser-based, responsive |
 
 ---
 
@@ -129,7 +140,7 @@ Authenticated users are redirected from `/` to `/overview`.
 ## V1 Roadmap
 
 - [x] Week 1 — Project setup, authentication, workspace layout, Overview
-- [x] Week 1 (ext) — Public website: Home, Features, Pricing, FAQ
+- [x] Week 1 (ext) — Public website: Home, Features, Pricing, FAQ (FROZEN)
 - [ ] Week 2 — Document module (upload, list, view)
 - [ ] Week 3 — Signature module (sign PDF)
 - [ ] Week 4 — Self sign flow
