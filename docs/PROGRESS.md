@@ -8,8 +8,6 @@ Last updated: 2026-06-19
 
 **Status: Complete**
 
-### Done
-
 - [x] Laravel 12 + PHP 8.2 project scaffold
 - [x] Vue 3 + Inertia.js + TailwindCSS v3 frontend
 - [x] MySQL migrations (users, cache, jobs tables)
@@ -20,14 +18,31 @@ Last updated: 2026-06-19
 - [x] Resend + Stripe env stubs
 - [x] PHPUnit 11 test config
 - [x] Ziggy named routes in Vue
+
+### Workspace Foundation (done alongside Week 1)
+
 - [x] `WorkspaceLayout.vue` — sidebar + topbar layout
 - [x] `Overview.vue` — workspace landing page (stat cards, activity placeholder)
 - [x] `OverviewController` in `Controllers/Web/`
 - [x] Renamed `/dashboard` → `/overview` across routes, controllers, and Vue files
 - [x] `Profile/Edit.vue` migrated to `WorkspaceLayout`
 - [x] `Dashboard.vue` removed
-- [x] `README.md` rewritten as CubSign documentation
-- [x] `docs/CHANGELOG.md`, `docs/FEATURES.md`, `docs/PROGRESS.md` created
+
+---
+
+## Public Website Foundation
+
+**Status: Complete**
+
+- [x] `PublicLayout.vue` — sticky navbar, footer, mobile hamburger menu
+- [x] `HomeController` — auth guard redirect: logged-in users go to `/overview`
+- [x] `Home.vue` — hero, 4 feature cards, 3 pricing cards, FAQ accordion, CTA banner
+- [x] `FeaturesController` + `Features.vue` — full features page
+- [x] `PricingController` + `Pricing.vue` — pricing cards + comparison table
+- [x] `FaqController` + `Faq.vue` — 16 FAQ items across 4 categories
+- [x] Routes: `GET /`, `GET /features`, `GET /pricing`, `GET /faq` (all named)
+- [x] `Welcome.vue` removed; replaced by `Home.vue`
+- [x] `README.md`, `docs/CHANGELOG.md`, `docs/FEATURES.md`, `docs/PROGRESS.md` updated
 
 ---
 

@@ -1,20 +1,20 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\FaqController;
+use App\Http\Controllers\Web\FeaturesController;
+use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\OverviewController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Web\PricingController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Public website
+Route::get('/', HomeController::class)->name('home');
+Route::get('/features', FeaturesController::class)->name('features');
+Route::get('/pricing', PricingController::class)->name('pricing');
+Route::get('/faq', FaqController::class)->name('faq');
 
+// Workspace (authenticated)
 Route::get('/overview', OverviewController::class)
     ->middleware(['auth', 'verified'])
     ->name('overview');

@@ -4,6 +4,20 @@ This document tracks what is built, in-progress, and planned for V1.
 
 ---
 
+## Public Website
+
+| Feature | Status |
+|---|---|
+| Home page (hero, features, pricing, FAQ, CTA) | Done |
+| Features page | Done |
+| Pricing page (cards + comparison table) | Done |
+| FAQ page (categorised accordion) | Done |
+| Public layout (navbar + footer) | Done |
+| Mobile-responsive navbar | Done |
+| Auth redirect: guests → home, authenticated → overview | Done |
+
+---
+
 ## Authentication
 
 | Feature | Status |

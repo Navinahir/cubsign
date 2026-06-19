@@ -20,9 +20,9 @@ CubSign is a workspace-first SaaS PDF signing platform. Simple, polished, reliab
 | Session | Redis |
 | Storage | Local disk |
 | Email | Resend |
-| Payments | Stripe |
-| PDF Viewer | PDF.js |
-| Signature Canvas | signature_pad.js |
+| Payments | Stripe (Week 7) |
+| PDF Viewer | PDF.js (Week 2+) |
+| Signature Canvas | signature_pad.js (Week 3+) |
 
 ---
 
@@ -71,26 +71,17 @@ app/
 ### Steps
 
 ```bash
-# Install PHP dependencies
 composer install
-
-# Install JS dependencies
 npm install
-
-# Copy environment file and generate key
 cp .env.example .env
 php artisan key:generate
-
-# Run database migrations
 php artisan migrate
-
-# Build frontend assets
 npm run build
 ```
 
 ### Environment
 
-Copy `.env.example` to `.env` and configure:
+Configure `.env`:
 
 ```
 DB_DATABASE=cubsign
@@ -105,7 +96,22 @@ STRIPE_SECRET=your-secret-here
 
 ---
 
-## Customer Workspace Navigation
+## Public Website
+
+| Route | Page | Status |
+|---|---|---|
+| `/` | Home | Live |
+| `/features` | Features | Live |
+| `/pricing` | Pricing | Live |
+| `/faq` | FAQ | Live |
+| `/login` | Login | Live |
+| `/register` | Register | Live |
+
+Authenticated users are redirected from `/` to `/overview`.
+
+---
+
+## Customer Workspace
 
 | Route | Page | Status |
 |---|---|---|
@@ -123,6 +129,7 @@ STRIPE_SECRET=your-secret-here
 ## V1 Roadmap
 
 - [x] Week 1 — Project setup, authentication, workspace layout, Overview
+- [x] Week 1 (ext) — Public website: Home, Features, Pricing, FAQ
 - [ ] Week 2 — Document module (upload, list, view)
 - [ ] Week 3 — Signature module (sign PDF)
 - [ ] Week 4 — Self sign flow

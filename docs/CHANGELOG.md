@@ -11,6 +11,32 @@ All notable changes to CubSign are documented here.
 
 ---
 
+## [0.3.0] — 2026-06-19
+
+### Public Website Foundation
+
+#### Added
+- `PublicLayout.vue` — sticky navbar with logo, nav links, CTA buttons, mobile hamburger, footer
+- `Home.vue` — hero, features grid, pricing preview, FAQ accordion, CTA banner
+- `Features.vue` — detailed feature cards with alternating layout
+- `Pricing.vue` — pricing cards (Free, Pro, Founder) + comparison table
+- `Faq.vue` — categorised FAQ accordion (Getting Started, Signing, Security, Billing)
+- `HomeController` — renders Home, redirects authenticated users to `/overview`
+- `FeaturesController`, `PricingController`, `FaqController` — thin Inertia controllers
+- Routes: `GET /` (home), `GET /features`, `GET /pricing`, `GET /faq`
+- All public routes named: `home`, `features`, `pricing`, `faq`
+
+#### Changed
+- `routes/web.php` — replaced closure at `/` with `HomeController`; removed Laravel/PHP version props
+- `Welcome.vue` removed; replaced by `Home.vue`
+
+#### Behaviour
+- Guests visiting `/` see the marketing home page
+- Authenticated users visiting `/` are redirected to `/overview`
+- Navbar active links highlight based on current route (via Ziggy)
+
+---
+
 ## [0.2.0] — 2026-06-19
 
 ### Week 1 — Workspace Foundation
@@ -25,19 +51,10 @@ All notable changes to CubSign are documented here.
 
 #### Changed
 - Renamed `/dashboard` route → `/overview` (route name: `overview`)
-- `DashboardController` → `OverviewController` (moved to `Controllers/Web/`)
 - `Dashboard.vue` removed; replaced by `Overview.vue`
-- `AuthenticatedLayout.vue` — internal `route()` calls updated to `overview`
 - `Profile/Edit.vue` — switched from `AuthenticatedLayout` to `WorkspaceLayout`
-- `AuthenticatedSessionController` — post-login redirect → `overview`
-- `RegisteredUserController` — post-register redirect → `overview`
-- `EmailVerificationPromptController` — redirect → `overview`
-- `VerifyEmailController` — redirect → `overview`
+- All auth controllers updated: post-login/register/verify redirect → `overview`
 - `README.md` — replaced default Laravel README with CubSign documentation
-
-#### Architecture
-- Customer-facing controllers live in `app/Http/Controllers/Web/`
-- Naming convention enforced: no "Dashboard", no "Admin Panel"
 
 ---
 
@@ -53,7 +70,7 @@ All notable changes to CubSign are documented here.
 - Redis for session, cache, and queue
 - Authentication: Login, Register, Forgot Password, Email Verification, Profile
 - Custom directory structure: Services, Repositories, Actions, Enums, Controllers/Web, Controllers/Api
-- `.env` configured for local WAMP development
+- `.env` and `.env.example` configured for WAMP local development
 - Resend and Stripe environment variables stubbed
 - PHPUnit 11 test configuration (PHP 8.2 compatible)
 - Ziggy for named route generation in Vue components
