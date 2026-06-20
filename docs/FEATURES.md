@@ -6,31 +6,37 @@ This document tracks what is built, in-progress, and planned for V1.
 
 ## Public Website
 
-> **Status: FROZEN** — no further changes to marketing website.
+> **Status: v0.8.0** — Homepage fully redesigned. Marketing website is active and evolving.
 
 | Feature | Status |
 |---|---|
-| Home page — hero, features, pricing, FAQ, social proof, CTA | Done |
-| Hero trust badges (No account required · Free forever · No credit card required) | Done |
+| Home page — 9-section premium redesign (v0.8.0) | Done |
+| Hero — split layout, left text + right document illustration | Done |
+| Trust Bar — 4-column row (Secure / Audit / Fast / Everywhere) | Done |
+| Interactive Demo — 3-step card, Draw/Type/Upload tabs | Done |
+| Features section — 6 cards (Quick Sign + 5 Coming Soon) | Done |
+| How It Works — 3 standalone step cards | Done |
+| Testimonials — 3 quote cards | Done |
+| Pricing section — Free / Pro / Founder | Done |
+| FAQ — accordion, updated copy | Done |
+| Final CTA — gradient card, platform badges | Done |
 | Features page | Done |
-| Pricing page (cards: Free / Pro Coming Soon / Founder) | Done |
-| FAQ page (categorised accordion) | Done |
+| Pricing page | Done |
+| FAQ page | Done |
 | Public layout — sticky navbar, backdrop-blur, 3-column footer | Done |
 | Mobile-responsive navbar | Done |
-| Social proof section ("Why choose CubSign?") | Done |
-| Auth redirect: guests → home, authenticated → overview | Done |
 | "Built by Cubiz Infotech" in footer | Done |
 
-### MVP Features advertised on landing page
+### Features advertised on landing page
 
 | Marketed Feature | V1 Scope | Status |
 |---|---|---|
-| Self Sign PDFs | Upload PDF and sign it yourself | Planned (Week 2–4) |
-| Draw or Type Signatures | Signature creation tool | Planned (Week 3) |
-| Secure Documents | Local disk, no public exposure | Planned (Week 2) |
-| Works Everywhere | Browser-based, responsive | In progress |
-
-> Features NOT advertised (deferred to later versions): Send for Signature, Reusable Templates, Audit Trail.
+| Quick Sign (Self Sign PDFs) | Upload PDF and sign it yourself | In progress (Week 2–3) |
+| Request Signatures | Send to others, track status | Coming Soon |
+| Bulk Sign | Sign multiple docs at once | Coming Soon |
+| Templates | Reusable document templates | Coming Soon |
+| Audit Trails | Timestamped signing logs | Coming Soon |
+| Team Access | Team document sharing | Coming Soon |
 
 ---
 

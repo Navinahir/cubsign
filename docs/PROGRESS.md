@@ -1,6 +1,6 @@
 # CubSign — Development Progress
 
-Last updated: 2026-06-19
+Last updated: 2026-06-20
 
 ---
 
@@ -47,9 +47,9 @@ Last updated: 2026-06-19
 
 ---
 
-## Landing Page Final Refinement
+## Landing Page — History
 
-**Status: Complete — Marketing Website FROZEN**
+**Status: Superseded by Homepage Redesign v0.8.0**
 
 - [x] Feature cards updated to reflect actual MVP only: Self Sign PDFs, Draw or Type Signatures, Secure Documents, Works Everywhere
 - [x] Removed non-MVP feature cards: Send for Signature, Reusable Templates, Audit Trail
@@ -77,6 +77,40 @@ Last updated: 2026-06-19
 - [x] `Sign/Upload.vue` — drag-and-drop upload with progress and errors
 - [x] `Sign/Editor.vue` — placeholder (upload success, editor skeleton)
 - [x] `Sign/Complete.vue` — placeholder
+
+Homepage full redesign (v0.8.0):
+- [x] Section 1 — Hero: split layout, left text + right CSS/SVG document illustration with floating cards
+- [x] Section 2 — Trust Bar: 4-column compact row (Secure Signing / Audit Trails / Fast Workflows / Works Everywhere)
+- [x] Section 3 — Interactive Demo: 3-column card, Draw/Type/Upload tabs (Vue reactive), PDF placement preview, completed doc + "Finish Signing →" CTA
+- [x] Section 4 — Features: expanded to 6 cards (Quick Sign live, 5x Coming Soon), 3-column grid
+- [x] Section 5 — How It Works: 3 standalone cards (Upload / Sign / Download)
+- [x] Section 6 — Testimonials: 3 quote cards with avatar initials
+- [x] Section 7 — Pricing: unchanged (Free / Pro / Founder)
+- [x] Section 8 — FAQ: updated copy, replaced "Do recipients need an account?" with "Do I need to create an account?"
+- [x] Section 9 — Final CTA: updated headline "Ready to sign real documents?", platform badges replace checkmarks, 3-step flow strip removed
+- [x] Removed: Social Proof "Why choose CubSign?" section (absorbed into Trust Bar + Testimonials)
+
+Homepage CTA conversion (v0.7.3):
+- [x] Headline: "Ready to sign your document?" — direct question, highest intent
+- [x] Primary CTA: "Start Signing Now" → `route('sign.index')` — clear action, correct destination
+- [x] Trust badges: "Download instantly" replaces "Free forever"
+- [x] Flow strip replaced with premium 3-step cards (Upload / Add Signature / Download Signed PDF)
+- [x] Responsive arrows: → on desktop, ↓ on mobile
+
+Homepage CTA (v0.7.2):
+- [x] Final CTA replaced with premium gradient card (`rounded-[32px]`, `from-blue-500 to-blue-700`, `shadow-2xl`)
+- [x] Badge, headline, subheadline, two CTA buttons, trust badges, Upload→Sign→Download flow strip
+
+UI polish (v0.7.1):
+- [x] Hero: amber "Continue Signing" banner removed; replaced with subtle gray text link
+- [x] DevNav: orange panel replaced with gear icon + toggleable compact white panel
+- [x] Editor: session token debug line removed
+
+Developer experience (v0.7.0):
+- [x] `app.isLocal` shared via `HandleInertiaRequests` — available on every page
+- [x] `HomeController` passes `hasSignSession` prop; "Continue Signing →" button shown when session exists
+- [x] `DevNav.vue` created — local-only floating dev shortcuts (Upload / Editor / Complete / Workspace)
+- [x] `DevNav` mounted in all three layouts (Public, Sign, Workspace)
 
 Architecture corrections (v0.6.1):
 - [x] Homepage no longer redirects authenticated users (marketing always visible)

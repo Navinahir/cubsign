@@ -6,8 +6,173 @@ All notable changes to CubSign are documented here.
 
 ## [Unreleased]
 
+---
+
+## [0.8.0] — 2026-06-20
+
+### Homepage — Full Redesign (v0.8.0)
+
+Complete rewrite of `Home.vue` to match premium SaaS standards (TapSign / Dropbox Sign / DocuSign aesthetic).
+All 9 sections rebuilt from scratch with CubSign branding.
+
+#### Changed — `Home.vue`
+
+**Section 1 — Hero (split layout)**
+- Left: badge, headline "Sign Documents in Seconds. **Anywhere.**" (Anywhere in blue), subheadline, two CTAs (Sign a PDF for Free → `sign.index`, View Pricing), subtle continue-signing link, 3 trust badges (No account required / Download instantly / Secure & private)
+- Right: pure CSS/SVG document illustration — signed PDF card with simulated body, signature field (SVG path), "Document signed · Just now" status row, floating stats card (top-right), floating "Signature verified" badge (bottom-left)
+- Background: two large blurred gradient blobs (blue-50 + indigo-50) for depth
+- Layout: `lg:grid-cols-2` split on desktop, stacked on mobile
+
+**Section 2 — Trust Bar**
+- 4-column compact row on `lg`, 2-column on smaller screens
+- Each item: blue icon circle + title + description
+- Items: Secure Signing / Audit Trails / Fast Workflows / Works Everywhere
+- Background: `bg-gray-50` with `border-y border-gray-100`
+
+**Section 3 — Interactive Demo**
+- Headline "See CubSign work in under 30 seconds."
+- Large `rounded-3xl` card, 3-column `lg:grid-cols-3` with dividers
+- **Step 1 (Create Signature):** Tab switcher (Draw / Type / Upload) — Vue reactive; Draw shows predrawn SVG signature path; Type shows live-updating handwriting preview (`typedSignature` ref); Upload shows drop zone
+- **Step 2 (Place on Document):** Mini PDF browser-chrome preview with signature placement widget (blue dashed ring, "Drag to move" label)
+- **Step 3 (Done):** Completed document with emerald "SIGNED" badge; "Finish Signing →" CTA → `sign.index`
+
+**Section 4 — Features (6 cards, 3-column grid)**
+- Expanded from 4 to 6 feature cards
+- Quick Sign (available), Request Signatures, Bulk Sign, Templates, Audit Trails, Team Access (last 5: "Coming Soon" badge)
+- Each card: colored icon square, badge (if any), title, description
+
+**Section 5 — How It Works (3 cards)**
+- Three individual white cards (no connector lines)
+- Each: blue rounded icon square, "Step N" label, title, description
+- Step 1: Upload PDF / Step 2: Sign It / Step 3: Download
+
+**Section 6 — Testimonials (3 cards)**
+- Three quote cards: quote mark icon, body text, avatar initials circle, name + role
+- Personas: Sarah Mitchell (Freelance Designer), James Torres (Real Estate Agent), Priya Kumar (HR Manager)
+
+**Section 7 — Pricing** — unchanged (Free / Pro Coming Soon / Founder)
+
+**Section 8 — FAQ** — updated copy, removed "up to 3 documents per month" inaccuracy; added "Do I need to create an account?" question replacing "Do recipients need a CubSign account?"
+
+**Section 9 — Final CTA**
+- Retained premium gradient card from v0.7.2
+- Updated headline: "Ready to sign real documents?"
+- Updated subheadline: "Upload PDFs, create signatures and download signed documents in seconds."
+- Updated primary button: "Sign a PDF for Free" (was "Start Signing Now")
+- Replaced trust checkmarks with 3 platform badges: Desktop Web / Mobile Friendly / Secure & Private
+- Removed 3-step flow strip from the CTA (moved to dedicated Section 5)
+
+**Removed**
+- Social Proof section ("Why choose CubSign?" 4 trust cards) — absorbed into Trust Bar + Testimonials
+
+---
+
+## [0.7.3] — 2026-06-20
+
+### Homepage — Conversion-Focused Final CTA
+
+#### Changed — `Home.vue` (Final CTA section)
+
+**Copy & routing**
+- Badge: "Ready in under 60 seconds" → "Sign in under 60 seconds"
+- Headline: "Start Signing Documents Today" → "Ready to sign your document?"
+- Subheadline: updated to direct conversion copy
+- Primary button: "Sign a PDF for Free" → **"Start Signing Now"**, route changed `register` → `sign.index`
+- Trust badge: "Free forever" → "Download instantly"
+
+**3-step process — full redesign**
+- Removed: compact horizontal strip with tiny icons
+- Added: premium frosted-glass step cards (`bg-white/10 ring-1 ring-white/15 backdrop-blur-sm rounded-2xl p-7`)
+- Each card: "STEP N" label (uppercase tracking-widest text-blue-300), `h-16 w-16` icon container (`bg-white/15`), `h-8 w-8` icon, `text-[15px]` title, `text-sm` description with real copy
+- Arrows between cards: `→` on desktop (`hidden sm:block`), `↓` on mobile (`sm:hidden`) — fully responsive
+- Desktop: `sm:flex-row sm:items-start` flex layout, arrows centered via `sm:self-center`
+- Mobile: `flex-col` stacked layout with down arrows
+
+---
+
+## [0.7.2] — 2026-06-20
+
+### Homepage — Premium Final CTA Section
+
+#### Changed — `Home.vue` (Final CTA section only)
+
+- Replaced flat `bg-blue-600` section with a large rounded card (`rounded-[32px]`) inside a neutral `bg-gray-50` wrapper
+- Card uses `bg-gradient-to-br from-blue-500 to-blue-700` — matches #3B82F6 → #2563EB spec
+- Two ambient glow decorations (blurred circles, `blur-3xl`) add depth without visual noise
+- `shadow-2xl` for soft card lift on the light background
+- Generous interior padding: `py-20 sm:py-24 px-8 sm:px-16 lg:px-24`
+
+**Badge** — `⚡ Ready in under 60 seconds`
+- Frosted `bg-white/15 backdrop-blur-sm` pill, yellow lightning icon
+
+**Headline** — `Start Signing Documents Today`
+- `text-4xl sm:text-5xl font-bold text-white`
+
+**Subheadline** — `text-lg text-blue-100`, max-width `xl`
+
+**Buttons**
+- Primary: `bg-white text-gray-900 rounded-xl shadow-sm` + `hover:-translate-y-px hover:shadow-md` (smooth lift)
+- Secondary: `bg-white/10 border border-white/25 backdrop-blur-sm text-white` + `hover:bg-white/20`
+
+**Trust badges** — three inline `text-sm text-blue-100` items with emerald-400 checkmarks
+
+**Flow strip** — separated by `border-t border-white/10`, three icon steps with `bg-white/15 backdrop-blur-sm rounded-2xl` icon squares and right-arrow connectors:
+- Upload PDF (DocumentArrowUp icon)
+- Add Signature (Pencil icon)  
+- Download Instantly (ArrowDownTray icon)
+
+---
+
+## [0.7.1] — 2026-06-20
+
+### UI Polish — Premium Homepage + Dev Tools Refinement
+
+#### Changed — `Home.vue`
+- Removed large amber "Continue Signing" banner from hero
+- Replaced with a single subtle text link: "Already started signing? Continue →"
+- Style: `text-sm text-gray-400`, underline + `hover:text-gray-600` only — zero visual weight on the hero layout
+
+#### Changed — `DevNav.vue`
+- Removed always-visible orange panel
+- Replaced with a small floating gear icon (`⚙`) fixed at `bottom-4 right-4`
+- Clicking gear toggles a compact white panel: white bg, `rounded-xl`, `shadow-lg`, `ring-1 ring-black/5`
+- Panel slides in/out with a 150ms fade + translate transition
+- "Dev tools" label in `text-[10px]` uppercase gray — unobtrusive
+- Panel collapses automatically when a link is clicked
+- No orange, no borders, no visual noise — invisible unless you know it's there
+
+#### Changed — `Sign/Editor.vue`
+- Removed "Session: {{ session.token }}" debug paragraph — no technical details exposed to users
+
 ### Next — PDF Editor + Signature
 - Planned: PDF.js preview, signature canvas (draw/type), placement, signed PDF download, register gate
+
+---
+
+## [0.7.0] — 2026-06-20
+
+### Developer Experience
+
+#### Added — `HandleInertiaRequests`
+- Shared prop `app.isLocal` (`app()->environment('local')`) — available on every Inertia page via `usePage().props.app.isLocal`
+
+#### Changed — `HomeController`
+- Now injects `Request` to read `session()->has('sign_token')`
+- Passes `hasSignSession: bool` to `Home` page props
+
+#### Changed — `Home.vue`
+- Added `defineProps({ hasSignSession })` (default `false`)
+- Added "Continue Signing →" amber banner below hero CTA buttons, visible only when `hasSignSession` is `true`
+- Links directly to `route('sign.editor')`; the PHP session carries the token
+
+#### Added — `resources/js/Components/DevNav.vue`
+- Fixed bottom-right floating panel (`z-[9999]`)
+- Visible only when `usePage().props.app.isLocal` is `true` — **never appears in production**
+- Orange "DEV" header badge for instant visual distinction
+- Four shortcut links: Upload (`sign.index`), Editor (`sign.editor`), Complete (`sign.complete`), Workspace (`overview`)
+
+#### Changed — Layouts
+- `PublicLayout.vue`, `SignLayout.vue`, `WorkspaceLayout.vue` — all import and mount `<DevNav />`
 
 ---
 

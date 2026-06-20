@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import DevNav from '@/Components/DevNav.vue';
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
@@ -213,4 +214,7 @@ const initials = computed(() => {
             </main>
         </div>
     </div>
+
+    <DevNav />
+
 </template>

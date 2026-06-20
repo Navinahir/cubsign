@@ -32,6 +32,7 @@ class EditorController extends Controller
                 'token'    => $session->token,
                 'filename' => $session->original_filename,
                 'fileSize' => $session->file_size,
+                'pdfUrl'   => route('sign.pdf'),
             ],
         ]);
     }

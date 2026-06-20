@@ -98,27 +98,32 @@ STRIPE_SECRET=your-secret-here
 
 ## Public Website
 
-> **FROZEN** — Marketing website is complete. No further changes planned.
+> **v0.8.0** — Homepage fully redesigned (9 sections). Marketing website is live and active.
 
 | Route | Page | Status |
 |---|---|---|
-| `/` | Home | Live |
+| `/` | Home | Live (v0.8.0) |
 | `/features` | Features | Live |
 | `/pricing` | Pricing | Live |
 | `/faq` | FAQ | Live |
 | `/login` | Login | Live |
 | `/register` | Register | Live |
 
-Authenticated users are redirected from `/` to `/overview`.
+All visitors see the marketing homepage. Authenticated users are never auto-redirected.
 
-### Advertised MVP Features
+### Homepage Sections (v0.8.0)
 
-| Feature | Scope |
+| Section | Description |
 |---|---|
-| Self Sign PDFs | Upload + sign yourself |
-| Draw or Type Signatures | Signature creation tool |
-| Secure Documents | Local disk, no public exposure |
-| Works Everywhere | Browser-based, responsive |
+| Hero | Split layout — left text + right document illustration |
+| Trust Bar | 4-column row: Secure / Audit Trails / Fast / Everywhere |
+| Interactive Demo | 3-step card — Draw/Type/Upload tabs, PDF preview, download CTA |
+| Features | 6 cards — Quick Sign (live) + 5 Coming Soon |
+| How It Works | 3 step cards: Upload / Sign / Download |
+| Testimonials | 3 customer quote cards |
+| Pricing | Free / Pro / Founder cards |
+| FAQ | Accordion (4 questions) |
+| Final CTA | Blue gradient card — "Ready to sign real documents?" |
 
 ---
 
@@ -147,6 +152,18 @@ Token is stored in PHP session after upload — never exposed in the URL.
 | `/billing` | Billing | Planned |
 | `/profile` | Profile | Live |
 | `/settings` | Settings | Future |
+
+---
+
+## Developer Experience
+
+| Feature | Detail |
+|---|---|
+| `app.isLocal` shared prop | Available on every Inertia page via `usePage().props.app.isLocal` |
+| `DevNav` component | Gear icon (⚙) toggles compact white panel — never shown in production |
+| Final CTA section | Premium gradient card (`rounded-[32px]`, blue gradient, flow strip) |
+| Dev shortcuts | Upload, Editor, Complete, Workspace — one click in local dev |
+| Continue Signing banner | Shown on homepage when `session()->has('sign_token')` is true |
 
 ---
 

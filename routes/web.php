@@ -8,6 +8,7 @@ use App\Http\Controllers\Web\OverviewController;
 use App\Http\Controllers\Web\PricingController;
 use App\Http\Controllers\Web\Sign\UploadController as SignUploadController;
 use App\Http\Controllers\Web\Sign\EditorController as SignEditorController;
+use App\Http\Controllers\Web\Sign\PdfController as SignPdfController;
 use App\Http\Controllers\Web\Sign\CompleteController as SignCompleteController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,7 @@ Route::prefix('sign')->name('sign.')->group(function () {
     Route::get('/', [SignUploadController::class, 'show'])->name('index');
     Route::post('/', [SignUploadController::class, 'store'])->name('store');
     Route::get('/editor', SignEditorController::class)->name('editor');
+    Route::get('/pdf', SignPdfController::class)->name('pdf');
     Route::get('/complete', SignCompleteController::class)->name('complete');
 });
 

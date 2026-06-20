@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import DevNav from '@/Components/DevNav.vue';
 
 const mobileOpen = ref(false);
 
@@ -195,6 +196,8 @@ const navLinks = [
                 </div>
             </div>
         </footer>
+
+        <DevNav />
 
     </div>
 </template>

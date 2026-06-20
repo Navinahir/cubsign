@@ -5,10 +5,10 @@ import SignLayout from '@/Layouts/SignLayout.vue';
 
 const form = useForm({ pdf: null });
 
-const isDragging    = ref(false);
-const selectedFile  = ref(null);
-const localError    = ref(null);
-const inputRef      = ref(null);
+const isDragging   = ref(false);
+const selectedFile = ref(null);
+const localError   = ref(null);
+const inputRef     = ref(null);
 
 const error = computed(() => localError.value || form.errors.pdf || null);
 
@@ -37,7 +37,6 @@ function handleFileInput(e) {
 function validate(file) {
     localError.value = null;
     form.clearErrors();
-
     if (file.type !== 'application/pdf') {
         localError.value = 'Only PDF files are accepted.';
         return;
@@ -46,7 +45,6 @@ function validate(file) {
         localError.value = 'The file must not exceed 25 MB.';
         return;
     }
-
     selectedFile.value = file;
     form.pdf = file;
 }
@@ -72,134 +70,299 @@ function formatSize(bytes) {
 
 <template>
     <SignLayout :step="1">
-        <div class="mx-auto max-w-xl px-4 py-14 sm:px-6 lg:px-8">
+        <div class="flex h-full flex-col overflow-hidden">
 
-            <!-- Heading -->
-            <div class="mb-8 text-center">
-                <h1 class="text-2xl font-bold tracking-tight text-gray-900">Upload your PDF</h1>
-                <p class="mt-1.5 text-sm text-gray-500">Sign it in seconds. No account required.</p>
-            </div>
+            <!-- ─── Workspace row ─────────────────────────────── -->
+            <div class="flex min-h-0 flex-1 overflow-hidden">
 
-            <!-- Upload card -->
-            <div class="rounded-2xl border border-gray-200 bg-white shadow-sm">
+                <!-- ─── Thumbnail strip placeholder ──────────── -->
+                <div class="flex w-[72px] shrink-0 flex-col items-center gap-2.5 overflow-y-auto bg-gray-300 px-2 py-3">
+                    <div
+                        v-for="n in 3"
+                        :key="n"
+                        class="w-full overflow-hidden rounded border border-gray-400/30 bg-gray-200/60"
+                        style="aspect-ratio: 8.5 / 11"
+                    >
+                        <div class="flex flex-col gap-[3px] p-1.5">
+                            <div v-for="j in 7" :key="j" class="h-[2px] rounded-full bg-gray-400/40"
+                                 :style="{ width: (j % 3 === 0 ? '65%' : j % 2 === 0 ? '80%' : '95%') }" />
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Drop zone -->
+                <!-- ─── Center workspace / drop zone ─────────── -->
                 <div
-                    class="relative m-2 rounded-xl border-2 border-dashed transition-colors duration-150"
-                    :class="[
-                        isDragging
-                            ? 'border-blue-400 bg-blue-50'
-                            : selectedFile
-                            ? 'border-gray-200 bg-gray-50'
-                            : 'border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50',
-                    ]"
+                    class="relative flex min-h-0 flex-1 flex-col items-center justify-center transition-colors duration-200"
+                    :class="isDragging ? 'bg-blue-50' : 'bg-[#e2e4e9]'"
                     @dragover="handleDragOver"
                     @dragleave="handleDragLeave"
                     @drop="handleDrop"
                 >
-                    <!-- Hidden file input -->
+                    <!-- Invisible file input over entire drop zone -->
                     <input
                         ref="inputRef"
                         type="file"
                         accept="application/pdf,.pdf"
-                        class="absolute inset-0 cursor-pointer opacity-0"
+                        class="absolute inset-0 z-0 cursor-pointer opacity-0"
                         :class="{ 'pointer-events-none': !!selectedFile }"
                         @change="handleFileInput"
                     />
 
-                    <!-- Idle state -->
-                    <div v-if="!selectedFile" class="flex flex-col items-center px-8 py-12">
-                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
-                            <svg class="h-7 w-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    <!-- ── Idle: no file selected ─────────── -->
+                    <div v-if="!selectedFile" class="relative z-10 flex flex-col items-center px-6 text-center">
+
+                        <!-- Upload icon -->
+                        <div
+                            :class="[
+                                'mb-6 flex h-24 w-24 items-center justify-center rounded-3xl shadow-xl transition-all duration-300',
+                                isDragging ? 'scale-110 bg-blue-500' : 'bg-white',
+                            ]"
+                        >
+                            <svg
+                                :class="['h-11 w-11 transition-colors', isDragging ? 'text-white' : 'text-blue-500']"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                      d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                             </svg>
                         </div>
-                        <p class="mt-4 text-sm font-semibold text-gray-700">
-                            <span v-if="isDragging">Drop your PDF here</span>
-                            <span v-else>Drag &amp; drop your PDF here</span>
-                        </p>
-                        <p class="mt-1 text-xs text-gray-400">or</p>
+
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            <span v-if="isDragging">Drop to open</span>
+                            <span v-else>Drop your PDF here</span>
+                        </h2>
+                        <p class="mt-2 text-sm text-gray-500">or click anywhere in this area to browse</p>
+
                         <button
                             type="button"
-                            class="relative z-10 mt-3 rounded-lg border border-gray-300 bg-white px-5 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:border-gray-400"
-                            @click="inputRef?.click()"
+                            class="relative z-10 mt-7 rounded-xl border border-gray-300 bg-white px-7 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
+                            @click.stop="inputRef?.click()"
                         >
                             Select PDF file
                         </button>
-                        <p class="mt-5 text-xs text-gray-400">PDF only · Max 25 MB</p>
+
+                        <p class="mt-5 text-xs text-gray-400">PDF only &nbsp;&middot;&nbsp; Max 25 MB &nbsp;&middot;&nbsp; Your file is never shared</p>
                     </div>
 
-                    <!-- File selected state -->
-                    <div v-else class="flex items-center gap-4 px-5 py-5">
-                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-50">
-                            <svg class="h-6 w-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <!-- ── File selected ──────────────────── -->
+                    <div v-else class="relative z-10 flex w-full max-w-sm flex-col items-center px-4">
+
+                        <!-- Paper card preview -->
+                        <div class="w-full overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5">
+                            <!-- Card header -->
+                            <div class="flex items-center gap-3 border-b border-gray-100 px-5 py-4">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50">
+                                    <svg class="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate text-sm font-semibold text-gray-900">{{ selectedFile.name }}</p>
+                                    <p class="mt-0.5 text-xs text-gray-400">{{ formatSize(selectedFile.size) }} &middot; PDF</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    class="ml-1 rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                                    title="Remove file"
+                                    @click.stop="removeFile"
+                                >
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Mini document preview -->
+                            <div class="bg-gray-50 px-5 py-4">
+                                <div class="space-y-1.5">
+                                    <div v-for="n in 6" :key="n"
+                                         class="h-1.5 rounded-full bg-gray-200"
+                                         :style="{ width: [100,85,100,72,100,60][n-1] + '%' }" />
+                                </div>
+                            </div>
+
+                            <!-- Upload progress -->
+                            <div v-if="form.processing" class="px-5 pb-4 pt-3">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-medium text-gray-600">Uploading…</span>
+                                    <span class="text-xs text-gray-400">{{ form.progress?.percentage ?? 0 }}%</span>
+                                </div>
+                                <div class="h-1.5 overflow-hidden rounded-full bg-gray-100">
+                                    <div
+                                        class="h-full rounded-full bg-blue-600 transition-all duration-300"
+                                        :style="{ width: (form.progress?.percentage ?? 0) + '%' }"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error -->
+                        <div v-if="error" class="mt-3 flex w-full items-center gap-2 rounded-xl bg-red-50 px-4 py-3 ring-1 ring-red-200">
+                            <svg class="h-4 w-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
+                            <p class="text-xs font-medium text-red-700">{{ error }}</p>
                         </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="truncate text-sm font-semibold text-gray-900">{{ selectedFile.name }}</p>
-                            <p class="mt-0.5 text-xs text-gray-400">{{ formatSize(selectedFile.size) }}</p>
-                        </div>
+
+                        <!-- CTA: also in center when file ready -->
                         <button
                             type="button"
-                            class="ml-2 rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
-                            title="Remove file"
-                            @click="removeFile"
+                            class="mt-5 w-full rounded-xl py-3.5 text-sm font-semibold text-white shadow-md transition-all duration-150"
+                            :class="form.processing
+                                ? 'cursor-not-allowed bg-blue-400'
+                                : 'bg-blue-600 hover:bg-blue-700 hover:-translate-y-px hover:shadow-lg'"
+                            :disabled="form.processing"
+                            @click.stop="submit"
                         >
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <span v-if="form.processing">Uploading…</span>
+                            <span v-else class="flex items-center justify-center gap-2">
+                                Open in Editor
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </span>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="mt-2 text-xs text-gray-400 transition-colors hover:text-gray-600"
+                            @click.stop="removeFile"
+                        >
+                            Choose a different file
+                        </button>
+
+                    </div>
+
+                    <!-- Drag overlay border -->
+                    <div
+                        v-if="isDragging"
+                        class="pointer-events-none absolute inset-3 z-10 rounded-2xl border-2 border-dashed border-blue-400"
+                    />
+
+                </div>
+
+                <!-- ─── Right info panel ───────────────────────── -->
+                <div class="flex w-[300px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white">
+
+                    <!-- Panel header -->
+                    <div class="shrink-0 border-b border-gray-100 px-5 py-5">
+                        <h2 class="text-[13px] font-semibold text-gray-900">Start Signing</h2>
+                        <p class="mt-0.5 text-xs text-gray-400">Upload a PDF to open the signing workspace</p>
+                    </div>
+
+                    <!-- Steps -->
+                    <div class="flex-1 px-5 py-5">
+                        <div class="space-y-5">
+
+                            <div class="flex items-start gap-3">
+                                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</div>
+                                <div class="pt-0.5">
+                                    <p class="text-sm font-semibold text-gray-900">Open PDF</p>
+                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-500">Drop or browse for any PDF up to 25 MB.</p>
+                                </div>
+                            </div>
+
+                            <div class="ml-3.5 h-6 w-px bg-gray-200"></div>
+
+                            <div class="flex items-start gap-3">
+                                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">2</div>
+                                <div class="pt-0.5">
+                                    <p class="text-sm font-semibold text-gray-400">Create Signature</p>
+                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-400">Draw, type, or upload your signature.</p>
+                                </div>
+                            </div>
+
+                            <div class="ml-3.5 h-6 w-px bg-gray-200"></div>
+
+                            <div class="flex items-start gap-3">
+                                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">3</div>
+                                <div class="pt-0.5">
+                                    <p class="text-sm font-semibold text-gray-400">Download</p>
+                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-400">Your signed PDF is ready in seconds.</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Submit button in right panel (secondary location) -->
+                        <button
+                            v-if="selectedFile"
+                            type="button"
+                            class="mt-8 w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-blue-700 hover:shadow-md"
+                            :disabled="form.processing"
+                            @click="submit"
+                        >
+                            <span v-if="form.processing">Uploading…</span>
+                            <span v-else>Open in Editor →</span>
                         </button>
                     </div>
-                </div>
 
-                <!-- Upload progress -->
-                <div v-if="form.processing && form.progress" class="mx-2 mb-2 overflow-hidden rounded-xl bg-gray-100">
-                    <div
-                        class="h-1.5 rounded-full bg-blue-600 transition-all duration-300"
-                        :style="{ width: form.progress.percentage + '%' }"
-                    />
-                </div>
+                    <!-- Trust footer -->
+                    <div class="shrink-0 border-t border-gray-100 px-5 py-4">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2 text-xs text-gray-400">
+                                <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                No account required
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-gray-400">
+                                <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Files are never shared or sold
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-gray-400">
+                                <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Encrypted in transit and at rest
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Error message -->
-                <div v-if="error" class="mx-2 mb-2 flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3">
-                    <svg class="h-4 w-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p class="text-xs font-medium text-red-700">{{ error }}</p>
-                </div>
-
-                <!-- Submit button -->
-                <div class="px-4 pb-4 pt-2">
-                    <button
-                        type="button"
-                        class="w-full rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-150"
-                        :class="[
-                            selectedFile && !form.processing
-                                ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
-                                : 'bg-gray-300 cursor-not-allowed',
-                        ]"
-                        :disabled="!selectedFile || form.processing"
-                        @click="submit"
-                    >
-                        <span v-if="form.processing">
-                            Uploading...
-                        </span>
-                        <span v-else>
-                            Sign this PDF
-                            <svg class="ml-1.5 inline-block h-4 w-4 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </span>
-                    </button>
                 </div>
 
             </div>
 
-            <!-- Trust line -->
-            <p class="mt-5 text-center text-xs text-gray-400">
-                Your file is stored securely and never shared.
-            </p>
+            <!-- ─── Bottom action bar ─────────────────────────── -->
+            <div class="shrink-0 border-t border-gray-200 bg-white px-6 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+                <div class="flex items-center justify-between gap-4">
+
+                    <!-- Step indicators (disabled) -->
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2">
+                            <div class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-[11px] font-bold text-white">1</div>
+                            <span class="hidden text-xs font-medium text-gray-800 sm:block">Open PDF</span>
+                        </div>
+                        <div class="mx-2 h-px w-8 bg-gray-300" />
+                        <div class="flex items-center gap-2">
+                            <div class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-[11px] font-bold text-gray-400">2</div>
+                            <span class="hidden text-xs font-medium text-gray-400 sm:block">Create Signature</span>
+                        </div>
+                        <div class="mx-2 h-px w-8 bg-gray-300" />
+                        <div class="flex items-center gap-2">
+                            <div class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-[11px] font-bold text-gray-400">3</div>
+                            <span class="hidden text-xs font-medium text-gray-400 sm:block">Done</span>
+                        </div>
+                    </div>
+
+                    <p class="hidden text-xs text-gray-400 lg:block">Select a PDF to continue</p>
+
+                    <!-- Disabled finish button -->
+                    <button
+                        disabled
+                        class="inline-flex shrink-0 cursor-not-allowed items-center gap-2 rounded-xl bg-gray-100 px-7 py-2.5 text-sm font-semibold text-gray-400"
+                    >
+                        Finish Signing
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </button>
+
+                </div>
+            </div>
 
         </div>
     </SignLayout>

@@ -1,5 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import DevNav from '@/Components/DevNav.vue';
 
 const props = defineProps({
     step: {
@@ -17,7 +18,7 @@ const steps = [
 </script>
 
 <template>
-    <div class="flex min-h-screen flex-col bg-gray-50">
+    <div class="flex h-screen flex-col overflow-hidden bg-gray-50">
 
         <!-- Top bar -->
         <header class="border-b border-gray-200 bg-white">
@@ -86,9 +87,11 @@ const steps = [
         </div>
 
         <!-- Page content -->
-        <main class="flex-1">
+        <main class="flex min-h-0 flex-1 flex-col overflow-y-auto">
             <slot />
         </main>
+
+        <DevNav />
 
     </div>
 </template>
