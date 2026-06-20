@@ -63,17 +63,32 @@ Last updated: 2026-06-19
 
 ---
 
-## Week 2 — Document Module
+## Week 2 — Signing Flow (Upload Module)
 
-**Status: Not started**
+**Status: Upload complete — Editor next**
 
-Planned scope:
-- [ ] `documents` migration
-- [ ] `Document` model + `DocumentRepository` + `DocumentService`
-- [ ] `DocumentController` in `Controllers/Web/`
-- [ ] PDF upload to local disk (`storage/app/documents/`)
-- [ ] `Documents.vue` page (list + upload)
-- [ ] Route `/documents` wired into workspace sidebar
+- [x] `sign_sessions` migration
+- [x] `SignSession` model + `SignSessionRepository` + `SignSessionService`
+- [x] `UploadPdfRequest` — `mimes:pdf`, max 25 MB, friendly messages
+- [x] `Sign\IndexController`, `Sign\UploadController`, `Sign\EditorController`, `Sign\CompleteController`
+- [x] Routes: `/sign`, `/sign/upload`, `/sign/editor/{token}`, `/sign/complete/{token}`
+- [x] `SignLayout.vue` — 4-step progress indicator
+- [x] `Sign/Index.vue` — signing entry page
+- [x] `Sign/Upload.vue` — drag-and-drop upload with progress and errors
+- [x] `Sign/Editor.vue` — placeholder (upload success, editor skeleton)
+- [x] `Sign/Complete.vue` — placeholder
+
+Architecture corrections (v0.6.1):
+- [x] Homepage no longer redirects authenticated users (marketing always visible)
+- [x] Sign routes restructured — `/sign` is upload page, token in PHP session (not URL)
+- [x] `sign.upload.store` → `sign.store`, `sign.editor/{token}` → `sign.editor`
+
+Next in this flow:
+- [ ] PDF preview with PDF.js
+- [ ] Signature creation (draw canvas + type mode)
+- [ ] Signature placement on PDF
+- [ ] Register/login gate before download
+- [ ] Generate and serve signed PDF
 
 ---
 

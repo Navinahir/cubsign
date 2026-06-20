@@ -6,8 +6,78 @@ All notable changes to CubSign are documented here.
 
 ## [Unreleased]
 
-### Week 2 — Document Module
-- Planned: PDF upload, local disk storage, document list
+### Next — PDF Editor + Signature
+- Planned: PDF.js preview, signature canvas (draw/type), placement, signed PDF download, register gate
+
+---
+
+## [0.6.1] — 2026-06-20
+
+### Architecture Corrections
+
+#### Changed — `HomeController`
+- Removed authenticated-user redirect to `/overview`
+- All visitors (guests and authenticated) now see the marketing homepage
+- Follows "Value first. Account second." philosophy
+
+#### Changed — `routes/web.php`
+- `/sign` is now the upload page (`sign.index` + `sign.store`); separate `/sign/upload` route removed
+- `/sign/editor` and `/sign/complete` no longer carry `{token}` in the URL
+- Token passed through PHP session after upload, looked up by controllers on each request
+
+#### Changed — Backend Controllers
+- `UploadController::store()` — stores `sign_token` in PHP session, redirects to `sign.editor`
+- `EditorController::__invoke()` — reads token from `$request->session()->get('sign_token')` instead of URL param
+- `CompleteController::__invoke()` — same session-based token lookup; both guard-redirect to `sign.index` on missing/invalid token
+
+#### Changed — Frontend
+- `Sign/Upload.vue` — POST route updated from `sign.upload.store` to `sign.store`
+- `Sign/Editor.vue` — back link updated from `sign.upload` to `sign.index`
+- `Sign/Complete.vue` — "Sign another PDF" link updated from `sign.upload` to `sign.index`
+
+---
+
+## [0.6.0] — 2026-06-20
+
+### Signing Flow — Upload Module
+
+#### Added — Backend
+
+- `sign_sessions` table — stores uploaded PDF metadata: `token` (40-char random, unique), `original_filename`, `disk_path`, `file_size`, `status`, `user_id` (nullable, guests supported), `ip_address`
+- `App\Enums\SignSessionStatus` — `Uploaded | Editing | Signed | Downloaded`
+- `App\Models\SignSession` — fillable, status cast to enum, `user()` relation
+- `App\Repositories\SignSessionRepository` — `create()`, `findByToken()`
+- `App\Services\SignSessionService` — `upload()` generates token, stores PDF at `storage/app/sign/{token}.pdf` via `storeAs`, creates session record
+- `App\Http\Requests\UploadPdfRequest` — `mimes:pdf`, `max:25600` (25 MB), friendly messages, guests allowed (`authorize: true`)
+- `App\Http\Controllers\Web\Sign\IndexController` — invokable, renders `Sign/Index`
+- `App\Http\Controllers\Web\Sign\UploadController` — `show()` renders `Sign/Upload`, `store()` delegates to service and redirects to editor
+- `App\Http\Controllers\Web\Sign\EditorController` — invokable, looks up session by token, guards against invalid token
+- `App\Http\Controllers\Web\Sign\CompleteController` — invokable placeholder
+
+#### Added — Routes (`routes/web.php`)
+
+```
+GET  /sign              → sign.index
+GET  /sign/upload       → sign.upload
+POST /sign/upload       → sign.upload.store
+GET  /sign/editor/{token} → sign.editor
+GET  /sign/complete/{token} → sign.complete
+```
+
+All routes: no auth middleware — guests and authenticated users both allowed.
+
+#### Added — Frontend
+
+- `SignLayout.vue` — minimal layout: top bar (logo + "Secure & Private"), 4-step progress indicator (Upload → Preview → Sign → Download), `step` prop drives active/done/future circle states
+- `Sign/Index.vue` — entry page with 4-step explainer cards, CTA to `/sign/upload`
+- `Sign/Upload.vue` — drag-and-drop PDF upload:
+  - Idle state: drag zone + "Select PDF file" button
+  - File-selected state: filename, size, remove button
+  - Upload in progress: progress bar (`form.progress.percentage`)
+  - Error state: client-side (type/size) + server-side (validation) with red alert
+  - Submit: "Sign this PDF →" button, disabled until file selected
+- `Sign/Editor.vue` — placeholder: shows upload-success banner with filename, editor skeleton (toolbar + preview area), "PDF editor — coming next" message
+- `Sign/Complete.vue` — placeholder for download step
 
 ---
 

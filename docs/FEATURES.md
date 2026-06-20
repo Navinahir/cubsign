@@ -61,15 +61,37 @@ This document tracks what is built, in-progress, and planned for V1.
 
 ---
 
-## Documents
+## Signing Flow
 
 | Feature | Status |
 |---|---|
-| Upload PDF | Planned (Week 2) |
-| List documents | Planned (Week 2) |
-| View document details | Planned (Week 2) |
-| Download original | Planned (Week 2) |
-| Delete document | Planned (Week 2) |
+| `/sign` entry page with step explainer | Done |
+| Drag-and-drop PDF upload | Done |
+| Client-side validation (type, 25 MB) | Done |
+| Server-side validation (`mimes:pdf`, `max:25600`) | Done |
+| Guest upload — no auth required | Done |
+| Sign session created with unique token | Done |
+| PDF stored on local disk (`storage/app/sign/`) | Done |
+| Upload progress bar | Done |
+| `SignLayout.vue` with 4-step indicator | Done |
+| Redirect to editor after upload | Done |
+| PDF preview (PDF.js) | Planned (Week 2) |
+| Draw signature on canvas | Planned (Week 2) |
+| Type signature | Planned (Week 2) |
+| Place signature on PDF | Planned (Week 2) |
+| Download signed PDF | Planned (Week 2) |
+
+---
+
+## Documents (Workspace)
+
+| Feature | Status |
+|---|---|
+| Upload PDF | Done (via signing flow) |
+| List documents | Planned |
+| View document details | Planned |
+| Download original | Planned |
+| Delete document | Planned |
 
 ---
 

@@ -122,16 +122,29 @@ Authenticated users are redirected from `/` to `/overview`.
 
 ---
 
+## Signing Flow (Guest + Authenticated)
+
+Token is stored in PHP session after upload — never exposed in the URL.
+
+| Route | Page | Status |
+|---|---|---|
+| `GET /sign` | PDF upload | Live |
+| `POST /sign` | Handle upload | Live |
+| `GET /sign/editor` | PDF editor | Placeholder |
+| `GET /sign/complete` | Download | Placeholder |
+
+---
+
 ## Customer Workspace
 
 | Route | Page | Status |
 |---|---|---|
 | `/overview` | Overview | Live |
-| `/documents` | Documents | Week 2 |
-| `/signatures` | Signatures | Week 3 |
-| `/templates` | Templates | Week 6 |
-| `/activities` | Activities | Week 6 |
-| `/billing` | Billing | Week 7 |
+| `/documents` | Documents | Planned |
+| `/signatures` | Signatures | Planned |
+| `/templates` | Templates | Planned |
+| `/activities` | Activities | Planned |
+| `/billing` | Billing | Planned |
 | `/profile` | Profile | Live |
 | `/settings` | Settings | Future |
 
@@ -141,11 +154,12 @@ Authenticated users are redirected from `/` to `/overview`.
 
 - [x] Week 1 — Project setup, authentication, workspace layout, Overview
 - [x] Week 1 (ext) — Public website: Home, Features, Pricing, FAQ (FROZEN)
-- [ ] Week 2 — Document module (upload, list, view)
-- [ ] Week 3 — Signature module (sign PDF)
-- [ ] Week 4 — Self sign flow
-- [ ] Week 5 — Send for signature
-- [ ] Week 6 — Templates and audit trail
+- [x] Week 2 (partial) — Signing flow: upload module, sign session, SignLayout
+- [ ] Week 2 (cont.) — PDF preview (PDF.js), signature canvas, placement, download
+- [ ] Week 3 — Signature management (save/reuse signatures)
+- [ ] Week 4 — Workspace document list (authenticated users)
+- [ ] Week 5 — Send for signature (future)
+- [ ] Week 6 — Templates and audit trail (future)
 - [ ] Week 7 — Stripe billing
 - [ ] Week 8 — Testing and launch
 
