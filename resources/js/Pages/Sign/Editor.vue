@@ -62,11 +62,20 @@ const FIELD_DEFAULTS = {
 const RECIPIENT_COLORS = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#EC4899'];
 const COLOR_NAMES      = { '#3B82F6':'Blue', '#10B981':'Green', '#F59E0B':'Amber', '#EF4444':'Red', '#8B5CF6':'Purple', '#EC4899':'Pink' };
 
+// Prepared for future multi-step send workflow — no UI built yet
+const SEND_WORKFLOW_STEPS = [
+    { id: 'upload',     label: 'Upload'     },
+    { id: 'recipients', label: 'Recipients' },
+    { id: 'prepare',    label: 'Prepare'    },
+    { id: 'review',     label: 'Review'     },
+    { id: 'send',       label: 'Send'       },
+];
+
 // ── Recipients ───────────────────────────────────────────────────────────
 let   recipientSeq        = 1;
 let   dragRecipientId     = null;
 const dragOverRecipientId = ref(null);
-const recipients          = ref([{ id: 1, name: 'Signer 1', email: '', color: RECIPIENT_COLORS[0], role: 'signer', signingOrder: 1, status: 'pending' }]);
+const recipients          = ref([{ id: 1, name: '', email: '', color: RECIPIENT_COLORS[0], role: 'signer', signingOrder: 1, status: 'pending' }]);
 const activeRecipientId   = ref(1);
 
 // ── Placement state ─────────────────────────────────────────────────────
@@ -539,7 +548,7 @@ function addRecipient() {
     const id           = ++recipientSeq;
     const signingOrder = recipients.value.length + 1;
     const color        = RECIPIENT_COLORS[(recipients.value.length) % RECIPIENT_COLORS.length];
-    recipients.value.push({ id, name: `Signer ${signingOrder}`, email: '', color, role: 'signer', signingOrder, status: 'pending' });
+    recipients.value.push({ id, name: '', email: '', color, role: 'signer', signingOrder, status: 'pending' });
     activeRecipientId.value = id;
 }
 
@@ -566,9 +575,39 @@ function fieldCountsForRecipient(recipientId) {
 }
 
 function fieldCountLabel(type, count) {
-    if (type === 'checkbox') return count > 1 ? 'Checkboxes' : 'Checkbox';
-    const name = type.charAt(0).toUpperCase() + type.slice(1);
-    return `${name} ${count > 1 ? 'fields' : 'field'}`;
+    const map = {
+        signature: ['Signature',  'Signatures' ],
+        initials:  ['Initials',   'Initials'   ],
+        date:      ['Date',       'Dates'      ],
+        name:      ['Name',       'Names'      ],
+        text:      ['Text',       'Text'       ],
+        checkbox:  ['Checkbox',   'Checkboxes' ],
+    };
+    const pair = map[type] ?? [type, type];
+    return count > 1 ? pair[1] : pair[0];
+}
+
+function recipientDisplayName(id) {
+    const r = recipientById(id);
+    if (!r) return '?';
+    return r.name.trim() ? r.name.trim().split(' ')[0] : `#${r.signingOrder}`;
+}
+
+function fieldsForRecipient(recipientId) {
+    return placedFields.value.filter(f => f.signerId === recipientId);
+}
+
+function fieldLabel(field) {
+    const peers = placedFields.value.filter(f => f.signerId === field.signerId && f.type === field.type);
+    const n     = peers.findIndex(f => f.id === field.id) + 1;
+    const type  = field.type.charAt(0).toUpperCase() + field.type.slice(1);
+    return `${type} #${n}`;
+}
+
+function navigateToField(field) {
+    activeRecipientId.value = field.signerId;
+    selectedSigId.value     = field.id;
+    scrollToPage(field.pageNum);
 }
 
 function statusBadgeClass(status) {
@@ -884,6 +923,24 @@ async function generateSignedPdf() {
     return pdflibDoc.save();
 }
 
+async function goToReview() {
+    if (placedFields.value.length === 0 || isFinishing.value) return;
+    isFinishing.value = true;
+    try {
+        const bytes = await generateSignedPdf();
+        window.__cubsignSignedPdf      = bytes;
+        window.__cubsignSignedFilename = props.session.filename;
+        window.__cubsignReviewData     = {
+            pageCount:  numPages.value,
+            fieldCount: placedFields.value.length,
+        };
+        router.visit(route('sign.review'));
+    } catch (err) {
+        console.error('[CubSign] PDF generation error:', err);
+        isFinishing.value = false;
+    }
+}
+
 async function finishSigning() {
     if (placedFields.value.length === 0 || isFinishing.value) return;
     isFinishing.value = true;
@@ -900,7 +957,7 @@ async function finishSigning() {
 </script>
 
 <template>
-    <SignLayout :step="workflowStep">
+    <SignLayout :step="2">
 
         <!-- ░░░░ EDITOR WORKSPACE — responsive 3-col (lg) / 2-col (md) / stacked (mobile) ░░░░ -->
         <div class="flex h-full min-h-0 flex-col overflow-hidden lg:flex-row">
@@ -1119,7 +1176,7 @@ async function finishSigning() {
                                     <span
                                         class="absolute -left-px -top-4 max-w-[120px] truncate rounded-t px-1.5 py-px text-[8px] font-bold uppercase tracking-wide text-white"
                                         :style="`background:${recipientById(field.signerId)?.color ?? '#3B82F6'}`"
-                                    >{{ (recipientById(field.signerId)?.name || 'S').split(' ')[0] }} · {{ field.type }}</span>
+                                    >{{ recipientDisplayName(field.signerId) }} · {{ field.type }}</span>
 
                                     <!-- Resize handles (when selected) -->
                                     <template v-if="field.id === selectedSigId">
@@ -1191,7 +1248,14 @@ async function finishSigning() {
 
                 <!-- ── RECIPIENTS ── -->
                 <div class="border-b border-gray-100 px-4 py-4">
-                    <!-- Header -->
+
+                    <!-- Summary line -->
+                    <p class="mb-2 text-[10px] text-gray-400">
+                        {{ recipients.length }} {{ recipients.length === 1 ? 'recipient' : 'recipients' }}
+                        · {{ placedFields.length }} {{ placedFields.length === 1 ? 'field' : 'fields' }} assigned
+                    </p>
+
+                    <!-- Header row -->
                     <div class="mb-3 flex items-center justify-between">
                         <p class="text-xs font-bold uppercase tracking-wider text-gray-500">Recipients</p>
                         <button
@@ -1225,33 +1289,25 @@ async function finishSigning() {
                             @dragend="onRecipientDragEnd"
                         >
                             <div class="px-3 py-2.5">
+
                                 <!-- Row 1: drag handle + order badge + name + status + delete -->
                                 <div class="flex items-center gap-1.5">
-                                    <!-- Drag handle -->
                                     <svg class="h-3.5 w-3.5 shrink-0 cursor-grab text-gray-300 active:cursor-grabbing" fill="currentColor" viewBox="0 0 24 24">
                                         <circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/>
                                         <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
                                         <circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
                                     </svg>
-
-                                    <!-- Signing order badge (colored circle with #N) -->
                                     <span
                                         class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
                                         :style="`background:${r.color}`"
                                     >#{{ r.signingOrder }}</span>
-
-                                    <!-- Name input -->
                                     <input
                                         v-model="r.name"
                                         placeholder="Full name"
                                         class="min-w-0 flex-1 bg-transparent text-xs font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none"
                                         @click.stop
                                     />
-
-                                    <!-- Status badge -->
                                     <span :class="statusBadgeClass(r.status)">{{ r.status }}</span>
-
-                                    <!-- Delete (hidden when only 1 recipient) -->
                                     <button
                                         v-if="recipients.length > 1"
                                         class="shrink-0 text-gray-200 transition hover:text-red-400"
@@ -1264,8 +1320,8 @@ async function finishSigning() {
                                     </button>
                                 </div>
 
-                                <!-- Row 2: email input -->
-                                <div class="ml-[26px] mt-1">
+                                <!-- Row 2: email -->
+                                <div class="ml-[26px] mt-0.5">
                                     <input
                                         v-model="r.email"
                                         type="email"
@@ -1275,33 +1331,52 @@ async function finishSigning() {
                                     />
                                 </div>
 
-                                <!-- Row 3: field counters -->
+                                <!-- Row 3: field type counts -->
                                 <div class="ml-[26px] mt-2">
-                                    <template v-if="Object.keys(fieldCountsForRecipient(r.id)).length > 0">
-                                        <div class="flex flex-wrap gap-x-2 gap-y-0.5">
-                                            <span
-                                                v-for="(count, type) in fieldCountsForRecipient(r.id)"
-                                                :key="type"
-                                                class="flex items-center gap-1 text-[10px] text-gray-400"
-                                            >
-                                                <span class="h-1.5 w-1.5 rounded-full" :style="`background:${r.color}`"></span>
-                                                {{ count }} {{ fieldCountLabel(type, count) }}
-                                            </span>
-                                        </div>
-                                    </template>
+                                    <div v-if="Object.keys(fieldCountsForRecipient(r.id)).length > 0" class="flex flex-wrap gap-x-3 gap-y-0.5">
+                                        <span
+                                            v-for="(count, type) in fieldCountsForRecipient(r.id)"
+                                            :key="type"
+                                            class="flex items-center gap-1 text-[10px] font-medium text-gray-500"
+                                        >
+                                            <span class="h-1.5 w-1.5 shrink-0 rounded-full" :style="`background:${r.color}`"></span>
+                                            {{ count }} {{ fieldCountLabel(type, count) }}
+                                        </span>
+                                    </div>
                                     <span v-else class="text-[10px] italic text-gray-300">No fields assigned yet</span>
                                 </div>
+
+                                <!-- Row 4: clickable field list (only when fields exist) -->
+                                <div v-if="fieldsForRecipient(r.id).length > 0" class="ml-[26px] mt-2 space-y-0.5">
+                                    <button
+                                        v-for="f in fieldsForRecipient(r.id)"
+                                        :key="f.id"
+                                        class="flex w-full items-center gap-1.5 rounded-md px-1.5 py-1 text-left transition"
+                                        :class="f.id === selectedSigId
+                                            ? 'bg-white/80 font-semibold text-gray-800 shadow-sm'
+                                            : 'text-gray-400 hover:bg-white/60 hover:text-gray-600'"
+                                        :style="f.id === selectedSigId ? `color:${r.color}` : ''"
+                                        @click.stop="navigateToField(f)"
+                                    >
+                                        <span class="h-1 w-1 shrink-0 rounded-full" :style="`background:${r.color}`"></span>
+                                        <span class="truncate text-[10px]">{{ fieldLabel(f) }}</span>
+                                        <span class="ml-auto shrink-0 text-[9px] text-gray-300">p.{{ f.pageNum }}</span>
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                     </div>
 
-                    <!-- Color legend -->
+                    <!-- Color legend (only with multiple recipients) -->
                     <div v-if="recipients.length > 1" class="mt-3 border-t border-gray-100 pt-2.5">
                         <p class="mb-1.5 text-[9px] font-semibold uppercase tracking-wider text-gray-400">Color Guide</p>
                         <div class="flex flex-wrap gap-x-3 gap-y-1">
                             <div v-for="r in recipients" :key="r.id" class="flex items-center gap-1">
                                 <span class="h-2 w-2 shrink-0 rounded-full" :style="`background:${r.color}`"></span>
-                                <span class="text-[10px] text-gray-400">{{ COLOR_NAMES[r.color] ?? r.color }} = {{ r.name || `Recipient ${r.signingOrder}` }}</span>
+                                <span class="text-[10px] text-gray-400">
+                                    {{ COLOR_NAMES[r.color] ?? r.color }} = {{ r.name?.trim() || `Recipient ${r.signingOrder}` }}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -1746,14 +1821,14 @@ async function finishSigning() {
                             ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:scale-[0.98]'
                             : 'cursor-not-allowed bg-gray-100 text-gray-400',
                     ]"
-                    @click="finishSigning"
+                    @click="goToReview"
                 >
                     <svg v-if="isFinishing" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
                     </svg>
-                    <span class="hidden sm:inline">{{ isFinishing ? 'Preparing…' : 'Finish Signing' }}</span>
-                    <span class="sm:hidden">{{ isFinishing ? '…' : 'Finish' }}</span>
+                    <span class="hidden sm:inline">{{ isFinishing ? 'Preparing…' : 'Review' }}</span>
+                    <span class="sm:hidden">{{ isFinishing ? '…' : 'Review' }}</span>
                     <svg v-if="!isFinishing" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>

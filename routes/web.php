@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\Sign\UploadController as SignUploadController;
 use App\Http\Controllers\Web\Sign\EditorController as SignEditorController;
 use App\Http\Controllers\Web\Sign\PdfController as SignPdfController;
 use App\Http\Controllers\Web\Sign\CompleteController as SignCompleteController;
+use App\Http\Controllers\Web\Sign\ReviewController as SignReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Public website — always visible, no auth redirect
@@ -35,6 +36,7 @@ Route::prefix('sign')->name('sign.')->group(function () {
     Route::post('/', [SignUploadController::class, 'store'])->name('store');
     Route::get('/editor', SignEditorController::class)->name('editor');
     Route::get('/pdf', SignPdfController::class)->name('pdf');
+    Route::get('/review', SignReviewController::class)->name('review');
     Route::get('/complete', SignCompleteController::class)->name('complete');
 });
 

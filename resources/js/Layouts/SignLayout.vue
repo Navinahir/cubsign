@@ -10,10 +10,10 @@ const props = defineProps({
 });
 
 const steps = [
-    { number: 1, label: 'Upload' },
-    { number: 2, label: 'Preview' },
-    { number: 3, label: 'Sign' },
-    { number: 4, label: 'Download' },
+    { number: 1, label: 'Upload'   },
+    { number: 2, label: 'Editor'   },
+    { number: 3, label: 'Review'   },
+    { number: 4, label: 'Complete' },
 ];
 </script>
 
