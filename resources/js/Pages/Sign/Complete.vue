@@ -1,13 +1,58 @@
 <script setup>
-import { ref } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { ref, computed, onMounted } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 
 const props = defineProps({
     session: { type: Object, required: true },
 });
 
-const hasSignedPdf = ref(typeof window !== 'undefined' && !!window.__cubsignSignedPdf);
+const isAuthenticated = computed(() => !!usePage().props.auth?.user);
+const hasSignedPdf    = ref(typeof window !== 'undefined' && !!window.__cubsignSignedPdf);
+
+// Auto-save state
+const isSaving  = ref(false);
+const isSaved   = ref(typeof window !== 'undefined' && !!window.__cubsignDocumentSaved);
+const saveError = ref(false);
+
+onMounted(async () => {
+    if (!isAuthenticated.value || !window.__cubsignSignedPdf) return;
+
+    if (window.__cubsignDocumentSaved) {
+        isSaved.value = true;
+        return;
+    }
+
+    isSaving.value = true;
+    try {
+        const blob = new Blob([window.__cubsignSignedPdf], { type: 'application/pdf' });
+        const form = new FormData();
+        form.append('pdf', blob, window.__cubsignSignedFilename ?? 'document.pdf');
+
+        const xsrfToken = decodeURIComponent(
+            document.cookie.split('; ')
+                .find((r) => r.startsWith('XSRF-TOKEN='))
+                ?.split('=')[1] ?? '',
+        );
+
+        const res = await fetch(route('sign.save'), {
+            method:  'POST',
+            headers: { 'X-XSRF-TOKEN': xsrfToken },
+            body:    form,
+        });
+
+        if (res.ok) {
+            window.__cubsignDocumentSaved = true;
+            isSaved.value = true;
+        } else {
+            saveError.value = true;
+        }
+    } catch {
+        saveError.value = true;
+    } finally {
+        isSaving.value = false;
+    }
+});
 
 function downloadSignedPdf() {
     const bytes = window.__cubsignSignedPdf;
@@ -36,10 +81,9 @@ const benefits = [
 <template>
     <SignLayout :step="4">
 
-        <!-- overflow-y-auto prevents top-clip on short viewports; justify-start + py keeps it vertically comfortable -->
         <div class="flex min-h-0 flex-1 flex-col items-center justify-start overflow-y-auto bg-gray-50 px-4 py-6 sm:px-8 sm:py-8">
 
-            <!-- ── SUCCESS HERO ────────────────────────────────────────── -->
+            <!-- ── SUCCESS HERO ── -->
             <div class="flex flex-col items-center text-center">
                 <div class="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 shadow-md ring-[10px] ring-emerald-50">
                     <svg class="h-7 w-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,10 +99,10 @@ const benefits = [
                 </p>
             </div>
 
-            <!-- ── CARDS ──────────────────────────────────────────────── -->
+            <!-- ── CARDS ── -->
             <div class="mt-6 grid w-full max-w-[54rem] grid-cols-1 items-stretch gap-4 sm:grid-cols-2">
 
-                <!-- CARD 1 — Guest / Download -->
+                <!-- CARD 1 — Download -->
                 <div class="flex flex-col rounded-2xl border border-gray-300 bg-white p-6 shadow-md transition-shadow duration-200 hover:shadow-lg">
 
                     <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-200/80">
@@ -97,9 +141,107 @@ const benefits = [
                     </div>
                 </div>
 
-                <!-- CARD 2 — Create Account -->
-                <div class="relative flex flex-col rounded-2xl border-2 border-blue-500 bg-white p-6 shadow-lg shadow-blue-100/50 transition-shadow duration-200 hover:shadow-xl hover:shadow-blue-100/60">
+                <!-- CARD 2 — Authenticated: Saved to My Documents -->
+                <div
+                    v-if="isAuthenticated"
+                    :class="[
+                        'relative flex flex-col rounded-2xl p-6 shadow-md transition-shadow duration-200 hover:shadow-lg',
+                        isSaved ? 'border-2 border-emerald-400 bg-white shadow-emerald-100/50' : 'border border-gray-300 bg-white',
+                    ]"
+                >
+                    <!-- Saved badge -->
+                    <div v-if="isSaved" class="absolute -top-[13px] left-1/2 -translate-x-1/2">
+                        <span class="whitespace-nowrap rounded-full bg-emerald-600 px-3.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white shadow-md">
+                            Saved
+                        </span>
+                    </div>
 
+                    <!-- Icon -->
+                    <div
+                        :class="[
+                            'flex h-10 w-10 items-center justify-center rounded-xl ring-1',
+                            isSaved    ? 'bg-emerald-100 ring-emerald-200/80' :
+                            saveError  ? 'bg-red-100 ring-red-200/80' :
+                                         'bg-blue-100 ring-blue-200/80',
+                        ]"
+                    >
+                        <!-- Spinner -->
+                        <svg v-if="isSaving" class="h-5 w-5 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                        <!-- Checkmark -->
+                        <svg v-else-if="isSaved" class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <!-- Error -->
+                        <svg v-else-if="saveError" class="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                        </svg>
+                        <!-- Default / no PDF -->
+                        <svg v-else class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+
+                    <!-- Heading -->
+                    <h2 class="mt-3.5 text-base font-bold text-gray-900">
+                        <template v-if="isSaving">Saving to My Documents…</template>
+                        <template v-else-if="isSaved">Saved to My Documents</template>
+                        <template v-else-if="saveError">Could not save automatically</template>
+                        <template v-else>My Documents</template>
+                    </h2>
+
+                    <!-- Body -->
+                    <p class="mt-1 flex-1 text-sm leading-relaxed text-gray-500">
+                        <template v-if="isSaving">
+                            Uploading your signed PDF — this only takes a moment.
+                        </template>
+                        <template v-else-if="isSaved">
+                            Your signed PDF is saved and available anytime from your dashboard.
+                        </template>
+                        <template v-else-if="saveError">
+                            Something went wrong while saving. Please download your PDF now and try again later.
+                        </template>
+                        <template v-else>
+                            Sign a document from the Editor to save it here automatically.
+                        </template>
+                    </p>
+
+                    <div class="mt-5 space-y-2.5 border-t border-gray-100 pt-5">
+                        <!-- Saving progress bar -->
+                        <div v-if="isSaving" class="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                            <div class="h-full w-1/2 animate-pulse rounded-full bg-blue-400"/>
+                        </div>
+
+                        <!-- View My Documents -->
+                        <Link
+                            v-if="isSaved"
+                            :href="route('documents.index')"
+                            class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-emerald-700 hover:shadow-md active:scale-[0.98]"
+                        >
+                            View My Documents
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </Link>
+
+                        <!-- Error: go to documents anyway -->
+                        <Link
+                            v-if="saveError"
+                            :href="route('documents.index')"
+                            class="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all duration-150 hover:bg-gray-50 active:scale-[0.98]"
+                        >
+                            Go to My Documents
+                        </Link>
+                    </div>
+                </div>
+
+                <!-- CARD 2 — Guest: Create Account -->
+                <div
+                    v-else
+                    class="relative flex flex-col rounded-2xl border-2 border-blue-500 bg-white p-6 shadow-lg shadow-blue-100/50 transition-shadow duration-200 hover:shadow-xl hover:shadow-blue-100/60"
+                >
                     <!-- Recommended badge -->
                     <div class="absolute -top-[13px] left-1/2 -translate-x-1/2">
                         <span class="whitespace-nowrap rounded-full bg-blue-600 px-3.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white shadow-md">
@@ -118,7 +260,6 @@ const benefits = [
                         Save your signed document and unlock all features.
                     </p>
 
-                    <!-- 2-column benefits grid to reduce vertical space -->
                     <ul class="mt-4 flex-1 grid grid-cols-2 gap-x-3 gap-y-2">
                         <li v-for="b in benefits" :key="b" class="flex items-center gap-2 text-xs text-gray-700">
                             <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100">
@@ -155,11 +296,12 @@ const benefits = [
                         </Link>
                     </div>
                 </div>
+
             </div>
 
-            <!-- ── FOOTER LINKS ─────────────────────────────────────── -->
+            <!-- ── FOOTER LINKS ── -->
             <div class="mt-6 flex flex-col items-center gap-2.5">
-                <p class="text-sm text-gray-500">
+                <p v-if="!isAuthenticated" class="text-sm text-gray-500">
                     Already have an account?
                     <Link :href="route('login')" class="font-semibold text-blue-600 transition hover:text-blue-700 hover:underline">
                         Log in

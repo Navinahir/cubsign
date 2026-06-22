@@ -12,6 +12,8 @@ use App\Http\Controllers\Web\Sign\EditorController as SignEditorController;
 use App\Http\Controllers\Web\Sign\PdfController as SignPdfController;
 use App\Http\Controllers\Web\Sign\ReviewController as SignReviewController;
 use App\Http\Controllers\Web\Sign\UploadController as SignUploadController;
+use App\Http\Controllers\Web\Sign\SaveDocumentController as SignSaveDocumentController;
+use App\Http\Controllers\Web\Workspace\DocumentDownloadController;
 use App\Http\Controllers\Web\Workspace\DocumentsController;
 use App\Http\Controllers\Web\Workspace\TemplatesController;
 use Illuminate\Support\Facades\Route;
@@ -28,9 +30,13 @@ Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->n
 
 // Workspace — authenticated + verified
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/overview',   OverviewController::class)->name('overview');
-    Route::get('/documents',  [DocumentsController::class, 'index'])->name('documents.index');
-    Route::get('/templates',  [TemplatesController::class, 'index'])->name('templates.index');
+    Route::get('/overview',                           OverviewController::class)->name('overview');
+    Route::get('/documents',                          [DocumentsController::class, 'index'])->name('documents.index');
+    Route::get('/documents/{document}/download',      DocumentDownloadController::class)->name('documents.download');
+    Route::patch('/documents/{document}/rename',      [DocumentsController::class, 'rename'])->name('documents.rename');
+    Route::patch('/documents/{document}/archive',     [DocumentsController::class, 'archive'])->name('documents.archive');
+    Route::delete('/documents/{document}',            [DocumentsController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/templates',                          [TemplatesController::class, 'index'])->name('templates.index');
 });
 
 // Profile
@@ -48,6 +54,7 @@ Route::prefix('sign')->name('sign.')->group(function () {
     Route::get('/pdf',     SignPdfController::class)->name('pdf');
     Route::get('/review',  SignReviewController::class)->name('review');
     Route::get('/complete', SignCompleteController::class)->name('complete');
+    Route::middleware('auth')->post('/save', SignSaveDocumentController::class)->name('save');
 });
 
 require __DIR__.'/auth.php';

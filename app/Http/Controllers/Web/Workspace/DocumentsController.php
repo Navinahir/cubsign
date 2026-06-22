@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Web\Workspace;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -11,13 +13,69 @@ class DocumentsController extends Controller
 {
     public function index(Request $request): Response
     {
-        $documents = $request->user()
-            ->documents()
-            ->latest()
-            ->get(['id', 'name', 'status', 'pdf_path', 'created_at']);
+        $query = $request->user()->documents();
+
+        if ($search = $request->get('search')) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        if ($status = $request->get('status')) {
+            $query->where('status', $status);
+        }
+
+        match ($request->get('sort', 'newest')) {
+            'oldest' => $query->oldest(),
+            'az'     => $query->orderBy('name'),
+            'za'     => $query->orderByDesc('name'),
+            default  => $query->latest(),
+        };
+
+        $documents = $query
+            ->paginate(10, ['id', 'name', 'status', 'pdf_path', 'created_at'])
+            ->withQueryString();
 
         return Inertia::render('Workspace/Documents', [
             'documents' => $documents,
+            'filters'   => [
+                'search' => $request->get('search', ''),
+                'status' => $request->get('status', ''),
+                'sort'   => $request->get('sort', 'newest'),
+            ],
         ]);
+    }
+
+    public function rename(Request $request, Document $document): RedirectResponse
+    {
+        $this->gate($document);
+
+        $validated = $request->validate(['name' => ['required', 'string', 'max:255']]);
+        $document->update(['name' => $validated['name']]);
+
+        return back();
+    }
+
+    public function archive(Document $document): RedirectResponse
+    {
+        $this->gate($document);
+
+        $document->update(['status' => 'archived']);
+
+        return back();
+    }
+
+    public function destroy(Document $document): RedirectResponse
+    {
+        $this->gate($document);
+
+        $document->delete();
+
+        return back();
+    }
+
+    private function gate(Document $document): void
+    {
+        if ($document->user_id !== auth()->id()) {
+            abort(403);
+        }
     }
 }

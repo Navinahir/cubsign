@@ -1,13 +1,89 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { ref, watch, nextTick } from 'vue';
+import { Link, router } from '@inertiajs/vue3';
 import WorkspaceLayout from '@/Layouts/WorkspaceLayout.vue';
 
 const props = defineProps({
-    documents: {
-        type: Array,
-        default: () => [],
-    },
+    documents: { type: Object, required: true },
+    filters:   { type: Object, default: () => ({ search: '', status: '', sort: 'newest' }) },
 });
+
+// ── Filter state ──────────────────────────────────────────────────────────────
+const search       = ref(props.filters.search  ?? '');
+const statusFilter = ref(props.filters.status  ?? '');
+const sort         = ref(props.filters.sort    ?? 'newest');
+
+let searchTimer;
+watch(search, (val) => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => applyFilters(), 300);
+});
+watch([statusFilter, sort], () => applyFilters());
+
+function applyFilters() {
+    router.get(
+        route('documents.index'),
+        {
+            ...(search.value       ? { search: search.value }       : {}),
+            ...(statusFilter.value ? { status: statusFilter.value } : {}),
+            ...(sort.value !== 'newest' ? { sort: sort.value }      : {}),
+        },
+        { preserveState: true, replace: true },
+    );
+}
+
+const hasActiveFilter = () => !!(search.value || statusFilter.value);
+
+// ── Inline rename ─────────────────────────────────────────────────────────────
+const editingId   = ref(null);
+const editingName = ref('');
+const editInput   = ref(null);
+
+function startEdit(doc) {
+    editingId.value   = doc.id;
+    editingName.value = doc.name;
+    nextTick(() => editInput.value?.focus());
+}
+
+function cancelEdit() {
+    editingId.value   = null;
+    editingName.value = '';
+}
+
+function saveRename(doc) {
+    const name = editingName.value.trim();
+    if (!name || name === doc.name) { cancelEdit(); return; }
+    router.patch(
+        route('documents.rename', doc.id),
+        { name },
+        { preserveScroll: true, onSuccess: () => cancelEdit() },
+    );
+}
+
+// ── Document actions ──────────────────────────────────────────────────────────
+function archiveDoc(doc) {
+    router.patch(route('documents.archive', doc.id), {}, { preserveScroll: true });
+}
+
+function deleteDoc(doc) {
+    if (!window.confirm(`Delete "${doc.name}"?\nThis cannot be undone.`)) return;
+    router.delete(route('documents.destroy', doc.id), { preserveScroll: true });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const STATUS_OPTIONS = [
+    { value: '',         label: 'All statuses' },
+    { value: 'signed',   label: 'Signed'       },
+    { value: 'archived', label: 'Archived'     },
+    { value: 'draft',    label: 'Draft'        },
+];
+
+const SORT_OPTIONS = [
+    { value: 'newest', label: 'Newest first' },
+    { value: 'oldest', label: 'Oldest first' },
+    { value: 'az',     label: 'Name A → Z'   },
+    { value: 'za',     label: 'Name Z → A'   },
+];
 
 function statusBadgeClass(status) {
     const map = {
@@ -27,11 +103,15 @@ function formatDate(value) {
     <WorkspaceLayout>
         <template #header>My Documents</template>
 
-        <!-- Page header -->
+        <!-- ── Page header ── -->
         <div class="mb-6 flex items-center justify-between">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">My Documents</h1>
-                <p class="mt-1 text-sm text-gray-500">All your signed and in-progress documents.</p>
+                <p class="mt-1 text-sm text-gray-500">
+                    {{ documents.total }}
+                    {{ documents.total === 1 ? 'document' : 'documents' }}
+                    in your account
+                </p>
             </div>
             <Link
                 :href="route('sign.index')"
@@ -44,9 +124,54 @@ function formatDate(value) {
             </Link>
         </div>
 
-        <!-- Empty state -->
+        <!-- ── Filters bar ── -->
+        <div class="mb-4 flex flex-wrap items-center gap-3">
+            <!-- Search -->
+            <div class="relative flex-1 min-w-[200px] max-w-sm">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input
+                    v-model="search"
+                    type="text"
+                    placeholder="Search by name…"
+                    class="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-800 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <button
+                    v-if="search"
+                    class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    @click="search = ''"
+                >
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Status filter -->
+            <select
+                v-model="statusFilter"
+                class="rounded-lg border border-gray-300 bg-white py-2 pl-3 pr-8 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+                <option v-for="opt in STATUS_OPTIONS" :key="opt.value" :value="opt.value">
+                    {{ opt.label }}
+                </option>
+            </select>
+
+            <!-- Sort -->
+            <select
+                v-model="sort"
+                class="rounded-lg border border-gray-300 bg-white py-2 pl-3 pr-8 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+                <option v-for="opt in SORT_OPTIONS" :key="opt.value" :value="opt.value">
+                    {{ opt.label }}
+                </option>
+            </select>
+        </div>
+
+        <!-- ── Empty state — no documents at all ── -->
         <div
-            v-if="documents.length === 0"
+            v-if="documents.total === 0 && !hasActiveFilter()"
             class="flex flex-col items-center rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center"
         >
             <svg class="mb-4 h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,59 +187,154 @@ function formatDate(value) {
             </Link>
         </div>
 
-        <!-- Documents table -->
+        <!-- ── Empty state — search/filter returned nothing ── -->
+        <div
+            v-else-if="documents.data.length === 0"
+            class="flex flex-col items-center rounded-xl border border-dashed border-gray-300 bg-white py-12 text-center"
+        >
+            <svg class="mb-3 h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <p class="text-sm font-semibold text-gray-600">No documents match your search</p>
+            <button
+                class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-700"
+                @click="search = ''; statusFilter = ''"
+            >
+                Clear filters
+            </button>
+        </div>
+
+        <!-- ── Documents table ── -->
         <div v-else class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
             <table class="min-w-full divide-y divide-gray-100">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            Name
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            Status
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            Date
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            Actions
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date</th>
+                        <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50 bg-white">
                     <tr
-                        v-for="doc in documents"
+                        v-for="doc in documents.data"
                         :key="doc.id"
-                        class="transition hover:bg-gray-50"
+                        class="group transition hover:bg-gray-50"
                     >
-                        <td class="px-6 py-4">
+                        <!-- Name -->
+                        <td class="px-6 py-3.5">
                             <div class="flex items-center gap-3">
                                 <svg class="h-5 w-5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <span class="max-w-xs truncate text-sm font-medium text-gray-900">{{ doc.name }}</span>
+
+                                <!-- Editing inline -->
+                                <input
+                                    v-if="editingId === doc.id"
+                                    ref="editInput"
+                                    v-model="editingName"
+                                    class="w-full max-w-xs rounded border border-blue-400 px-2 py-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    @blur="saveRename(doc)"
+                                    @keyup.enter="saveRename(doc)"
+                                    @keyup.escape="cancelEdit"
+                                />
+                                <!-- Display -->
+                                <span
+                                    v-else
+                                    class="max-w-xs cursor-pointer truncate text-sm font-medium text-gray-900 hover:text-blue-600"
+                                    :title="`Click to rename: ${doc.name}`"
+                                    @click="startEdit(doc)"
+                                >
+                                    {{ doc.name }}
+                                </span>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
+
+                        <!-- Status -->
+                        <td class="px-6 py-3.5">
                             <span :class="statusBadgeClass(doc.status)">{{ doc.status }}</span>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">
+
+                        <!-- Date -->
+                        <td class="px-6 py-3.5 text-sm text-gray-500">
                             {{ formatDate(doc.created_at) }}
                         </td>
-                        <td class="px-6 py-4">
-                            <button
-                                v-if="doc.pdf_path"
-                                class="text-xs font-semibold text-blue-600 hover:text-blue-700"
-                                disabled
-                                title="Download coming soon"
-                            >
-                                Download
-                            </button>
-                            <span v-else class="text-xs text-gray-400">—</span>
+
+                        <!-- Actions -->
+                        <td class="px-6 py-3.5">
+                            <div class="flex items-center justify-end gap-1">
+                                <!-- Download -->
+                                <a
+                                    v-if="doc.pdf_path"
+                                    :href="route('documents.download', doc.id)"
+                                    class="rounded p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-blue-600"
+                                    title="Download"
+                                >
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                </a>
+
+                                <!-- Archive (not available for already archived) -->
+                                <button
+                                    v-if="doc.status !== 'archived'"
+                                    class="rounded p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-amber-600"
+                                    title="Archive"
+                                    @click="archiveDoc(doc)"
+                                >
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                                    </svg>
+                                </button>
+
+                                <!-- Delete -->
+                                <button
+                                    class="rounded p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                                    title="Delete"
+                                    @click="deleteDoc(doc)"
+                                >
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+            <!-- ── Pagination footer ── -->
+            <div class="flex items-center justify-between border-t border-gray-100 px-6 py-3">
+                <p class="text-xs text-gray-500">
+                    Showing
+                    <span class="font-medium text-gray-700">{{ documents.from }}–{{ documents.to }}</span>
+                    of
+                    <span class="font-medium text-gray-700">{{ documents.total }}</span>
+                    documents
+                </p>
+
+                <div class="flex items-center gap-1">
+                    <template v-for="link in documents.links" :key="link.label">
+                        <Link
+                            v-if="link.url && !link.active"
+                            :href="link.url"
+                            class="rounded px-2.5 py-1 text-xs font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+                            preserve-scroll
+                            v-html="link.label"
+                        />
+                        <span
+                            v-else-if="link.active"
+                            class="rounded bg-blue-600 px-2.5 py-1 text-xs font-medium text-white"
+                            v-html="link.label"
+                        />
+                        <span
+                            v-else
+                            class="rounded px-2.5 py-1 text-xs text-gray-300"
+                            v-html="link.label"
+                        />
+                    </template>
+                </div>
+            </div>
         </div>
 
     </WorkspaceLayout>

@@ -16,7 +16,7 @@ class OverviewController extends Controller
         $stats = [
             'total'    => $user->documents()->count(),
             'signed'   => $user->documents()->where('status', 'signed')->count(),
-            'drafts'   => $user->documents()->where('status', 'draft')->count(),
+            'archived' => $user->documents()->where('status', 'archived')->count(),
         ];
 
         $recentDocuments = $user->documents()
