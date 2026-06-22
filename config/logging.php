@@ -118,6 +118,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'cubsign' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/cubsign.log'),
+            'level'  => env('LOG_LEVEL', 'debug'),
+            'days'   => 30,
+            'replace_placeholders' => true,
+        ],
+
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,

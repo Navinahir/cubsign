@@ -16,7 +16,7 @@ function downloadSignedPdf() {
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = (window.__cubsignSignedFilename ?? 'signed-document') .replace(/\.pdf$/i, '') + '-signed.pdf';
+    a.download = (window.__cubsignSignedFilename ?? 'signed-document').replace(/\.pdf$/i, '') + '-signed.pdf';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -36,101 +36,91 @@ const benefits = [
 <template>
     <SignLayout :step="4">
 
-        <!-- Full-height centred stage -->
-        <div class="flex min-h-0 flex-1 flex-col items-center justify-center bg-gray-50 px-4 py-14 sm:px-6">
+        <!-- overflow-y-auto prevents top-clip on short viewports; justify-start + py keeps it vertically comfortable -->
+        <div class="flex min-h-0 flex-1 flex-col items-center justify-start overflow-y-auto bg-gray-50 px-4 py-6 sm:px-8 sm:py-8">
 
-            <!-- ── SUCCESS MARK ────────────────────────────────────────── -->
+            <!-- ── SUCCESS HERO ────────────────────────────────────────── -->
             <div class="flex flex-col items-center text-center">
-
-                <!-- Icon -->
-                <div class="relative inline-flex">
-                    <div class="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 ring-[10px] ring-emerald-50">
-                        <svg class="h-10 w-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                        </svg>
-                    </div>
+                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 shadow-md ring-[10px] ring-emerald-50">
+                    <svg class="h-7 w-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
                 </div>
-
-                <h1 class="mt-7 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                    Your document is ready
+                <h1 class="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                    Your document is signed
                 </h1>
-                <p class="mt-3 text-base text-gray-500">
+                <p class="mt-1.5 text-sm text-gray-500">
                     <span class="font-semibold text-gray-700">{{ session.filename }}</span>
-                    has been successfully signed.
+                    · signed and ready to download
                 </p>
             </div>
 
-            <!-- ── TWO CARDS ──────────────────────────────────────────── -->
-            <div class="mt-10 grid w-full max-w-2xl grid-cols-1 gap-5 sm:grid-cols-2">
+            <!-- ── CARDS ──────────────────────────────────────────────── -->
+            <div class="mt-6 grid w-full max-w-[54rem] grid-cols-1 items-stretch gap-4 sm:grid-cols-2">
 
-                <!-- CARD 1 — Guest -->
-                <div class="flex flex-col rounded-2xl border border-gray-200 bg-white p-7 shadow-sm">
+                <!-- CARD 1 — Guest / Download -->
+                <div class="flex flex-col rounded-2xl border border-gray-300 bg-white p-6 shadow-md transition-shadow duration-200 hover:shadow-lg">
 
-                    <!-- Icon -->
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100">
-                        <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-200/80">
+                        <svg class="h-5 w-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
                     </div>
 
-                    <h2 class="mt-4 text-[17px] font-semibold text-gray-900">Continue as Guest</h2>
-                    <p class="mt-1.5 flex-1 text-sm leading-relaxed text-gray-500">
-                        Download the PDF once without creating an account.
+                    <h2 class="mt-3.5 text-base font-bold text-gray-900">Download Now</h2>
+                    <p class="mt-1 flex-1 text-sm leading-relaxed text-gray-500">
+                        Get your signed PDF immediately — no account needed.
                     </p>
 
-                    <!-- Divider -->
-                    <div class="my-5 border-t border-gray-100" />
+                    <div class="mt-5 space-y-2.5 border-t border-gray-100 pt-5">
+                        <button
+                            v-if="hasSignedPdf"
+                            class="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-slate-700 hover:shadow-md active:scale-[0.98]"
+                            @click="downloadSignedPdf"
+                        >
+                            <svg class="h-4 w-4 transition-transform duration-150 group-hover:translate-y-px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Download Signed PDF
+                        </button>
 
-                    <button
-                        v-if="hasSignedPdf"
-                        class="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-400 hover:bg-gray-50 active:scale-[0.98]"
-                        @click="downloadSignedPdf"
-                    >
-                        <svg class="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                        Download PDF
-                    </button>
+                        <div v-else class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-center">
+                            <p class="text-xs font-semibold text-amber-700">Signed PDF is no longer in memory.</p>
+                            <Link :href="route('sign.index')" class="mt-0.5 block text-[11px] text-amber-600 underline hover:text-amber-800">
+                                Re-upload and sign again
+                            </Link>
+                        </div>
 
-                    <!-- Shown if user refreshed the page (signed PDF no longer in memory) -->
-                    <div v-else class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-center">
-                        <p class="text-xs font-medium text-amber-700">Signed PDF is no longer in memory.</p>
-                        <Link :href="route('sign.index')" class="mt-1 block text-[11px] text-amber-600 underline hover:text-amber-800">
-                            Re-upload and sign again
-                        </Link>
+                        <p class="text-center text-[11px] text-gray-400">
+                            One-time download · No account required
+                        </p>
                     </div>
-
-                    <p class="mt-3 text-center text-[11px] text-gray-400">
-                        One-time download · No account required
-                    </p>
                 </div>
 
-                <!-- CARD 2 — Create Account (highlighted) -->
-                <div class="relative flex flex-col rounded-2xl border-2 border-blue-500 bg-white p-7 shadow-lg shadow-blue-100/60">
+                <!-- CARD 2 — Create Account -->
+                <div class="relative flex flex-col rounded-2xl border-2 border-blue-500 bg-white p-6 shadow-lg shadow-blue-100/50 transition-shadow duration-200 hover:shadow-xl hover:shadow-blue-100/60">
 
-                    <!-- Recommended pill -->
+                    <!-- Recommended badge -->
                     <div class="absolute -top-[13px] left-1/2 -translate-x-1/2">
-                        <span class="whitespace-nowrap rounded-full bg-blue-600 px-3.5 py-0.5 text-[11px] font-bold uppercase tracking-widest text-white shadow">
+                        <span class="whitespace-nowrap rounded-full bg-blue-600 px-3.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white shadow-md">
                             Recommended
                         </span>
                     </div>
 
-                    <!-- Icon -->
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 ring-1 ring-blue-200/80">
                         <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
                     </div>
 
-                    <h2 class="mt-4 text-[17px] font-semibold text-gray-900">Create Free Account</h2>
+                    <h2 class="mt-3.5 text-base font-bold text-gray-900">Create Free Account</h2>
+                    <p class="mt-1 text-sm leading-relaxed text-gray-500">
+                        Save your signed document and unlock all features.
+                    </p>
 
-                    <!-- Benefits -->
-                    <ul class="mt-4 flex-1 space-y-2">
-                        <li
-                            v-for="b in benefits"
-                            :key="b"
-                            class="flex items-center gap-2.5 text-sm text-gray-700"
-                        >
+                    <!-- 2-column benefits grid to reduce vertical space -->
+                    <ul class="mt-4 flex-1 grid grid-cols-2 gap-x-3 gap-y-2">
+                        <li v-for="b in benefits" :key="b" class="flex items-center gap-2 text-xs text-gray-700">
                             <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100">
                                 <svg class="h-2.5 w-2.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
@@ -140,16 +130,10 @@ const benefits = [
                         </li>
                     </ul>
 
-                    <!-- Divider -->
-                    <div class="my-5 border-t border-gray-100" />
-
-                    <!-- CTAs -->
-                    <div class="space-y-2.5">
-
-                        <!-- Google -->
+                    <div class="mt-5 space-y-2.5 border-t border-gray-100 pt-5">
                         <Link
                             :href="route('register')"
-                            class="flex w-full items-center justify-center gap-2.5 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 active:scale-[0.98]"
+                            class="flex w-full items-center justify-center gap-2.5 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all duration-150 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-[0.98]"
                         >
                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none">
                                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -160,12 +144,11 @@ const benefits = [
                             Continue with Google
                         </Link>
 
-                        <!-- Create account -->
                         <Link
                             :href="route('register')"
-                            class="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]"
+                            class="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-blue-700 hover:shadow-md active:scale-[0.98]"
                         >
-                            Create account
+                            Create free account
                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
                             </svg>
@@ -174,22 +157,18 @@ const benefits = [
                 </div>
             </div>
 
-            <!-- ── FOOTER ──────────────────────────────────────────────── -->
-            <p class="mt-8 text-sm text-gray-500">
-                Already have an account?
-                <Link
-                    :href="route('login')"
-                    class="font-semibold text-blue-600 transition hover:text-blue-700 hover:underline"
-                >Login</Link>
-            </p>
-
-            <!-- Sign another -->
-            <Link
-                :href="route('sign.index')"
-                class="mt-3 text-xs text-gray-400 transition hover:text-gray-600 hover:underline"
-            >
-                Sign another document
-            </Link>
+            <!-- ── FOOTER LINKS ─────────────────────────────────────── -->
+            <div class="mt-6 flex flex-col items-center gap-2.5">
+                <p class="text-sm text-gray-500">
+                    Already have an account?
+                    <Link :href="route('login')" class="font-semibold text-blue-600 transition hover:text-blue-700 hover:underline">
+                        Log in
+                    </Link>
+                </p>
+                <Link :href="route('sign.index')" class="text-xs text-gray-400 transition hover:text-gray-600 hover:underline">
+                    Sign another document
+                </Link>
+            </div>
 
         </div>
 

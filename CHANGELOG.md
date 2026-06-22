@@ -1,0 +1,224 @@
+# Changelog
+
+All notable changes to CubSign are recorded here in reverse-chronological order.  
+Format: `[vX.Y.Z] YYYY-MM-DD — Title`
+
+---
+
+## [v0.9.0] 2026-06-22 — Logging & Documentation
+
+### Added
+- Dedicated `cubsign` log channel (`config/logging.php`) writing to `storage/logs/cubsign.log`
+  - Daily rotation, 30-day retention, separate from `laravel.log`
+- Structured `info` / `debug` / `warning` log entries across the full signing flow:
+  - `UploadController` — upload received + session created
+  - `SignSessionService` — file stored + DB record persisted
+  - `EditorController` — editor loaded, missing token, token not in DB
+  - `PdfController` — PDF served, missing token, token not in DB
+  - `CompleteController` — complete page loaded, missing token, token not in DB
+- Tokens are partially masked in logs (`…last8chars`) for traceability without exposing secrets
+- Rewrote `README.md` to reflect actual current state (tech stack, architecture, DB schema, routes, signing flow, logging, naming conventions, out-of-scope, progress)
+- Created `CHANGELOG.md` (this file)
+
+---
+
+## [v0.8.5] 2026-06-22 — Sign Complete Page Redesign (No-Scroll Layout)
+
+### Changed
+- Redesigned `Sign/Complete.vue` to fit entirely within the viewport without scrolling
+  - Root container changed from `justify-center` to `justify-start` + `overflow-y-auto` — prevents top-clipping when content exceeds viewport height
+  - Success hero: icon reduced to `h-14 w-14`, tighter margins
+  - Cards: padding reduced to `p-6`, gap reduced to `gap-4`
+  - Benefits list: switched from single-column `space-y-3` to **2-column grid** — halves the vertical height of the benefits section
+  - All button padding reduced from `py-3` to `py-2.5`
+  - Footer links: `mt-10` → `mt-6`
+
+---
+
+## [v0.8.4] 2026-06-22 — Sign Complete Page Premium Redesign
+
+### Changed
+- Full redesign of `Sign/Complete.vue` to match premium SaaS onboarding (Stripe / Dropbox Sign style):
+  - Wider container (`max-w-[54rem]`), `items-stretch` for equal-height cards
+  - Success hero: larger icon with glow halo, expanded heading and subtext
+  - **Guest card:** renamed to "Download Now", dark `bg-slate-900` download button with hover micro-animation, stronger `border-gray-300`
+  - **Account card:** 2-column benefits grid option explored, larger Google button (`h-5 w-5`), stronger blue CTA, Recommended badge with shadow
+  - `transition-all duration-150` on all interactive elements
+  - Footer links wrapped in centered flex column with consistent spacing
+
+---
+
+## [v0.8.3] 2026-06-22 — Production Cleanup (Remove All Debug Code)
+
+### Removed
+- All `console.log` / `console.warn` / `console.error` tracing statements from `generateSignedPdf()` and `finishSigning()` in `Editor.vue`
+- `page.drawRectangle()` diagnostic red box
+- `page.drawText('TEST SIGN', ...)` diagnostic label
+- Automatic `debug-signed.pdf` download that fired on every signing attempt
+- `rgb` and `StandardFonts` imports from pdf-lib dynamic import (no longer needed)
+- All `console.log` / `console.error` statements from `downloadSignedPdf()` in `Complete.vue`
+
+### Kept (production logic)
+- `embedPng()` + `drawImage()` + `pdflibDoc.save()`
+- White-background PNG flattening for drawn and typed signatures
+- `window.__cubsignSignedPdf` storage and Complete.vue download flow
+- Legitimate `console.error` error handlers in `loadPdf`, `renderPage`, `renderThumb`, embed try/catch
+
+---
+
+## [v0.8.2] 2026-06-22 — Fix: Invisible Signature in Downloaded PDF
+
+### Fixed
+- Signature was invisible in the downloaded PDF because `canvas.toDataURL()` produces a transparent-background PNG — some PDF viewers render the alpha channel as invisible
+- **Drawn / uploaded signatures:** image data-URL re-drawn onto a white-filled `<canvas>` (`fillStyle = '#ffffff'` + `fillRect`) before `toDataURL()` and `embedPng()`
+- **Typed signatures:** white `fillRect` added before drawing text on the temp canvas
+- Both fixes ensure the embedded PNG always has an opaque white background, regardless of PDF viewer
+
+### Added (debug only, removed in v0.8.3)
+- Diagnostic `page.drawRectangle()` (red 0.25 opacity) and `page.drawText('TEST SIGN')` to isolate coordinate vs. image rendering issues
+- Automatic `debug-signed.pdf` download to verify bytes before Inertia navigation
+
+---
+
+## [v0.8.1] 2026-06-22 — Sign Complete: Download Signed PDF
+
+### Added
+- `Sign/Complete.vue` redesigned with two-card layout (premium SaaS onboarding style):
+  - **Card 1 — Continue as Guest:** Download Signed PDF button (reads `window.__cubsignSignedPdf`)
+  - **Card 2 — Create Free Account (Recommended):** Google SSO + email register CTA, 6-benefit list
+  - Amber warning state when signed PDF is no longer in browser memory (page refresh)
+  - Footer: "Already have an account? Log in" + "Sign another document"
+- `pdf-lib@1.17.1` added to `package.json` dependencies (browser-side PDF embedding)
+- `generateSignedPdf()` function in `Editor.vue`:
+  - Fetches original PDF bytes via `/sign/pdf` with `credentials: 'same-origin'`
+  - Iterates `placedSigs`, converts canvas coordinates → PDF points
+  - `embedPng()` + `drawImage()` per signature
+  - `pdflibDoc.save()` → `Uint8Array` stored in `window.__cubsignSignedPdf`
+- `finishSigning()` triggers PDF generation then navigates to `/sign/complete` via `router.visit()`
+
+### Fixed
+- Signed PDF bytes survive Inertia client-side navigation via `window.__cubsignSignedPdf` (persists across SPA navigation)
+
+---
+
+## [v0.8.0] 2026-06-21 — Signing Engine: Placement Modes, Drag/Resize, Delete
+
+### Added
+- **Place Manually mode:** click anywhere on the PDF canvas to drop the signature; blue crosshair cursor + banner; `e.currentTarget.getBoundingClientRect()` for accurate click coordinates
+- **Detect Signature Fields mode:**
+  - Scans PDF text layer via `pdfjs-dist` `getTextContent()`
+  - Groups fragmented text runs (pdfjs delivers "Signature:" as `["S","ign","ature:"]`) by grouping items within 10px Y into visual lines before searching
+  - Keyword list: signature, signed by, authorized signature, sign here, signatory, undersigned, etc.
+  - **Confidence scoring:** colon after keyword +60, line ≤15 chars +40, ≤30 chars +20, digit-prefixed line (section heading) −80, line >60 chars −50, ALL-CAPS −30
+  - **Context gate:** keyword only accepted if it starts the line OR line ≤40 chars (prevents false positives in paragraph text)
+  - Detected fields shown as amber dashed overlays on the PDF; click any to place at that location
+- **Auto Place mode:** runs Detect silently, places at highest-confidence field; no fallback placement if no fields found
+- **Mode switching:** switching modes clears the previous mode's visual state (no stale overlays)
+- Signature drag (mousedown + global mousemove/mouseup)
+- Signature resize with 8 directional handles (NW, N, NE, E, SE, S, SW, W)
+- Signature delete button: `@mousedown.stop` prevents `startDrag`'s `preventDefault` from blocking the subsequent click event
+
+### Fixed
+- Delete button was unresponsive: `startDrag` called `e.preventDefault()` on the parent's `mousedown`, which blocked the `click` event from firing on the child button. Fixed with `@mousedown.stop` on the delete button.
+- Auto Place was placing at the bottom of the last page (fallback) when no signature fields were found — removed fallback entirely; now does nothing if no fields detected
+- Mode state persisted visually when switching between modes — fixed by clearing `detectedFields`, `showFields`, `detectionRan`, and `placementMode` on each mode entry
+
+---
+
+## [v0.7.0] 2026-06-21 — Signature Panel: Type Tab & Upload Tab Fixes
+
+### Fixed
+- **Type tab:** font selector buttons were rendering the user's typed text instead of static font labels, causing overflow and distorted UI. Buttons now always show static labels ("Script", "Cursive", "Print"); live preview of typed name appears in a separate preview box below the selector.
+- **Type tab overflow:** added `overflow-hidden`, `whitespace-nowrap`, `text-overflow:ellipsis` to the live preview element so long names don't break the layout
+
+---
+
+## [v0.6.0] 2026-06-21 — PDF Viewer: Full Rendering & pdfjs-dist Integration
+
+### Added
+- `pdfjs-dist@3.11.174` integrated (plain JS worker, no ESM issues)
+- PDF worker loaded via Vite `?url` import: `import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url'`
+- `GlobalWorkerOptions.workerSrc = workerUrl`
+- `pdfDoc` stored as plain `let` (NOT a Vue `ref`) — Vue's deep Proxy breaks pdfjs internal methods
+- `pageCanvases` stored as plain `let` array with `:ref="el => { if (el) pageCanvases[i] = el }"` — avoids Vue Ref unwrap issues
+- Fetch-first PDF loading: `fetch(url, { credentials: 'same-origin' }) → ArrayBuffer → getDocument({ data })`
+- Multi-page rendering with scroll, page thumbnails in left sidebar, zoom in/out
+- `pageDims` array populated per page for coordinate conversion
+
+### Fixed
+- "Could not load the document" error: PDF was being passed as a URL directly to `getDocument()`, which failed because the browser blocked cross-origin requests without the session cookie. Fixed by fetching in the main thread with `credentials: 'same-origin'` first, then passing `ArrayBuffer` to `getDocument({ data })`.
+
+### Added (Vite)
+- `build.rollupOptions.onwarn` in `vite.config.js` to suppress Rolldown `EVAL` warning from pdfjs-dist's internal `eval("require")` for Node.js worker loading
+
+---
+
+## [v0.5.0] 2026-06-20 — Signing Flow: Upload, Session, Editor & PDF Serve
+
+### Added
+- `sign_sessions` database table and migration
+- `SignSessionStatus` enum (`uploaded`, `editing`, `signed`, `downloaded`)
+- `SignSession` model with fillable, casts, user relationship
+- `SignSessionRepository` — `create()`, `findByToken()`
+- `SignSessionService::upload()` — generates token, stores file, creates DB record
+- `UploadPdfRequest` — validates `mimes:pdf`, max 25 MB, with user-facing messages
+- `UploadController` — `show()` renders Upload page, `store()` handles upload
+- `EditorController` — resolves session from `sign_token` in PHP session, renders Editor
+- `PdfController` — serves original PDF inline (session-gated, `Cache-Control: no-store`)
+- `CompleteController` — resolves session, renders Complete page
+- Sign route group: `GET/POST /sign`, `GET /sign/editor`, `GET /sign/pdf`, `GET /sign/complete`
+- `SignLayout.vue` — 4-step progress header (Upload → Preview → Sign → Download)
+- `Sign/Upload.vue` — drag-and-drop file picker with PDF icon, file info preview
+- `Sign/Editor.vue` — shell with 3-column layout (thumbnails | PDF viewer | signature panel)
+
+---
+
+## [v0.4.0] 2026-06-19 — Workspace Overview
+
+### Added
+- `WorkspaceLayout.vue` — sidebar navigation, user menu, responsive
+- `Workspace/Overview.vue` — stats cards, recent activity placeholder
+- `OverviewController` — `[auth, verified]` middleware
+- Route: `GET /overview`
+
+### Rules established
+- Naming: "Dashboard" → **Workspace**, "Admin Panel" → **Workspace**, "Admin" → **Overview**
+
+---
+
+## [v0.3.0] 2026-06-18 — Public Marketing Website
+
+### Added
+- `PublicLayout.vue` — nav, footer
+- `Home.vue` — 9 sections: Hero, Trust Bar, Interactive Demo, Features (6 cards), How It Works, Testimonials, Pricing, FAQ, Final CTA
+- `Features.vue`, `Pricing.vue`, `Faq.vue`
+- `HomeController`, `FeaturesController`, `PricingController`, `FaqController`
+- Routes: `/`, `/features`, `/pricing`, `/faq`
+
+### Rules established
+- Marketing homepage shows to **all** visitors — authenticated users are never auto-redirected
+- `Home.vue` and all marketing sections are **frozen** — do not modify without explicit instruction
+
+---
+
+## [v0.2.0] 2026-06-17 — Authentication (Laravel Breeze)
+
+### Added
+- Laravel Breeze scaffolding (Vue + Inertia)
+- Login, Register, Email Verification, Password Reset, Profile edit/delete
+- `GuestLayout.vue`, `AuthenticatedLayout.vue`
+- Auth routes (`/login`, `/register`, `/forgot-password`, etc.)
+
+---
+
+## [v0.1.0] 2026-06-16 — Project Foundation
+
+### Added
+- Laravel 12 project initialised with PHP 8.2
+- MySQL database `cubsign` configured
+- Inertia.js v2 + Vue 3 + Vite 8 wired up
+- Tailwind CSS v3
+- Base `Controller.php`
+- `app.isLocal` shared prop (available on every Inertia page via `usePage().props.app.isLocal`)
+- `DevNav` component — gear icon toggle, visible in local dev only
+- Git repository initialised

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\SignSessionRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,14 +19,30 @@ class CompleteController extends Controller
         $token = $request->session()->get('sign_token');
 
         if (! $token) {
+            Log::channel('cubsign')->warning('Complete: no sign_token in session — redirecting to upload', [
+                'ip' => $request->ip(),
+            ]);
+
             return redirect()->route('sign.index');
         }
 
         $session = $this->repository->findByToken($token);
 
         if (! $session) {
+            Log::channel('cubsign')->warning('Complete: sign_token not found in DB — redirecting to upload', [
+                'token' => '…' . substr($token, -8),
+                'ip'    => $request->ip(),
+            ]);
+
             return redirect()->route('sign.index');
         }
+
+        Log::channel('cubsign')->info('Sign complete page loaded', [
+            'token'    => '…' . substr($token, -8),
+            'filename' => $session->original_filename,
+            'status'   => $session->status,
+            'user_id'  => $session->user_id,
+        ]);
 
         return Inertia::render('Sign/Complete', [
             'session' => [
