@@ -22,6 +22,7 @@
     "dependencies": {
         "axios": "^1.18.0",
         "pdf-lib": "^1.17.1",
-        "pdfjs-dist": "^3.11.174"
+        "pdfjs-dist": "^3.11.174",
+        "ziggy-js": "^2.6.2"
     }
 }

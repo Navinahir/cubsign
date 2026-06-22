@@ -52,6 +52,9 @@ const detectionRan    = ref(false);
 const selectedSigId   = ref(null);
 let   sigSeq          = 0;
 const isFinishing     = ref(false);
+const clipboardSig    = ref(null);   // Ctrl+C / Ctrl+V internal clipboard
+const thumbStripRef   = ref(null);   // for auto-scrolling the thumbnail aside
+let   intersectionObs = null;        // scroll-based active-page tracking
 
 // ── Drag / resize ───────────────────────────────────────────────────────
 let activeDrag   = null;
@@ -80,16 +83,37 @@ const selectedFont = computed(
     () => typeFonts.find(f => f.id === typedFont.value) ?? typeFonts[0]
 );
 
+const zoomSelect = computed({
+    get: () => {
+        const found = [0.5, 0.75, 1.0, 1.25, 1.5].find(p => Math.abs(scale.value - p) < 0.01);
+        return found !== undefined ? String(found) : 'custom';
+    },
+    set: (val) => {
+        if (val === 'fit')    { fitWidth();                return; }
+        if (val === 'custom') {                            return; }
+        scale.value = parseFloat(val);
+        rerenderAll();
+    },
+});
+
 // ── Lifecycle ─────────────────────────────────────────────────────────────
 onMounted(async () => {
     window.addEventListener('mousemove', onGlobalMove);
-    window.addEventListener('mouseup', onGlobalUp);
+    window.addEventListener('mouseup',   onGlobalUp);
+    // non-passive so we can preventDefault() to stop scroll during touch drag/resize
+    window.addEventListener('touchmove', onGlobalMove, { passive: false });
+    window.addEventListener('touchend',  onGlobalUp);
+    window.addEventListener('keydown',   onKeyDown);
     await loadPdf(props.session.pdfUrl);
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener('mousemove', onGlobalMove);
-    window.removeEventListener('mouseup', onGlobalUp);
+    window.removeEventListener('mouseup',   onGlobalUp);
+    window.removeEventListener('touchmove', onGlobalMove);
+    window.removeEventListener('touchend',  onGlobalUp);
+    window.removeEventListener('keydown',   onKeyDown);
+    if (intersectionObs) intersectionObs.disconnect();
 });
 
 watch(activeTab, async (tab) => {
@@ -97,6 +121,13 @@ watch(activeTab, async (tab) => {
         await nextTick();
         initSigCanvas();
     }
+});
+
+watch(activePage, async (pageNum) => {
+    await nextTick();
+    if (!thumbStripRef.value) return;
+    thumbStripRef.value.querySelectorAll('button')[pageNum - 1]
+        ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 });
 
 // ── PDF loading ───────────────────────────────────────────────────────────
@@ -139,6 +170,13 @@ async function loadPdf(url) {
         try { await renderPage(i); }  catch (e) { console.error(`[CubSign] Page ${i} render:`, e); }
         try { await renderThumb(i); } catch (e) { console.error(`[CubSign] Thumb ${i} render:`, e); }
     }
+
+    // Auto-fit PDF width on narrow screens so the page is immediately readable
+    if (window.innerWidth < 768 && pageDims.value[0]) {
+        await fitWidth();
+        await nextTick();
+    }
+    setupScrollObserver();
 }
 
 async function renderPage(pageNum) {
@@ -238,8 +276,10 @@ function continueDraw(e) {
 function endDraw() { isDrawing.value = false; }
 
 function getCanvasPos(e) {
-    const rect = sigCanvasRef.value.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    const rect  = sigCanvasRef.value.getBoundingClientRect();
+    // Support both mouse events and touch events
+    const point = e.touches?.[0] ?? e.changedTouches?.[0] ?? e;
+    return { x: point.clientX - rect.left, y: point.clientY - rect.top };
 }
 
 function clearCanvas() { initSigCanvas(); }
@@ -284,7 +324,10 @@ function activateManualMode() {
 }
 
 function onPageClick(e, pageNum) {
-    if (placementMode.value !== 'manual') return;
+    if (placementMode.value !== 'manual') {
+        selectedSigId.value = null;   // deselect when clicking empty space
+        return;
+    }
     if (!capturedSig.value) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left - 90;
@@ -421,27 +464,37 @@ function fieldsOnPage(pageNum) {
     return detectedFields.value.filter(f => f.pageNum === pageNum);
 }
 
-// ── Drag ──────────────────────────────────────────────────────────────────
+// ── Drag / Resize — shared touch+mouse coord helper ───────────────────────
+function getEventCoords(e) {
+    const p = e.touches?.[0] ?? e.changedTouches?.[0] ?? e;
+    return { clientX: p.clientX, clientY: p.clientY };
+}
+
 function startDrag(e, sig) {
     if (isResizing) return;
     e.preventDefault();
     e.stopPropagation();
     selectedSigId.value = sig.id;
     activeDrag = sig;
-    prevX = e.clientX;
-    prevY = e.clientY;
+    const { clientX, clientY } = getEventCoords(e);
+    prevX = clientX;
+    prevY = clientY;
 }
 
 function onGlobalMove(e) {
+    if (!activeDrag && !isResizing) return;
+    // Prevent page scroll while dragging/resizing on touch devices
+    if (e.type === 'touchmove' && e.cancelable) e.preventDefault();
+    const { clientX, clientY } = getEventCoords(e);
     if (activeDrag && !isResizing) {
-        activeDrag.x += e.clientX - prevX;
-        activeDrag.y += e.clientY - prevY;
-        prevX = e.clientX;
-        prevY = e.clientY;
+        activeDrag.x += clientX - prevX;
+        activeDrag.y += clientY - prevY;
+        prevX = clientX;
+        prevY = clientY;
     }
     if (isResizing && resizeSig) {
-        const dx = e.clientX - rsClientX;
-        const dy = e.clientY - rsClientY;
+        const dx = clientX - rsClientX;
+        const dy = clientY - rsClientY;
         if (resizeHandle.includes('e')) resizeSig.w = Math.max(60, rsStartW + dx);
         if (resizeHandle.includes('s')) resizeSig.h = Math.max(24, rsStartH + dy);
         if (resizeHandle.includes('w')) {
@@ -474,8 +527,9 @@ function startResize(e, sig, handle) {
     rsStartH     = sig.h;
     rsStartX     = sig.x;
     rsStartY     = sig.y;
-    rsClientX    = e.clientX;
-    rsClientY    = e.clientY;
+    const { clientX, clientY } = getEventCoords(e);
+    rsClientX    = clientX;
+    rsClientY    = clientY;
     selectedSigId.value = sig.id;
 }
 
@@ -490,6 +544,117 @@ const HANDLES = [
     { id: 'sw', pos: 'bottom-0 left-0 -translate-x-1/2 translate-y-1/2',   cur: 'nesw-resize' },
     { id: 'w',  pos: 'top-1/2 left-0 -translate-x-1/2 -translate-y-1/2',  cur: 'ew-resize'   },
 ];
+
+// ── Duplicate selected signature ──────────────────────────────────────────
+function duplicateSig(sourceId) {
+    const sig = placedSigs.value.find(s => s.id === (sourceId ?? selectedSigId.value));
+    if (!sig) return;
+    const id = ++sigSeq;
+    placedSigs.value.push({
+        id,
+        pageNum: sig.pageNum,
+        x:       sig.x + 20,
+        y:       sig.y + 20,
+        w:       sig.w,
+        h:       sig.h,
+        type:    sig.type,
+        src:     sig.src,
+        ...(sig.font ? { font: sig.font } : {}),
+    });
+    selectedSigId.value = id;
+}
+
+// ── Keyboard shortcuts ────────────────────────────────────────────────────
+function onKeyDown(e) {
+    const tag = e.target?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        if (placementMode.value) {
+            placementMode.value = null;
+        } else {
+            selectedSigId.value = null;
+        }
+        return;
+    }
+
+    if ((e.key === 'Delete' || e.key === 'Backspace') && selectedSigId.value !== null) {
+        e.preventDefault();
+        removeSig(selectedSigId.value);
+        return;
+    }
+
+    if (e.ctrlKey && e.key === 'c' && selectedSigId.value !== null) {
+        const sig = placedSigs.value.find(s => s.id === selectedSigId.value);
+        if (sig) clipboardSig.value = { ...sig };
+        return;
+    }
+
+    if (e.ctrlKey && e.key === 'v' && clipboardSig.value) {
+        e.preventDefault();
+        const src = clipboardSig.value;
+        const id  = ++sigSeq;
+        placedSigs.value.push({
+            id,
+            pageNum: src.pageNum,
+            x:       src.x + 20,
+            y:       src.y + 20,
+            w:       src.w,
+            h:       src.h,
+            type:    src.type,
+            src:     src.src,
+            ...(src.font ? { font: src.font } : {}),
+        });
+        selectedSigId.value = id;
+        clipboardSig.value  = { ...src, x: src.x + 20, y: src.y + 20 };
+        return;
+    }
+
+    if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        duplicateSig();
+    }
+}
+
+// ── Page navigation ───────────────────────────────────────────────────────
+function goToPrevPage() {
+    if (activePage.value > 1) scrollToPage(activePage.value - 1);
+}
+
+function goToNextPage() {
+    if (activePage.value < numPages.value) scrollToPage(activePage.value + 1);
+}
+
+// ── Fit-width zoom ────────────────────────────────────────────────────────
+async function fitWidth() {
+    if (!centerRef.value || !pageDims.value[0]) return;
+    const available = centerRef.value.clientWidth - 80;
+    const nativeW   = pageDims.value[0].w / scale.value;
+    scale.value = Math.min(3.0, Math.max(0.4, parseFloat((available / nativeW).toFixed(2))));
+    await rerenderAll();
+}
+
+// ── Scroll-based active-page tracking ────────────────────────────────────
+function setupScrollObserver() {
+    if (intersectionObs) intersectionObs.disconnect();
+    if (!centerRef.value) return;
+    intersectionObs = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
+                    const p = parseInt(entry.target.dataset.pageNum);
+                    if (!isNaN(p)) activePage.value = p;
+                }
+            });
+        },
+        { root: centerRef.value, threshold: 0.3 },
+    );
+    centerRef.value.querySelectorAll('.page-wrapper').forEach((el, i) => {
+        el.dataset.pageNum = String(i + 1);
+        intersectionObs.observe(el);
+    });
+}
 
 // ── PDF signing + download ────────────────────────────────────────────────
 async function generateSignedPdf() {
@@ -576,37 +741,44 @@ async function finishSigning() {
 <template>
     <SignLayout :step="workflowStep">
 
-        <!-- ░░░░ THREE-COLUMN EDITOR WORKSPACE ░░░░ -->
-        <div class="flex h-full min-h-0 overflow-hidden">
+        <!-- ░░░░ EDITOR WORKSPACE — responsive 3-col (lg) / 2-col (md) / stacked (mobile) ░░░░ -->
+        <div class="flex h-full min-h-0 flex-col overflow-hidden lg:flex-row">
 
-            <!-- ═══ LEFT: THUMBNAIL STRIP ═══════════════════════════════════ -->
-            <aside class="flex w-[72px] shrink-0 flex-col gap-2 overflow-y-auto border-r border-gray-200 bg-gray-100 px-2 py-3">
+            <!-- ═══ THUMBNAILS — horizontal strip on mobile/tablet, vertical sidebar on desktop ═══ -->
+            <aside
+                ref="thumbStripRef"
+                class="flex h-[68px] shrink-0 flex-row items-end gap-2 overflow-x-auto overflow-y-hidden border-b border-gray-200 bg-gray-100 px-3 py-2
+                       lg:h-auto lg:w-[72px] lg:flex-col lg:items-stretch lg:overflow-x-hidden lg:overflow-y-auto lg:border-b-0 lg:border-r lg:px-2 lg:py-3"
+            >
                 <template v-for="(dim, i) in pageDims" :key="i">
-                    <button class="group flex w-full flex-col items-center gap-1" @click="scrollToPage(i + 1)">
+                    <button class="group flex w-[44px] shrink-0 flex-col items-center gap-0.5 lg:w-full lg:gap-1" @click="scrollToPage(i + 1)">
                         <div
                             :class="[
-                                'w-full overflow-hidden rounded border-2 bg-white shadow-sm transition',
+                                'w-full overflow-hidden rounded border-2 bg-white shadow-sm transition h-[46px] lg:h-auto',
                                 activePage === i + 1
                                     ? 'border-blue-600 shadow-blue-200'
                                     : 'border-gray-300 group-hover:border-gray-400',
                             ]"
                         >
-                            <canvas :ref="el => { if (el) thumbCanvases[i] = el }" class="block w-full" />
+                            <canvas :ref="el => { if (el) thumbCanvases[i] = el }" class="block h-full w-auto mx-auto lg:h-auto lg:w-full" />
                         </div>
-                        <span class="text-[9px] font-medium text-gray-500">{{ i + 1 }}</span>
+                        <span class="hidden text-[9px] font-medium text-gray-500 lg:block">{{ i + 1 }}</span>
                     </button>
                 </template>
                 <template v-if="isLoading">
-                    <div v-for="n in 3" :key="n" class="h-16 animate-pulse rounded border border-gray-300 bg-gray-200" />
+                    <div v-for="n in 3" :key="n" class="h-[46px] w-[44px] shrink-0 animate-pulse rounded border border-gray-300 bg-gray-200 lg:h-16 lg:w-full" />
                 </template>
             </aside>
 
-            <!-- ═══ CENTER: PDF VIEWER ════════════════════════════════════════ -->
-            <div class="flex min-w-0 flex-1 flex-col overflow-hidden bg-gray-200">
+            <!-- ═══ PDF VIEWER + SIGNATURE PANEL (side-by-side md+, stacked mobile) ═══ -->
+            <div class="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
+
+            <!-- ─── PDF VIEWER ─────────────────────────────────────────────────── -->
+            <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-gray-200">
 
                 <!-- Viewer toolbar -->
-                <div class="flex h-10 shrink-0 items-center justify-between border-b border-gray-300 bg-white px-4 shadow-sm">
-                    <div class="flex min-w-0 items-center gap-2 text-xs text-gray-600">
+                <div class="flex h-10 shrink-0 items-center justify-between border-b border-gray-300 bg-white px-2 shadow-sm md:px-4">
+                    <div class="hidden min-w-0 items-center gap-2 text-xs text-gray-600 md:flex">
                         <svg class="h-3.5 w-3.5 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9.5 8.5h-2v2H6v-5h1.5v1.5h2V8.5H11v5H9.5v-2zm4.5 2h-1.5v-5H15c.83 0 1.5.67 1.5 1.5v2c0 .83-.67 1.5-1.5 1.5zm4.5 0H17v-5h1.5v3.5H19V13.5z"/>
                         </svg>
@@ -620,7 +792,18 @@ async function finishSigning() {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
                             </svg>
                         </button>
-                        <span class="w-11 text-center text-xs font-medium tabular-nums text-gray-700">{{ Math.round(scale * 100) }}%</span>
+                        <select
+                            v-model="zoomSelect"
+                            class="w-[82px] cursor-pointer rounded border border-gray-200 bg-white py-0.5 text-center text-xs font-medium text-gray-700 focus:border-blue-400 focus:outline-none"
+                        >
+                            <option value="0.5">50%</option>
+                            <option value="0.75">75%</option>
+                            <option value="1.0">100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                            <option value="fit">Fit Width</option>
+                            <option v-if="zoomSelect === 'custom'" value="custom">{{ Math.round(scale * 100) }}%</option>
+                        </select>
                         <button class="flex h-6 w-6 items-center justify-center rounded text-gray-600 hover:bg-gray-100" title="Zoom in" @click="zoomIn">
                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -628,16 +811,40 @@ async function finishSigning() {
                         </button>
                     </div>
 
-                    <span class="shrink-0 text-xs text-gray-400">Page {{ activePage }} / {{ numPages || '…' }}</span>
+                    <div class="flex shrink-0 items-center gap-0.5">
+                        <button
+                            class="flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+                            :disabled="activePage <= 1 || !numPages"
+                            title="Previous page"
+                            @click="goToPrevPage"
+                        >
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <span class="min-w-[58px] text-center text-xs text-gray-500">
+                            {{ activePage }} / {{ numPages || '…' }}
+                        </span>
+                        <button
+                            class="flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+                            :disabled="activePage >= numPages || !numPages"
+                            title="Next page"
+                            @click="goToNextPage"
+                        >
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Manual-placement banner -->
-                <div v-if="placementMode === 'manual'" class="flex shrink-0 items-center justify-between bg-blue-600 px-4 py-2">
+                <div v-if="placementMode === 'manual'" class="flex shrink-0 items-center justify-between bg-blue-600 px-3 py-2 md:px-4">
                     <div class="flex items-center gap-2">
-                        <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-4 w-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
                         </svg>
-                        <span class="text-sm font-semibold text-white">Click anywhere on the document to place your signature</span>
+                        <span class="text-xs font-semibold text-white md:text-sm">Tap anywhere on the document to place your signature</span>
                     </div>
                     <button class="rounded px-2 py-0.5 text-xs font-medium text-blue-200 hover:bg-blue-700 hover:text-white" @click="placementMode = null">
                         Cancel
@@ -667,7 +874,7 @@ async function finishSigning() {
                     </div>
 
                     <!-- PDF pages -->
-                    <div v-else class="flex flex-col items-center gap-8 py-6 px-6">
+                    <div v-else class="flex flex-col items-start gap-8 py-6 px-3 md:items-center md:px-6">
                         <div
                             v-for="(dim, i) in pageDims"
                             :key="i"
@@ -692,6 +899,7 @@ async function finishSigning() {
                                     class="absolute select-none"
                                     :style="`left:${sig.x}px; top:${sig.y}px; width:${sig.w}px; height:${sig.h}px; cursor:move`"
                                     @mousedown.stop="startDrag($event, sig)"
+                                    @touchstart.stop="startDrag($event, sig)"
                                     @click.stop
                                 >
                                     <div
@@ -728,12 +936,14 @@ async function finishSigning() {
                                             :class="h.pos"
                                             :style="`cursor:${h.cur}`"
                                             @mousedown.stop="startResize($event, sig, h.id)"
+                                            @touchstart.stop="startResize($event, sig, h.id)"
                                         />
-                                        <!-- Delete — mousedown.stop prevents bubbling to startDrag which calls preventDefault, which would block the click event -->
+                                        <!-- Delete — mousedown.stop / touchstart.stop prevent bubbling to startDrag -->
                                         <button
                                             class="absolute -right-3 -top-3 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600"
                                             style="font-size:9px;line-height:1"
                                             @mousedown.stop
+                                            @touchstart.stop
                                             @click.stop="removeSig(sig.id)"
                                         >✕</button>
                                     </template>
@@ -764,8 +974,8 @@ async function finishSigning() {
                 </div>
             </div>
 
-            <!-- ═══ RIGHT: SIGNATURE PANEL ════════════════════════════════════ -->
-            <aside class="flex w-[300px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white">
+            <!-- ═══ SIGNATURE PANEL — full-width below PDF on mobile, 300px right panel on md+ ═══ -->
+            <aside class="flex max-h-[280px] w-full flex-col overflow-y-auto border-t border-gray-200 bg-white sm:max-h-[320px] md:max-h-none md:w-[300px] md:shrink-0 md:border-t-0 md:border-l">
 
                 <!-- File info -->
                 <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
@@ -815,6 +1025,9 @@ async function finishSigning() {
                                 @mousemove="continueDraw"
                                 @mouseup="endDraw"
                                 @mouseleave="endDraw"
+                                @touchstart.prevent="beginDraw"
+                                @touchmove.prevent="continueDraw"
+                                @touchend.prevent="endDraw"
                             />
                             <p v-if="!hasDrawing" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-gray-400">
                                 Draw your signature here
@@ -1036,14 +1249,26 @@ async function finishSigning() {
                                 <p class="text-[11px] font-medium text-gray-700">Signature {{ sig.id }}</p>
                                 <p class="text-[10px] text-gray-400">Page {{ sig.pageNum }}</p>
                             </div>
-                            <button
-                                class="shrink-0 rounded p-0.5 text-gray-300 hover:bg-red-50 hover:text-red-500"
-                                @click.stop="removeSig(sig.id)"
-                            >
-                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </button>
+                            <div class="flex shrink-0 items-center gap-0.5">
+                                <button
+                                    class="rounded p-0.5 text-gray-300 hover:bg-blue-50 hover:text-blue-500"
+                                    title="Duplicate (Ctrl+D)"
+                                    @click.stop="duplicateSig(sig.id)"
+                                >
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                    </svg>
+                                </button>
+                                <button
+                                    class="rounded p-0.5 text-gray-300 hover:bg-red-50 hover:text-red-500"
+                                    title="Delete (Delete key)"
+                                    @click.stop="removeSig(sig.id)"
+                                >
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1060,10 +1285,11 @@ async function finishSigning() {
                     </p>
                 </div>
             </aside>
-        </div>
+            </div><!-- /pdf-panel inner wrapper -->
+        </div><!-- /outer workspace wrapper -->
 
         <!-- ░░ BOTTOM ACTION BAR ░░ -->
-        <div class="flex h-14 shrink-0 items-center justify-between border-t border-gray-200 bg-white px-6 shadow-[0_-1px_4px_rgba(0,0,0,0.06)]">
+        <div class="flex h-14 shrink-0 items-center justify-between border-t border-gray-200 bg-white px-3 shadow-[0_-1px_4px_rgba(0,0,0,0.06)] md:px-6">
             <div class="flex items-center gap-4">
                 <div v-for="(label, i) in ['Upload', 'Sign', 'Download']" :key="i" class="flex items-center gap-1.5">
                     <div
@@ -1108,7 +1334,8 @@ async function finishSigning() {
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
                     </svg>
-                    {{ isFinishing ? 'Preparing…' : 'Finish Signing' }}
+                    <span class="hidden sm:inline">{{ isFinishing ? 'Preparing…' : 'Finish Signing' }}</span>
+                    <span class="sm:hidden">{{ isFinishing ? '…' : 'Finish' }}</span>
                     <svg v-if="!isFinishing" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
