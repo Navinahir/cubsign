@@ -930,11 +930,15 @@ async function goToReview() {
     isFinishing.value = true;
     try {
         const bytes = await generateSignedPdf();
-        window.__cubsignSignedPdf      = bytes;
-        window.__cubsignSignedFilename = props.session.filename;
-        window.__cubsignReviewData     = {
-            pageCount:  numPages.value,
-            fieldCount: placedFields.value.length,
+        const prevSaved = window.__cubsignSession?.token === props.session.token
+            ? (window.__cubsignSession.documentSaved ?? false)
+            : false;
+        window.__cubsignSession = {
+            token:         props.session.token,
+            signedPdf:     bytes,
+            filename:      props.session.filename,
+            reviewData:    { pageCount: numPages.value, fieldCount: placedFields.value.length },
+            documentSaved: prevSaved,
         };
         router.visit(route('sign.review'));
     } catch (err) {
@@ -948,8 +952,15 @@ async function finishSigning() {
     isFinishing.value = true;
     try {
         const bytes = await generateSignedPdf();
-        window.__cubsignSignedPdf      = bytes;
-        window.__cubsignSignedFilename = props.session.filename;
+        const prevSaved = window.__cubsignSession?.token === props.session.token
+            ? (window.__cubsignSession.documentSaved ?? false)
+            : false;
+        window.__cubsignSession = {
+            token:         props.session.token,
+            signedPdf:     bytes,
+            filename:      props.session.filename,
+            documentSaved: prevSaved,
+        };
     } catch (err) {
         console.error('[CubSign] PDF signing error:', err);
         // Fall through to Complete even on error — user can try again

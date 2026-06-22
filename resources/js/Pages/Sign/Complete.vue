@@ -8,26 +8,29 @@ const props = defineProps({
 });
 
 const isAuthenticated = computed(() => !!usePage().props.auth?.user);
-const hasSignedPdf    = ref(typeof window !== 'undefined' && !!window.__cubsignSignedPdf);
+const _cs         = typeof window !== 'undefined' ? window.__cubsignSession : null;
+const _ownSession = !!_cs && _cs.token === props.session.token;
+const hasSignedPdf = ref(_ownSession && !!_cs.signedPdf);
 
 // Auto-save state
 const isSaving  = ref(false);
-const isSaved   = ref(typeof window !== 'undefined' && !!window.__cubsignDocumentSaved);
+const isSaved   = ref(_ownSession && !!_cs.documentSaved);
 const saveError = ref(false);
 
 onMounted(async () => {
-    if (!isAuthenticated.value || !window.__cubsignSignedPdf) return;
+    const s = window.__cubsignSession;
+    if (!isAuthenticated.value || !s || s.token !== props.session.token || !s.signedPdf) return;
 
-    if (window.__cubsignDocumentSaved) {
+    if (s.documentSaved) {
         isSaved.value = true;
         return;
     }
 
     isSaving.value = true;
     try {
-        const blob = new Blob([window.__cubsignSignedPdf], { type: 'application/pdf' });
+        const blob = new Blob([s.signedPdf], { type: 'application/pdf' });
         const form = new FormData();
-        form.append('pdf', blob, window.__cubsignSignedFilename ?? 'document.pdf');
+        form.append('pdf', blob, s.filename ?? 'document.pdf');
 
         const xsrfToken = decodeURIComponent(
             document.cookie.split('; ')
@@ -42,7 +45,7 @@ onMounted(async () => {
         });
 
         if (res.ok) {
-            window.__cubsignDocumentSaved = true;
+            window.__cubsignSession.documentSaved = true;
             isSaved.value = true;
         } else {
             saveError.value = true;
@@ -55,13 +58,14 @@ onMounted(async () => {
 });
 
 function downloadSignedPdf() {
-    const bytes = window.__cubsignSignedPdf;
+    const s     = window.__cubsignSession;
+    const bytes = s?.signedPdf;
     if (!bytes) return;
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = (window.__cubsignSignedFilename ?? 'signed-document').replace(/\.pdf$/i, '') + '-signed.pdf';
+    a.download = (s?.filename ?? 'signed-document').replace(/\.pdf$/i, '') + '-signed.pdf';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

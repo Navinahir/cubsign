@@ -1,9 +1,13 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 
 const form = useForm({ pdf: null });
+
+onMounted(() => {
+    window.__cubsignSession = null;
+});
 
 const isDragging   = ref(false);
 const selectedFile = ref(null);

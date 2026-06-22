@@ -15,10 +15,10 @@ const fieldCount = ref(0);
 const dataReady  = ref(false);
 
 onMounted(() => {
-    const data = window.__cubsignReviewData;
-    if (data) {
-        pageCount.value  = data.pageCount  ?? 0;
-        fieldCount.value = data.fieldCount ?? 0;
+    const s = window.__cubsignSession;
+    if (s?.token === props.session.token && s?.reviewData) {
+        pageCount.value  = s.reviewData.pageCount  ?? 0;
+        fieldCount.value = s.reviewData.fieldCount ?? 0;
         dataReady.value  = true;
     }
 });

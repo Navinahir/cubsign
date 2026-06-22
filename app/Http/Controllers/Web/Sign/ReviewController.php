@@ -47,6 +47,7 @@ class ReviewController extends Controller
 
         return Inertia::render('Sign/Review', [
             'session' => [
+                'token'    => $session->token,
                 'filename' => $session->original_filename,
                 'fileSize' => $session->file_size,
             ],
