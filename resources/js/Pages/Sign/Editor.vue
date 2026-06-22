@@ -401,14 +401,8 @@ async function autoPlace() {
     if (detectedFields.value.length > 0) {
         placeAtField(detectedFields.value[0]);
     } else {
-        const lastPage = numPages.value || 1;
-        const dim      = pageDims.value[lastPage - 1];
-        placeSig(lastPage, 60, (dim?.h ?? 700) * 0.82, 180, 60);
-        detectedFields.value = [];
-        showFields.value     = false;
-        detectionRan.value   = false;
-        placementMode.value  = null;
-        scrollToPage(lastPage);
+        // No fields found — don't place anything, just show the "no fields found" message
+        placementMode.value = null;
     }
 }
 
