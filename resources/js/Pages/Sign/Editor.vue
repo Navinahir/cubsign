@@ -274,6 +274,14 @@ function cancelCapture() {
 }
 
 // ── Manual placement ──────────────────────────────────────────────────────
+function activateManualMode() {
+    // Clear detect state so yellow field markers disappear from PDF
+    detectedFields.value = [];
+    showFields.value     = false;
+    detectionRan.value   = false;
+    placementMode.value  = 'manual';
+}
+
 function onPageClick(e, pageNum) {
     if (placementMode.value !== 'manual') return;
     if (!capturedSig.value) return;
@@ -299,6 +307,7 @@ const KEYWORDS = [
 
 async function detectFields() {
     if (!pdfDoc || !capturedSig.value) return;
+    placementMode.value  = null;   // exit manual mode so banner/crosshair disappear
     isDetecting.value    = true;
     detectedFields.value = [];
     showFields.value     = false;
@@ -329,20 +338,44 @@ async function detectFields() {
             line.items.sort((a, b) => a.x - b.x);
             const lineText = line.items.map(i => i.str).join('').trim();
             const lower    = lineText.toLowerCase();
-            const matched  = KEYWORDS.find(k => lower.includes(k));
+
+            // Only accept a keyword match when:
+            //   a) it starts the line (it IS the label, e.g. "Signature:"), OR
+            //   b) the line is short (<= 40 chars, unlikely to be a sentence)
+            // This rejects keywords buried in paragraph text like "signed by both parties"
+            const matched = KEYWORDS.find(k => {
+                if (!lower.includes(k)) return false;
+                if (lower.trimStart().startsWith(k)) return true;
+                if (lineText.length <= 40) return true;
+                return false;
+            });
             if (!matched) continue;
+
+            // Score: label-shaped lines score high, headings/paragraphs score low
+            let score = 0;
+            const afterKeyword = lower[lower.indexOf(matched) + matched.length];
+            if (afterKeyword === ':') score += 60;         // "Signature:" — definite field label
+            if (lineText.length <= 15) score += 40;        // very short = pure label
+            else if (lineText.length <= 30) score += 20;
+            if (/^\d+[\.\s]/.test(lineText)) score -= 80; // "10. Signatures" section heading
+            if (lineText.length > 60) score -= 50;         // paragraph text
+            if (/^[A-Z\s]+$/.test(lineText)) score -= 30; // ALL-CAPS HEADING
 
             detectedFields.value.push({
                 id:      ++seq,
                 pageNum,
                 label:   lineText.length > 35 ? lineText.slice(0, 35) + '…' : lineText,
                 keyword: matched,
+                score,
                 x:       line.items[0].x,
                 y:       line.y + 4,
                 h:       line.h,
             });
         }
     }
+
+    // Sort by confidence score so the best match is always first
+    detectedFields.value.sort((a, b) => b.score - a.score);
 
     isDetecting.value  = false;
     showFields.value   = detectedFields.value.length > 0;
@@ -352,8 +385,10 @@ async function detectFields() {
 function placeAtField(field) {
     if (!capturedSig.value) return;
     placeSig(field.pageNum, Math.max(0, field.x - 5), field.y, 180, 60);
-    showFields.value    = false;
-    placementMode.value = null;
+    detectedFields.value = [];   // remove yellow field markers from PDF
+    showFields.value     = false;
+    detectionRan.value   = false;
+    placementMode.value  = null;
     scrollToPage(field.pageNum);
 }
 
@@ -369,7 +404,10 @@ async function autoPlace() {
         const lastPage = numPages.value || 1;
         const dim      = pageDims.value[lastPage - 1];
         placeSig(lastPage, 60, (dim?.h ?? 700) * 0.82, 180, 60);
-        placementMode.value = null;
+        detectedFields.value = [];
+        showFields.value     = false;
+        detectionRan.value   = false;
+        placementMode.value  = null;
         scrollToPage(lastPage);
     }
 }
@@ -615,10 +653,11 @@ const HANDLES = [
                                             :style="`cursor:${h.cur}`"
                                             @mousedown.stop="startResize($event, sig, h.id)"
                                         />
-                                        <!-- Delete -->
+                                        <!-- Delete — mousedown.stop prevents bubbling to startDrag which calls preventDefault, which would block the click event -->
                                         <button
                                             class="absolute -right-3 -top-3 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600"
                                             style="font-size:9px;line-height:1"
+                                            @mousedown.stop
                                             @click.stop="removeSig(sig.id)"
                                         >✕</button>
                                     </template>
@@ -718,18 +757,32 @@ const HANDLES = [
                             placeholder="Type your full name"
                             class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
+                        <!-- Font style selector — always shows static label, never changes on typing -->
                         <div class="grid grid-cols-3 gap-1.5">
                             <button
                                 v-for="f in typeFonts"
                                 :key="f.id"
                                 :class="[
-                                    'rounded-lg border py-2 transition',
+                                    'flex items-center justify-center overflow-hidden rounded-lg border px-1 py-3 transition',
                                     typedFont === f.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300',
-                                    f.cls,
                                 ]"
-                                style="min-height:48px;font-size:16px;color:#1e40af"
+                                style="min-height:48px;color:#1e40af"
                                 @click="typedFont = f.id"
-                            >{{ typedName || f.label }}</button>
+                            >
+                                <span :class="f.cls" class="leading-tight" style="font-size:15px">{{ f.label }}</span>
+                            </button>
+                        </div>
+
+                        <!-- Live preview of typed name in selected font -->
+                        <div
+                            v-if="typedName.trim()"
+                            class="flex min-h-[48px] items-center justify-center overflow-hidden rounded-lg border border-blue-100 bg-blue-50/30 px-3 py-2"
+                        >
+                            <span
+                                :class="selectedFont.cls"
+                                class="block w-full overflow-hidden whitespace-nowrap text-center"
+                                style="color:#1e40af;font-size:22px;text-overflow:ellipsis"
+                            >{{ typedName }}</span>
                         </div>
                     </div>
 
@@ -799,7 +852,7 @@ const HANDLES = [
                                     ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-400'
                                     : 'border-blue-200 bg-blue-50/60 text-blue-700 hover:bg-blue-100',
                             ]"
-                            @click="placementMode = 'manual'"
+                            @click="activateManualMode"
                         >
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
