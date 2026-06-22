@@ -75,8 +75,8 @@ function formatSize(bytes) {
             <!-- ─── Workspace row ─────────────────────────────── -->
             <div class="flex min-h-0 flex-1 overflow-hidden">
 
-                <!-- ─── Thumbnail strip placeholder ──────────── -->
-                <div class="flex w-[72px] shrink-0 flex-col items-center gap-2.5 overflow-y-auto bg-gray-300 px-2 py-3">
+                <!-- ─── Thumbnail strip placeholder (decorative — desktop only) ──── -->
+                <div class="hidden w-[72px] shrink-0 flex-col items-center gap-2.5 overflow-y-auto bg-gray-300 px-2 py-3 lg:flex">
                     <div
                         v-for="n in 3"
                         :key="n"
@@ -242,8 +242,8 @@ function formatSize(bytes) {
 
                 </div>
 
-                <!-- ─── Right info panel ───────────────────────── -->
-                <div class="flex w-[300px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white">
+                <!-- ─── Right info panel (hidden on mobile, visible md+) ─── -->
+                <div class="hidden w-[300px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white md:flex">
 
                     <!-- Panel header -->
                     <div class="shrink-0 border-b border-gray-100 px-5 py-5">
@@ -327,7 +327,7 @@ function formatSize(bytes) {
             </div>
 
             <!-- ─── Bottom action bar ─────────────────────────── -->
-            <div class="shrink-0 border-t border-gray-200 bg-white px-6 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+            <div class="shrink-0 border-t border-gray-200 bg-white px-3 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] md:px-6">
                 <div class="flex items-center justify-between gap-4">
 
                     <!-- Step indicators (disabled) -->
