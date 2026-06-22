@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
@@ -106,6 +106,8 @@ let rsStartW = 0, rsStartH = 0, rsStartX = 0, rsStartY = 0;
 let rsClientX = 0, rsClientY = 0;
 
 // ── Computed ─────────────────────────────────────────────────────────────
+const isAuthenticated = computed(() => !!usePage().props.auth?.user);
+
 const signatureReady = computed(() => {
     if (activeTab.value === 'draw')   return hasDrawing.value;
     if (activeTab.value === 'type')   return typedName.value.trim().length >= 2;
@@ -1246,8 +1248,8 @@ async function finishSigning() {
                     </div>
                 </div>
 
-                <!-- ── RECIPIENTS ── -->
-                <div class="border-b border-gray-100 px-4 py-4">
+                <!-- ── RECIPIENTS (authenticated users only) ── -->
+                <div v-if="isAuthenticated" class="border-b border-gray-100 px-4 py-4">
 
                     <!-- Summary line -->
                     <p class="mb-2 text-[10px] text-gray-400">
