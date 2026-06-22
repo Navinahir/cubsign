@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
@@ -51,6 +51,7 @@ const showFields      = ref(false);
 const detectionRan    = ref(false);
 const selectedSigId   = ref(null);
 let   sigSeq          = 0;
+const isFinishing     = ref(false);
 
 // ── Drag / resize ───────────────────────────────────────────────────────
 let activeDrag   = null;
@@ -489,6 +490,87 @@ const HANDLES = [
     { id: 'sw', pos: 'bottom-0 left-0 -translate-x-1/2 translate-y-1/2',   cur: 'nesw-resize' },
     { id: 'w',  pos: 'top-1/2 left-0 -translate-x-1/2 -translate-y-1/2',  cur: 'ew-resize'   },
 ];
+
+// ── PDF signing + download ────────────────────────────────────────────────
+async function generateSignedPdf() {
+    // Dynamic import keeps pdf-lib out of the initial bundle until needed
+    const { PDFDocument } = await import('pdf-lib');
+
+    const res = await fetch(props.session.pdfUrl, { credentials: 'same-origin' });
+    const originalBytes = await res.arrayBuffer();
+    const pdflibDoc = await PDFDocument.load(originalBytes);
+    const pages = pdflibDoc.getPages();
+
+    for (const sig of placedSigs.value) {
+        const page = pages[sig.pageNum - 1];
+        if (!page) continue;
+
+        const { width: pageW, height: pageH } = page.getSize();
+        const dim = pageDims.value[sig.pageNum - 1];
+        if (!dim) continue;
+
+        // Convert canvas pixels → PDF points (PDF y=0 is bottom-left)
+        const scaleX = pageW / dim.w;
+        const scaleY = pageH / dim.h;
+        const pdfX =  sig.x * scaleX;
+        const pdfY =  pageH - (sig.y + sig.h) * scaleY;
+        const pdfW =  sig.w * scaleX;
+        const pdfH =  sig.h * scaleY;
+
+        let pngBytes;
+
+        if (sig.type === 'image') {
+            // sig.src is already a PNG data URL from canvas.toDataURL()
+            const b64 = sig.src.split(',')[1];
+            pngBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+        } else {
+            // Render typed-name text to a temp canvas → PNG
+            const tmp = document.createElement('canvas');
+            const dpr = 2;
+            tmp.width  = sig.w * dpr;
+            tmp.height = sig.h * dpr;
+            const ctx = tmp.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            // Detect font style from the Tailwind cls stored in sig.font
+            const isGeorgia = sig.font?.includes("Georgia");
+            const isBold    = sig.font?.includes('font-bold');
+            const isItalic  = sig.font?.includes('italic');
+            const family    = isGeorgia ? 'Georgia, serif' : 'Arial, sans-serif';
+            const style     = (isBold ? 'bold ' : '') + (isItalic ? 'italic ' : '');
+            const fontSize  = Math.round(sig.h * 0.55);
+
+            ctx.clearRect(0, 0, sig.w, sig.h);
+            ctx.fillStyle   = '#1e40af';
+            ctx.font        = `${style}${fontSize}px ${family}`;
+            ctx.textBaseline = 'middle';
+            ctx.fillText(sig.src, 6, sig.h / 2);
+
+            const dataUrl = tmp.toDataURL('image/png');
+            const b64 = dataUrl.split(',')[1];
+            pngBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+        }
+
+        const img = await pdflibDoc.embedPng(pngBytes);
+        page.drawImage(img, { x: pdfX, y: pdfY, width: pdfW, height: pdfH });
+    }
+
+    return pdflibDoc.save();
+}
+
+async function finishSigning() {
+    if (placedSigs.value.length === 0 || isFinishing.value) return;
+    isFinishing.value = true;
+    try {
+        const bytes = await generateSignedPdf();
+        window.__cubsignSignedPdf      = bytes;
+        window.__cubsignSignedFilename = props.session.filename;
+    } catch (err) {
+        console.error('[CubSign] PDF signing error:', err);
+        // Fall through to Complete even on error — user can try again
+    }
+    router.visit(route('sign.complete'));
+}
 </script>
 
 <template>
@@ -1012,20 +1094,25 @@ const HANDLES = [
                 <span v-if="placedSigs.length > 0" class="hidden text-xs font-medium text-emerald-600 sm:block">
                     ✓ {{ placedSigs.length }} signature{{ placedSigs.length !== 1 ? 's' : '' }} placed
                 </span>
-                <Link
-                    :href="placedSigs.length > 0 ? route('sign.complete') : '#'"
+                <button
+                    :disabled="placedSigs.length === 0 || isFinishing"
                     :class="[
                         'flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition',
-                        placedSigs.length > 0
-                            ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700'
+                        placedSigs.length > 0 && !isFinishing
+                            ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:scale-[0.98]'
                             : 'cursor-not-allowed bg-gray-100 text-gray-400',
                     ]"
+                    @click="finishSigning"
                 >
-                    Finish Signing
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg v-if="isFinishing" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                    </svg>
+                    {{ isFinishing ? 'Preparing…' : 'Finish Signing' }}
+                    <svg v-if="!isFinishing" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
-                </Link>
+                </button>
             </div>
         </div>
 
