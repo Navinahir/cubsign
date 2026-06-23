@@ -43,7 +43,7 @@ class PdfController extends Controller
         ]);
 
         return response()->file(
-            Storage::disk('local')->path($session->disk_path),
+            Storage::disk('documents')->path($session->disk_path),
             [
                 'Content-Type'        => 'application/pdf',
                 'Content-Disposition' => 'inline',

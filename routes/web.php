@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/templates/{template}',               [TemplatesController::class, 'destroy'])->name('templates.destroy');
     Route::post('/templates/{template}/use',             [TemplatesController::class, 'useTemplate'])->name('templates.use');
     Route::post('/templates/{template}/duplicate',       [TemplatesController::class, 'duplicate'])->name('templates.duplicate');
+    Route::post('/templates/{template}/replace-pdf',     [TemplatesController::class, 'replacePdf'])->name('templates.replace-pdf');
 });
 
 // Profile

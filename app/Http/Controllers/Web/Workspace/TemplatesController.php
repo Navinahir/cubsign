@@ -29,6 +29,7 @@ class TemplatesController extends Controller
                 'created_at'  => $t->created_at,
                 'updated_at'  => $t->updated_at,
                 'field_count' => count($t->editor_state['placedFields'] ?? []),
+                'pdf_missing' => !Storage::disk('documents')->exists($t->pdf_path),
             ]);
 
         return Inertia::render('Workspace/Templates', [
@@ -48,7 +49,7 @@ class TemplatesController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $path = $request->file('pdf')->store('templates');
+        $path = $request->file('pdf')->store('templates', 'documents');
 
         $template = Template::create([
             'user_id'  => auth()->id(),
@@ -68,6 +69,7 @@ class TemplatesController extends Controller
                 'id'          => $template->id,
                 'name'        => $template->name,
                 'pdf_path'    => $template->pdf_path,
+                'pdf_missing' => !Storage::disk('documents')->exists($template->pdf_path),
                 'created_at'  => $template->created_at,
                 'updated_at'  => $template->updated_at,
                 'field_count' => count($template->editor_state['placedFields'] ?? []),
@@ -93,8 +95,12 @@ class TemplatesController extends Controller
     {
         $this->gate($template);
 
+        if (!Storage::disk('documents')->exists($template->pdf_path)) {
+            abort(404, 'Template PDF file is missing.');
+        }
+
         return response()->file(
-            Storage::disk('local')->path($template->pdf_path),
+            Storage::disk('documents')->path($template->pdf_path),
             [
                 'Content-Type'        => 'application/pdf',
                 'Content-Disposition' => 'inline',
@@ -117,12 +123,39 @@ class TemplatesController extends Controller
         return redirect()->route('templates.show', $template);
     }
 
+    public function replacePdf(Request $request, Template $template): RedirectResponse
+    {
+        $this->gate($template);
+
+        $request->validate([
+            'pdf' => ['required', 'file', 'mimes:pdf', 'max:20480'],
+        ]);
+
+        // Delete old file if it still exists
+        if (Storage::disk('documents')->exists($template->pdf_path)) {
+            Storage::disk('documents')->delete($template->pdf_path);
+        }
+
+        $path = $request->file('pdf')->store('templates', 'documents');
+        $template->update([
+            'pdf_path'     => $path,
+            'editor_state' => null,  // clear field placements — they were for the old PDF
+        ]);
+
+        return redirect()->route('templates.edit', $template)
+            ->with('success', 'PDF replaced. Please re-place your signature fields.');
+    }
+
     public function duplicate(Template $template): RedirectResponse
     {
         $this->gate($template);
 
-        $newPath = 'templates/' . Str::random(40);
-        Storage::disk('local')->copy($template->pdf_path, $newPath);
+        if (!Storage::disk('documents')->exists($template->pdf_path)) {
+            return redirect()->back()->withErrors(['pdf' => 'Template PDF file is missing. Please re-upload this template.']);
+        }
+
+        $newPath = 'templates/' . Str::random(40) . '.pdf';
+        Storage::disk('documents')->copy($template->pdf_path, $newPath);
 
         $copy = Template::create([
             'user_id'      => auth()->id(),
@@ -138,7 +171,7 @@ class TemplatesController extends Controller
     {
         $this->gate($template);
 
-        Storage::disk('local')->delete($template->pdf_path);
+        Storage::disk('documents')->delete($template->pdf_path);
         $template->delete();
 
         return redirect()->route('templates.index');
@@ -148,13 +181,20 @@ class TemplatesController extends Controller
     {
         $this->gate($template);
 
+        if (!Storage::disk('documents')->exists($template->pdf_path)) {
+            return redirect()->back()->withErrors(['pdf' => 'Template PDF file is missing. Please delete this template and create a new one.']);
+        }
+
         $user  = auth()->user();
         $token = Str::random(40);
 
         $diskPath = 'sign/' . $token . '.pdf';
-        Storage::disk('local')->copy($template->pdf_path, $diskPath);
 
-        $fileSize = Storage::disk('local')->size($diskPath);
+        // Ensure the sign directory exists (may be absent on a fresh install)
+        Storage::disk('documents')->makeDirectory('sign');
+        Storage::disk('documents')->copy($template->pdf_path, $diskPath);
+
+        $fileSize = Storage::disk('documents')->size($diskPath);
 
         SignSession::create([
             'token'             => $token,

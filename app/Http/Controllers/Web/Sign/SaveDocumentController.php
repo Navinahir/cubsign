@@ -37,7 +37,7 @@ class SaveDocumentController extends Controller
         $dir      = "documents/user_{$user->id}";
         $stem     = pathinfo($session->original_filename, PATHINFO_FILENAME);
         $filename = $stem . '-' . time() . '.pdf';
-        $path     = $request->file('pdf')->storeAs($dir, $filename);
+        $path     = $request->file('pdf')->storeAs($dir, $filename, 'documents');
 
         $draft = Document::where('sign_token', $token)
             ->where('user_id', $user->id)

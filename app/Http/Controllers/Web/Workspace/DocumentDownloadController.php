@@ -15,12 +15,12 @@ class DocumentDownloadController extends Controller
             abort(403);
         }
 
-        if (! $document->pdf_path || ! Storage::exists($document->pdf_path)) {
+        if (! $document->pdf_path || ! Storage::disk('documents')->exists($document->pdf_path)) {
             abort(404);
         }
 
         $downloadName = pathinfo($document->name, PATHINFO_FILENAME) . '.pdf';
 
-        return Storage::download($document->pdf_path, $downloadName);
+        return Storage::disk('documents')->download($document->pdf_path, $downloadName);
     }
 }

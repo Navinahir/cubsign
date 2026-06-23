@@ -16,7 +16,7 @@ class SignSessionService
     public function upload(UploadedFile $file, ?int $userId, string $ip): SignSession
     {
         $token    = Str::random(40);
-        $diskPath = $file->storeAs('sign', $token . '.pdf');
+        $diskPath = $file->storeAs('sign', $token . '.pdf', 'documents');
 
         Log::channel('cubsign')->debug('PDF stored on disk', [
             'token'     => '…' . substr($token, -8),

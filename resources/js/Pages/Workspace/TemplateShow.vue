@@ -1,11 +1,21 @@
 <script setup>
 import { ref } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, useForm } from '@inertiajs/vue3';
 import WorkspaceLayout from '@/Layouts/WorkspaceLayout.vue';
 
 const props = defineProps({
     template: { type: Object, required: true },
 });
+
+const replacePdfForm = useForm({ pdf: null });
+const replacePdfInput = ref(null);
+
+function submitReplacePdf() {
+    if (!replacePdfForm.pdf) return;
+    replacePdfForm.post(route('templates.replace-pdf', props.template.id), {
+        forceFormData: true,
+    });
+}
 
 const modal = ref({
     show: false, title: '', message: '',
@@ -84,6 +94,47 @@ function formatDateTime(value) {
             </div>
         </div>
 
+        <!-- PDF missing warning -->
+        <div
+            v-if="template.pdf_missing"
+            class="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4"
+        >
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            </svg>
+            <div class="flex-1">
+                <p class="text-sm font-semibold text-red-800">PDF file missing</p>
+                <p class="mt-0.5 text-xs text-red-700">
+                    The PDF for this template no longer exists on the server (likely cleared during a deploy or reset).
+                    Upload a replacement PDF below — your template name will be kept, but field placements will be cleared.
+                </p>
+                <form class="mt-3 flex items-center gap-3" @submit.prevent="submitReplacePdf">
+                    <input
+                        ref="replacePdfInput"
+                        type="file"
+                        accept=".pdf"
+                        class="hidden"
+                        @change="replacePdfForm.pdf = $event.target.files[0]"
+                    />
+                    <button
+                        type="button"
+                        class="rounded-lg border border-red-300 bg-white px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-50"
+                        @click="replacePdfInput.click()"
+                    >
+                        {{ replacePdfForm.pdf ? replacePdfForm.pdf.name : 'Choose PDF…' }}
+                    </button>
+                    <button
+                        v-if="replacePdfForm.pdf"
+                        type="submit"
+                        :disabled="replacePdfForm.processing"
+                        class="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-700 disabled:opacity-60"
+                    >
+                        {{ replacePdfForm.processing ? 'Uploading…' : 'Replace PDF' }}
+                    </button>
+                </form>
+            </div>
+        </div>
+
         <!-- Two-column layout -->
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
@@ -127,8 +178,15 @@ function formatDateTime(value) {
 
                         <!-- Use template -->
                         <button
-                            class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-blue-700"
-                            @click="useTemplate"
+                            :disabled="template.pdf_missing"
+                            :class="[
+                                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition',
+                                template.pdf_missing
+                                    ? 'cursor-not-allowed text-gray-400'
+                                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700',
+                            ]"
+                            :title="template.pdf_missing ? 'PDF file is missing — replace it first' : ''"
+                            @click="!template.pdf_missing && useTemplate()"
                         >
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
@@ -139,7 +197,12 @@ function formatDateTime(value) {
                         <!-- Edit fields -->
                         <Link
                             :href="route('templates.edit', template.id)"
-                            class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-gray-900"
+                            :class="[
+                                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition',
+                                template.pdf_missing
+                                    ? 'pointer-events-none text-gray-400'
+                                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900',
+                            ]"
                         >
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>

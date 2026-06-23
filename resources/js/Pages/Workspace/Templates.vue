@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import WorkspaceLayout from '@/Layouts/WorkspaceLayout.vue';
 
 const props = defineProps({
     templates: { type: Array, default: () => [] },
 });
+
+const page = usePage();
 
 const searchQuery = ref('');
 
@@ -37,6 +39,7 @@ function confirmDelete(tpl) {
 }
 
 function useTemplate(tpl) {
+    if (tpl.pdf_missing) return;
     router.post(route('templates.use', tpl.id));
 }
 
@@ -68,6 +71,17 @@ function formatDate(value) {
                 </svg>
                 New Template
             </Link>
+        </div>
+
+        <!-- Flash error (e.g. pdf_missing redirected back) -->
+        <div
+            v-if="page.props.errors?.pdf"
+            class="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3"
+        >
+            <svg class="mt-0.5 h-4 w-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            </svg>
+            <p class="text-sm text-red-700">{{ page.props.errors.pdf }}</p>
         </div>
 
         <!-- Search -->
@@ -129,12 +143,25 @@ function formatDate(value) {
             <div
                 v-for="tpl in filteredTemplates"
                 :key="tpl.id"
-                class="flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm transition hover:border-blue-200 hover:shadow-md"
+                :class="[
+                    'flex flex-col rounded-xl border bg-white shadow-sm transition',
+                    tpl.pdf_missing
+                        ? 'border-red-200 hover:border-red-300'
+                        : 'border-gray-200 hover:border-blue-200 hover:shadow-md',
+                ]"
             >
                 <!-- Card top -->
                 <div class="flex items-start gap-3 p-5">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50">
-                        <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div
+                        :class="[
+                            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl',
+                            tpl.pdf_missing ? 'bg-red-50' : 'bg-blue-50',
+                        ]"
+                    >
+                        <svg
+                            :class="tpl.pdf_missing ? 'h-5 w-5 text-red-400' : 'h-5 w-5 text-blue-600'"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        >
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
                         </svg>
                     </div>
@@ -143,24 +170,48 @@ function formatDate(value) {
                             :href="route('templates.show', tpl.id)"
                             class="block truncate text-sm font-semibold text-gray-900 transition hover:text-blue-600"
                         >{{ tpl.name }}</Link>
-                        <div class="mt-1 flex items-center gap-2">
+                        <div class="mt-1 flex flex-wrap items-center gap-2">
                             <p class="text-xs text-gray-400">Updated {{ formatDate(tpl.updated_at) }}</p>
+                            <!-- PDF missing badge -->
                             <span
-                                v-if="tpl.field_count > 0"
-                                class="inline-flex items-center rounded-full bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-600"
-                            >{{ tpl.field_count }} field{{ tpl.field_count !== 1 ? 's' : '' }}</span>
-                            <span
-                                v-else
-                                class="inline-flex items-center rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-400"
-                            >No fields</span>
+                                v-if="tpl.pdf_missing"
+                                class="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-600"
+                            >
+                                <svg class="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                </svg>
+                                PDF missing
+                            </span>
+                            <template v-else>
+                                <span
+                                    v-if="tpl.field_count > 0"
+                                    class="inline-flex items-center rounded-full bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-600"
+                                >{{ tpl.field_count }} field{{ tpl.field_count !== 1 ? 's' : '' }}</span>
+                                <span
+                                    v-else
+                                    class="inline-flex items-center rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-400"
+                                >No fields</span>
+                            </template>
                         </div>
+                        <!-- PDF missing hint -->
+                        <p v-if="tpl.pdf_missing" class="mt-1 text-[10px] text-red-500">
+                            Open template to replace the missing PDF
+                        </p>
                     </div>
                 </div>
 
                 <!-- Card actions -->
                 <div class="mt-auto flex items-center gap-2 border-t border-gray-100 px-4 py-3">
+                    <!-- Use button — disabled when PDF is missing -->
                     <button
-                        class="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]"
+                        :disabled="tpl.pdf_missing"
+                        :class="[
+                            'flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition',
+                            tpl.pdf_missing
+                                ? 'cursor-not-allowed bg-gray-100 text-gray-400'
+                                : 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]',
+                        ]"
+                        :title="tpl.pdf_missing ? 'PDF file missing — open template to replace it' : 'Use this template'"
                         @click="useTemplate(tpl)"
                     >
                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,24 +219,41 @@ function formatDate(value) {
                         </svg>
                         Use
                     </button>
+
+                    <!-- View / fix link when PDF missing -->
                     <Link
-                        :href="route('templates.edit', tpl.id)"
-                        class="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 transition hover:border-gray-300 hover:bg-gray-50"
+                        v-if="tpl.pdf_missing"
+                        :href="route('templates.show', tpl.id)"
+                        class="flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-600 transition hover:bg-red-100"
+                        title="Replace missing PDF"
                     >
                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                         </svg>
-                        Edit
+                        Fix
                     </Link>
-                    <button
-                        class="flex items-center justify-center rounded-lg border border-gray-200 p-2 text-gray-400 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
-                        title="Duplicate template"
-                        @click="duplicateTemplate(tpl)"
-                    >
-                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                        </svg>
-                    </button>
+
+                    <template v-else>
+                        <Link
+                            :href="route('templates.edit', tpl.id)"
+                            class="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 transition hover:border-gray-300 hover:bg-gray-50"
+                        >
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                            Edit
+                        </Link>
+                        <button
+                            class="flex items-center justify-center rounded-lg border border-gray-200 p-2 text-gray-400 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
+                            title="Duplicate template"
+                            @click="duplicateTemplate(tpl)"
+                        >
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                        </button>
+                    </template>
+
                     <button
                         class="flex items-center justify-center rounded-lg border border-gray-200 p-2 text-gray-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
                         title="Delete template"
