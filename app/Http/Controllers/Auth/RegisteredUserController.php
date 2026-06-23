@@ -46,6 +46,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+        $request->session()->forget('guest_completed');
 
         return redirect(route('overview', absolute: false));
     }

@@ -16,6 +16,11 @@ class CompleteController extends Controller
 
     public function __invoke(Request $request): Response|RedirectResponse
     {
+        // Block guests who try to reach Complete a second time
+        if (! auth()->check() && $request->session()->get('guest_completed')) {
+            return redirect()->route('sign.index');
+        }
+
         $token = $request->session()->get('sign_token');
 
         if (! $token) {
@@ -43,6 +48,10 @@ class CompleteController extends Controller
             'status'   => $session->status,
             'user_id'  => $session->user_id,
         ]);
+
+        if (! auth()->check()) {
+            $request->session()->put('guest_completed', true);
+        }
 
         return Inertia::render('Sign/Complete', [
             'session' => [

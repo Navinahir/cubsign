@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadPdfRequest;
 use App\Services\SignSessionService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,13 +15,21 @@ class UploadController extends Controller
 {
     public function __construct(private readonly SignSessionService $service) {}
 
-    public function show(): Response
+    public function show(Request $request): Response
     {
-        return Inertia::render('Sign/Upload');
+        $guestCompleted = ! auth()->check() && $request->session()->get('guest_completed', false);
+
+        return Inertia::render('Sign/Upload', [
+            'guestCompleted' => $guestCompleted,
+        ]);
     }
 
     public function store(UploadPdfRequest $request): RedirectResponse
     {
+        if (! auth()->check() && $request->session()->get('guest_completed')) {
+            return redirect()->route('sign.index');
+        }
+
         $file = $request->file('pdf');
 
         Log::channel('cubsign')->info('PDF upload received', [

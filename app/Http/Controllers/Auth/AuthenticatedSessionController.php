@@ -32,6 +32,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        $request->session()->forget('guest_completed');
 
         return redirect()->intended(route('overview', absolute: false));
     }

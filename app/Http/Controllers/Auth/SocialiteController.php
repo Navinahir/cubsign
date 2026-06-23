@@ -56,6 +56,7 @@ class SocialiteController extends Controller
         }
 
         Auth::login($user, remember: true);
+        session()->forget('guest_completed');
 
         return redirect()->intended(route('overview'));
     }

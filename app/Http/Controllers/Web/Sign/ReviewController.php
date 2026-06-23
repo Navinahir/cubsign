@@ -16,6 +16,10 @@ class ReviewController extends Controller
 
     public function __invoke(Request $request): Response|RedirectResponse
     {
+        if (! auth()->check() && $request->session()->get('guest_completed')) {
+            return redirect()->route('sign.index');
+        }
+
         $token = $request->session()->get('sign_token');
 
         if (! $token) {
