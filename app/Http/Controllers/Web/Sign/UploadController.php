@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Sign;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadPdfRequest;
+use App\Models\Document;
 use App\Services\SignSessionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,6 +50,15 @@ class UploadController extends Controller
         ]);
 
         $request->session()->put('sign_token', $session->token);
+
+        if (auth()->check()) {
+            Document::create([
+                'user_id'    => $session->user_id,
+                'name'       => $session->original_filename,
+                'status'     => 'draft',
+                'sign_token' => $session->token,
+            ]);
+        }
 
         return redirect()->route('sign.editor');
     }

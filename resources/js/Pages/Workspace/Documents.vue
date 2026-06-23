@@ -61,6 +61,10 @@ function saveRename(doc) {
 }
 
 // ── Document actions ──────────────────────────────────────────────────────────
+function openDraft(doc) {
+    router.post(route('documents.open', doc.id), {}, { preserveScroll: true });
+}
+
 function archiveDoc(doc) {
     router.patch(route('documents.archive', doc.id), {}, { preserveScroll: true });
 }
@@ -263,7 +267,19 @@ function formatDate(value) {
                         <!-- Actions -->
                         <td class="px-6 py-3.5">
                             <div class="flex items-center justify-end gap-1">
-                                <!-- Download -->
+                                <!-- Open draft -->
+                                <button
+                                    v-if="doc.status === 'draft'"
+                                    class="rounded p-1.5 text-gray-400 transition hover:bg-blue-50 hover:text-blue-600"
+                                    title="Continue editing"
+                                    @click="openDraft(doc)"
+                                >
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+
+                                <!-- Download (signed only — drafts have no pdf_path) -->
                                 <a
                                     v-if="doc.pdf_path"
                                     :href="route('documents.download', doc.id)"

@@ -9,7 +9,9 @@ const { getDocument, GlobalWorkerOptions, Util } = pdfjsLib;
 GlobalWorkerOptions.workerSrc = workerUrl;
 
 const props = defineProps({
-    session: { type: Object, required: true },
+    session:     { type: Object, required: true },
+    documentId:  { type: Number, default: null },
+    editorState: { type: Object, default: null },
 });
 
 // ── PDF state ───────────────────────────────────────────────────────────
@@ -146,7 +148,23 @@ onMounted(async () => {
     window.addEventListener('touchmove', onGlobalMove, { passive: false });
     window.addEventListener('touchend',  onGlobalUp);
     window.addEventListener('keydown',   onKeyDown);
+
+    // Restore zoom before rendering so pages are sized correctly for the saved field positions
+    if (props.editorState?.scale) {
+        scale.value = props.editorState.scale;
+    }
+
     await loadPdf(props.session.pdfUrl);
+
+    // Restore placed fields after pages render (positions are in px at the saved scale)
+    if (props.editorState?.placedFields?.length) {
+        placedFields.value = props.editorState.placedFields;
+        fieldSeq = Math.max(0, ...props.editorState.placedFields.map(f => (typeof f.id === 'number' ? f.id : 0)));
+        if (props.editorState.activePage) {
+            await nextTick();
+            scrollToPage(props.editorState.activePage);
+        }
+    }
 });
 
 onBeforeUnmount(() => {
@@ -925,10 +943,34 @@ async function generateSignedPdf() {
     return pdflibDoc.save();
 }
 
+async function persistEditorState() {
+    if (!props.documentId) return;
+    try {
+        const xsrf = decodeURIComponent(
+            document.cookie.split('; ').find(r => r.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? '',
+        );
+        await fetch(route('documents.editor-state', props.documentId), {
+            method:      'PATCH',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': xsrf },
+            body: JSON.stringify({
+                state: {
+                    placedFields: placedFields.value,
+                    scale:        scale.value,
+                    activePage:   activePage.value,
+                },
+            }),
+        });
+    } catch (e) {
+        console.warn('[CubSign] editor state save failed:', e);
+    }
+}
+
 async function goToReview() {
     if (placedFields.value.length === 0 || isFinishing.value) return;
     isFinishing.value = true;
     try {
+        await persistEditorState();
         const bytes = await generateSignedPdf();
         const prevSaved = window.__cubsignSession?.token === props.session.token
             ? (window.__cubsignSession.documentSaved ?? false)

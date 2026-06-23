@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Workspace;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -70,6 +71,33 @@ class DocumentsController extends Controller
         $document->delete();
 
         return back();
+    }
+
+    public function saveEditorState(Request $request, Document $document): JsonResponse
+    {
+        $this->gate($document);
+
+        if ($document->status !== 'draft') {
+            return response()->json(['error' => 'Not a draft'], 422);
+        }
+
+        $validated = $request->validate(['state' => ['required', 'array']]);
+        $document->update(['editor_state' => $validated['state']]);
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function open(Document $document): RedirectResponse
+    {
+        $this->gate($document);
+
+        if ($document->status !== 'draft') {
+            abort(422, 'Only draft documents can be reopened.');
+        }
+
+        session(['sign_token' => $document->sign_token]);
+
+        return redirect()->route('sign.editor');
     }
 
     private function gate(Document $document): void

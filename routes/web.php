@@ -33,8 +33,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/overview',                           OverviewController::class)->name('overview');
     Route::get('/documents',                          [DocumentsController::class, 'index'])->name('documents.index');
     Route::get('/documents/{document}/download',      DocumentDownloadController::class)->name('documents.download');
-    Route::patch('/documents/{document}/rename',      [DocumentsController::class, 'rename'])->name('documents.rename');
+    Route::patch('/documents/{document}/rename',       [DocumentsController::class, 'rename'])->name('documents.rename');
     Route::patch('/documents/{document}/archive',     [DocumentsController::class, 'archive'])->name('documents.archive');
+    Route::patch('/documents/{document}/editor-state',[DocumentsController::class, 'saveEditorState'])->name('documents.editor-state');
+    Route::post('/documents/{document}/open',         [DocumentsController::class, 'open'])->name('documents.open');
     Route::delete('/documents/{document}',            [DocumentsController::class, 'destroy'])->name('documents.destroy');
     Route::get('/templates',                          [TemplatesController::class, 'index'])->name('templates.index');
 });

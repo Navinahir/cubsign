@@ -14,13 +14,16 @@ class Document extends Model
         'name',
         'status',
         'pdf_path',
+        'sign_token',
+        'editor_state',
     ];
 
     protected function casts(): array
     {
         return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
+            'editor_state' => 'array',
+            'created_at'   => 'datetime',
+            'updated_at'   => 'datetime',
         ];
     }
 

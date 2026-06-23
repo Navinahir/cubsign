@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Sign;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Repositories\DocumentRepository;
 use App\Repositories\SignSessionRepository;
 use Illuminate\Http\JsonResponse;
@@ -38,11 +39,26 @@ class SaveDocumentController extends Controller
         $filename = $stem . '-' . time() . '.pdf';
         $path     = $request->file('pdf')->storeAs($dir, $filename);
 
-        $document = $this->docRepo->createSignedDocument(
-            user:     $user,
-            filename: $session->original_filename,
-            path:     $path,
-        );
+        $draft = Document::where('sign_token', $token)
+            ->where('user_id', $user->id)
+            ->where('status', 'draft')
+            ->first();
+
+        if ($draft) {
+            $draft->update([
+                'status'       => 'signed',
+                'pdf_path'     => $path,
+                'editor_state' => null,
+                'sign_token'   => null,
+            ]);
+            $document = $draft;
+        } else {
+            $document = $this->docRepo->createSignedDocument(
+                user:     $user,
+                filename: $session->original_filename,
+                path:     $path,
+            );
+        }
 
         Log::channel('cubsign')->info('Document auto-saved', [
             'document_id' => $document->id,

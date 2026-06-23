@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Sign;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Repositories\SignSessionRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,6 +50,20 @@ class EditorController extends Controller
             'user_id'  => $session->user_id,
         ]);
 
+        $documentId  = null;
+        $editorState = null;
+
+        if (auth()->check()) {
+            $draft = Document::where('sign_token', $token)
+                ->where('user_id', auth()->id())
+                ->where('status', 'draft')
+                ->first();
+            if ($draft) {
+                $documentId  = $draft->id;
+                $editorState = $draft->editor_state;
+            }
+        }
+
         return Inertia::render('Sign/Editor', [
             'session' => [
                 'token'    => $session->token,
@@ -56,6 +71,8 @@ class EditorController extends Controller
                 'fileSize' => $session->file_size,
                 'pdfUrl'   => route('sign.pdf'),
             ],
+            'documentId'  => $documentId,
+            'editorState' => $editorState,
         ]);
     }
 }
