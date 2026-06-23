@@ -130,14 +130,19 @@ class DocumentsController extends Controller
 
         $document->recipients()->delete();
 
-        foreach ($validated['recipients'] as $data) {
+        // Sort by signing_order so the first in sequence gets status='sent'; rest start as 'pending'
+        $sorted = collect($validated['recipients'])
+            ->sortBy(fn ($r) => $r['signing_order'] ?? 1)
+            ->values();
+
+        foreach ($sorted as $idx => $data) {
             $document->recipients()->create([
                 'name'                => $data['name'],
                 'email'               => $data['email'],
-                'color'               => $data['color']          ?? '#3B82F6',
-                'signing_order'       => $data['signing_order']  ?? 1,
+                'color'               => $data['color']         ?? '#3B82F6',
+                'signing_order'       => $data['signing_order'] ?? 1,
                 'editor_recipient_id' => $data['editor_recipient_id'],
-                'status'              => 'sent',
+                'status'              => $idx === 0 ? 'sent' : 'pending',
                 'sign_token'          => Str::random(40),
             ]);
         }

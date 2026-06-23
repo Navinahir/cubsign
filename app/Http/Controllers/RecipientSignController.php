@@ -21,11 +21,18 @@ class RecipientSignController extends Controller
 
         $document = $recipient->document;
 
+        // Guard against soft-deleted documents
+        if (! $document) {
+            abort(404);
+        }
+
         $editorState = $document->editor_state ?? [];
         $allFields   = $editorState['placedFields'] ?? [];
-        $myFields    = array_values(array_filter(
+
+        // Fields are stored with 'signerId' key (local editor recipient id)
+        $myFields = array_values(array_filter(
             $allFields,
-            fn ($f) => ($f['recipientId'] ?? null) === $recipient->editor_recipient_id
+            fn ($f) => ($f['signerId'] ?? null) === $recipient->editor_recipient_id
         ));
 
         return Inertia::render('RecipientSign', [
@@ -37,6 +44,7 @@ class RecipientSignController extends Controller
             'document'     => $document->only(['id', 'name']),
             'fields'       => $myFields,
             'alreadySigned' => $recipient->status === 'signed',
+            'notYetTurn'   => $recipient->status === 'pending',
         ]);
     }
 
@@ -48,7 +56,7 @@ class RecipientSignController extends Controller
 
         $document = $recipient->document;
 
-        if (! $document->pdf_path || ! Storage::disk('documents')->exists($document->pdf_path)) {
+        if (! $document || ! $document->pdf_path || ! Storage::disk('documents')->exists($document->pdf_path)) {
             abort(404);
         }
 
@@ -72,6 +80,16 @@ class RecipientSignController extends Controller
             return response()->json(['error' => 'Already signed'], 422);
         }
 
+        if ($recipient->status === 'pending') {
+            return response()->json(['error' => 'Not your turn to sign yet'], 422);
+        }
+
+        $document = $recipient->document;
+
+        if (! $document) {
+            return response()->json(['error' => 'Document not found'], 404);
+        }
+
         $validated = $request->validate([
             'signed_fields'         => ['nullable', 'array'],
             'signed_fields.*.id'    => ['sometimes', 'integer'],
@@ -92,13 +110,11 @@ class RecipientSignController extends Controller
             'meta'         => ['name' => $recipient->name, 'email' => $recipient->email],
         ]);
 
-        $document = $recipient->document;
-
-        // Sequential signing: find the next unsigned recipient by signing_order
+        // Sequential signing: activate the next pending recipient, or complete the document
         $next = $document->recipients()
-            ->where('signing_order', '>', $recipient->signing_order)
-            ->where('status', '!=', 'signed')
+            ->where('status', 'pending')
             ->orderBy('signing_order')
+            ->orderBy('id')
             ->first();
 
         if ($next) {

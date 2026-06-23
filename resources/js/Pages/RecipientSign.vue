@@ -7,6 +7,7 @@ const props = defineProps({
     document:      { type: Object,  required: true },
     fields:        { type: Array,   default: () => [] },
     alreadySigned: { type: Boolean, default: false },
+    notYetTurn:    { type: Boolean, default: false },
 });
 
 const fieldValues = ref({});
@@ -143,8 +144,26 @@ async function finishSigning() {
             </div>
         </header>
 
+        <!-- Not yet your turn -->
+        <div v-if="notYetTurn" class="flex flex-1 items-center justify-center p-8">
+            <div class="max-w-sm rounded-xl border border-amber-200 bg-amber-50 p-8 text-center">
+                <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+                    <svg class="h-6 w-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 class="mb-1 text-lg font-semibold text-amber-900">Waiting for others</h2>
+                <p class="text-sm text-amber-700">
+                    Other signers need to complete their signatures before it's your turn to sign
+                    <strong>{{ document.name }}</strong>.
+                </p>
+                <p class="mt-2 text-xs text-amber-600">You will be notified when it's your turn.</p>
+            </div>
+        </div>
+
         <!-- Already signed -->
-        <div v-if="alreadySigned" class="flex flex-1 items-center justify-center p-8">
+        <div v-else-if="alreadySigned" class="flex flex-1 items-center justify-center p-8">
             <div class="max-w-sm rounded-xl border border-emerald-200 bg-emerald-50 p-8 text-center">
                 <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
                     <svg class="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
