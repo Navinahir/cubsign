@@ -279,14 +279,14 @@ function formatDate(value) {
                                     @keyup.escape="cancelEdit"
                                 />
                                 <!-- Display -->
-                                <span
+                                <Link
                                     v-else
-                                    class="max-w-xs cursor-pointer truncate text-sm font-medium text-gray-900 hover:text-blue-600"
-                                    :title="`Click to rename: ${doc.name}`"
-                                    @click="startEdit(doc)"
+                                    :href="route('documents.show', doc.id)"
+                                    class="max-w-xs truncate text-sm font-medium text-gray-900 transition hover:text-blue-600"
+                                    :title="doc.name"
                                 >
                                     {{ doc.name }}
-                                </span>
+                                </Link>
                             </div>
                         </td>
 
@@ -303,6 +303,17 @@ function formatDate(value) {
                         <!-- Actions -->
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-end gap-2">
+
+                                <!-- Rename -->
+                                <button
+                                    class="rounded p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                                    title="Rename"
+                                    @click.stop="startEdit(doc)"
+                                >
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                    </svg>
+                                </button>
 
                                 <!-- Continue editing — draft only -->
                                 <button

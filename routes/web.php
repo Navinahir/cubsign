@@ -32,6 +32,7 @@ Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->n
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/overview',                           OverviewController::class)->name('overview');
     Route::get('/documents',                          [DocumentsController::class, 'index'])->name('documents.index');
+    Route::get('/documents/{document}',               [DocumentsController::class, 'show'])->name('documents.show');
     Route::get('/documents/{document}/download',      DocumentDownloadController::class)->name('documents.download');
     Route::patch('/documents/{document}/rename',       [DocumentsController::class, 'rename'])->name('documents.rename');
     Route::patch('/documents/{document}/archive',     [DocumentsController::class, 'archive'])->name('documents.archive');

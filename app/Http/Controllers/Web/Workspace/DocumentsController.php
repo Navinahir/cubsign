@@ -12,6 +12,15 @@ use Inertia\Response;
 
 class DocumentsController extends Controller
 {
+    public function show(Document $document): Response
+    {
+        $this->gate($document);
+
+        return Inertia::render('Workspace/DocumentShow', [
+            'document' => $document->only(['id', 'name', 'status', 'pdf_path', 'created_at', 'updated_at']),
+        ]);
+    }
+
     public function index(Request $request): Response
     {
         $query = $request->user()->documents();
