@@ -17,7 +17,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('documents', function (Blueprint $table) {
-            $table->dropColumn(['sign_token', 'editor_state']);
+            $table->dropColumn('editor_state');
         });
     }
 };

@@ -197,6 +197,13 @@ onMounted(async () => {
             scrollToPage(props.editorState.activePage);
         }
     }
+
+    // Restore recipients so signerId mappings on fields remain valid
+    if (props.editorState?.recipients?.length) {
+        recipients.value    = props.editorState.recipients;
+        recipientSeq        = Math.max(...props.editorState.recipients.map(r => (typeof r.id === 'number' ? r.id : 0)));
+        activeRecipientId.value = props.editorState.recipients[0]?.id ?? 1;
+    }
 });
 
 onBeforeUnmount(() => {
@@ -1001,6 +1008,7 @@ async function persistEditorState() {
                     placedFields: placedFields.value,
                     scale:        scale.value,
                     activePage:   activePage.value,
+                    recipients:   recipients.value,
                 },
             }),
         });
@@ -1022,7 +1030,11 @@ async function goToReview() {
             token:         props.session.token,
             signedPdf:     bytes,
             filename:      props.session.filename,
-            reviewData:    { pageCount: numPages.value, fieldCount: placedFields.value.length },
+            reviewData:    {
+                pageCount:      numPages.value,
+                fieldCount:     placedFields.value.length,
+                recipientCount: recipients.value.filter(r => r.name || r.email).length,
+            },
             documentSaved: prevSaved,
         };
         router.visit(route('sign.review'));

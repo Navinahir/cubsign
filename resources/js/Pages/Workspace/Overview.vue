@@ -62,7 +62,7 @@ function formatDate(value) {
 
 <template>
     <WorkspaceLayout>
-        <template #header>Dashboard</template>
+        <template #header>Overview</template>
 
         <!-- Welcome -->
         <div class="mb-6">

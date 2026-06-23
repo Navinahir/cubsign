@@ -10,16 +10,18 @@ const props = defineProps({
     },
 });
 
-const pageCount  = ref(0);
-const fieldCount = ref(0);
-const dataReady  = ref(false);
+const pageCount      = ref(0);
+const fieldCount     = ref(0);
+const recipientCount = ref(0);
+const dataReady      = ref(false);
 
 onMounted(() => {
     const s = window.__cubsignSession;
     if (s?.token === props.session.token && s?.reviewData) {
-        pageCount.value  = s.reviewData.pageCount  ?? 0;
-        fieldCount.value = s.reviewData.fieldCount ?? 0;
-        dataReady.value  = true;
+        pageCount.value      = s.reviewData.pageCount      ?? 0;
+        fieldCount.value     = s.reviewData.fieldCount     ?? 0;
+        recipientCount.value = s.reviewData.recipientCount ?? 0;
+        dataReady.value      = true;
     }
 });
 
@@ -91,6 +93,10 @@ function finishSigning() {
                         <div class="flex items-center justify-between py-3">
                             <span class="text-xs text-gray-500">Fields placed</span>
                             <span class="text-sm font-medium text-gray-900">{{ fieldCount }}</span>
+                        </div>
+                        <div v-if="recipientCount > 0" class="flex items-center justify-between py-3">
+                            <span class="text-xs text-gray-500">Recipients</span>
+                            <span class="text-sm font-medium text-gray-900">{{ recipientCount }}</span>
                         </div>
                     </div>
                 </section>
