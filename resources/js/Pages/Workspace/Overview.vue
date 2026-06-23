@@ -26,26 +26,31 @@ const statCards = computed(() => [
         bg: 'bg-blue-50',
     },
     {
-        label: 'Signed',
+        label: 'Signed Documents',
         value: props.stats.signed,
         icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
         color: 'text-emerald-600',
         bg: 'bg-emerald-50',
     },
     {
-        label: 'Archived',
-        value: props.stats.archived,
+        label: 'Completed Documents',
+        value: props.stats.completed,
         icon: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4',
-        color: 'text-amber-600',
-        bg: 'bg-amber-50',
+        color: 'text-sky-600',
+        bg: 'bg-sky-50',
     },
 ]);
+
+function statusLabel(status) {
+    const map = { draft: 'Draft', signed: 'Signed', archived: 'Completed' };
+    return map[status] ?? status;
+}
 
 function statusBadgeClass(status) {
     const map = {
         draft:    'bg-gray-100 text-gray-600',
         signed:   'bg-emerald-100 text-emerald-700',
-        archived: 'bg-amber-100 text-amber-700',
+        archived: 'bg-blue-100 text-blue-700',
     };
     return `inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${map[status] ?? map.draft}`;
 }
@@ -137,7 +142,7 @@ function formatDate(value) {
                     <div class="min-w-0 flex-1">
                         <p class="truncate text-sm font-medium text-gray-900">{{ doc.name }}</p>
                     </div>
-                    <span :class="statusBadgeClass(doc.status)">{{ doc.status }}</span>
+                    <span :class="statusBadgeClass(doc.status)">{{ statusLabel(doc.status) }}</span>
                     <span class="shrink-0 text-xs text-gray-400">{{ formatDate(doc.created_at) }}</span>
                 </li>
             </ul>

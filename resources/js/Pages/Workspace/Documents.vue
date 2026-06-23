@@ -14,7 +14,7 @@ const statusFilter = ref(props.filters.status  ?? '');
 const sort         = ref(props.filters.sort    ?? 'newest');
 
 let searchTimer;
-watch(search, (val) => {
+watch(search, () => {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => applyFilters(), 300);
 });
@@ -24,9 +24,9 @@ function applyFilters() {
     router.get(
         route('documents.index'),
         {
-            ...(search.value       ? { search: search.value }       : {}),
-            ...(statusFilter.value ? { status: statusFilter.value } : {}),
-            ...(sort.value !== 'newest' ? { sort: sort.value }      : {}),
+            ...(search.value            ? { search: search.value }       : {}),
+            ...(statusFilter.value      ? { status: statusFilter.value } : {}),
+            ...(sort.value !== 'newest' ? { sort: sort.value }           : {}),
         },
         { preserveState: true, replace: true },
     );
@@ -60,25 +60,55 @@ function saveRename(doc) {
     );
 }
 
-// ── Document actions ──────────────────────────────────────────────────────────
+// ── Confirmation modal ────────────────────────────────────────────────────────
+const modal = ref({
+    show:         false,
+    title:        '',
+    message:      '',
+    confirmLabel: '',
+    confirmClass: '',
+    onConfirm:    () => {},
+});
+
+function closeModal() { modal.value.show = false; }
+
+function confirmDelete(doc) {
+    modal.value = {
+        show:         true,
+        title:        'Delete document?',
+        message:      'This action cannot be undone.',
+        confirmLabel: 'Delete',
+        confirmClass: 'rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700',
+        onConfirm: () => {
+            closeModal();
+            router.delete(route('documents.destroy', doc.id), { preserveScroll: true });
+        },
+    };
+}
+
+function confirmArchive(doc) {
+    modal.value = {
+        show:         true,
+        title:        'Mark document as completed?',
+        message:      'This document will move to completed status.',
+        confirmLabel: 'Continue',
+        confirmClass: 'rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700',
+        onConfirm: () => {
+            closeModal();
+            router.patch(route('documents.archive', doc.id), {}, { preserveScroll: true });
+        },
+    };
+}
+
 function openDraft(doc) {
     router.post(route('documents.open', doc.id), {}, { preserveScroll: true });
-}
-
-function archiveDoc(doc) {
-    router.patch(route('documents.archive', doc.id), {}, { preserveScroll: true });
-}
-
-function deleteDoc(doc) {
-    if (!window.confirm(`Delete "${doc.name}"?\nThis cannot be undone.`)) return;
-    router.delete(route('documents.destroy', doc.id), { preserveScroll: true });
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const STATUS_OPTIONS = [
     { value: '',         label: 'All statuses' },
     { value: 'signed',   label: 'Signed'       },
-    { value: 'archived', label: 'Archived'     },
+    { value: 'archived', label: 'Completed'    },
     { value: 'draft',    label: 'Draft'        },
 ];
 
@@ -89,11 +119,16 @@ const SORT_OPTIONS = [
     { value: 'za',     label: 'Name Z → A'   },
 ];
 
+function statusLabel(status) {
+    const map = { draft: 'Draft', signed: 'Signed', archived: 'Completed' };
+    return map[status] ?? status;
+}
+
 function statusBadgeClass(status) {
     const map = {
         draft:    'bg-gray-100 text-gray-600',
         signed:   'bg-emerald-100 text-emerald-700',
-        archived: 'bg-amber-100 text-amber-700',
+        archived: 'bg-blue-100 text-blue-700',
     };
     return `inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${map[status] ?? map.draft}`;
 }
@@ -182,12 +217,12 @@ function formatDate(value) {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <p class="text-base font-semibold text-gray-700">No documents yet</p>
-            <p class="mt-1 text-sm text-gray-400">Upload a PDF and sign it — it will appear here automatically.</p>
+            <p class="mt-1 text-sm text-gray-400">Upload and sign your first document.</p>
             <Link
                 :href="route('sign.index')"
                 class="mt-5 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
             >
-                Sign your first document
+                Sign a document
             </Link>
         </div>
 
@@ -199,7 +234,8 @@ function formatDate(value) {
             <svg class="mb-3 h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
-            <p class="text-sm font-semibold text-gray-600">No documents match your search</p>
+            <p class="text-sm font-semibold text-gray-600">No matching documents</p>
+            <p class="mt-1 text-sm text-gray-400">Try changing your filters or search term.</p>
             <button
                 class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-700"
                 @click="search = ''; statusFilter = ''"
@@ -226,7 +262,7 @@ function formatDate(value) {
                         class="group transition hover:bg-gray-50"
                     >
                         <!-- Name -->
-                        <td class="px-6 py-3.5">
+                        <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <svg class="h-5 w-5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -255,19 +291,20 @@ function formatDate(value) {
                         </td>
 
                         <!-- Status -->
-                        <td class="px-6 py-3.5">
-                            <span :class="statusBadgeClass(doc.status)">{{ doc.status }}</span>
+                        <td class="px-6 py-4">
+                            <span :class="statusBadgeClass(doc.status)">{{ statusLabel(doc.status) }}</span>
                         </td>
 
                         <!-- Date -->
-                        <td class="px-6 py-3.5 text-sm text-gray-500">
+                        <td class="px-6 py-4 text-sm text-gray-500">
                             {{ formatDate(doc.created_at) }}
                         </td>
 
                         <!-- Actions -->
-                        <td class="px-6 py-3.5">
-                            <div class="flex items-center justify-end gap-1">
-                                <!-- Open draft -->
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-end gap-2">
+
+                                <!-- Continue editing — draft only -->
                                 <button
                                     v-if="doc.status === 'draft'"
                                     class="rounded p-1.5 text-gray-400 transition hover:bg-blue-50 hover:text-blue-600"
@@ -279,9 +316,9 @@ function formatDate(value) {
                                     </svg>
                                 </button>
 
-                                <!-- Download (signed only — drafts have no pdf_path) -->
+                                <!-- Download — signed and completed only -->
                                 <a
-                                    v-if="doc.pdf_path"
+                                    v-if="doc.status !== 'draft'"
                                     :href="route('documents.download', doc.id)"
                                     class="rounded p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-blue-600"
                                     title="Download"
@@ -291,28 +328,29 @@ function formatDate(value) {
                                     </svg>
                                 </a>
 
-                                <!-- Archive (not available for already archived) -->
+                                <!-- Mark as completed — signed only -->
                                 <button
-                                    v-if="doc.status !== 'archived'"
+                                    v-if="doc.status === 'signed'"
                                     class="rounded p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-amber-600"
-                                    title="Archive"
-                                    @click="archiveDoc(doc)"
+                                    title="Mark as completed"
+                                    @click="confirmArchive(doc)"
                                 >
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
                                     </svg>
                                 </button>
 
-                                <!-- Delete -->
+                                <!-- Delete — always visible -->
                                 <button
                                     class="rounded p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
-                                    title="Delete"
-                                    @click="deleteDoc(doc)"
+                                    title="Delete document"
+                                    @click="confirmDelete(doc)"
                                 >
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
                                 </button>
+
                             </div>
                         </td>
                     </tr>
@@ -352,6 +390,33 @@ function formatDate(value) {
                 </div>
             </div>
         </div>
+
+        <!-- ── Confirmation modal ── -->
+        <Teleport to="body">
+            <div v-if="modal.show" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div class="absolute inset-0 bg-black/40" @click="closeModal" />
+                <div class="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+                    <h3 class="text-base font-semibold text-gray-900">{{ modal.title }}</h3>
+                    <p class="mt-2 text-sm text-gray-500">{{ modal.message }}</p>
+                    <div class="mt-6 flex justify-end gap-3">
+                        <button
+                            type="button"
+                            class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                            @click="closeModal"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            :class="modal.confirmClass"
+                            @click="modal.onConfirm()"
+                        >
+                            {{ modal.confirmLabel }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Teleport>
 
     </WorkspaceLayout>
 </template>
