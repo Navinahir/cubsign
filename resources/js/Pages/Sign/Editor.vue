@@ -190,7 +190,10 @@ onMounted(async () => {
 
     // Restore placed fields after pages render (positions are in px at the saved scale)
     if (props.editorState?.placedFields?.length) {
-        placedFields.value = props.editorState.placedFields;
+        placedFields.value = props.editorState.placedFields.map(f => ({
+            ...f,
+            value: f.value ?? '',
+        }));
         fieldSeq = Math.max(0, ...props.editorState.placedFields.map(f => (typeof f.id === 'number' ? f.id : 0)));
         if (props.editorState.activePage) {
             await nextTick();
@@ -200,7 +203,11 @@ onMounted(async () => {
 
     // Restore recipients so signerId mappings on fields remain valid
     if (props.editorState?.recipients?.length) {
-        recipients.value    = props.editorState.recipients;
+        recipients.value = props.editorState.recipients.map(r => ({
+            ...r,
+            name:  r.name  ?? '',
+            email: r.email ?? '',
+        }));
         recipientSeq        = Math.max(...props.editorState.recipients.map(r => (typeof r.id === 'number' ? r.id : 0)));
         activeRecipientId.value = props.editorState.recipients[0]?.id ?? 1;
     }
@@ -488,7 +495,7 @@ async function detectFields() {
         // of each other in Y (same visual line) then concatenate before searching.
         const lines = [];
         for (const item of textContent.items) {
-            if (!('str' in item) || !item.str.trim()) continue;
+            if (!('str' in item) || !(item.str ?? '').trim()) continue;
             const tx = Util.transform(viewport.transform, item.transform);
             const ix = tx[4], iy = tx[5], ih = Math.abs(tx[3]) || 12;
             const existing = lines.find(l => Math.abs(l.y - iy) < 10);
@@ -657,7 +664,8 @@ function fieldCountLabel(type, count) {
 function recipientDisplayName(id) {
     const r = recipientById(id);
     if (!r) return '?';
-    return r.name.trim() ? r.name.trim().split(' ')[0] : `#${r.signingOrder}`;
+    const name = (r.name ?? '').trim();
+    return name ? name.split(' ')[0] : `#${r.signingOrder}`;
 }
 
 function fieldsForRecipient(recipientId) {
@@ -1026,14 +1034,24 @@ async function goToReview() {
         const prevSaved = window.__cubsignSession?.token === props.session.token
             ? (window.__cubsignSession.documentSaved ?? false)
             : false;
+        const recipientFieldCounts = {};
+        placedFields.value.forEach(f => {
+            if (f.signerId) recipientFieldCounts[f.signerId] = (recipientFieldCounts[f.signerId] || 0) + 1;
+        });
+        const namedRecipients = recipients.value
+            .filter(r => r.name || r.email)
+            .map(r => ({ ...r, fieldCount: recipientFieldCounts[r.id] || 0 }));
+
         window.__cubsignSession = {
             token:         props.session.token,
+            documentId:    props.documentId,
             signedPdf:     bytes,
             filename:      props.session.filename,
             reviewData:    {
                 pageCount:      numPages.value,
                 fieldCount:     placedFields.value.length,
-                recipientCount: recipients.value.filter(r => r.name || r.email).length,
+                recipientCount: namedRecipients.length,
+                recipients:     namedRecipients,
             },
             documentSaved: prevSaved,
         };

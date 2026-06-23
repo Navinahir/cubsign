@@ -1,23 +1,26 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import WorkspaceLayout from '@/Layouts/WorkspaceLayout.vue';
 
 const props = defineProps({
-    document: { type: Object, required: true },
+    document:   { type: Object, required: true },
+    recipients: { type: Array, default: () => [] },
+    activities: { type: Array, default: () => [] },
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function statusLabel(status) {
-    const map = { draft: 'Draft', signed: 'Signed', archived: 'Completed' };
+    const map = { draft: 'Draft', signed: 'Signed', archived: 'Completed', completed: 'Completed' };
     return map[status] ?? status;
 }
 
 function statusBadgeClass(status) {
     const map = {
-        draft:    'bg-gray-100 text-gray-600',
-        signed:   'bg-emerald-100 text-emerald-700',
-        archived: 'bg-blue-100 text-blue-700',
+        draft:     'bg-gray-100 text-gray-600',
+        signed:    'bg-emerald-100 text-emerald-700',
+        archived:  'bg-blue-100 text-blue-700',
+        completed: 'bg-emerald-100 text-emerald-700',
     };
     return `inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${map[status] ?? map.draft}`;
 }
@@ -35,30 +38,34 @@ function formatDateTime(value) {
     });
 }
 
+// ── Recipient helpers ─────────────────────────────────────────────────────────
+function recipientStatusLabel(status) {
+    const map = { pending: 'Pending', sent: 'Sent', opened: 'Opened', signed: 'Signed' };
+    return map[status] ?? status;
+}
+
+function recipientStatusClass(status) {
+    const map = {
+        pending: 'bg-gray-100 text-gray-600',
+        sent:    'bg-blue-100 text-blue-700',
+        opened:  'bg-amber-100 text-amber-700',
+        signed:  'bg-emerald-100 text-emerald-700',
+    };
+    return `inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${map[status] ?? map.pending}`;
+}
+
 // ── Activity timeline ─────────────────────────────────────────────────────────
-const timeline = computed(() => {
-    const { status, created_at, updated_at } = props.document;
-    if (status === 'draft') {
-        return [
-            { label: 'Uploaded',  at: created_at, done: true  },
-            { label: 'Signed',    at: null,        done: false },
-            { label: 'Completed', at: null,        done: false },
-        ];
+function activityLabel(activity) {
+    const m = activity.meta ?? {};
+    switch (activity.event) {
+        case 'created':              return 'Document created';
+        case 'sent':                 return `Requests prepared — ${m.recipient_count ?? 0} recipient${m.recipient_count === 1 ? '' : 's'}`;
+        case 'recipient_signed':     return `${m.name ?? 'Recipient'} signed`;
+        case 'recipient_notified':   return `${m.name ?? 'Recipient'} notified`;
+        case 'document_completed':   return 'Document completed';
+        default:                     return activity.event;
     }
-    if (status === 'signed') {
-        return [
-            { label: 'Uploaded',  at: created_at, done: true  },
-            { label: 'Signed',    at: updated_at, done: true  },
-            { label: 'Completed', at: null,        done: false },
-        ];
-    }
-    // archived / completed
-    return [
-        { label: 'Uploaded',  at: created_at, done: true },
-        { label: 'Signed',    at: null,        done: true },
-        { label: 'Completed', at: updated_at, done: true },
-    ];
-});
+}
 
 // ── Confirmation modal ────────────────────────────────────────────────────────
 const modal = ref({
@@ -168,51 +175,79 @@ function openDraft() {
                     </dl>
                 </div>
 
+                <!-- Recipients card -->
+                <div v-if="recipients.length > 0" class="rounded-xl border border-gray-200 bg-white shadow-sm">
+                    <div class="border-b border-gray-100 px-6 py-4">
+                        <h2 class="text-sm font-semibold text-gray-800">Recipients</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-50 text-left">
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-500">#</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-500">Name</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-500">Email</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-500">Status</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-500">Signed</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                <tr v-for="r in recipients" :key="r.id" class="hover:bg-gray-50">
+                                    <td class="px-6 py-3 text-xs text-gray-400">{{ r.signing_order }}</td>
+                                    <td class="px-6 py-3">
+                                        <div class="flex items-center gap-2">
+                                            <span
+                                                class="h-2 w-2 shrink-0 rounded-full"
+                                                :style="{ backgroundColor: r.color }"
+                                            />
+                                            <span class="font-medium text-gray-900">{{ r.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-3 text-gray-500">{{ r.email }}</td>
+                                    <td class="px-6 py-3">
+                                        <span :class="recipientStatusClass(r.status)">
+                                            {{ recipientStatusLabel(r.status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-3 text-xs text-gray-400">
+                                        {{ r.signed_at ? formatDateTime(r.signed_at) : '—' }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Activity timeline card -->
                 <div class="rounded-xl border border-gray-200 bg-white shadow-sm">
                     <div class="border-b border-gray-100 px-6 py-4">
                         <h2 class="text-sm font-semibold text-gray-800">Activity</h2>
                     </div>
-                    <ul class="px-6 py-5">
+
+                    <p v-if="activities.length === 0" class="px-6 py-5 text-sm text-gray-400">
+                        No activity recorded for this document.
+                    </p>
+
+                    <ul v-else class="px-6 py-5">
                         <li
-                            v-for="(event, i) in timeline"
-                            :key="event.label"
+                            v-for="(activity, i) in activities"
+                            :key="activity.id"
                             class="flex gap-4"
-                            :class="i < timeline.length - 1 ? 'pb-6' : ''"
+                            :class="i < activities.length - 1 ? 'pb-6' : ''"
                         >
                             <!-- Icon + vertical connector -->
                             <div class="flex flex-col items-center">
-                                <div
-                                    :class="[
-                                        'flex h-7 w-7 shrink-0 items-center justify-center rounded-full',
-                                        event.done ? 'bg-blue-100' : 'bg-gray-100',
-                                    ]"
-                                >
-                                    <svg
-                                        v-if="event.done"
-                                        class="h-3.5 w-3.5 text-blue-600"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    >
+                                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100">
+                                    <svg class="h-3.5 w-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                                     </svg>
-                                    <div v-else class="h-2 w-2 rounded-full bg-gray-300"/>
                                 </div>
-                                <div
-                                    v-if="i < timeline.length - 1"
-                                    class="mt-1.5 w-px flex-1 bg-gray-100"
-                                />
+                                <div v-if="i < activities.length - 1" class="mt-1.5 w-px flex-1 bg-gray-100"/>
                             </div>
                             <!-- Label + timestamp -->
                             <div class="pb-1 pt-0.5">
-                                <p :class="['text-sm font-medium', event.done ? 'text-gray-900' : 'text-gray-400']">
-                                    {{ event.label }}
-                                </p>
-                                <p v-if="event.at" class="mt-0.5 text-xs text-gray-400">
-                                    {{ formatDateTime(event.at) }}
-                                </p>
-                                <p v-else-if="!event.done" class="mt-0.5 text-xs text-gray-300">
-                                    Pending
-                                </p>
+                                <p class="text-sm font-medium text-gray-900">{{ activityLabel(activity) }}</p>
+                                <p class="mt-0.5 text-xs text-gray-400">{{ formatDateTime(activity.created_at) }}</p>
                             </div>
                         </li>
                     </ul>

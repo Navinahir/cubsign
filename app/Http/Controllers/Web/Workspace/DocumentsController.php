@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Web\Workspace;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use App\Models\DocumentActivity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,7 +19,11 @@ class DocumentsController extends Controller
         $this->gate($document);
 
         return Inertia::render('Workspace/DocumentShow', [
-            'document' => $document->only(['id', 'name', 'status', 'pdf_path', 'created_at', 'updated_at']),
+            'document'   => $document->only(['id', 'name', 'status', 'pdf_path', 'created_at', 'updated_at']),
+            'recipients' => $document->recipients()
+                ->get(['id', 'name', 'email', 'color', 'status', 'signing_order', 'signed_at']),
+            'activities' => $document->activities()
+                ->get(['id', 'event', 'meta', 'recipient_id', 'created_at']),
         ]);
     }
 
@@ -107,6 +113,43 @@ class DocumentsController extends Controller
         session(['sign_token' => $document->sign_token]);
 
         return redirect()->route('sign.editor');
+    }
+
+    public function send(Request $request, Document $document): JsonResponse
+    {
+        $this->gate($document);
+
+        $validated = $request->validate([
+            'recipients'                        => ['required', 'array', 'min:1'],
+            'recipients.*.name'                 => ['required', 'string', 'max:255'],
+            'recipients.*.email'                => ['required', 'email', 'max:255'],
+            'recipients.*.color'                => ['nullable', 'string', 'max:10'],
+            'recipients.*.signing_order'        => ['nullable', 'integer', 'min:1'],
+            'recipients.*.editor_recipient_id'  => ['required', 'integer'],
+        ]);
+
+        $document->recipients()->delete();
+
+        foreach ($validated['recipients'] as $data) {
+            $document->recipients()->create([
+                'name'                => $data['name'],
+                'email'               => $data['email'],
+                'color'               => $data['color']          ?? '#3B82F6',
+                'signing_order'       => $data['signing_order']  ?? 1,
+                'editor_recipient_id' => $data['editor_recipient_id'],
+                'status'              => 'sent',
+                'sign_token'          => Str::random(40),
+            ]);
+        }
+
+        DocumentActivity::create([
+            'document_id'  => $document->id,
+            'recipient_id' => null,
+            'event'        => 'sent',
+            'meta'         => ['recipient_count' => count($validated['recipients'])],
+        ]);
+
+        return response()->json(['ok' => true]);
     }
 
     private function gate(Document $document): void

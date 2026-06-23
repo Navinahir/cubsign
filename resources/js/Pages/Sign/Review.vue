@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 
@@ -13,15 +13,22 @@ const props = defineProps({
 const pageCount      = ref(0);
 const fieldCount     = ref(0);
 const recipientCount = ref(0);
+const reviewRecipients = ref([]);
+const documentId     = ref(null);
 const dataReady      = ref(false);
+
+const sendState  = ref('idle'); // 'idle' | 'loading' | 'success' | 'error'
+const sendError  = ref('');
 
 onMounted(() => {
     const s = window.__cubsignSession;
     if (s?.token === props.session.token && s?.reviewData) {
-        pageCount.value      = s.reviewData.pageCount      ?? 0;
-        fieldCount.value     = s.reviewData.fieldCount     ?? 0;
-        recipientCount.value = s.reviewData.recipientCount ?? 0;
-        dataReady.value      = true;
+        pageCount.value        = s.reviewData.pageCount      ?? 0;
+        fieldCount.value       = s.reviewData.fieldCount     ?? 0;
+        recipientCount.value   = s.reviewData.recipientCount ?? 0;
+        reviewRecipients.value = s.reviewData.recipients     ?? [];
+        documentId.value       = s.documentId               ?? null;
+        dataReady.value        = true;
     }
 });
 
@@ -37,6 +44,58 @@ function backToEditor() {
 
 function finishSigning() {
     router.visit(route('sign.complete'));
+}
+
+const canPrepare = computed(() =>
+    recipientCount.value > 0 && documentId.value !== null && sendState.value !== 'success'
+);
+
+async function prepareRequests() {
+    if (!canPrepare.value || sendState.value === 'loading') return;
+    sendState.value = 'loading';
+    sendError.value = '';
+
+    try {
+        const xsrf = decodeURIComponent(
+            document.cookie.split('; ').find(r => r.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? '',
+        );
+        const res = await fetch(route('documents.send', documentId.value), {
+            method:      'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': xsrf },
+            body: JSON.stringify({
+                recipients: reviewRecipients.value.map(r => ({
+                    name:                r.name,
+                    email:               r.email,
+                    color:               r.color,
+                    signing_order:       r.signingOrder,
+                    editor_recipient_id: r.id,
+                })),
+            }),
+        });
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            sendError.value = data.message ?? 'Something went wrong. Please try again.';
+            sendState.value = 'error';
+            return;
+        }
+
+        sendState.value = 'success';
+    } catch (e) {
+        sendError.value = 'Network error. Please check your connection and try again.';
+        sendState.value = 'error';
+    }
+}
+
+function statusBadgeClass(status) {
+    const map = {
+        pending: 'bg-gray-100 text-gray-600',
+        sent:    'bg-blue-100 text-blue-700',
+        opened:  'bg-amber-100 text-amber-700',
+        signed:  'bg-emerald-100 text-emerald-700',
+    };
+    return `inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${map[status] ?? map.pending}`;
 }
 </script>
 
@@ -101,8 +160,64 @@ function finishSigning() {
                     </div>
                 </section>
 
-                <!-- Ready indicator -->
-                <div class="mb-6 flex items-center gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3">
+                <!-- Recipients section -->
+                <section v-if="recipientCount > 0" class="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
+                    <div class="border-b border-gray-100 px-5 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Recipients</p>
+                    </div>
+                    <ul class="divide-y divide-gray-50">
+                        <li
+                            v-for="r in reviewRecipients"
+                            :key="r.id"
+                            class="flex items-center gap-3 px-5 py-3"
+                        >
+                            <!-- Color dot -->
+                            <span
+                                class="h-2.5 w-2.5 shrink-0 rounded-full"
+                                :style="{ backgroundColor: r.color }"
+                            />
+                            <!-- Name + email -->
+                            <div class="min-w-0 flex-1">
+                                <p class="truncate text-sm font-medium text-gray-900">{{ r.name || '(no name)' }}</p>
+                                <p class="truncate text-xs text-gray-400">{{ r.email || '(no email)' }}</p>
+                            </div>
+                            <!-- Field count -->
+                            <span class="shrink-0 text-xs text-gray-500">
+                                {{ r.fieldCount }} {{ r.fieldCount === 1 ? 'field' : 'fields' }}
+                            </span>
+                            <!-- Signing order -->
+                            <span class="shrink-0 text-xs text-gray-400">#{{ r.signingOrder }}</span>
+                        </li>
+                    </ul>
+
+                    <!-- Success banner -->
+                    <div
+                        v-if="sendState === 'success'"
+                        class="flex items-center gap-2.5 border-t border-emerald-100 bg-emerald-50 px-5 py-3"
+                    >
+                        <svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <p class="text-sm font-medium text-emerald-700">Recipients prepared successfully.</p>
+                    </div>
+
+                    <!-- Error banner -->
+                    <div
+                        v-if="sendState === 'error'"
+                        class="flex items-center gap-2.5 border-t border-red-100 bg-red-50 px-5 py-3"
+                    >
+                        <svg class="h-4 w-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-sm font-medium text-red-700">{{ sendError }}</p>
+                    </div>
+                </section>
+
+                <!-- Ready indicator (self-sign only) -->
+                <div
+                    v-if="recipientCount === 0"
+                    class="mb-6 flex items-center gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3"
+                >
                     <svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
@@ -112,7 +227,7 @@ function finishSigning() {
                 </div>
 
                 <!-- Actions -->
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between gap-3">
                     <button
                         class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-300 hover:bg-gray-50"
                         @click="backToEditor"
@@ -123,15 +238,42 @@ function finishSigning() {
                         Back to Editor
                     </button>
 
-                    <button
-                        class="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]"
-                        @click="finishSigning"
-                    >
-                        Finish Signing
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <!-- Prepare Requests — shown when recipients exist -->
+                        <button
+                            v-if="recipientCount > 0"
+                            :disabled="!canPrepare || sendState === 'loading'"
+                            :class="[
+                                'flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition',
+                                sendState === 'success'
+                                    ? 'cursor-default bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                    : canPrepare && sendState !== 'loading'
+                                        ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]'
+                                        : 'cursor-not-allowed bg-gray-100 text-gray-400',
+                            ]"
+                            @click="prepareRequests"
+                        >
+                            <svg v-if="sendState === 'loading'" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                            </svg>
+                            <svg v-else-if="sendState === 'success'" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>{{ sendState === 'loading' ? 'Preparing…' : sendState === 'success' ? 'Prepared' : 'Prepare Requests' }}</span>
+                        </button>
+
+                        <!-- Finish Signing — always available -->
+                        <button
+                            class="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]"
+                            @click="finishSigning"
+                        >
+                            Finish Signing
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
             </template>

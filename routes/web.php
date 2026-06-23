@@ -14,6 +14,7 @@ use App\Http\Controllers\Web\Sign\ReviewController as SignReviewController;
 use App\Http\Controllers\Web\Sign\UploadController as SignUploadController;
 use App\Http\Controllers\Web\Sign\SaveDocumentController as SignSaveDocumentController;
 use App\Http\Controllers\Web\Workspace\DocumentDownloadController;
+use App\Http\Controllers\RecipientSignController;
 use App\Http\Controllers\Web\Workspace\DocumentsController;
 use App\Http\Controllers\Web\Workspace\TemplatesController;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/documents/{document}/archive',     [DocumentsController::class, 'archive'])->name('documents.archive');
     Route::patch('/documents/{document}/editor-state',[DocumentsController::class, 'saveEditorState'])->name('documents.editor-state');
     Route::post('/documents/{document}/open',         [DocumentsController::class, 'open'])->name('documents.open');
+    Route::post('/documents/{document}/send',         [DocumentsController::class, 'send'])->name('documents.send');
     Route::delete('/documents/{document}',            [DocumentsController::class, 'destroy'])->name('documents.destroy');
     Route::get('/templates',                             [TemplatesController::class, 'index'])->name('templates.index');
     Route::get('/templates/create',                      [TemplatesController::class, 'create'])->name('templates.create');
@@ -68,6 +70,13 @@ Route::prefix('sign')->name('sign.')->group(function () {
     Route::get('/review',  SignReviewController::class)->name('review');
     Route::get('/complete', SignCompleteController::class)->name('complete');
     Route::middleware('auth')->post('/save', SignSaveDocumentController::class)->name('save');
+});
+
+// Recipient signing — public, token-gated
+Route::prefix('r')->name('recipient.')->group(function () {
+    Route::get('/{token}',          [RecipientSignController::class, 'show'])->name('sign');
+    Route::get('/{token}/pdf',      [RecipientSignController::class, 'pdf'])->name('pdf');
+    Route::post('/{token}/complete', [RecipientSignController::class, 'complete'])->name('complete');
 });
 
 require __DIR__.'/auth.php';
