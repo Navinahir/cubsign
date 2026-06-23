@@ -98,6 +98,36 @@ const clipboardField  = ref(null);   // Ctrl+C / Ctrl+V internal clipboard
 const thumbStripRef   = ref(null);   // for auto-scrolling the thumbnail aside
 let   intersectionObs = null;        // scroll-based active-page tracking
 
+// ── Template placeholder helpers ─────────────────────────────────────────────
+// Template editor stores placeholder values: { sigType:'text', src:'Signature'/'Initials' }
+// These must be filled with the actual signature before the PDF is generated.
+function isTemplatePlaceholder(field) {
+    return (field.type === 'signature' || field.type === 'initials') &&
+        typeof field.value === 'object' &&
+        field.value !== null &&
+        (field.value.src === 'Signature' || field.value.src === 'Initials');
+}
+
+const hasTemplatePlaceholders = computed(() => placedFields.value.some(isTemplatePlaceholder));
+
+const templatePlaceholderCount = computed(() => placedFields.value.filter(isTemplatePlaceholder).length);
+
+function fillTemplatePlaceholders() {
+    if (!capturedSig.value) return;
+    placedFields.value.forEach(f => {
+        if (isTemplatePlaceholder(f)) {
+            f.value = {
+                sigType: capturedSig.value.type,
+                src:     capturedSig.value.src,
+                font:    capturedSig.value.font,
+            };
+            if (!f.signerId) {
+                f.signerId = activeRecipientId.value;
+            }
+        }
+    });
+}
+
 // ── Drag / resize ───────────────────────────────────────────────────────
 let activeDrag   = null;
 let prevX = 0, prevY = 0;
@@ -118,8 +148,10 @@ const signatureReady = computed(() => {
 });
 
 const workflowStep = computed(() => {
-    if (placedFields.value.length > 0) return 3;
-    if (capturedSig.value)           return 2;
+    // Template placeholder fields don't count as "signed" — only real placed fields do
+    const realFields = placedFields.value.filter(f => !isTemplatePlaceholder(f));
+    if (realFields.length > 0) return 3;
+    if (capturedSig.value)     return 2;
     return 1;
 });
 
@@ -362,8 +394,16 @@ function captureSignature() {
     } else {
         capturedSig.value = { type: 'image', src: uploadedSig.value };
     }
-    detectionRan.value  = false;
-    placementMode.value = 'manual';
+    detectionRan.value = false;
+
+    // When document was created from a template, fill all placeholder positions immediately
+    // so the user's real signature replaces the "Signature"/"Initials" placeholder text.
+    if (hasTemplatePlaceholders.value) {
+        fillTemplatePlaceholders();
+        placementMode.value = null;
+    } else {
+        placementMode.value = 'manual';
+    }
 }
 
 function cancelCapture() {
@@ -857,6 +897,9 @@ async function generateSignedPdf() {
     const helvetica = await pdflibDoc.embedFont(StandardFonts.Helvetica);
 
     for (const field of placedFields.value) {
+        // Skip template placeholder fields that were never filled with a real signature
+        if (isTemplatePlaceholder(field)) continue;
+
         const page = pages[field.pageNum - 1];
         if (!page) continue;
 
@@ -1177,14 +1220,14 @@ async function finishSigning() {
                                 >
                                     <div
                                         class="relative h-full w-full overflow-hidden rounded"
-                                        :style="`background:rgba(239,246,255,0.4); outline:${field.id === selectedSigId ? '2px' : '1px'} solid ${(recipientById(field.signerId)?.color ?? '#3B82F6')}${field.id === selectedSigId ? '' : '50'}; outline-offset:${field.id === selectedSigId ? '1px' : '0'}`"
+                                        :style="`background:${isTemplatePlaceholder(field) ? 'rgba(254,243,199,0.6)' : 'rgba(239,246,255,0.4)'}; outline:${field.id === selectedSigId ? '2px' : '1px'} solid ${isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}${field.id === selectedSigId ? '' : '50'}; outline-offset:${field.id === selectedSigId ? '1px' : '0'}`"
                                     >
                                         <!-- Recipient name strip — shown when field is selected -->
                                         <div
                                             v-if="field.id === selectedSigId"
                                             class="absolute left-0 right-0 top-0 z-10 truncate px-1.5 py-px text-[8px] font-semibold text-white"
-                                            :style="`background:${recipientById(field.signerId)?.color ?? '#3B82F6'}`"
-                                        >{{ recipientById(field.signerId)?.name || 'Signer' }}</div>
+                                            :style="`background:${isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}`"
+                                        >{{ isTemplatePlaceholder(field) ? '✎ Draw your signature below' : (recipientById(field.signerId)?.name || 'Signer') }}</div>
 
                                         <!-- Signature / Initials -->
                                         <template v-if="field.type === 'signature' || field.type === 'initials'">
@@ -1229,9 +1272,9 @@ async function finishSigning() {
 
                                     <!-- Type + recipient badge -->
                                     <span
-                                        class="absolute -left-px -top-4 max-w-[120px] truncate rounded-t px-1.5 py-px text-[8px] font-bold uppercase tracking-wide text-white"
-                                        :style="`background:${recipientById(field.signerId)?.color ?? '#3B82F6'}`"
-                                    >{{ recipientDisplayName(field.signerId) }} · {{ field.type }}</span>
+                                        class="absolute -left-px -top-4 max-w-[160px] truncate rounded-t px-1.5 py-px text-[8px] font-bold uppercase tracking-wide text-white"
+                                        :style="`background:${isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}`"
+                                    >{{ isTemplatePlaceholder(field) ? field.type + ' — sign below ↓' : (recipientDisplayName(field.signerId) + ' · ' + field.type) }}</span>
 
                                     <!-- Resize handles (when selected) -->
                                     <template v-if="field.id === selectedSigId">
@@ -1240,7 +1283,7 @@ async function finishSigning() {
                                             :key="h.id"
                                             class="absolute z-20 h-2.5 w-2.5 rounded-full border-2 border-white shadow-md"
                                             :class="h.pos"
-                                            :style="`cursor:${h.cur}; background:${recipientById(field.signerId)?.color ?? '#3B82F6'}`"
+                                            :style="`cursor:${h.cur}; background:${isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}`"
                                             @mousedown.stop="startResize($event, field, h.id)"
                                             @touchstart.stop="startResize($event, field, h.id)"
                                         />
@@ -1606,8 +1649,25 @@ async function finishSigning() {
                     <!-- ── Signature / Initials: 3-mode flow ── -->
                     <template v-if="activeFieldType === 'signature' || activeFieldType === 'initials'">
 
+                        <!-- Template document banner — explains what to do when fields are pre-placed -->
+                        <div
+                            v-if="hasTemplatePlaceholders && !capturedSig"
+                            class="mb-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3"
+                        >
+                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div>
+                                <p class="text-[11px] font-semibold text-amber-800">Template document</p>
+                                <p class="text-[10px] leading-relaxed text-amber-700">
+                                    {{ templatePlaceholderCount }} signature {{ templatePlaceholderCount === 1 ? 'position' : 'positions' }} pre-placed on this PDF.
+                                    Draw or type your signature, then click <strong>Add {{ activeFieldType === 'initials' ? 'Initials' : 'Signature' }}</strong> to fill {{ templatePlaceholderCount === 1 ? 'it' : 'them all' }} automatically.
+                                </p>
+                            </div>
+                        </div>
+
                         <!-- No signature created -->
-                        <p v-if="!capturedSig && !signatureReady" class="text-xs text-gray-400">
+                        <p v-if="!capturedSig && !signatureReady && !hasTemplatePlaceholders" class="text-xs text-gray-400">
                             Create a {{ activeFieldType }} above, then choose how to place it.
                         </p>
 
@@ -1756,8 +1816,11 @@ async function finishSigning() {
                     v-else-if="detectionRan && !isDetecting && !showFields && capturedSig && !isLoading && detectedFields.length === 0"
                     class="px-4 py-2 text-center"
                 >
-                    <p class="text-xs text-gray-500">No signature fields found in this document.</p>
-                    <p class="mt-0.5 text-[11px] text-gray-400">Use "Place Manually" or "Auto Place" instead.</p>
+                    <p class="text-xs text-gray-500">No signature keyword fields found in this document.</p>
+                    <p v-if="placedFields.length > 0" class="mt-0.5 text-[11px] text-gray-400">
+                        {{ placedFields.length }} field{{ placedFields.length !== 1 ? 's' : '' }} already placed on the document. Use "Place Manually" to add more.
+                    </p>
+                    <p v-else class="mt-0.5 text-[11px] text-gray-400">Use "Place Manually" to drag your signature onto the document.</p>
                 </div>
 
                 <!-- ── PLACED FIELDS ── -->

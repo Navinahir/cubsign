@@ -39,7 +39,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/documents/{document}/editor-state',[DocumentsController::class, 'saveEditorState'])->name('documents.editor-state');
     Route::post('/documents/{document}/open',         [DocumentsController::class, 'open'])->name('documents.open');
     Route::delete('/documents/{document}',            [DocumentsController::class, 'destroy'])->name('documents.destroy');
-    Route::get('/templates',                          [TemplatesController::class, 'index'])->name('templates.index');
+    Route::get('/templates',                             [TemplatesController::class, 'index'])->name('templates.index');
+    Route::get('/templates/create',                      [TemplatesController::class, 'create'])->name('templates.create');
+    Route::post('/templates',                            [TemplatesController::class, 'store'])->name('templates.store');
+    Route::get('/templates/{template}',                  [TemplatesController::class, 'show'])->name('templates.show');
+    Route::get('/templates/{template}/edit',             [TemplatesController::class, 'edit'])->name('templates.edit');
+    Route::get('/templates/{template}/pdf',              [TemplatesController::class, 'pdf'])->name('templates.pdf');
+    Route::put('/templates/{template}',                  [TemplatesController::class, 'update'])->name('templates.update');
+    Route::delete('/templates/{template}',               [TemplatesController::class, 'destroy'])->name('templates.destroy');
+    Route::post('/templates/{template}/use',             [TemplatesController::class, 'useTemplate'])->name('templates.use');
+    Route::post('/templates/{template}/duplicate',       [TemplatesController::class, 'duplicate'])->name('templates.duplicate');
 });
 
 // Profile
