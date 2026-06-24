@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Web\Workspace;
 
 use App\Http\Controllers\Controller;
-use App\Mail\RecipientInvitationMail;
 use App\Models\Document;
 use App\Models\DocumentActivity;
+use App\Services\RecipientNotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DocumentsController extends Controller
 {
+    public function __construct(
+        private readonly RecipientNotificationService $notificationService,
+    ) {}
+
     public function show(Document $document): Response
     {
         $this->gate($document);
@@ -39,7 +41,11 @@ class DocumentsController extends Controller
         }
 
         if ($status = $request->get('status')) {
-            $query->where('status', $status);
+            if ($status === 'completed') {
+                $query->whereIn('status', ['completed', 'archived']);
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         match ($request->get('sort', 'newest')) {
@@ -180,27 +186,20 @@ class DocumentsController extends Controller
         ]);
 
         // Send invitation email to the first recipient
-        if ($firstRecipient) {
-            DocumentActivity::create([
-                'document_id'  => $document->id,
-                'recipient_id' => $firstRecipient->id,
-                'event'        => 'recipient_notified',
-                'meta'         => ['name' => $firstRecipient->name, 'email' => $firstRecipient->email],
-            ]);
+        $mailWarning = null;
 
-            try {
-                // Load the document relationship so the Mailable can access document->user
-                $firstRecipient->load('document.user');
-                Mail::to($firstRecipient->email)->send(new RecipientInvitationMail($firstRecipient));
-            } catch (\Throwable $e) {
-                Log::error('RecipientInvitationMail failed (first recipient)', [
-                    'recipient_id' => $firstRecipient->id,
-                    'error'        => $e->getMessage(),
-                ]);
+        if ($firstRecipient) {
+            if (! $this->notificationService->sendInvitation($firstRecipient)) {
+                $mailWarning = 'Recipients were prepared, but the invitation email could not be sent. Please notify the recipient manually.';
             }
         }
 
-        return response()->json(['ok' => true]);
+        $response = ['ok' => true];
+        if ($mailWarning) {
+            $response['warning'] = $mailWarning;
+        }
+
+        return response()->json($response);
     }
 
     private function gate(Document $document): void

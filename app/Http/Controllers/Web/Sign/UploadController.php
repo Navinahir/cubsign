@@ -52,12 +52,13 @@ class UploadController extends Controller
         $request->session()->put('sign_token', $session->token);
 
         if (auth()->check()) {
-            Document::create([
+            $document = Document::create([
                 'user_id'    => $session->user_id,
                 'name'       => $session->original_filename,
                 'status'     => 'draft',
                 'sign_token' => $session->token,
             ]);
+            $request->session()->put('sign_document_id', $document->id);
         }
 
         return redirect()->route('sign.editor');

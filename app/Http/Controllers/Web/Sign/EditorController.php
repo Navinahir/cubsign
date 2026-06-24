@@ -61,6 +61,7 @@ class EditorController extends Controller
             if ($draft) {
                 $documentId  = $draft->id;
                 $editorState = $draft->editor_state;
+                $request->session()->put('sign_document_id', $draft->id);
             }
         }
 

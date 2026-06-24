@@ -121,7 +121,7 @@ const SORT_OPTIONS = [
 ];
 
 function statusLabel(status) {
-    const map = { draft: 'Draft', signed: 'Signed', archived: 'Archived', completed: 'Completed' };
+    const map = { draft: 'Draft', signed: 'Signed', archived: 'Completed', completed: 'Completed' };
     return map[status] ?? status;
 }
 

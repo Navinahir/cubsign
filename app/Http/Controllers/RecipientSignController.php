@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\RecipientInvitationMail;
 use App\Models\Document;
 use App\Models\DocumentActivity;
 use App\Models\Recipient;
+use App\Services\RecipientNotificationService;
 use App\Services\SignedPdfService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,6 +17,10 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class RecipientSignController extends Controller
 {
+    public function __construct(
+        private readonly RecipientNotificationService $notificationService,
+    ) {}
+
     public function show(string $token): Response
     {
         $recipient = Recipient::with('document')
@@ -152,23 +155,7 @@ class RecipientSignController extends Controller
 
         if ($next) {
             $next->update(['status' => 'sent']);
-
-            DocumentActivity::create([
-                'document_id'  => $document->id,
-                'recipient_id' => $next->id,
-                'event'        => 'recipient_notified',
-                'meta'         => ['name' => $next->name, 'email' => $next->email],
-            ]);
-
-            try {
-                $next->load('document.user');
-                Mail::to($next->email)->send(new RecipientInvitationMail($next));
-            } catch (\Throwable $e) {
-                Log::error('RecipientInvitationMail failed (next recipient)', [
-                    'recipient_id' => $next->id,
-                    'error'        => $e->getMessage(),
-                ]);
-            }
+            $this->notificationService->sendInvitation($next);
         } else {
             $signedPath = null;
 

@@ -63,6 +63,7 @@ function activityLabel(activity) {
         case 'recipient_signed':     return `${m.name ?? 'Recipient'} signed`;
         case 'recipient_notified':   return `${m.name ?? 'Recipient'} notified`;
         case 'document_completed':   return 'Document completed';
+        case 'signed_pdf_failed':    return 'Signed PDF generation failed';
         default:                     return activity.event;
     }
 }

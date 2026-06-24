@@ -94,6 +94,8 @@ const pendingText     = ref('');      // value for name/text fields before placi
 const pendingDate     = ref(new Date().toLocaleDateString()); // value for date field before placing
 let   fieldSeq        = 0;
 const isFinishing     = ref(false);
+const saveStatus      = ref('idle'); // idle | saving | saved | failed
+let   autosaveTimer   = null;
 const clipboardField  = ref(null);   // Ctrl+C / Ctrl+V internal clipboard
 const thumbStripRef   = ref(null);   // for auto-scrolling the thumbnail aside
 let   intersectionObs = null;        // scroll-based active-page tracking
@@ -220,6 +222,7 @@ onBeforeUnmount(() => {
     window.removeEventListener('touchend',  onGlobalUp);
     window.removeEventListener('keydown',   onKeyDown);
     if (intersectionObs) intersectionObs.disconnect();
+    if (autosaveTimer) clearTimeout(autosaveTimer);
 });
 
 watch(activeTab, async (tab) => {
@@ -235,6 +238,8 @@ watch(activePage, async (pageNum) => {
     thumbStripRef.value.querySelectorAll('button')[pageNum - 1]
         ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 });
+
+watch([placedFields, recipients, scale], () => scheduleAutosave(), { deep: true });
 
 // ── PDF loading ───────────────────────────────────────────────────────────
 async function loadPdf(url) {
@@ -1001,13 +1006,26 @@ async function generateSignedPdf() {
     return pdflibDoc.save();
 }
 
-async function persistEditorState() {
+function scheduleAutosave() {
     if (!props.documentId) return;
+    if (autosaveTimer) clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(() => flushAutosave(), 2500);
+}
+
+async function flushAutosave() {
+    if (!props.documentId) return;
+    saveStatus.value = 'saving';
+    const ok = await persistEditorState();
+    saveStatus.value = ok ? 'saved' : 'failed';
+}
+
+async function persistEditorState() {
+    if (!props.documentId) return false;
     try {
         const xsrf = decodeURIComponent(
             document.cookie.split('; ').find(r => r.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? '',
         );
-        await fetch(route('documents.editor-state', props.documentId), {
+        const res = await fetch(route('documents.editor-state', props.documentId), {
             method:      'PATCH',
             credentials: 'same-origin',
             headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': xsrf },
@@ -1017,11 +1035,14 @@ async function persistEditorState() {
                     scale:        scale.value,
                     activePage:   activePage.value,
                     recipients:   recipients.value,
+                    pageCount:    numPages.value,
                 },
             }),
         });
+        return res.ok;
     } catch (e) {
         console.warn('[CubSign] editor state save failed:', e);
+        return false;
     }
 }
 
@@ -1958,6 +1979,17 @@ async function finishSigning() {
             </div>
 
             <div class="flex items-center gap-3">
+                <span
+                    v-if="documentId && saveStatus !== 'idle'"
+                    :class="[
+                        'hidden text-xs font-medium sm:block',
+                        saveStatus === 'saved'   ? 'text-emerald-600' :
+                        saveStatus === 'failed'  ? 'text-red-600' :
+                        'text-gray-500',
+                    ]"
+                >
+                    {{ saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? 'Saved' : 'Failed' }}
+                </span>
                 <span v-if="placedFields.length > 0" class="hidden text-xs font-medium text-emerald-600 sm:block">
                     ✓ {{ placedFields.length }} field{{ placedFields.length !== 1 ? 's' : '' }} placed
                 </span>

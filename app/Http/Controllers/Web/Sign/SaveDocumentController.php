@@ -83,6 +83,8 @@ class SaveDocumentController extends Controller
             'filename'    => $session->original_filename,
         ]);
 
+        $request->session()->put('sign_document_id', $document->id);
+
         return response()->json(['id' => $document->id]);
     }
 }

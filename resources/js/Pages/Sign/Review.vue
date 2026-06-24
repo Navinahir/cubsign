@@ -8,6 +8,22 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    documentId: {
+        type: Number,
+        default: null,
+    },
+    reviewData: {
+        type: Object,
+        default: null,
+    },
+    alreadyPrepared: {
+        type: Boolean,
+        default: false,
+    },
+    documentFinalized: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const pageCount      = ref(0);
@@ -17,18 +33,36 @@ const reviewRecipients = ref([]);
 const documentId     = ref(null);
 const dataReady      = ref(false);
 
-const sendState  = ref('idle'); // 'idle' | 'loading' | 'success' | 'error'
-const sendError  = ref('');
+const sendState   = ref('idle'); // 'idle' | 'loading' | 'success' | 'warning' | 'error'
+const sendError   = ref('');
+const sendWarning = ref('');
+
+function hydrateFromReviewData(data, docId) {
+    pageCount.value        = data.pageCount      ?? 0;
+    fieldCount.value       = data.fieldCount     ?? 0;
+    recipientCount.value   = data.recipientCount ?? 0;
+    reviewRecipients.value = data.recipients     ?? [];
+    documentId.value       = docId;
+    dataReady.value        = true;
+}
 
 onMounted(() => {
+    if (props.reviewData && props.documentId) {
+        hydrateFromReviewData(props.reviewData, props.documentId);
+        if (props.alreadyPrepared) {
+            sendState.value = 'success';
+        }
+        return;
+    }
+
     const s = window.__cubsignSession;
     if (s?.token === props.session.token && s?.reviewData) {
-        pageCount.value        = s.reviewData.pageCount      ?? 0;
-        fieldCount.value       = s.reviewData.fieldCount     ?? 0;
-        recipientCount.value   = s.reviewData.recipientCount ?? 0;
-        reviewRecipients.value = s.reviewData.recipients     ?? [];
-        documentId.value       = s.documentId               ?? null;
-        dataReady.value        = true;
+        hydrateFromReviewData(s.reviewData, s.documentId ?? null);
+        return;
+    }
+
+    if (props.documentId && props.reviewData) {
+        hydrateFromReviewData(props.reviewData, props.documentId);
     }
 });
 
@@ -47,13 +81,17 @@ function finishSigning() {
 }
 
 const canPrepare = computed(() =>
-    recipientCount.value > 0 && documentId.value !== null && sendState.value !== 'success'
+    recipientCount.value > 0
+    && documentId.value !== null
+    && sendState.value !== 'success'
+    && sendState.value !== 'warning'
 );
 
 async function prepareRequests() {
     if (!canPrepare.value || sendState.value === 'loading') return;
     sendState.value = 'loading';
     sendError.value = '';
+    sendWarning.value = '';
 
     try {
         const xsrf = decodeURIComponent(
@@ -74,10 +112,17 @@ async function prepareRequests() {
             }),
         });
 
+        const data = await res.json().catch(() => ({}));
+
         if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
             sendError.value = data.message ?? 'Something went wrong. Please try again.';
             sendState.value = 'error';
+            return;
+        }
+
+        if (data.warning) {
+            sendWarning.value = data.warning;
+            sendState.value = 'warning';
             return;
         }
 
@@ -201,6 +246,17 @@ function statusBadgeClass(status) {
                         <p class="text-sm font-medium text-emerald-700">Recipients prepared successfully.</p>
                     </div>
 
+                    <!-- Warning banner (mail failed) -->
+                    <div
+                        v-if="sendState === 'warning'"
+                        class="flex items-center gap-2.5 border-t border-amber-100 bg-amber-50 px-5 py-3"
+                    >
+                        <svg class="h-4 w-4 shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                        </svg>
+                        <p class="text-sm font-medium text-amber-800">{{ sendWarning }}</p>
+                    </div>
+
                     <!-- Error banner -->
                     <div
                         v-if="sendState === 'error'"
@@ -247,6 +303,8 @@ function statusBadgeClass(status) {
                                 'flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition',
                                 sendState === 'success'
                                     ? 'cursor-default bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                    : sendState === 'warning'
+                                        ? 'cursor-default bg-amber-50 text-amber-800 border border-amber-200'
                                     : canPrepare && sendState !== 'loading'
                                         ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]'
                                         : 'cursor-not-allowed bg-gray-100 text-gray-400',
@@ -257,10 +315,10 @@ function statusBadgeClass(status) {
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
                             </svg>
-                            <svg v-else-if="sendState === 'success'" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg v-else-if="sendState === 'success' || sendState === 'warning'" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                             </svg>
-                            <span>{{ sendState === 'loading' ? 'Preparing…' : sendState === 'success' ? 'Prepared' : 'Prepare Requests' }}</span>
+                            <span>{{ sendState === 'loading' ? 'Preparing…' : sendState === 'success' || sendState === 'warning' ? 'Prepared' : 'Prepare Requests' }}</span>
                         </button>
 
                         <!-- Finish Signing — always available -->
