@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\RecipientInvitationMail;
+use App\Models\Document;
 use App\Models\DocumentActivity;
 use App\Models\Recipient;
 use App\Services\SignedPdfService;
@@ -58,6 +59,10 @@ class RecipientSignController extends Controller
             ->where('sign_token', $token)
             ->firstOrFail();
 
+        if ($recipient->status === 'pending') {
+            abort(403, 'Not your turn to sign yet');
+        }
+
         $document = $recipient->document;
 
         if (! $document || ! $document->pdf_path || ! Storage::disk('documents')->exists($document->pdf_path)) {
@@ -101,6 +106,30 @@ class RecipientSignController extends Controller
             'signed_fields.*.value' => ['sometimes', 'nullable'],
         ]);
 
+        $allowedFieldIds = $this->allowedFieldIdsForRecipient($document, $recipient);
+
+        $submittedIds = collect($validated['signed_fields'] ?? [])
+            ->pluck('id')
+            ->filter(fn ($id) => $id !== null)
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->all();
+
+        $invalidIds = array_diff($submittedIds, $allowedFieldIds);
+
+        if ($invalidIds !== []) {
+            Log::channel('cubsign')->warning('Recipient submitted fields not assigned to them', [
+                'recipient_id' => $recipient->id,
+                'document_id'  => $document->id,
+                'invalid_ids'  => array_values($invalidIds),
+            ]);
+
+            return response()->json([
+                'message' => 'One or more fields are not assigned to you.',
+                'errors'  => ['signed_fields' => ['Invalid field submission.']],
+            ], 422);
+        }
+
         $recipient->update([
             'status'        => 'signed',
             'signed_at'     => now(),
@@ -141,30 +170,63 @@ class RecipientSignController extends Controller
                 ]);
             }
         } else {
-            $document->update(['status' => 'completed']);
+            $signedPath = null;
 
-            DocumentActivity::create([
-                'document_id'  => $document->id,
-                'recipient_id' => null,
-                'event'        => 'document_completed',
-                'meta'         => [],
-            ]);
-
-            // Generate the final signed PDF with all recipient signatures overlaid
             try {
                 $document->load('recipients');
                 $signedPath = (new SignedPdfService())->generate($document);
-                if ($signedPath) {
-                    $document->update(['signed_pdf_path' => $signedPath]);
-                }
             } catch (\Throwable $e) {
-                Log::error('SignedPdfService failed', [
+                Log::channel('cubsign')->error('SignedPdfService failed', [
                     'document_id' => $document->id,
                     'error'       => $e->getMessage(),
+                ]);
+            }
+
+            if ($signedPath) {
+                $document->update([
+                    'status'          => 'completed',
+                    'signed_pdf_path' => $signedPath,
+                ]);
+
+                DocumentActivity::create([
+                    'document_id'  => $document->id,
+                    'recipient_id' => null,
+                    'event'        => 'document_completed',
+                    'meta'         => [],
+                ]);
+            } else {
+                Log::channel('cubsign')->error('Document not marked completed — final signed PDF generation failed', [
+                    'document_id' => $document->id,
+                ]);
+
+                DocumentActivity::create([
+                    'document_id'  => $document->id,
+                    'recipient_id' => null,
+                    'event'        => 'signed_pdf_failed',
+                    'meta'         => [
+                        'message' => 'Final signed PDF could not be generated. All recipients have signed.',
+                    ],
                 ]);
             }
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    /**
+     * Field IDs from editor_state that belong to this recipient.
+     *
+     * @return list<int>
+     */
+    private function allowedFieldIdsForRecipient(Document $document, Recipient $recipient): array
+    {
+        $placedFields = ($document->editor_state ?? [])['placedFields'] ?? [];
+
+        return collect($placedFields)
+            ->filter(fn ($f) => ($f['signerId'] ?? null) === $recipient->editor_recipient_id)
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->all();
     }
 }
