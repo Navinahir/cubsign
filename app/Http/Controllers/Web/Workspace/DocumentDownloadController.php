@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Workspace;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -15,10 +16,18 @@ class DocumentDownloadController extends Controller
             abort(403);
         }
 
-        // For completed documents, serve the final signed PDF when available
         $path = ($document->status === 'completed' && $document->signed_pdf_path)
             ? $document->signed_pdf_path
             : $document->pdf_path;
+
+        Log::channel('cubsign')->info('DocumentDownloadController', [
+            'document_id'     => $document->id,
+            'status'          => $document->status,
+            'serving_path'    => $path,
+            'signed_pdf_path' => $document->signed_pdf_path,
+            'pdf_path'        => $document->pdf_path,
+            'file_exists'     => $path ? Storage::disk('documents')->exists($path) : false,
+        ]);
 
         if (! $path || ! Storage::disk('documents')->exists($path)) {
             abort(404);

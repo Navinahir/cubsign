@@ -34,7 +34,7 @@ const reviewRecipients = ref([]);
 const documentId     = ref(null);
 const dataReady      = ref(false);
 
-const sendState   = ref('idle'); // 'idle' | 'loading' | 'success' | 'warning' | 'error'
+const sendState   = ref('idle');
 const sendError   = ref('');
 const sendWarning = ref('');
 const isFinalized = ref(props.documentFinalized);
@@ -84,28 +84,7 @@ function backToEditor() {
     router.visit(route('sign.editor'));
 }
 
-async function finishSigning() {
-    const s = window.__cubsignSession;
-    const ownSession = s?.token === props.session.token;
-
-    if (isFinalized.value) {
-        router.visit(route('sign.complete'));
-        return;
-    }
-
-    if (!ownSession || !s?.signedPdf) {
-        router.visit(route('sign.editor'));
-        return;
-    }
-
-    if (isAuthenticated.value) {
-        const result = await persistSignedPdf(s.signedPdf, s.filename ?? props.session.filename);
-        if (result.ok) {
-            s.documentSaved = true;
-            isFinalized.value = true;
-        }
-    }
-
+function finishSigning() {
     router.visit(route('sign.complete'));
 }
 
@@ -265,19 +244,6 @@ function statusBadgeClass(status) {
                         </li>
                     </ul>
 
-                    <!-- Finalize hint -->
-                    <div
-                        v-if="recipientCount > 0 && !isFinalized"
-                        class="flex items-center gap-2.5 border-t border-blue-100 bg-blue-50 px-5 py-3"
-                    >
-                        <svg class="h-4 w-4 shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <p class="text-sm text-blue-800">
-                            Click <strong>Finish Signing</strong> first to save your PDF, then you can prepare requests.
-                        </p>
-                    </div>
-
                     <!-- Success banner -->
                     <div
                         v-if="sendState === 'success'"
@@ -338,22 +304,10 @@ function statusBadgeClass(status) {
                     </button>
 
                     <div class="flex items-center gap-2">
-                        <!-- Finish Signing — finalize PDF before preparing requests -->
-                        <button
-                            class="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]"
-                            @click="finishSigning"
-                        >
-                            Finish Signing
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </button>
-
-                        <!-- Prepare Requests — enabled only after PDF is saved (pdf_path set) -->
+                        <!-- Prepare Requests — shown when recipients exist -->
                         <button
                             v-if="recipientCount > 0"
                             :disabled="!canPrepare || sendState === 'loading'"
-                            :title="!isFinalized ? 'Finish Signing first to save your PDF' : ''"
                             :class="[
                                 'flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition',
                                 sendState === 'success'
@@ -374,6 +328,17 @@ function statusBadgeClass(status) {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                             </svg>
                             <span>{{ sendState === 'loading' ? 'Preparing…' : sendState === 'success' || sendState === 'warning' ? 'Prepared' : 'Prepare Requests' }}</span>
+                        </button>
+
+                        <!-- Finish Signing — always available -->
+                        <button
+                            class="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]"
+                            @click="finishSigning"
+                        >
+                            Finish Signing
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
                         </button>
                     </div>
                 </div>
