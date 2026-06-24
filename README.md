@@ -1,7 +1,6 @@
 # CubSign
 
-A lightweight, privacy-first PDF signing SaaS built with Laravel 12 and Vue 3 (Inertia.js).  
-Guests and authenticated users upload a PDF, apply a signature, and download the signed document — all processed in the browser. No third-party signing services required.
+A document signing platform built with Laravel 12, Vue 3, and Inertia.js. Owners upload PDFs, place signature fields, add recipients, and send — recipients sign in order via secure token links. When all recipients have signed, a final PDF with all signatures overlaid is generated and made available for download.
 
 > **Product by Cubiz Infotech** · [cubizinfotech.com](https://cubizinfotech.com)
 
@@ -12,18 +11,176 @@ Guests and authenticated users upload a PDF, apply a signature, and download the
 | Layer | Technology |
 |---|---|
 | Backend | PHP 8.2 · Laravel 12 |
-| Frontend | Vue 3 · Inertia.js v2 · Tailwind CSS v3 |
+| Frontend | Vue 3 (Composition API) · Inertia.js v2 · Tailwind CSS v3 |
 | Build tool | Vite 8 · laravel-vite-plugin |
 | PDF rendering (browser) | pdfjs-dist v3.11.174 |
 | PDF embedding (browser) | pdf-lib v1.17.1 |
-| Database | MySQL (WAMP64) |
-| Storage | Local disk — `storage/app/sign/` |
+| PDF overlay generation (server) | setasign/fpdi + setasign/fpdf |
+| Database | MySQL |
+| Cache / Session / Queue | Redis |
 | Auth | Laravel Breeze |
+| JS routing | Ziggy |
 
-> **Hard rules — never break without explicit approval:**
-> - PHP 8.2 + Laravel 12 only. Do not upgrade to Laravel 13 or PHP 8.3+.
-> - Do not change package versions without approval.
-> - Do not add Redis, S3, Stripe, or any external services in V1.
+---
+
+## Architecture
+
+```
+app/
+  Http/Controllers/
+    Web/
+      Sign/
+        UploadController.php         — guest upload flow
+        EditorController.php         — PDF editor page
+        PdfController.php            — serve original PDF
+        CompleteController.php       — complete/download page
+      Workspace/
+        DocumentsController.php      — CRUD + send
+        DocumentShowController.php   — detail + activity
+        DocumentDownloadController.php — download signed or base PDF
+    RecipientSignController.php      — token-based recipient signing
+  Mail/
+    RecipientInvitationMail.php
+  Models/
+    Document.php
+    Recipient.php
+    DocumentActivity.php
+    SignSession.php
+    User.php
+  Services/
+    SignedPdfService.php             — final PDF overlay generation
+  Repositories/
+    SignSessionRepository.php
+resources/
+  js/Pages/
+    Workspace/
+      Documents.vue                  — document list (status badge + download icon)
+      DocumentShow.vue               — detail view + activity timeline
+    Sign/
+      Editor.vue                     — owner PDF editor with field placement
+      Upload.vue
+      Complete.vue
+    RecipientSign.vue                — recipient signing page (token-gated)
+  views/emails/
+    recipient-invitation.blade.php
+```
+
+---
+
+## Database Schema
+
+### `documents`
+
+| Column | Type | Notes |
+|---|---|---|
+| id | bigint PK | |
+| user_id | bigint FK | owner |
+| name | string | original filename |
+| status | string | `draft` / `sent` / `completed` |
+| pdf_path | string | base PDF on `documents` disk |
+| signed_pdf_path | string nullable | final overlay PDF path |
+| sign_token | string | owner session token |
+| editor_state | json | placed fields, scale, recipients |
+| deleted_at | timestamp nullable | soft delete |
+
+### `recipients`
+
+| Column | Type | Notes |
+|---|---|---|
+| id | bigint PK | |
+| document_id | bigint FK | |
+| name | string | |
+| email | string | |
+| color | string | hex — used in editor UI |
+| signing_order | integer | sequential position |
+| editor_recipient_id | string | matches `signerId` in `editor_state.placedFields` |
+| sign_token | string unique | URL token for signing link |
+| status | string | `pending` / `sent` / `signed` |
+| signed_at | timestamp nullable | |
+| signed_fields | json nullable | field values submitted on signing |
+
+### `document_activities`
+
+| Column | Type | Notes |
+|---|---|---|
+| id | bigint PK | |
+| document_id | bigint FK | |
+| recipient_id | bigint FK nullable | |
+| event | string | `document_sent`, `recipient_notified`, `recipient_signed`, `document_completed` |
+| meta | json | name, email |
+
+### `sign_sessions`
+
+| Column | Type | Notes |
+|---|---|---|
+| id | bigint PK | |
+| token | string unique | 40-char random |
+| original_filename | string | |
+| disk_path | string | |
+| file_size | bigint | bytes |
+| status | enum | Uploaded / Editing / Signed / Downloaded |
+| user_id | bigint nullable | null for guests |
+| ip_address | string | |
+
+---
+
+## Signing Workflow
+
+```
+Owner uploads PDF
+  └─ Places fields (signature, initials, date, name, text, checkbox)
+       └─ Assigns each field to a recipient
+            └─ Adds recipients (name, email, signing order)
+                 └─ DocumentsController::send() called
+                      ├─ first recipient → status='sent', invitation email sent
+                      └─ remaining recipients → status='pending'
+
+RecipientSignController::complete() (recipient submits)
+  ├─ recipient → status='signed', signed_fields saved
+  ├─ create 'recipient_signed' activity
+  ├─ next pending recipient exists?
+  │     YES → status='sent', create 'recipient_notified', send email
+  └─ NO (all signed):
+        ├─ document → status='completed'
+        ├─ create 'document_completed' activity
+        └─ SignedPdfService generates final PDF → signed_pdf_path saved
+```
+
+---
+
+## Email Delivery
+
+Mail is configured via `.env` only — no credentials in code. Supports any Laravel mail driver.
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_user
+MAIL_PASSWORD=your_pass
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=no-reply@cubsign.com
+MAIL_FROM_NAME="CubSign"
+```
+
+Email failures are caught, logged, and never abort the signing flow or HTTP response.
+
+---
+
+## Signed PDF Generation (`SignedPdfService`)
+
+1. Opens `pdf_path` (base PDF) via FPDI
+2. Iterates every page; overlays all recipient `signed_fields`
+3. Coordinate conversion: `pdf_pts = field_pixels / editorScale`
+   - FPDF uses top-left origin — same as CSS — no Y-flip required
+4. Field types rendered:
+   - `signature` / `initials` — base64 PNG decoded → temp file → `Image()`
+   - `date` / `name` / `text` — `Text()` with Helvetica, font size clamped 8–14 pt
+   - `checkbox` — two-line tick drawn with `Line()`
+5. Stored at `signed/user_{id}/signed_{doc_id}_{timestamp}.pdf` on `documents` disk
+6. `signed_pdf_path` updated; original `pdf_path` preserved
+
+`DocumentDownloadController` serves `signed_pdf_path` for completed documents, falling back to `pdf_path` for all other statuses.
 
 ---
 
@@ -49,238 +206,59 @@ Configure `.env`:
 DB_DATABASE=cubsign
 DB_USERNAME=root
 DB_PASSWORD=
+
+MAIL_MAILER=log   # use 'log' for local dev, check storage/logs/laravel.log
 ```
 
 ```bash
 php artisan migrate
+php artisan storage:link
 npm run build
 
 # Hot-reload for development
 npm run dev
 ```
 
----
+Storage disks:
 
-## Architecture
-
-Strict layered architecture — business logic never lives outside Services:
-
-```
-HTTP Request
-    └── Controller      routes, validation, response only
-            └── Service     ALL business logic lives here
-                    └── Repository  ALL Eloquent queries live here
-                                └── Model   fillable, casts, relations only
-```
-
-### Key Directories
-
-```
-app/
-├── Enums/
-│   └── SignSessionStatus.php           uploaded | editing | signed | downloaded
-├── Http/
-│   ├── Controllers/Web/
-│   │   ├── Sign/
-│   │   │   ├── UploadController.php    GET+POST /sign
-│   │   │   ├── EditorController.php    GET /sign/editor
-│   │   │   ├── PdfController.php       GET /sign/pdf  (serves original PDF)
-│   │   │   └── CompleteController.php  GET /sign/complete
-│   │   ├── HomeController.php
-│   │   ├── OverviewController.php
-│   │   ├── FeaturesController.php
-│   │   ├── PricingController.php
-│   │   └── FaqController.php
-│   └── Requests/
-│       └── UploadPdfRequest.php        PDF validation (mimes:pdf, max:25 MB)
-├── Models/
-│   ├── SignSession.php
-│   └── User.php
-├── Repositories/
-│   └── SignSessionRepository.php
-└── Services/
-    └── SignSessionService.php
-
-resources/js/
-├── Layouts/
-│   ├── SignLayout.vue                  4-step progress header (Upload/Preview/Sign/Download)
-│   ├── WorkspaceLayout.vue
-│   └── PublicLayout.vue
-└── Pages/
-    ├── Sign/
-    │   ├── Upload.vue                  Step 1 — file picker
-    │   ├── Editor.vue                  Steps 2+3 — PDF viewer + signature panel
-    │   └── Complete.vue                Step 4 — download or create account
-    ├── Home.vue                        Public marketing homepage (FROZEN — do not touch)
-    ├── Features.vue
-    ├── Pricing.vue
-    ├── Faq.vue
-    └── Workspace/
-        └── Overview.vue
-```
-
----
-
-## Database Schema
-
-### `sign_sessions`
-
-| Column | Type | Notes |
+| Disk | Root | Purpose |
 |---|---|---|
-| `id` | bigint unsigned | PK |
-| `token` | varchar(64) | Unique 40-char random string — stored in PHP session, never in the URL |
-| `original_filename` | varchar(191) | As uploaded by the client |
-| `disk_path` | varchar(191) | `sign/{token}.pdf` on local disk |
-| `file_size` | bigint unsigned | Bytes |
-| `status` | varchar(32) | `uploaded` · `editing` · `signed` · `downloaded` |
-| `user_id` | bigint unsigned | Nullable FK → `users`, nullOnDelete |
-| `ip_address` | varchar(45) | Nullable, IPv4 + IPv6 |
-| `created_at` / `updated_at` | timestamp | |
-
-### `SignSessionStatus` enum
-
-```php
-case Uploaded   = 'uploaded';
-case Editing    = 'editing';
-case Signed     = 'signed';
-case Downloaded = 'downloaded';
-```
+| `documents` | `storage/app/private` | owner PDFs, signed PDFs |
+| `local` (default) | `storage/app` | sign session uploads |
 
 ---
 
 ## Routes
 
 ```
-GET    /                    home          Public marketing homepage
-GET    /features            features      Features page
-GET    /pricing             pricing       Pricing page
-GET    /faq                 faq           FAQ page
+GET    /                          home               Public homepage
+GET    /features                  features           Features page
+GET    /pricing                   pricing            Pricing page
+GET    /faq                       faq                FAQ page
 
-GET    /overview            overview      Workspace overview  [auth + verified]
-GET    /profile             profile.edit  [auth]
-PATCH  /profile             profile.update
-DELETE /profile             profile.destroy
+GET    /overview                  overview           Workspace  [auth + verified]
+GET    /documents                 documents.index
+GET    /documents/{document}      documents.show
+DELETE /documents/{document}      documents.destroy
+GET    /documents/{document}/download  documents.download
+POST   /documents/{document}/send      documents.send
 
-GET    /sign                sign.index    Upload page (guests + auth)
-POST   /sign                sign.store    Handle upload
-GET    /sign/editor         sign.editor   PDF editor
-GET    /sign/pdf            sign.pdf      Serve original PDF (session-gated)
-GET    /sign/complete       sign.complete Download / account CTA page
-```
+GET    /sign                      sign.index         Upload page (guests + auth)
+POST   /sign                      sign.store         Handle upload
+GET    /sign/editor               sign.editor        PDF editor
+GET    /sign/pdf                  sign.pdf           Serve original PDF
+GET    /sign/complete             sign.complete      Download / account CTA
 
-Auth routes (Breeze): `/login`, `/register`, `/forgot-password`, `/verify-email`, etc.
-
----
-
-## Signing Flow
-
-### 1 — Upload (`/sign`)
-
-- User selects a PDF (max 25 MB, `mimes:pdf` validation)
-- `UploadController` → `SignSessionService::upload()`
-  - Generates a 40-char random `$token`
-  - Stores file at `storage/app/sign/{token}.pdf`
-  - Creates `sign_sessions` record (`status = uploaded`)
-- `sign_token` written to the PHP session
-- Redirect → `/sign/editor`
-
-### 2+3 — Editor (`/sign/editor`)
-
-- `EditorController` resolves session from `sign_token` in the PHP session
-- Inertia renders `Sign/Editor.vue` with `pdfUrl`, `filename`, `fileSize`
-- Browser fetches `/sign/pdf` (session cookie auth — token never in the URL)
-- **pdfjs-dist** renders all PDF pages onto `<canvas>` elements
-- Multi-page scroll, page thumbnails, zoom in/out
-
-**Signature creation (right panel):**
-- **Draw** — freehand on a `<canvas>` (blue ink, `lineWidth: 2.5`)
-- **Type** — full name in 3 font styles (Script / Cursive / Print), live preview
-- **Upload** — any image file
-
-**Placement modes:**
-| Mode | Behaviour |
-|---|---|
-| Place Manually | Click anywhere on the PDF canvas to drop the signature |
-| Detect Fields | Scans the text layer, groups fragmented text runs into lines, scores keyword confidence (colon after keyword +60, short line +40, digit prefix −80, etc.) |
-| Auto Place | Runs Detect, places at the highest-confidence field automatically |
-
-Placed signatures are draggable, resizable (8-handle), and deletable.
-
-### 4 — PDF Generation (browser-side, pdf-lib)
-
-1. Fetches original PDF bytes via `/sign/pdf`
-2. `PDFDocument.load()` parses the PDF
-3. For each placed signature:
-   - **Drawn / uploaded images:** re-drawn onto a white-filled canvas (`fillRect #ffffff` then `drawImage`) before `toDataURL()` — prevents transparent PNG being invisible in PDF viewers
-   - **Typed text:** rendered onto white canvas with correct font/style/size
-   - `embedPng()` + `drawImage()` writes the signature into the PDF page at converted coordinates (canvas px → PDF points)
-4. `pdflibDoc.save()` → `Uint8Array`
-5. Bytes stored in `window.__cubsignSignedPdf`
-6. Inertia navigates to `/sign/complete`
-
-**Coordinate conversion:**
-```
-scaleX = pageWidthPts  / canvasWidthPx
-scaleY = pageHeightPts / canvasHeightPx
-pdfX   = sig.x * scaleX
-pdfY   = pageHeightPts - (sig.y + sig.h) * scaleY   // PDF Y-axis is bottom-up
-pdfW   = sig.w * scaleX
-pdfH   = sig.h * scaleY
-```
-
-### 5 — Complete (`/sign/complete`)
-
-- Two-card layout: **Download Now** (guest) · **Create Free Account** (recommended)
-- Guest download reads `window.__cubsignSignedPdf` and triggers a browser download
-- If the user refreshed the page (bytes lost from memory), shows an amber warning with a re-upload link
-
----
-
-## Logging
-
-CubSign writes to a **dedicated log channel** separate from `laravel.log`.
-
-```bash
-# Tail logs in real time
-tail -f storage/logs/cubsign.log
-```
-
-Logs rotate daily and are kept for **30 days**:
-```
-storage/logs/cubsign.log
-storage/logs/cubsign-YYYY-MM-DD.log
-```
-
-### Events logged
-
-| Event | Level | Context |
-|---|---|---|
-| PDF upload received | `info` | ip, user_id, filename, size, mime |
-| PDF stored on disk | `debug` | token†, disk_path, filename, size |
-| SignSession record created | `debug` | id, token†, status, user_id |
-| Upload complete — session issued | `info` | token†, filename, status |
-| Editor loaded | `info` | token†, filename, size, status, user_id |
-| Editor — no session token | `warning` | ip |
-| Editor — token not found in DB | `warning` | token†, ip |
-| PDF served to browser | `info` | token†, filename, size |
-| PDF serve — no session token | `warning` | ip |
-| PDF serve — token not found in DB | `warning` | token†, ip |
-| Complete page loaded | `info` | token†, filename, status, user_id |
-| Complete — no session token | `warning` | ip |
-| Complete — token not found in DB | `warning` | token†, ip |
-
-† Token is **partially masked** — logged as `…last8chars` to allow session tracing without exposing the full secret.
-
-**Example log line:**
-```
-[2026-06-22 14:23:01] cubsign.INFO: Editor loaded {"token":"…a3f9c2b1","filename":"NDA.pdf","size":245760,"status":"uploaded","user_id":null}
+GET    /sign/{token}              recipient.sign     Recipient signing page
+GET    /sign/{token}/pdf          recipient.pdf      Serve PDF to recipient
+POST   /sign/{token}/complete     recipient.complete Submit signed fields
 ```
 
 ---
 
 ## Naming Conventions
 
-| Banned | Use instead |
+| Banned | Correct |
 |---|---|
 | Dashboard | Workspace |
 | Admin Panel | Workspace |
@@ -290,60 +268,33 @@ These terms are prohibited in route names, controller names, Vue filenames, and 
 
 ---
 
-## Public Website (FROZEN)
+## Logging
 
-The marketing website is complete and **must not be modified** without explicit instruction.
+CubSign writes to a dedicated log channel:
 
-| Route | Page |
-|---|---|
-| `/` | Home (9 sections: Hero, Trust Bar, Demo, Features, How It Works, Testimonials, Pricing, FAQ, CTA) |
-| `/features` | Features detail page |
-| `/pricing` | Pricing tiers |
-| `/faq` | FAQ accordion |
+```bash
+tail -f storage/logs/cubsign.log
+```
 
-All visitors see the marketing homepage. Authenticated users are **never auto-redirected** away from it.
+Logs rotate daily and are kept for 30 days. The token is partially masked (`…last8chars`) in all log entries.
 
 ---
 
-## Out of Scope for V1
+## Remaining Planned Features
 
-These features will **not** be built:
-
-- Teams / multi-user workspaces
-- Send for signature (requesting others to sign)
-- Public API or webhooks
-- Mobile app
-- AWS S3 / cloud storage
-- OCR or AI document understanding
-- Bulk signing
-- Email notifications
-- Stripe / payments
+- **Audit Trail PDF** — downloadable certificate with all signing events, timestamps, and IP addresses
+- **Completion Certificate** — branded PDF summary attached to each completed document
+- **Document Expiration** — auto-expire unsigned documents after a configurable number of days
+- **Reminders** — automatic follow-up emails to recipients who have not yet signed
+- **Template Enhancements** — reusable field layouts, bulk send from template
+- **Team Workspaces** — shared documents across team members with role-based access
+- **Branding Customization** — custom logo and colors in invitation emails
+- **API Access** — REST API for programmatic document sending and status polling
+- **Webhooks** — POST to a configured URL on signing events (sent, signed, completed)
+- **Production Hardening** — S3 storage, queue-based email and PDF generation, rate limiting, virus scan on upload
 
 ---
 
-## V1 Progress
+## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for the detailed build history.
-
-### Completed
-
-- [x] Public marketing website (Home, Features, Pricing, FAQ) — frozen
-- [x] Laravel Breeze authentication (login, register, profile, email verification)
-- [x] Workspace Overview page (authenticated + verified)
-- [x] PDF upload with validation (25 MB max, PDF only, session token)
-- [x] PDF viewer — pdfjs-dist, multi-page, page thumbnails, zoom in/out
-- [x] Signature creation — Draw (canvas), Type (3 fonts + live preview), Upload
-- [x] Signature placement — Manual click, Detect Fields, Auto Place
-- [x] Field detection — text fragmentation fix, keyword confidence scoring
-- [x] Signature interaction — drag, resize (8 handles), delete
-- [x] Browser-side PDF embedding — pdf-lib, white-background PNG fix, coordinate conversion
-- [x] Sign Complete page — download guest PDF, create account CTA
-- [x] Dedicated `cubsign` log channel — full flow tracing across all 4 controllers + service
-- [x] Vite/Rolldown EVAL warning suppressed for pdfjs-dist
-
-### Pending
-
-- [ ] Status progression: `editing` → `signed` → `downloaded` updated in DB as user progresses
-- [ ] Server-side signed PDF storage (currently browser memory only)
-- [ ] Workspace document history list (authenticated users)
-- [ ] Saved / reusable signatures per account
+See [docs/CHANGELOG.md](docs/CHANGELOG.md) for the full build history.

@@ -8,6 +8,101 @@ All notable changes to CubSign are documented here.
 
 ---
 
+## [0.10.0] — 2026-06-24
+
+### Phase 5 — Signed PDF Generation + Download
+
+**Status: Core Signing Engine Complete**
+
+All five phases of the core signing engine are now complete. CubSign can receive a document, route it through sequential recipients via email, collect signatures, generate a final signed PDF overlaying all recipient fields, and serve that PDF for download.
+
+#### Added — `app/Services/SignedPdfService.php`
+
+- New service class; single public method `generate(Document $document): ?string`
+- Opens `document->pdf_path` (the owner-signed base PDF) via FPDI in point units
+- Iterates all PDF pages; for each page overlays every recipient field that has a signed value
+- Coordinate conversion: `pdf_pts = field_pixels / editorScale` — FPDF uses top-left origin (same as CSS/browser), so no Y-flip is applied
+- Field rendering:
+  - `signature` / `initials` — decodes base64 PNG data URL, writes to temp file, calls `Image()`
+  - `date` / `name` / `text` — `Text()` with Helvetica, font size clamped to 8–14 pt
+  - `checkbox` — two-line tick mark drawn with `Line()` in blue
+- Output stored at `signed/user_{id}/signed_{doc_id}_{timestamp}.pdf` on `documents` disk
+- All temporary PNG files cleaned up after generation
+- Returns storage-relative path on success; returns `null` and logs on failure
+
+#### Added — `database/migrations/…add_signed_pdf_path_to_documents_table.php`
+
+- Adds `signed_pdf_path string nullable` after `pdf_path`
+
+#### Changed — `app/Models/Document.php`
+
+- Added `signed_pdf_path` to `$fillable`
+
+#### Changed — `app/Http/Controllers/RecipientSignController.php`
+
+- In the `else` (document completion) branch, after setting `status='completed'`:
+  - Calls `SignedPdfService::generate()`
+  - Updates `document->signed_pdf_path` with returned path
+  - Full try/catch — PDF generation failure is logged; document remains `completed` regardless
+
+#### Changed — `app/Http/Controllers/Web/Workspace/DocumentDownloadController.php`
+
+- Now selects `signed_pdf_path` when `document->status === 'completed'` and the path is non-null
+- Falls back to `pdf_path` for all other statuses or when `signed_pdf_path` is absent
+- 404 guard for missing or inaccessible files
+
+#### Changed — `resources/js/Pages/Workspace/Documents.vue`
+
+- Added `completed` to `statusLabel()`, `statusBadgeClass()`, and `STATUS_OPTIONS` filter list
+- Corrected `archived` entry in `STATUS_OPTIONS` (was incorrectly labelled "Completed")
+
+#### Composer packages added
+
+- `setasign/fpdf 1.9.0`
+- `setasign/fpdi 2.6.8`
+
+---
+
+## [0.9.0] — 2026-06-24
+
+### Phase 4 — Email Delivery
+
+#### Added — `app/Mail/RecipientInvitationMail.php`
+
+- Mailable class; constructor accepts `Recipient $recipient`
+- Loads `document` and `document.user` relationships
+- Exposes `$signUrl`, `$documentName`, `$ownerName` to view
+- Subject: `"{ownerName} has requested your signature on "{documentName}"`
+- Content view: `emails.recipient-invitation`
+
+#### Added — `resources/views/emails/recipient-invitation.blade.php`
+
+- Clean HTML email with CubSign blue header branding
+- Body: recipient name greeting, owner name, document name
+- "Review & Sign" CTA button linking to `$signUrl`
+- Plain-text fallback URL below the button
+- Footer disclaimer: "You received this because someone requested your signature"
+
+#### Changed — `app/Http/Controllers/Web/Workspace/DocumentsController.php`
+
+- `send()` method: after creating the first recipient with `status='sent'`:
+  - Creates `recipient_notified` activity (name, email in meta)
+  - Sends `RecipientInvitationMail` to first recipient inside try/catch
+  - Email failure is logged; response is never aborted
+
+#### Changed — `app/Http/Controllers/RecipientSignController.php`
+
+- `complete()` method: when a next pending recipient is activated:
+  - Creates `recipient_notified` activity
+  - Sends `RecipientInvitationMail` to next recipient inside try/catch
+
+#### Mail configuration
+
+- All settings read from `.env` via standard `MAIL_*` variables
+- No credentials hardcoded — supports `smtp`, `mailtrap`, `log`, `ses`, or any Laravel driver
+
+---
+
 ## [0.8.0] — 2026-06-20
 
 ### Homepage — Full Redesign (v0.8.0)

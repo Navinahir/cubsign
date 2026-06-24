@@ -1,6 +1,6 @@
 # CubSign — Development Progress
 
-Last updated: 2026-06-20
+Last updated: 2026-06-24
 
 ---
 
@@ -10,7 +10,7 @@ Last updated: 2026-06-20
 
 - [x] Laravel 12 + PHP 8.2 project scaffold
 - [x] Vue 3 + Inertia.js + TailwindCSS v3 frontend
-- [x] MySQL migrations + Redis session/cache/queue
+- [x] MySQL migrations + Redis session / cache / queue
 - [x] Laravel Breeze authentication (Login, Register, Forgot Password, Email Verification, Profile)
 - [x] Custom directory structure (Services, Repositories, Actions, Enums, Controllers/Web, Controllers/Api)
 - [x] `WorkspaceLayout.vue` — sidebar + topbar
@@ -20,142 +20,130 @@ Last updated: 2026-06-20
 
 ---
 
-## Public Website Foundation
+## Public Website
 
-**Status: Complete**
+**Status: Complete — Frozen at v0.8.0**
 
 - [x] `PublicLayout.vue` — sticky navbar, footer, mobile hamburger
-- [x] `HomeController` — auth redirect: authenticated → `/overview`
-- [x] `Home.vue`, `Features.vue`, `Pricing.vue`, `Faq.vue`
-- [x] Routes: `/`, `/features`, `/pricing`, `/faq` (all named)
-- [x] `Welcome.vue` removed
+- [x] `Home.vue` — 9-section premium redesign (Hero, Trust Bar, Demo, Features, How It Works, Testimonials, Pricing, FAQ, CTA)
+- [x] `Features.vue`, `Pricing.vue`, `Faq.vue`
+- [x] Routes: `/`, `/features`, `/pricing`, `/faq`
 
 ---
 
-## Landing Page Polish
+## Week 2 — Signing Flow (Upload + Editor + Self-Sign)
 
 **Status: Complete**
 
-- [x] Hero: enlarged headline, improved spacing and typography
-- [x] Hero subheadline: two-sentence copy per product spec
-- [x] Features: premium white cards with shadow, improved icon spacing
-- [x] Pricing: updated price labels (Free: $0 forever, Pro: Coming Soon, Founder: Limited Lifetime Offer)
-- [x] FAQ: accordion wrapped in bordered card container
-- [x] Social Proof section: "Why choose CubSign?" with 4 trust cards
-- [x] CTA section: updated headline and subheadline copy
-- [x] Footer: rebuilt to 3 columns (Brand, Product, Account); "Built by Cubiz Infotech"
-
----
-
-## Landing Page — History
-
-**Status: Superseded by Homepage Redesign v0.8.0**
-
-- [x] Feature cards updated to reflect actual MVP only: Self Sign PDFs, Draw or Type Signatures, Secure Documents, Works Everywhere
-- [x] Removed non-MVP feature cards: Send for Signature, Reusable Templates, Audit Trail
-- [x] Feature section subheading updated to honest copy
-- [x] Hero trust line replaced with 3 explicit trust badges: "No account required", "Free forever", "No credit card required"
-- [x] Pricing corrected — Free: $0/forever + 3 real features; Pro: no price, data-driven "Coming Soon" badge; Founder: "Limited Lifetime Offer" label, no feature list
-- [x] Pricing badge template made data-driven (`plan.badge`)
-- [x] Empty feature list handled gracefully with `v-if="plan.features.length"` guard
-
-> No further changes to the marketing website. All development effort now shifts to the core signing flow.
-
----
-
-## Week 2 — Signing Flow (Upload Module)
-
-**Status: Upload complete — Editor next**
-
-- [x] `sign_sessions` migration
-- [x] `SignSession` model + `SignSessionRepository` + `SignSessionService`
-- [x] `UploadPdfRequest` — `mimes:pdf`, max 25 MB, friendly messages
-- [x] `Sign\IndexController`, `Sign\UploadController`, `Sign\EditorController`, `Sign\CompleteController`
-- [x] Routes: `/sign`, `/sign/upload`, `/sign/editor/{token}`, `/sign/complete/{token}`
+- [x] `sign_sessions` migration + `SignSession` model + repository + service
+- [x] `UploadPdfRequest` — `mimes:pdf`, max 25 MB
+- [x] `Sign\UploadController`, `EditorController`, `PdfController`, `CompleteController`
 - [x] `SignLayout.vue` — 4-step progress indicator
-- [x] `Sign/Index.vue` — signing entry page
-- [x] `Sign/Upload.vue` — drag-and-drop upload with progress and errors
-- [x] `Sign/Editor.vue` — placeholder (upload success, editor skeleton)
-- [x] `Sign/Complete.vue` — placeholder
-
-Homepage full redesign (v0.8.0):
-- [x] Section 1 — Hero: split layout, left text + right CSS/SVG document illustration with floating cards
-- [x] Section 2 — Trust Bar: 4-column compact row (Secure Signing / Audit Trails / Fast Workflows / Works Everywhere)
-- [x] Section 3 — Interactive Demo: 3-column card, Draw/Type/Upload tabs (Vue reactive), PDF placement preview, completed doc + "Finish Signing →" CTA
-- [x] Section 4 — Features: expanded to 6 cards (Quick Sign live, 5x Coming Soon), 3-column grid
-- [x] Section 5 — How It Works: 3 standalone cards (Upload / Sign / Download)
-- [x] Section 6 — Testimonials: 3 quote cards with avatar initials
-- [x] Section 7 — Pricing: unchanged (Free / Pro / Founder)
-- [x] Section 8 — FAQ: updated copy, replaced "Do recipients need an account?" with "Do I need to create an account?"
-- [x] Section 9 — Final CTA: updated headline "Ready to sign real documents?", platform badges replace checkmarks, 3-step flow strip removed
-- [x] Removed: Social Proof "Why choose CubSign?" section (absorbed into Trust Bar + Testimonials)
-
-Homepage CTA conversion (v0.7.3):
-- [x] Headline: "Ready to sign your document?" — direct question, highest intent
-- [x] Primary CTA: "Start Signing Now" → `route('sign.index')` — clear action, correct destination
-- [x] Trust badges: "Download instantly" replaces "Free forever"
-- [x] Flow strip replaced with premium 3-step cards (Upload / Add Signature / Download Signed PDF)
-- [x] Responsive arrows: → on desktop, ↓ on mobile
-
-Homepage CTA (v0.7.2):
-- [x] Final CTA replaced with premium gradient card (`rounded-[32px]`, `from-blue-500 to-blue-700`, `shadow-2xl`)
-- [x] Badge, headline, subheadline, two CTA buttons, trust badges, Upload→Sign→Download flow strip
-
-UI polish (v0.7.1):
-- [x] Hero: amber "Continue Signing" banner removed; replaced with subtle gray text link
-- [x] DevNav: orange panel replaced with gear icon + toggleable compact white panel
-- [x] Editor: session token debug line removed
-
-Developer experience (v0.7.0):
-- [x] `app.isLocal` shared via `HandleInertiaRequests` — available on every page
-- [x] `HomeController` passes `hasSignSession` prop; "Continue Signing →" button shown when session exists
-- [x] `DevNav.vue` created — local-only floating dev shortcuts (Upload / Editor / Complete / Workspace)
-- [x] `DevNav` mounted in all three layouts (Public, Sign, Workspace)
-
-Architecture corrections (v0.6.1):
-- [x] Homepage no longer redirects authenticated users (marketing always visible)
-- [x] Sign routes restructured — `/sign` is upload page, token in PHP session (not URL)
-- [x] `sign.upload.store` → `sign.store`, `sign.editor/{token}` → `sign.editor`
-
-Next in this flow:
-- [ ] PDF preview with PDF.js
-- [ ] Signature creation (draw canvas + type mode)
-- [ ] Signature placement on PDF
-- [ ] Register/login gate before download
-- [ ] Generate and serve signed PDF
+- [x] `Sign/Upload.vue` — drag-and-drop upload with progress and validation errors
+- [x] PDF preview — pdfjs-dist, multi-page scroll, page thumbnails, zoom
+- [x] Signature creation — Draw (canvas), Type (3 font styles + live preview), Upload image
+- [x] Signature placement — Manual click, Detect Fields, Auto Place
+- [x] Field detection — text fragmentation fix, keyword confidence scoring
+- [x] Signature interaction — drag, resize (8 handles), delete
+- [x] Browser-side PDF embedding — pdf-lib, white-background PNG fix, coordinate conversion
+- [x] `Sign/Complete.vue` — guest download, create account CTA
+- [x] Dedicated `cubsign` log channel — full flow tracing, partial token masking
 
 ---
 
-## Week 3 — Signature Module
+## Phase 1 — Document Workspace Foundation
 
-**Status: Not started**
+**Status: Complete**
 
----
-
-## Week 4 — Self Sign
-
-**Status: Not started**
-
----
-
-## Week 5 — Send for Signature
-
-**Status: Not started**
+- [x] `documents` table migration
+- [x] `Document` model with soft deletes
+- [x] Draft document created on upload
+- [x] Editor state auto-save (`editor_state` JSON column)
+- [x] Draft restore — editor reloads placed fields and recipients on revisit
+- [x] `DocumentsController` — index, show, store, destroy
+- [x] `Documents.vue` — document list with status badges
+- [x] `DocumentShow.vue` — document detail, activity timeline
+- [x] Workspace layout integrated with document navigation
 
 ---
 
-## Week 6 — Templates and Audit Trail
+## Phase 2 — Recipients + Activity Tracking
 
-**Status: Not started**
+**Status: Complete**
+
+- [x] `recipients` table migration
+- [x] `document_activities` table migration
+- [x] `Recipient` model
+- [x] `DocumentActivity` model
+- [x] `Document` hasMany `recipients` and `activities` relationships
+- [x] Recipient configuration in editor (name, email, color, signing order)
+- [x] Field-to-recipient assignment in editor UI
+- [x] `DocumentsController::send()` — creates recipients and marks document `sent`
+- [x] Activity events: `document_sent`
 
 ---
 
-## Week 7 — Stripe Billing
+## Phase 3 — Recipient Signing
 
-**Status: Not started**
+**Status: Complete**
+
+- [x] `RecipientSignController` — show, pdf, complete
+- [x] Token-based signing links (`/sign/{token}`)
+- [x] Sequential signing — only `sent` recipient may sign; `pending` recipients blocked
+- [x] Already-signed protection — 422 on duplicate submission
+- [x] Invalid token protection — 404
+- [x] `RecipientSign.vue` — signing page with field rendering and submission
+- [x] Signed fields stored per recipient (`signed_fields` JSON)
+- [x] Recipient status transitions: `pending` → `sent` → `signed`
+- [x] Activity events: `recipient_signed`
 
 ---
 
-## Week 8 — Testing and Launch
+## Phase 4 — Email Delivery
 
-**Status: Not started**
+**Status: Complete**
+
+- [x] `RecipientInvitationMail` Mailable class
+- [x] `resources/views/emails/recipient-invitation.blade.php` — branded HTML email
+- [x] First recipient auto-notified when owner calls `send()`
+- [x] Next recipient auto-notified when current recipient completes signing
+- [x] `recipient_notified` activity event created for each notification
+- [x] Error-safe delivery — `try/catch` around all `Mail::to()->send()` calls
+- [x] Mail driver configurable via `.env` (`MAIL_MAILER`, `MAIL_HOST`, etc.)
+
+---
+
+## Phase 5 — Signed PDF Generation + Download
+
+**Status: Complete**
+
+- [x] `signed_pdf_path` column added to `documents` table (nullable string)
+- [x] `SignedPdfService` — overlays all recipient `signed_fields` onto base PDF via FPDI
+- [x] Signature / initials rendered as PNG images
+- [x] Date / name / text rendered with Helvetica font
+- [x] Checkbox rendered as a two-line tick mark
+- [x] Coordinate conversion: `pdf_pts = field_pixels / editorScale` (no Y-flip — FPDF top-left origin)
+- [x] Output stored at `signed/user_{id}/signed_{doc_id}_{timestamp}.pdf`
+- [x] `DocumentDownloadController` serves `signed_pdf_path` for completed documents
+- [x] `Documents.vue` — `completed` status badge and label added
+- [x] `setasign/fpdi` and `setasign/fpdf` installed via Composer
+
+---
+
+## Remaining Work
+
+### Planned
+
+- [ ] Audit Trail PDF — timestamped signing log as downloadable PDF
+- [ ] Completion Certificate — branded PDF summary attached to completed documents
+- [ ] Document Expiration — auto-expire unsigned documents
+- [ ] Reminders — follow-up emails for pending recipients
+- [ ] Template Enhancements — reusable layouts and bulk send
+- [ ] Production Hardening — S3 storage, queued email and PDF generation, rate limiting
+
+### Deferred
+
+- Team Workspaces
+- Branding Customization
+- API Access
+- Webhooks
