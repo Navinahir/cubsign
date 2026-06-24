@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import MarketingSeo from '@/Components/MarketingSeo.vue';
+import { Link } from '@inertiajs/vue3';
 
 const categories = [
     {
@@ -13,11 +14,15 @@ const categories = [
             },
             {
                 question: 'Do I need to create an account?',
-                answer: 'You need an account to upload and manage your documents. However, recipients you send documents to for signature do not need a CubSign account — they can sign directly from a secure email link.',
+                answer: 'You can sign a PDF without an account. Creating an account unlocks document storage, sending for signature, templates, and your signing history.',
             },
             {
                 question: 'Is CubSign free to use?',
-                answer: 'Yes. CubSign offers a free plan that includes 3 signed documents per month at no charge. No credit card is required to get started.',
+                answer: 'Yes. CubSign is completely free during early access. No credit card is required to get started.',
+            },
+            {
+                question: 'Why is CubSign free?',
+                answer: 'We are currently in Early Access and collecting feedback from users before introducing paid plans.',
             },
             {
                 question: 'What file formats are supported?',
@@ -68,27 +73,31 @@ const categories = [
         ],
     },
     {
-        title: 'Plans & Billing',
+        title: 'Early Access & Pricing',
         items: [
             {
-                question: 'What\'s included in the free plan?',
-                answer: 'The free plan includes 3 documents per month, self-sign functionality, and the ability to download signed PDFs. No credit card required.',
+                question: 'What\'s included during early access?',
+                answer: 'Early access includes unlimited signatures, unlimited recipients, unlimited downloads, secure cloud storage, audit history, and full PDF signing — all at no cost.',
             },
             {
-                question: 'When will the Pro and Founder plans be available?',
-                answer: 'Pro and Founder plans are coming soon. Sign up for the free plan to be notified when they launch. Founder pricing is a limited one-time offer for early adopters.',
+                question: 'Will CubSign always be free?',
+                answer: 'CubSign is free during early access while we validate the product. Paid plans may be introduced later, and early access users will be notified well in advance.',
             },
             {
-                question: 'What is the Founder plan?',
-                answer: 'The Founder plan is a one-time lifetime deal for early adopters. Pay once and get Pro-level access forever — including all future features — at a fixed price.',
+                question: 'When will paid plans be available?',
+                answer: 'Paid plans will be introduced after early access ends. We will notify all users in advance and offer preferential options to early adopters.',
             },
             {
-                question: 'Can I upgrade or downgrade my plan later?',
-                answer: 'Yes. You can change your plan at any time from your workspace billing settings. Upgrades take effect immediately.',
+                question: 'Do I need a credit card?',
+                answer: 'No. CubSign early access requires no credit card. Create a free account and start signing immediately.',
             },
         ],
     },
 ];
+
+const faqSchema = computed(() =>
+    categories.flatMap((category) => category.items),
+);
 
 const openItem = ref(null);
 
@@ -103,10 +112,14 @@ function isOpen(categoryIndex, itemIndex) {
 </script>
 
 <template>
-    <Head title="FAQ — CubSign" />
+    <MarketingSeo
+        title="FAQ — CubSign | Free PDF Signing Help"
+        description="Answers to common questions about CubSign — free early access, PDF signing, security, sending for signature, and more."
+        path="/faq"
+        :faq-schema="faqSchema"
+    />
 
     <PublicLayout>
-        <!-- Header -->
         <section class="bg-gradient-to-b from-white to-gray-50 px-4 py-20 text-center sm:px-6 lg:px-8">
             <div class="mx-auto max-w-2xl">
                 <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">FAQ</span>
@@ -120,17 +133,16 @@ function isOpen(categoryIndex, itemIndex) {
             </div>
         </section>
 
-        <!-- FAQ content -->
         <section class="bg-white px-4 py-16 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-3xl space-y-14">
                 <div v-for="(category, categoryIndex) in categories" :key="category.title">
                     <h2 class="mb-6 text-lg font-bold text-gray-900">{{ category.title }}</h2>
 
-                    <div class="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-gray-50">
+                    <div class="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
                         <div v-for="(item, itemIndex) in category.items" :key="itemIndex">
                             <button
                                 type="button"
-                                class="flex w-full items-center justify-between px-6 py-5 text-left"
+                                class="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-white"
                                 @click="toggle(categoryIndex, itemIndex)"
                             >
                                 <span class="pr-4 text-sm font-semibold text-gray-900">{{ item.question }}</span>
@@ -139,7 +151,9 @@ function isOpen(categoryIndex, itemIndex) {
                                         'h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200',
                                         isOpen(categoryIndex, itemIndex) ? 'rotate-180' : '',
                                     ]"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
                                 >
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -162,7 +176,6 @@ function isOpen(categoryIndex, itemIndex) {
             </div>
         </section>
 
-        <!-- CTA -->
         <section class="bg-gray-50 px-4 py-16 text-center sm:px-6 lg:px-8">
             <div class="mx-auto max-w-xl">
                 <h2 class="text-2xl font-bold text-gray-900">Still have questions?</h2>
@@ -172,13 +185,13 @@ function isOpen(categoryIndex, itemIndex) {
                 <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                     <Link
                         :href="route('register')"
-                        class="w-full rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white hover:bg-blue-700 sm:w-auto"
+                        class="w-full rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md sm:w-auto"
                     >
                         Get Started Free
                     </Link>
                     <a
                         href="mailto:support@cubsign.com"
-                        class="w-full rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-100 sm:w-auto"
+                        class="w-full rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 sm:w-auto"
                     >
                         Contact Support
                     </a>

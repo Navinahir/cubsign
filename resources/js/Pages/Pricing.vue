@@ -1,220 +1,175 @@
 <script setup>
+import { ref } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import MarketingSeo from '@/Components/MarketingSeo.vue';
+import { Link } from '@inertiajs/vue3';
 
-const plans = [
+const benefits = [
+    'Unlimited signatures',
+    'Unlimited recipients',
+    'Unlimited downloads',
+    'Secure cloud storage',
+    'Audit history',
+    'PDF signing',
+];
+
+const faqs = [
     {
-        name: 'Free',
-        price: '$0',
-        period: 'forever',
-        description: 'For individuals who occasionally need to sign documents.',
-        features: [
-            '3 documents per month',
-            'Self sign PDFs',
-            'Draw, type, or upload signature',
-            'Download signed documents',
-            'Email support',
-        ],
-        cta: 'Get Started Free',
-        ctaRoute: 'register',
-        disabled: false,
-        highlight: false,
+        question: 'Why is CubSign free?',
+        answer: 'We are currently in Early Access and collecting feedback from users before introducing paid plans.',
     },
     {
-        name: 'Pro',
-        price: '$12',
-        period: 'per month',
-        description: 'For professionals who sign and send frequently.',
-        features: [
-            'Unlimited documents',
-            'Send for signature',
-            'Reusable templates',
-            'Full audit trail',
-            'Priority email support',
-            'All Free features',
-        ],
-        cta: 'Coming Soon',
-        ctaRoute: null,
-        disabled: true,
-        highlight: true,
+        question: 'Will CubSign always be free?',
+        answer: 'CubSign is free during early access while we validate the product. Paid plans may be introduced later, and early access users will be notified well in advance.',
     },
     {
-        name: 'Founder',
-        price: '$49',
-        period: 'one-time',
-        description: 'Early adopter lifetime access at a fixed price.',
-        features: [
-            'Everything in Pro',
-            'Lifetime access',
-            'Locked-in pricing forever',
-            'Early access to new features',
-            'Founding member status',
-            'Direct support channel',
-        ],
-        cta: 'Coming Soon',
-        ctaRoute: null,
-        disabled: true,
-        highlight: false,
+        question: 'Do I need a credit card?',
+        answer: 'No credit card is required. Create a free account and start signing immediately.',
+    },
+    {
+        question: 'What happens when paid plans launch?',
+        answer: 'Early access users will receive advance notice and preferential pricing options. Your documents and account remain secure throughout any transition.',
     },
 ];
 
-const comparisons = [
-    { feature: 'Documents per month', free: '3', pro: 'Unlimited', founder: 'Unlimited' },
-    { feature: 'Self sign PDFs', free: true, pro: true, founder: true },
-    { feature: 'Send for signature', free: false, pro: true, founder: true },
-    { feature: 'Reusable templates', free: false, pro: true, founder: true },
-    { feature: 'Audit trail', free: false, pro: true, founder: true },
-    { feature: 'Early access to features', free: false, pro: false, founder: true },
-    { feature: 'Lifetime access', free: false, pro: false, founder: true },
-];
+const openFaq = ref(null);
+
+function toggleFaq(index) {
+    openFaq.value = openFaq.value === index ? null : index;
+}
 </script>
 
 <template>
-    <Head title="Pricing — CubSign" />
+    <MarketingSeo
+        title="Pricing — CubSign | Free During Early Access"
+        description="CubSign is completely free during early access. Unlimited signatures, recipients, and downloads while we improve the platform."
+        path="/pricing"
+        :faq-schema="faqs"
+    />
 
     <PublicLayout>
-        <!-- Header -->
-        <section class="bg-gradient-to-b from-white to-gray-50 px-4 py-20 text-center sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-2xl">
-                <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Pricing</span>
-                <h1 class="mt-3 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-                    Simple, transparent pricing
+        <section class="bg-gradient-to-b from-white to-blue-50/40 px-4 py-20 text-center sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-3xl">
+                <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
+                    <span class="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                    Early Access
+                </span>
+                <h1 class="mt-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                    Free During Early Access
                 </h1>
-                <p class="mt-5 text-lg text-gray-500">
-                    Start free. No credit card required. Upgrade when you're ready.
+                <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-gray-500">
+                    Use CubSign completely free while we improve the platform based on user feedback.
                 </p>
             </div>
         </section>
 
-        <!-- Pricing cards -->
         <section class="bg-white px-4 py-16 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-6xl">
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                    <div
-                        v-for="plan in plans"
-                        :key="plan.name"
-                        :class="[
-                            'relative flex flex-col rounded-2xl border p-8',
-                            plan.highlight
-                                ? 'border-blue-500 shadow-lg shadow-blue-100'
-                                : 'border-gray-200',
-                        ]"
+            <div class="mx-auto max-w-lg">
+                <div class="relative overflow-hidden rounded-3xl border border-blue-200 bg-white p-8 shadow-xl shadow-blue-100/60 sm:p-10">
+                    <div class="absolute right-6 top-6">
+                        <span class="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
+                            Early Access
+                        </span>
+                    </div>
+
+                    <p class="text-sm font-semibold uppercase tracking-widest text-blue-600">Free Plan</p>
+                    <h2 class="mt-2 text-2xl font-bold text-gray-900">Everything included</h2>
+                    <p class="mt-2 text-sm text-gray-500">Full access while we build with your feedback.</p>
+
+                    <div class="mt-8 flex items-baseline gap-2">
+                        <span class="text-6xl font-bold tracking-tight text-gray-900">$0</span>
+                        <span class="text-sm text-gray-400">during early access</span>
+                    </div>
+
+                    <ul class="mt-8 space-y-3.5">
+                        <li
+                            v-for="benefit in benefits"
+                            :key="benefit"
+                            class="flex items-start gap-3 text-sm text-gray-700"
+                        >
+                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {{ benefit }}
+                        </li>
+                    </ul>
+
+                    <Link
+                        :href="route('register')"
+                        class="mt-10 flex w-full items-center justify-center rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md"
                     >
-                        <div
-                            v-if="plan.highlight"
-                            class="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-4 py-1 text-xs font-semibold text-white"
-                        >
-                            Most Popular
-                        </div>
+                        Start Signing Free
+                    </Link>
 
-                        <div class="mb-6">
-                            <h2 class="text-xl font-bold text-gray-900">{{ plan.name }}</h2>
-                            <p class="mt-1 text-sm text-gray-500">{{ plan.description }}</p>
-                            <div class="mt-5 flex items-baseline gap-1">
-                                <span class="text-5xl font-bold text-gray-900">{{ plan.price }}</span>
-                                <span class="ml-1 text-sm text-gray-400">/ {{ plan.period }}</span>
-                            </div>
-                        </div>
+                    <p class="mt-4 text-center text-xs text-gray-400">
+                        No credit card required &middot; Cancel anytime
+                    </p>
+                </div>
 
-                        <ul class="mb-8 flex-1 space-y-3">
-                            <li
-                                v-for="item in plan.features"
-                                :key="item"
-                                class="flex items-start gap-2.5 text-sm text-gray-600"
-                            >
-                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                {{ item }}
-                            </li>
-                        </ul>
+                <p class="mt-8 text-center text-sm text-gray-500">
+                    Prefer to try without an account?
+                    <Link :href="route('sign.index')" class="font-medium text-blue-600 hover:text-blue-700">
+                        Sign a PDF now &rarr;
+                    </Link>
+                </p>
+            </div>
+        </section>
 
-                        <Link
-                            v-if="!plan.disabled"
-                            :href="route(plan.ctaRoute)"
-                            :class="[
-                                'block rounded-xl px-6 py-3 text-center text-sm font-semibold transition-colors',
-                                plan.highlight
-                                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                    : 'bg-gray-900 text-white hover:bg-gray-800',
-                            ]"
-                        >
-                            {{ plan.cta }}
-                        </Link>
+        <section class="bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-2xl">
+                <div class="mb-10 text-center">
+                    <h2 class="text-2xl font-bold text-gray-900">Pricing questions</h2>
+                    <p class="mt-2 text-sm text-gray-500">Common questions about our early access program.</p>
+                </div>
+
+                <div class="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white shadow-sm">
+                    <div v-for="(faq, index) in faqs" :key="faq.question">
                         <button
-                            v-else
-                            disabled
-                            class="w-full cursor-not-allowed rounded-xl bg-gray-100 px-6 py-3 text-sm font-semibold text-gray-400"
+                            type="button"
+                            class="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-gray-50"
+                            @click="toggleFaq(index)"
                         >
-                            {{ plan.cta }}
+                            <span class="pr-4 text-sm font-semibold text-gray-900">{{ faq.question }}</span>
+                            <svg
+                                :class="[
+                                    'h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200',
+                                    openFaq === index ? 'rotate-180' : '',
+                                ]"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
                         </button>
+                        <Transition
+                            enter-active-class="transition-all duration-200 ease-out"
+                            enter-from-class="opacity-0 max-h-0"
+                            enter-to-class="opacity-100 max-h-40"
+                            leave-active-class="transition-all duration-150 ease-in"
+                            leave-from-class="opacity-100 max-h-40"
+                            leave-to-class="opacity-0 max-h-0"
+                        >
+                            <div v-if="openFaq === index" class="overflow-hidden px-6 pb-5 text-sm leading-relaxed text-gray-500">
+                                {{ faq.answer }}
+                            </div>
+                        </Transition>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Comparison table -->
-        <section class="bg-gray-50 px-4 py-16 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-4xl">
-                <h2 class="mb-10 text-center text-2xl font-bold text-gray-900">Compare plans</h2>
-
-                <div class="overflow-x-auto rounded-2xl border border-gray-200 bg-white">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-100">
-                                <th class="px-6 py-4 text-left font-semibold text-gray-900">Feature</th>
-                                <th class="px-6 py-4 text-center font-semibold text-gray-900">Free</th>
-                                <th class="px-6 py-4 text-center font-semibold text-blue-600">Pro</th>
-                                <th class="px-6 py-4 text-center font-semibold text-gray-900">Founder</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <tr v-for="row in comparisons" :key="row.feature">
-                                <td class="px-6 py-4 text-gray-600">{{ row.feature }}</td>
-                                <td class="px-6 py-4 text-center">
-                                    <span v-if="typeof row.free === 'boolean'">
-                                        <svg v-if="row.free" class="mx-auto h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <span v-else class="text-gray-300">—</span>
-                                    </span>
-                                    <span v-else class="font-medium text-gray-900">{{ row.free }}</span>
-                                </td>
-                                <td class="bg-blue-50/30 px-6 py-4 text-center">
-                                    <span v-if="typeof row.pro === 'boolean'">
-                                        <svg v-if="row.pro" class="mx-auto h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <span v-else class="text-gray-300">—</span>
-                                    </span>
-                                    <span v-else class="font-medium text-gray-900">{{ row.pro }}</span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span v-if="typeof row.founder === 'boolean'">
-                                        <svg v-if="row.founder" class="mx-auto h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <span v-else class="text-gray-300">—</span>
-                                    </span>
-                                    <span v-else class="font-medium text-gray-900">{{ row.founder }}</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <section class="bg-blue-600 px-4 py-14 text-center sm:px-6 lg:px-8">
+        <section class="bg-blue-600 px-4 py-16 text-center sm:px-6 lg:px-8">
             <div class="mx-auto max-w-xl">
-                <h2 class="text-2xl font-bold text-white">Start signing for free today</h2>
-                <p class="mt-2 text-blue-100">No credit card required. Cancel anytime.</p>
+                <h2 class="text-2xl font-bold text-white sm:text-3xl">Join early access today</h2>
+                <p class="mt-3 text-blue-100">
+                    Help shape CubSign while enjoying unlimited signing — completely free.
+                </p>
                 <Link
                     :href="route('register')"
-                    class="mt-7 inline-block rounded-xl bg-white px-8 py-3 text-sm font-semibold text-blue-600 hover:bg-blue-50"
+                    class="mt-8 inline-block rounded-xl bg-white px-8 py-3.5 text-sm font-semibold text-blue-600 shadow-sm transition-all hover:-translate-y-px hover:bg-blue-50 hover:shadow-md"
                 >
-                    Get Started Free
+                    Start Signing Free
                 </Link>
             </div>
         </section>

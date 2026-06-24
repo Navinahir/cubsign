@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public website — always visible, no auth redirect
 Route::get('/', HomeController::class)->name('home');
+Route::redirect('/dashboard', '/overview')->name('dashboard');
 Route::get('/features', FeaturesController::class)->name('features');
 Route::get('/pricing', PricingController::class)->name('pricing');
 Route::get('/faq', FaqController::class)->name('faq');

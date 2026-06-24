@@ -1,6 +1,7 @@
 <script setup>
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import MarketingSeo from '@/Components/MarketingSeo.vue';
+import { Link } from '@inertiajs/vue3';
 
 const features = [
     {
@@ -52,10 +53,13 @@ const features = [
 </script>
 
 <template>
-    <Head title="Features — CubSign" />
+    <MarketingSeo
+        title="Features — CubSign | Free PDF Signing"
+        description="Explore CubSign features: self-sign PDFs, send for signature, reusable templates, and full audit trails. Free during early access."
+        path="/features"
+    />
 
     <PublicLayout>
-        <!-- Page header -->
         <section class="bg-gradient-to-b from-white to-gray-50 px-4 py-20 text-center sm:px-6 lg:px-8">
             <div class="mx-auto max-w-3xl">
                 <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Features</span>
@@ -68,18 +72,16 @@ const features = [
             </div>
         </section>
 
-        <!-- Feature detail cards -->
         <section class="bg-white px-4 py-16 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-5xl space-y-12">
                 <div
                     v-for="(feature, index) in features"
                     :key="feature.title"
                     :class="[
-                        'flex flex-col gap-8 rounded-2xl border border-gray-100 bg-gray-50 p-8 lg:flex-row lg:items-start',
+                        'flex flex-col gap-8 rounded-2xl border border-gray-100 bg-gray-50 p-8 shadow-sm transition-shadow hover:shadow-md lg:flex-row lg:items-start',
                         index % 2 === 1 ? 'lg:flex-row-reverse' : '',
                     ]"
                 >
-                    <!-- Icon -->
                     <div class="shrink-0">
                         <div :class="['flex h-14 w-14 items-center justify-center rounded-2xl', feature.color]">
                             <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
@@ -88,7 +90,6 @@ const features = [
                         </div>
                     </div>
 
-                    <!-- Content -->
                     <div class="flex-1">
                         <h2 class="text-xl font-bold text-gray-900">{{ feature.title }}</h2>
                         <p class="mt-3 text-sm leading-relaxed text-gray-500">{{ feature.description }}</p>
@@ -109,23 +110,22 @@ const features = [
             </div>
         </section>
 
-        <!-- CTA -->
         <section class="bg-gray-50 px-4 py-16 text-center sm:px-6 lg:px-8">
             <div class="mx-auto max-w-xl">
                 <h2 class="text-2xl font-bold text-gray-900">Start signing for free</h2>
-                <p class="mt-3 text-gray-500">No credit card required. 3 documents free every month.</p>
+                <p class="mt-3 text-gray-500">Free during early access. No credit card required.</p>
                 <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                     <Link
                         :href="route('register')"
-                        class="w-full rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white hover:bg-blue-700 sm:w-auto"
+                        class="w-full rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md sm:w-auto"
                     >
                         Get Started Free
                     </Link>
                     <Link
-                        :href="route('pricing')"
-                        class="w-full rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-100 sm:w-auto"
+                        :href="route('sign.index')"
+                        class="w-full rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 sm:w-auto"
                     >
-                        View Pricing
+                        Sign a PDF Now
                     </Link>
                 </div>
             </div>

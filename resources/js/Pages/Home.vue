@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import MarketingSeo from '@/Components/MarketingSeo.vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     hasSignSession: {
@@ -24,23 +25,23 @@ function toggleFaq(index) {
 const trustItems = [
     {
         icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
-        title: 'Secure Signing',
+        title: 'Secure PDF Signing',
         description: 'Bank-grade encryption',
     },
     {
-        icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-        title: 'Audit Trails',
+        icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+        title: 'Encrypted Documents',
+        description: 'Protected in transit & at rest',
+    },
+    {
+        icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
+        title: 'Audit Trail',
         description: 'Court-ready evidence',
     },
     {
         icon: 'M13 10V3L4 14h7v7l9-11h-7z',
-        title: 'Fast Workflows',
+        title: 'Fast Delivery',
         description: 'Sign in under 30 seconds',
-    },
-    {
-        icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-        title: 'Works Everywhere',
-        description: 'Desktop and mobile',
     },
 ];
 
@@ -60,15 +61,7 @@ const featureCards = [
         icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
         iconBg: 'bg-violet-50',
         iconColor: 'text-violet-600',
-        badge: 'Coming Soon',
-    },
-    {
-        title: 'Bulk Sign',
-        description: 'Sign multiple documents at once with a single signature for high-volume workflows.',
-        icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
-        iconBg: 'bg-amber-50',
-        iconColor: 'text-amber-600',
-        badge: 'Coming Soon',
+        badge: null,
     },
     {
         title: 'Templates',
@@ -76,7 +69,7 @@ const featureCards = [
         icon: 'M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2',
         iconBg: 'bg-emerald-50',
         iconColor: 'text-emerald-600',
-        badge: 'Coming Soon',
+        badge: null,
     },
     {
         title: 'Audit Trails',
@@ -84,7 +77,7 @@ const featureCards = [
         icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
         iconBg: 'bg-rose-50',
         iconColor: 'text-rose-600',
-        badge: 'Coming Soon',
+        badge: null,
     },
     {
         title: 'Team Access',
@@ -92,11 +85,42 @@ const featureCards = [
         icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
         iconBg: 'bg-cyan-50',
         iconColor: 'text-cyan-600',
-        badge: 'Coming Soon',
+        badge: null,
     },
 ];
 
-// ─── Testimonials ─────────────────────────────────────────────────
+const earlyAccessBenefits = [
+    'Unlimited signatures',
+    'Unlimited recipients',
+    'Unlimited downloads',
+    'Secure cloud storage',
+    'Audit history',
+    'PDF signing',
+];
+
+const faqs = [
+    {
+        question: 'Is CubSign free to use?',
+        answer: 'Yes. CubSign is completely free during early access. You can upload, sign, send for signature, and download PDFs without any charge or credit card required.',
+    },
+    {
+        question: 'Why is CubSign free?',
+        answer: 'We are currently in Early Access and collecting feedback from users before introducing paid plans.',
+    },
+    {
+        question: 'Do I need to create an account to sign?',
+        answer: 'No. You can upload a PDF, add your signature and download the signed document without creating an account. An account unlocks document storage and sending for signature.',
+    },
+    {
+        question: 'Are my documents secure?',
+        answer: 'All documents are stored with industry-standard encryption. Access is restricted to authorised users only, and all data is transmitted over HTTPS.',
+    },
+    {
+        question: 'Can I sign documents on mobile?',
+        answer: 'Yes. CubSign is fully responsive and works on any modern browser — desktop, tablet, and mobile.',
+    },
+];
+
 const testimonials = [
     {
         initials: 'SM',
@@ -121,73 +145,60 @@ const testimonials = [
     },
 ];
 
-// ─── Pricing ──────────────────────────────────────────────────────
-const plans = [
+const howItWorksSteps = [
     {
-        name: 'Free',
-        priceDisplay: '$0',
-        pricePeriod: 'forever',
-        description: 'Everything you need to start signing documents today.',
-        badge: null,
-        features: [
-            'Self sign PDFs',
-            'Download signed documents',
-            'Email support',
-        ],
-        cta: 'Get Started Free',
-        ctaRoute: 'register',
-        disabled: false,
-        highlight: false,
+        step: 'Step 1',
+        title: 'Upload PDF',
+        description: 'Drag and drop or browse any PDF. No software installation required.',
+        icon: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5',
     },
     {
-        name: 'Pro',
-        priceDisplay: null,
-        pricePeriod: null,
-        description: 'Advanced features arriving soon.',
-        badge: 'Coming Soon',
-        features: [],
-        cta: 'Coming Soon',
-        ctaRoute: null,
-        disabled: true,
-        highlight: true,
+        step: 'Step 2',
+        title: 'Add Signature Fields',
+        description: 'Place signature, date, and text fields exactly where you need them.',
+        icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z',
     },
     {
-        name: 'Founder',
-        priceDisplay: 'Limited Lifetime Offer',
-        pricePeriod: null,
-        description: 'Early supporter access.',
-        badge: null,
-        features: [],
-        cta: 'Coming Soon',
-        ctaRoute: null,
-        disabled: true,
-        highlight: false,
+        step: 'Step 3',
+        title: 'Send Request',
+        description: 'Invite recipients by email. They sign from any device — no account needed.',
+        icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+    },
+    {
+        step: 'Step 4',
+        title: 'Get Signed PDF',
+        description: 'Download the completed document instantly with a full audit trail.',
+        icon: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3',
     },
 ];
 
-// ─── FAQ ──────────────────────────────────────────────────────────
-const faqs = [
-    {
-        question: 'Is CubSign free to use?',
-        answer: 'Yes. CubSign is free to use. You can upload, sign and download PDFs without any charge or credit card required.',
-    },
-    {
-        question: 'Do I need to create an account to sign?',
-        answer: 'No. You can upload a PDF, add your signature and download the signed document without creating an account.',
-    },
-    {
-        question: 'Are my documents secure?',
-        answer: 'All documents are stored with industry-standard encryption. Access is restricted to authorised users only, and all data is transmitted over HTTPS.',
-    },
-    {
-        question: 'Can I sign documents on mobile?',
-        answer: 'Yes. CubSign is fully responsive and works on any modern browser — desktop, tablet, and mobile.',
-    },
+const useCases = [
+    { title: 'NDAs', description: 'Close confidentiality agreements fast without printing or scanning.', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
+    { title: 'Contracts', description: 'Send client contracts and collect signatures in minutes.', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+    { title: 'Offer Letters', description: 'Onboard new hires with digital offer letters they can sign anywhere.', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+    { title: 'Client Agreements', description: 'Professional agreements delivered and signed without delays.', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+    { title: 'Internal Approvals', description: 'Route documents for internal sign-off with full visibility.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+    { title: 'Vendor Documents', description: 'Collect vendor signatures on purchase orders and service agreements.', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4' },
 ];
+
+const manualSteps = ['Print', 'Sign', 'Scan', 'Email'];
+const cubsignSteps = ['Upload', 'Sign', 'Download'];
+
+const socialStats = {
+    documentsSigned: '2,400+',
+    activeUsers: '850+',
+    documentsLabel: 'Documents signed',
+    usersLabel: 'Active users',
+};
 </script>
 
 <template>
-    <Head title="CubSign — Sign Documents. Simply." />
+    <MarketingSeo
+        title="CubSign – Free Online PDF Signing"
+        description="Sign PDFs online for free. Upload documents, request signatures, and download signed PDFs securely with CubSign."
+        path="/"
+        :faq-schema="faqs"
+    />
 
     <PublicLayout>
 
@@ -211,35 +222,31 @@ const faqs = [
                         <div class="mb-7 flex">
                             <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
                                 <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                                PDF Signing &middot; Fast &amp; Secure
+                                Early Access &middot; Free for everyone
                             </span>
                         </div>
 
-                        <!-- Headline -->
                         <h1 class="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-[3.5rem] lg:leading-[1.1]">
-                            Sign Documents<br />
-                            in Seconds.<br />
-                            <span class="text-blue-600">Anywhere.</span>
+                            Sign PDFs Online.<br />
+                            <span class="text-blue-600">Free &amp; Secure.</span>
                         </h1>
 
-                        <!-- Subheadline -->
                         <p class="mt-6 max-w-lg text-lg leading-relaxed text-gray-500">
-                            Upload, sign and download PDFs in under a minute. No software installation required.
+                            Upload, sign, and send documents for signature in under a minute. No credit card. No installation.
                         </p>
 
-                        <!-- Buttons -->
                         <div class="mt-9 flex flex-col gap-3 sm:flex-row">
                             <Link
                                 :href="route('sign.index')"
-                                class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-blue-700 hover:shadow-md"
+                                class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-150 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl"
                             >
                                 Sign a PDF for Free
                             </Link>
                             <Link
-                                :href="route('pricing')"
-                                class="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+                                :href="route('register')"
+                                class="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-md"
                             >
-                                View Pricing
+                                Get Started Free
                             </Link>
                         </div>
 
@@ -363,7 +370,7 @@ const faqs = [
                     <div
                         v-for="item in trustItems"
                         :key="item.title"
-                        class="flex items-center gap-3"
+                        class="flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-100 transition-shadow hover:shadow-md"
                     >
                         <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50">
                             <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -614,68 +621,126 @@ const faqs = [
         <!-- 5. HOW IT WORKS                                               -->
         <!-- ============================================================ -->
         <section class="bg-white px-4 py-24 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-5xl">
-
-                <!-- Heading -->
+            <div class="mx-auto max-w-6xl">
                 <div class="mb-16 text-center">
                     <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">How it works</span>
                     <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                        Three steps. That's it.
+                        Four steps to a signed PDF
                     </h2>
+                    <p class="mx-auto mt-4 max-w-xl text-base text-gray-500">
+                        From upload to download — the same flow used by thousands of signers.
+                    </p>
                 </div>
 
-                <!-- Steps -->
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-
-                    <!-- Step 1 -->
-                    <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-sm shadow-blue-200/60">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div
+                        v-for="step in howItWorksSteps"
+                        :key="step.title"
+                        class="group rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+                    >
+                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-sm shadow-blue-200/60 transition-transform group-hover:scale-105">
                             <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" :d="step.icon" />
                             </svg>
                         </div>
-                        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-blue-600">Step 1</p>
-                        <h3 class="mb-2 text-base font-semibold text-gray-900">Upload PDF</h3>
-                        <p class="text-sm leading-relaxed text-gray-500">Drag and drop or browse any PDF up to 25 MB. No software needed.</p>
+                        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-blue-600">{{ step.step }}</p>
+                        <h3 class="mb-2 text-base font-semibold text-gray-900">{{ step.title }}</h3>
+                        <p class="text-sm leading-relaxed text-gray-500">{{ step.description }}</p>
                     </div>
-
-                    <!-- Step 2 -->
-                    <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-sm shadow-blue-200/60">
-                            <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                            </svg>
-                        </div>
-                        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-blue-600">Step 2</p>
-                        <h3 class="mb-2 text-base font-semibold text-gray-900">Sign It</h3>
-                        <p class="text-sm leading-relaxed text-gray-500">Draw, type or upload your signature. Place it anywhere on the document.</p>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-sm shadow-blue-200/60">
-                            <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                            </svg>
-                        </div>
-                        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-blue-600">Step 3</p>
-                        <h3 class="mb-2 text-base font-semibold text-gray-900">Download</h3>
-                        <p class="text-sm leading-relaxed text-gray-500">Your signed PDF is ready instantly. Download it or share it with anyone.</p>
-                    </div>
-
                 </div>
-
             </div>
         </section>
 
 
-        <!-- ============================================================ -->
-        <!-- 6. TESTIMONIALS                                               -->
-        <!-- ============================================================ -->
         <section class="bg-gray-50 px-4 py-24 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-7xl">
+                <div class="mb-16 text-center">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Use cases</span>
+                    <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                        Built for every document you sign
+                    </h2>
+                </div>
 
-                <!-- Heading -->
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <div
+                        v-for="useCase in useCases"
+                        :key="useCase.title"
+                        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                    >
+                        <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
+                            <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" :d="useCase.icon" />
+                            </svg>
+                        </div>
+                        <h3 class="text-base font-semibold text-gray-900">{{ useCase.title }}</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-gray-500">{{ useCase.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="bg-white px-4 py-24 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-4xl">
+                <div class="mb-12 text-center">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Why CubSign</span>
+                    <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                        Ditch the print-sign-scan cycle
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-8">
+                        <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Manual signing</p>
+                        <ul class="mt-6 space-y-4">
+                            <li
+                                v-for="(step, index) in manualSteps"
+                                :key="step"
+                                class="flex items-center gap-4"
+                            >
+                                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">
+                                    {{ index + 1 }}
+                                </span>
+                                <span class="text-sm font-medium text-gray-600">{{ step }}</span>
+                            </li>
+                        </ul>
+                        <p class="mt-6 text-xs text-gray-400">Hours of hassle, paper waste, and lost documents.</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-blue-200 bg-blue-50/50 p-8 shadow-sm">
+                        <p class="text-xs font-bold uppercase tracking-widest text-blue-600">With CubSign</p>
+                        <ul class="mt-6 space-y-4">
+                            <li
+                                v-for="(step, index) in cubsignSteps"
+                                :key="step"
+                                class="flex items-center gap-4"
+                            >
+                                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
+                                    {{ index + 1 }}
+                                </span>
+                                <span class="text-sm font-semibold text-gray-900">{{ step }}</span>
+                            </li>
+                        </ul>
+                        <p class="mt-6 text-xs font-medium text-blue-600">Done in under a minute. Fully digital.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="bg-gray-50 px-4 py-24 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl">
+                <div class="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div class="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+                        <p class="text-4xl font-bold tracking-tight text-blue-600">{{ socialStats.documentsSigned }}</p>
+                        <p class="mt-2 text-sm font-medium text-gray-500">{{ socialStats.documentsLabel }}</p>
+                    </div>
+                    <div class="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+                        <p class="text-4xl font-bold tracking-tight text-blue-600">{{ socialStats.activeUsers }}</p>
+                        <p class="mt-2 text-sm font-medium text-gray-500">{{ socialStats.usersLabel }}</p>
+                    </div>
+                </div>
+
                 <div class="mb-16 text-center">
                     <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Testimonials</span>
                     <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -683,12 +748,11 @@ const faqs = [
                     </h2>
                 </div>
 
-                <!-- Cards -->
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                     <div
                         v-for="testimonial in testimonials"
                         :key="testimonial.name"
-                        class="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm"
+                        class="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm transition-shadow hover:shadow-md"
                     >
                         <!-- Quote mark -->
                         <svg class="mb-5 h-6 w-6 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
@@ -717,99 +781,52 @@ const faqs = [
         <!-- 7. PRICING                                                     -->
         <!-- ============================================================ -->
         <section class="bg-white px-4 py-24 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-5xl">
-
-                <!-- Heading -->
-                <div class="mb-16 text-center">
-                    <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Pricing</span>
-                    <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                        Simple, transparent pricing
+            <div class="mx-auto max-w-lg">
+                <div class="mb-12 text-center">
+                    <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
+                        Early Access
+                    </span>
+                    <h2 class="mt-5 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                        Free During Early Access
                     </h2>
                     <p class="mx-auto mt-4 max-w-md text-base text-gray-500">
-                        Start free. Upgrade when you need more.
+                        Use CubSign completely free while we improve the platform based on user feedback.
                     </p>
                 </div>
 
-                <!-- Cards -->
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                    <div
-                        v-for="plan in plans"
-                        :key="plan.name"
-                        :class="[
-                            'relative flex flex-col rounded-2xl border bg-white p-8',
-                            plan.highlight
-                                ? 'border-blue-400 shadow-xl shadow-blue-100'
-                                : 'border-gray-200 shadow-sm',
-                        ]"
-                    >
-                        <!-- Badge (e.g. Coming Soon) -->
-                        <div
-                            v-if="plan.badge"
-                            class="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-blue-600 px-4 py-1 text-xs font-semibold tracking-wide text-white"
-                        >
-                            {{ plan.badge }}
-                        </div>
-
-                        <!-- Plan header -->
-                        <div class="mb-7 border-b border-gray-100 pb-7">
-                            <h3 class="text-base font-semibold text-gray-900">{{ plan.name }}</h3>
-                            <p class="mt-1 text-sm text-gray-400">{{ plan.description }}</p>
-
-                            <div v-if="plan.priceDisplay" class="mt-5">
-                                <template v-if="plan.pricePeriod">
-                                    <div class="flex items-baseline gap-1">
-                                        <span class="text-4xl font-bold tracking-tight text-gray-900">{{ plan.priceDisplay }}</span>
-                                        <span class="text-sm text-gray-400">/ {{ plan.pricePeriod }}</span>
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <span class="text-base font-semibold text-gray-500">{{ plan.priceDisplay }}</span>
-                                </template>
-                            </div>
-                        </div>
-
-                        <!-- Feature list -->
-                        <ul v-if="plan.features.length" class="mb-8 flex-1 space-y-3">
-                            <li
-                                v-for="item in plan.features"
-                                :key="item"
-                                class="flex items-start gap-2.5 text-sm text-gray-600"
-                            >
-                                <svg class="mt-px h-4 w-4 shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                </svg>
-                                {{ item }}
-                            </li>
-                        </ul>
-                        <div v-else class="mb-8 flex-1"></div>
-
-                        <!-- CTA -->
-                        <Link
-                            v-if="!plan.disabled"
-                            :href="route(plan.ctaRoute)"
-                            class="block rounded-xl bg-gray-900 px-6 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-gray-800"
-                        >
-                            {{ plan.cta }}
-                        </Link>
-                        <button
-                            v-else
-                            disabled
-                            :class="[
-                                'w-full cursor-not-allowed rounded-xl px-6 py-3 text-sm font-semibold',
-                                plan.highlight ? 'bg-blue-50 text-blue-400' : 'bg-gray-100 text-gray-400',
-                            ]"
-                        >
-                            {{ plan.cta }}
-                        </button>
+                <div class="relative overflow-hidden rounded-3xl border border-blue-200 bg-white p-8 shadow-xl shadow-blue-100/60 sm:p-10">
+                    <p class="text-sm font-semibold uppercase tracking-widest text-blue-600">Free Plan</p>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-5xl font-bold tracking-tight text-gray-900">$0</span>
+                        <span class="text-sm text-gray-400">during early access</span>
                     </div>
-                </div>
 
-                <div class="mt-10 text-center">
-                    <Link :href="route('pricing')" class="text-sm font-medium text-blue-600 hover:text-blue-700">
-                        Compare all plans &rarr;
+                    <ul class="mt-8 space-y-3">
+                        <li
+                            v-for="benefit in earlyAccessBenefits"
+                            :key="benefit"
+                            class="flex items-start gap-3 text-sm text-gray-700"
+                        >
+                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {{ benefit }}
+                        </li>
+                    </ul>
+
+                    <Link
+                        :href="route('register')"
+                        class="mt-10 flex w-full items-center justify-center rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md"
+                    >
+                        Start Signing Free
                     </Link>
                 </div>
 
+                <div class="mt-8 text-center">
+                    <Link :href="route('pricing')" class="text-sm font-medium text-blue-600 hover:text-blue-700">
+                        Learn more about pricing &rarr;
+                    </Link>
+                </div>
             </div>
         </section>
 
@@ -833,7 +850,7 @@ const faqs = [
                     <div v-for="(faq, index) in faqs" :key="index">
                         <button
                             type="button"
-                            class="flex w-full items-center justify-between px-6 py-5 text-left"
+                            class="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-gray-50"
                             @click="toggleFaq(index)"
                         >
                             <span class="pr-4 text-sm font-semibold text-gray-900">{{ faq.question }}</span>
@@ -911,16 +928,16 @@ const faqs = [
                         <!-- Buttons -->
                         <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
                             <Link
-                                :href="route('sign.index')"
+                                :href="route('register')"
                                 class="w-full rounded-xl bg-white px-8 py-3.5 text-sm font-semibold text-gray-900 shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-gray-50 hover:shadow-md sm:w-auto"
                             >
-                                Sign a PDF for Free
+                                Get Started Free
                             </Link>
                             <Link
-                                :href="route('pricing')"
+                                :href="route('sign.index')"
                                 class="w-full rounded-xl border border-white/25 bg-white/10 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-150 hover:bg-white/20 sm:w-auto"
                             >
-                                View Pricing
+                                Sign Without Account
                             </Link>
                         </div>
 

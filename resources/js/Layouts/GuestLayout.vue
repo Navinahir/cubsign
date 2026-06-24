@@ -1,22 +1,13 @@
 <script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import { Link } from '@inertiajs/vue3';
+import PublicLayout from '@/Layouts/PublicLayout.vue';
 </script>
 
 <template>
-    <div
-        class="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0"
-    >
-        <div>
-            <Link href="/">
-                <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
-            </Link>
-        </div>
-
-        <div
-            class="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg"
-        >
-            <slot />
-        </div>
-    </div>
+    <PublicLayout>
+        <section class="flex items-center justify-center bg-gradient-to-b from-gray-50 to-white px-4 py-12 sm:py-16">
+            <div class="w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white px-6 py-8 shadow-lg shadow-gray-200/50 sm:px-8">
+                <slot />
+            </div>
+        </section>
+    </PublicLayout>
 </template>

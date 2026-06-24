@@ -36,6 +36,8 @@ class HandleInertiaRequests extends Middleware
             ],
             'app' => [
                 'isLocal' => app()->environment('local'),
+                'url' => config('app.url'),
+                'name' => config('app.name'),
             ],
         ];
     }
