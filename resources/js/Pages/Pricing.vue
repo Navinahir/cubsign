@@ -3,6 +3,13 @@ import { ref } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import { Link } from '@inertiajs/vue3';
+import {
+    EARLY_ACCESS_HEADLINE,
+    EARLY_ACCESS_SUBHEADLINE,
+    CTA_START_SIGNING,
+    btnPrimary,
+    pageHeaderClass,
+} from '@/constants/marketing';
 
 const benefits = [
     'Unlimited signatures',
@@ -48,17 +55,16 @@ function toggleFaq(index) {
     />
 
     <PublicLayout>
-        <section class="bg-gradient-to-b from-white to-blue-50/40 px-4 py-20 text-center sm:px-6 lg:px-8">
+        <section :class="pageHeaderClass">
             <div class="mx-auto max-w-3xl">
                 <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
-                    <span class="h-1.5 w-1.5 rounded-full bg-blue-500" />
                     Early Access
                 </span>
                 <h1 class="mt-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-                    Free During Early Access
+                    {{ EARLY_ACCESS_HEADLINE }}
                 </h1>
                 <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-gray-500">
-                    Use CubSign completely free while we improve the platform based on user feedback.
+                    {{ EARLY_ACCESS_SUBHEADLINE }}
                 </p>
             </div>
         </section>
@@ -94,11 +100,8 @@ function toggleFaq(index) {
                         </li>
                     </ul>
 
-                    <Link
-                        :href="route('register')"
-                        class="mt-10 flex w-full items-center justify-center rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md"
-                    >
-                        Start Signing Free
+                    <Link :href="route('register')" :class="[btnPrimary, 'mt-10 w-full']">
+                        {{ CTA_START_SIGNING }}
                     </Link>
 
                     <p class="mt-4 text-center text-xs text-gray-400">
@@ -161,15 +164,12 @@ function toggleFaq(index) {
 
         <section class="bg-blue-600 px-4 py-16 text-center sm:px-6 lg:px-8">
             <div class="mx-auto max-w-xl">
-                <h2 class="text-2xl font-bold text-white sm:text-3xl">Join early access today</h2>
+                <h2 class="text-2xl font-bold text-white sm:text-3xl">{{ EARLY_ACCESS_HEADLINE }}</h2>
                 <p class="mt-3 text-blue-100">
-                    Help shape CubSign while enjoying unlimited signing — completely free.
+                    {{ EARLY_ACCESS_SUBHEADLINE }}
                 </p>
-                <Link
-                    :href="route('register')"
-                    class="mt-8 inline-block rounded-xl bg-white px-8 py-3.5 text-sm font-semibold text-blue-600 shadow-sm transition-all hover:-translate-y-px hover:bg-blue-50 hover:shadow-md"
-                >
-                    Start Signing Free
+                <Link :href="route('register')" :class="[btnPrimary, 'mt-8 !bg-white !text-blue-600 hover:!bg-blue-50']">
+                    {{ CTA_START_SIGNING }}
                 </Link>
             </div>
         </section>

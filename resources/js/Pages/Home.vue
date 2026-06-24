@@ -2,7 +2,18 @@
 import { ref } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
+import StickyMobileCta from '@/Components/StickyMobileCta.vue';
+import FloatingTrustIndicators from '@/Components/FloatingTrustIndicators.vue';
 import { Link } from '@inertiajs/vue3';
+import {
+    EARLY_ACCESS_HEADLINE,
+    CTA_START_SIGNING,
+    CTA_CREATE_ACCOUNT,
+    btnPrimary,
+    btnSecondary,
+    credibilityCards,
+    journeySteps,
+} from '@/constants/marketing';
 
 const props = defineProps({
     hasSignSession: {
@@ -147,27 +158,27 @@ const testimonials = [
 
 const howItWorksSteps = [
     {
-        step: 'Step 1',
-        title: 'Upload PDF',
-        description: 'Drag and drop or browse any PDF. No software installation required.',
+        step: '1',
+        title: journeySteps[0].title,
+        description: journeySteps[0].description,
         icon: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5',
     },
     {
-        step: 'Step 2',
-        title: 'Add Signature Fields',
-        description: 'Place signature, date, and text fields exactly where you need them.',
+        step: '2',
+        title: journeySteps[1].title,
+        description: journeySteps[1].description,
         icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z',
     },
     {
-        step: 'Step 3',
-        title: 'Send Request',
-        description: 'Invite recipients by email. They sign from any device — no account needed.',
+        step: '3',
+        title: journeySteps[2].title,
+        description: journeySteps[2].description,
         icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
     },
     {
-        step: 'Step 4',
-        title: 'Get Signed PDF',
-        description: 'Download the completed document instantly with a full audit trail.',
+        step: '4',
+        title: journeySteps[3].title,
+        description: journeySteps[3].description,
         icon: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3',
     },
 ];
@@ -201,10 +212,7 @@ const socialStats = {
     />
 
     <PublicLayout>
-
-        <!-- ============================================================ -->
-        <!-- 1. HERO — split layout                                        -->
-        <!-- ============================================================ -->
+        <div class="pb-20 md:pb-0">
         <section class="relative bg-white px-4 pb-20 pt-16 sm:px-6 lg:pb-28 lg:pt-24">
 
             <!-- Background gradients (clipped inside the section) -->
@@ -222,33 +230,29 @@ const socialStats = {
                         <div class="mb-7 flex">
                             <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
                                 <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                                Early Access &middot; Free for everyone
+                                {{ EARLY_ACCESS_HEADLINE }}
                             </span>
                         </div>
 
                         <h1 class="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-[3.5rem] lg:leading-[1.1]">
-                            Sign PDFs Online.<br />
-                            <span class="text-blue-600">Free &amp; Secure.</span>
+                            Sign PDFs Online<br />
+                            <span class="text-blue-600">in Seconds</span>
                         </h1>
 
                         <p class="mt-6 max-w-lg text-lg leading-relaxed text-gray-500">
-                            Upload, sign, and send documents for signature in under a minute. No credit card. No installation.
+                            Upload, sign, send, and download legally signed PDFs for free during Early Access.
                         </p>
 
                         <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-                            <Link
-                                :href="route('sign.index')"
-                                class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all duration-150 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl"
-                            >
-                                Sign a PDF for Free
+                            <Link :href="route('register')" :class="btnPrimary">
+                                {{ CTA_START_SIGNING }}
                             </Link>
-                            <Link
-                                :href="route('register')"
-                                class="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-7 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-md"
-                            >
-                                Get Started Free
+                            <Link :href="route('sign.index')" :class="btnSecondary">
+                                Sign Without Account
                             </Link>
                         </div>
+
+                        <FloatingTrustIndicators />
 
                         <!-- Continue signing link -->
                         <div v-if="hasSignSession" class="mt-4">
@@ -400,7 +404,7 @@ const socialStats = {
                         See CubSign work in under 30 seconds.
                     </h2>
                     <p class="mx-auto mt-4 max-w-xl text-base text-gray-500">
-                        Three simple steps. Same flow as the real app.
+                        Four simple steps. Same flow as the real app.
                     </p>
                 </div>
 
@@ -623,12 +627,12 @@ const socialStats = {
         <section class="bg-white px-4 py-24 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-6xl">
                 <div class="mb-16 text-center">
-                    <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">How it works</span>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Your journey</span>
                     <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                        Four steps to a signed PDF
+                        From upload to signed PDF
                     </h2>
                     <p class="mx-auto mt-4 max-w-xl text-base text-gray-500">
-                        From upload to download — the same flow used by thousands of signers.
+                        Upload, add fields, send, and get your signed document back.
                     </p>
                 </div>
 
@@ -643,7 +647,7 @@ const socialStats = {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" :d="step.icon" />
                             </svg>
                         </div>
-                        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-blue-600">{{ step.step }}</p>
+                        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-blue-600">Step {{ step.step }}</p>
                         <h3 class="mb-2 text-base font-semibold text-gray-900">{{ step.title }}</h3>
                         <p class="text-sm leading-relaxed text-gray-500">{{ step.description }}</p>
                     </div>
@@ -728,6 +732,37 @@ const socialStats = {
         </section>
 
 
+        <section class="bg-white px-4 py-24 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl">
+                <div class="mb-16 text-center">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Trust &amp; security</span>
+                    <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                        Enterprise-grade trust, built in
+                    </h2>
+                    <p class="mx-auto mt-4 max-w-2xl text-base text-gray-500">
+                        Every document is protected, tracked, and legally defensible from upload to completion.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <div
+                        v-for="card in credibilityCards"
+                        :key="card.title"
+                        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                    >
+                        <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50">
+                            <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" :d="card.icon" />
+                            </svg>
+                        </div>
+                        <h3 class="text-base font-semibold text-gray-900">{{ card.title }}</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-gray-500">{{ card.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
         <section class="bg-gray-50 px-4 py-24 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-7xl">
                 <div class="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -784,10 +819,10 @@ const socialStats = {
             <div class="mx-auto max-w-lg">
                 <div class="mb-12 text-center">
                     <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
-                        Early Access
+                        {{ EARLY_ACCESS_HEADLINE }}
                     </span>
                     <h2 class="mt-5 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                        Free During Early Access
+                        {{ EARLY_ACCESS_HEADLINE }}
                     </h2>
                     <p class="mx-auto mt-4 max-w-md text-base text-gray-500">
                         Use CubSign completely free while we improve the platform based on user feedback.
@@ -814,11 +849,8 @@ const socialStats = {
                         </li>
                     </ul>
 
-                    <Link
-                        :href="route('register')"
-                        class="mt-10 flex w-full items-center justify-center rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md"
-                    >
-                        Start Signing Free
+                    <Link :href="route('register')" :class="[btnPrimary, 'mt-10 w-full']">
+                        {{ CTA_START_SIGNING }}
                     </Link>
                 </div>
 
@@ -908,30 +940,24 @@ const socialStats = {
                         <!-- Badge -->
                         <div class="mb-8 flex justify-center">
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold tracking-wide text-white backdrop-blur-sm">
-                                <svg class="h-3.5 w-3.5 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                                Sign in under 60 seconds
+                                {{ EARLY_ACCESS_HEADLINE }}
                             </span>
                         </div>
 
-                        <!-- Headline -->
                         <h2 class="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                            Ready to sign real documents?
+                            Start Signing Documents Today
                         </h2>
 
-                        <!-- Subheadline -->
                         <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-blue-100">
-                            Upload PDFs, create signatures and download signed documents in seconds.
+                            Join thousands of users signing PDFs online — completely free during Early Access.
                         </p>
 
-                        <!-- Buttons -->
                         <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
                             <Link
                                 :href="route('register')"
                                 class="w-full rounded-xl bg-white px-8 py-3.5 text-sm font-semibold text-gray-900 shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-gray-50 hover:shadow-md sm:w-auto"
                             >
-                                Get Started Free
+                                {{ CTA_CREATE_ACCOUNT }}
                             </Link>
                             <Link
                                 :href="route('sign.index')"
@@ -969,5 +995,7 @@ const socialStats = {
             </div>
         </section>
 
+        <StickyMobileCta />
+        </div>
     </PublicLayout>
 </template>

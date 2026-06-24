@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import DevNav from '@/Components/DevNav.vue';
+import { CTA_NAV_REGISTER, EARLY_ACCESS_HEADLINE } from '@/constants/marketing';
 
 const mobileOpen = ref(false);
 const page = usePage();
@@ -87,7 +88,7 @@ function navLinkClass(routeName, mobile = false) {
                                 :href="route('register')"
                                 class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-600/20 transition-all hover:bg-blue-700 hover:shadow-md"
                             >
-                                Get Started Free
+                                {{ CTA_NAV_REGISTER }}
                             </Link>
                         </template>
                     </div>
@@ -160,7 +161,7 @@ function navLinkClass(routeName, mobile = false) {
                                 class="block rounded-lg bg-blue-600 px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-blue-700"
                                 @click="mobileOpen = false"
                             >
-                                Get Started Free
+                                {{ CTA_NAV_REGISTER }}
                             </Link>
                         </template>
                     </div>
@@ -187,7 +188,7 @@ function navLinkClass(routeName, mobile = false) {
                             <span class="font-bold text-gray-900">CubSign</span>
                         </Link>
                         <p class="mt-3 max-w-xs text-sm leading-relaxed text-gray-400">
-                            Simple, secure PDF signing for individuals and businesses. Free during early access.
+                            Simple, secure PDF signing for individuals and businesses. {{ EARLY_ACCESS_HEADLINE }}.
                         </p>
                         <p class="mt-5 text-xs text-gray-400">
                             Built by <span class="font-medium text-gray-600">Cubiz Infotech</span>

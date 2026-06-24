@@ -2,6 +2,12 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import { Link } from '@inertiajs/vue3';
+import {
+    EARLY_ACCESS_HEADLINE,
+    CTA_START_SIGNING,
+    btnPrimary,
+    pageHeaderClass,
+} from '@/constants/marketing';
 
 const features = [
     {
@@ -60,10 +66,12 @@ const features = [
     />
 
     <PublicLayout>
-        <section class="bg-gradient-to-b from-white to-gray-50 px-4 py-20 text-center sm:px-6 lg:px-8">
+        <section :class="pageHeaderClass">
             <div class="mx-auto max-w-3xl">
-                <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">Features</span>
-                <h1 class="mt-3 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
+                    {{ EARLY_ACCESS_HEADLINE }}
+                </span>
+                <h1 class="mt-5 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                     Everything you need to sign smarter
                 </h1>
                 <p class="mx-auto mt-5 max-w-2xl text-lg text-gray-500">
@@ -112,14 +120,11 @@ const features = [
 
         <section class="bg-gray-50 px-4 py-16 text-center sm:px-6 lg:px-8">
             <div class="mx-auto max-w-xl">
-                <h2 class="text-2xl font-bold text-gray-900">Start signing for free</h2>
-                <p class="mt-3 text-gray-500">Free during early access. No credit card required.</p>
+                <h2 class="text-2xl font-bold text-gray-900">{{ EARLY_ACCESS_HEADLINE }}</h2>
+                <p class="mt-3 text-gray-500">No credit card required.</p>
                 <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                    <Link
-                        :href="route('register')"
-                        class="w-full rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md sm:w-auto"
-                    >
-                        Get Started Free
+                    <Link :href="route('register')" :class="[btnPrimary, 'w-full sm:w-auto']">
+                        {{ CTA_START_SIGNING }}
                     </Link>
                     <Link
                         :href="route('sign.index')"

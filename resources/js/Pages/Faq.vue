@@ -3,6 +3,12 @@ import { computed, ref } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import { Link } from '@inertiajs/vue3';
+import {
+    EARLY_ACCESS_HEADLINE,
+    CTA_START_SIGNING,
+    btnPrimary,
+    pageHeaderClass,
+} from '@/constants/marketing';
 
 const categories = [
     {
@@ -120,10 +126,12 @@ function isOpen(categoryIndex, itemIndex) {
     />
 
     <PublicLayout>
-        <section class="bg-gradient-to-b from-white to-gray-50 px-4 py-20 text-center sm:px-6 lg:px-8">
+        <section :class="pageHeaderClass">
             <div class="mx-auto max-w-2xl">
-                <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">FAQ</span>
-                <h1 class="mt-3 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
+                    {{ EARLY_ACCESS_HEADLINE }}
+                </span>
+                <h1 class="mt-5 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                     Frequently asked questions
                 </h1>
                 <p class="mt-5 text-lg text-gray-500">
@@ -183,11 +191,8 @@ function isOpen(categoryIndex, itemIndex) {
                     Reach out to our support team — we're happy to help.
                 </p>
                 <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                    <Link
-                        :href="route('register')"
-                        class="w-full rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md sm:w-auto"
-                    >
-                        Get Started Free
+                    <Link :href="route('register')" :class="[btnPrimary, 'w-full sm:w-auto']">
+                        {{ CTA_START_SIGNING }}
                     </Link>
                     <a
                         href="mailto:support@cubsign.com"
