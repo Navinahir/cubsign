@@ -122,6 +122,24 @@ class DocumentsController extends Controller
     {
         $this->gate($document);
 
+        if (in_array($document->status, ['completed', 'archived'], true)) {
+            return response()->json([
+                'message' => 'Only draft documents can be prepared.',
+            ], 409);
+        }
+
+        if ($document->recipients()->whereIn('status', ['sent', 'pending', 'signed'])->exists()) {
+            return response()->json([
+                'message' => 'Signing requests have already been prepared.',
+            ], 409);
+        }
+
+        if (! $document->pdf_path) {
+            return response()->json([
+                'message' => 'Document must be finalized before requests can be sent.',
+            ], 422);
+        }
+
         $validated = $request->validate([
             'recipients'                        => ['required', 'array', 'min:1'],
             'recipients.*.name'                 => ['required', 'string', 'max:255'],

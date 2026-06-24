@@ -45,15 +45,27 @@ class SaveDocumentController extends Controller
             ->first();
 
         if ($draft) {
-            // Preserve editor_state while unsigned recipients still need it to look up field assignments
+            $editorState = $draft->editor_state ?? [];
+            $hasPlacedFields = ! empty($editorState['placedFields']);
+            $hasRecipientConfig = ! empty($editorState['recipients']);
             $hasUnsignedRecipients = $draft->recipients()
                 ->where('status', '!=', 'signed')
                 ->exists();
+            $allRecipientsSigned = $draft->recipients()->exists()
+                && ! $hasUnsignedRecipients;
+
+            if ($hasPlacedFields || $hasRecipientConfig) {
+                $editorStateValue = $draft->editor_state;
+            } elseif ($draft->recipients()->exists() && $allRecipientsSigned) {
+                $editorStateValue = null;
+            } else {
+                $editorStateValue = $draft->editor_state;
+            }
 
             $draft->update([
                 'status'       => 'signed',
                 'pdf_path'     => $path,
-                'editor_state' => $hasUnsignedRecipients ? $draft->editor_state : null,
+                'editor_state' => $editorStateValue,
                 'sign_token'   => null,
             ]);
             $document = $draft;
