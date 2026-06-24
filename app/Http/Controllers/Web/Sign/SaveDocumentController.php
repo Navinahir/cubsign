@@ -39,36 +39,52 @@ class SaveDocumentController extends Controller
         $filename = $stem . '-' . time() . '.pdf';
         $path     = $request->file('pdf')->storeAs($dir, $filename, 'documents');
 
-        $draft = Document::where('sign_token', $token)
-            ->where('user_id', $user->id)
-            ->where('status', 'draft')
-            ->first();
+        $sessionDocumentId = $request->session()->get('sign_document_id');
 
-        if ($draft) {
-            $editorState = $draft->editor_state ?? [];
+        $document = null;
+        if ($sessionDocumentId) {
+            $document = Document::where('user_id', $user->id)
+                ->where('id', $sessionDocumentId)
+                ->whereIn('status', ['draft', 'signed'])
+                ->first();
+        }
+
+        if (! $document) {
+            $document = Document::where('sign_token', $token)
+                ->where('user_id', $user->id)
+                ->where('status', 'draft')
+                ->first();
+        }
+
+        if ($document) {
+            $editorState = $document->editor_state ?? [];
             $hasPlacedFields = ! empty($editorState['placedFields']);
             $hasRecipientConfig = ! empty($editorState['recipients']);
-            $hasUnsignedRecipients = $draft->recipients()
+            $hasUnsignedRecipients = $document->recipients()
                 ->where('status', '!=', 'signed')
                 ->exists();
-            $allRecipientsSigned = $draft->recipients()->exists()
+            $allRecipientsSigned = $document->recipients()->exists()
                 && ! $hasUnsignedRecipients;
 
             if ($hasPlacedFields || $hasRecipientConfig) {
-                $editorStateValue = $draft->editor_state;
-            } elseif ($draft->recipients()->exists() && $allRecipientsSigned) {
+                $editorStateValue = $document->editor_state;
+            } elseif ($document->recipients()->exists() && $allRecipientsSigned) {
                 $editorStateValue = null;
             } else {
-                $editorStateValue = $draft->editor_state;
+                $editorStateValue = $document->editor_state;
             }
 
-            $draft->update([
+            $update = [
                 'status'       => 'signed',
                 'pdf_path'     => $path,
                 'editor_state' => $editorStateValue,
-                'sign_token'   => null,
-            ]);
-            $document = $draft;
+            ];
+
+            if ($document->status === 'draft') {
+                $update['sign_token'] = null;
+            }
+
+            $document->update($update);
         } else {
             $document = $this->docRepo->createSignedDocument(
                 user:     $user,

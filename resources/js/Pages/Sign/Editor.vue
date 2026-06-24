@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
+import { persistSignedPdf } from '@/utils/persistSignedPdf';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
 
@@ -1052,9 +1053,18 @@ async function goToReview() {
     try {
         await persistEditorState();
         const bytes = await generateSignedPdf();
-        const prevSaved = window.__cubsignSession?.token === props.session.token
+        const isAuthenticated = !!usePage().props.auth?.user;
+        let documentSaved = window.__cubsignSession?.token === props.session.token
             ? (window.__cubsignSession.documentSaved ?? false)
             : false;
+
+        if (isAuthenticated && props.documentId) {
+            const result = await persistSignedPdf(bytes, props.session.filename);
+            if (result.ok) {
+                documentSaved = true;
+            }
+        }
+
         const recipientFieldCounts = {};
         placedFields.value.forEach(f => {
             if (f.signerId) recipientFieldCounts[f.signerId] = (recipientFieldCounts[f.signerId] || 0) + 1;
@@ -1074,7 +1084,7 @@ async function goToReview() {
                 recipientCount: namedRecipients.length,
                 recipients:     namedRecipients,
             },
-            documentSaved: prevSaved,
+            documentSaved,
         };
         router.visit(route('sign.review'));
     } catch (err) {

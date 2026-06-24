@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
+import { persistSignedPdf } from '@/utils/persistSignedPdf';
 
 const props = defineProps({
     session: { type: Object, required: true },
@@ -28,23 +29,9 @@ onMounted(async () => {
 
     isSaving.value = true;
     try {
-        const blob = new Blob([s.signedPdf], { type: 'application/pdf' });
-        const form = new FormData();
-        form.append('pdf', blob, s.filename ?? 'document.pdf');
+        const result = await persistSignedPdf(s.signedPdf, s.filename ?? props.session.filename);
 
-        const xsrfToken = decodeURIComponent(
-            document.cookie.split('; ')
-                .find((r) => r.startsWith('XSRF-TOKEN='))
-                ?.split('=')[1] ?? '',
-        );
-
-        const res = await fetch(route('sign.save'), {
-            method:  'POST',
-            headers: { 'X-XSRF-TOKEN': xsrfToken },
-            body:    form,
-        });
-
-        if (res.ok) {
+        if (result.ok) {
             window.__cubsignSession.documentSaved = true;
             isSaved.value = true;
         } else {
