@@ -9,59 +9,164 @@ use setasign\Fpdi\Fpdi;
 
 class SignedPdfService
 {
+    private PdfNormalizer $normalizer;
+
+    public function __construct(?PdfNormalizer $normalizer = null)
+    {
+        $this->normalizer = $normalizer ?? new PdfNormalizer();
+    }
+
     /**
      * Overlay all recipient signed_fields onto the base PDF and save the result.
      * Returns the storage path (relative to the documents disk) or null on failure.
      */
     public function generate(Document $document): ?string
     {
+        Log::channel('cubsign')->info('SIGNED_PDF_START', [
+            'document_id' => $document->id,
+            'pdf_path'    => $document->pdf_path,
+            'recipients'  => $document->recipients->count(),
+        ]);
+
+        try {
+            return $this->generateInternal($document);
+        } catch (\Throwable $e) {
+            Log::channel('cubsign')->error('SIGNED_PDF_FAIL', [
+                'document_id' => $document->id,
+                'error'       => $e->getMessage(),
+                'class'       => $e::class,
+                'file'        => $e->getFile(),
+                'line'        => $e->getLine(),
+            ]);
+
+            return null;
+        }
+    }
+
+    private function generateInternal(Document $document): ?string
+    {
         $editorState  = $document->editor_state ?? [];
         $placedFields = $editorState['placedFields'] ?? [];
         $editorScale  = max(0.1, (float) ($editorState['scale'] ?? 1.3));
 
-        // Build lookup: field_id → placed field (position + page info)
+        if ($placedFields === []) {
+            Log::channel('cubsign')->error('SIGNED_PDF_FAIL', [
+                'document_id' => $document->id,
+                'error'       => 'no placedFields in editor_state',
+            ]);
+
+            return null;
+        }
+
+        $baseRelPath = $document->pdf_path;
+        if (! $baseRelPath || ! Storage::disk('documents')->exists($baseRelPath)) {
+            Log::channel('cubsign')->error('SIGNED_PDF_FAIL', [
+                'document_id' => $document->id,
+                'error'       => 'base PDF missing on disk',
+                'pdf_path'    => $baseRelPath,
+            ]);
+
+            return null;
+        }
+
+        $baseAbsPath = Storage::disk('documents')->path($baseRelPath);
+        $sourceInfo  = $this->normalizer->inspectPdf($baseAbsPath);
+
+        Log::channel('cubsign')->info('SIGNED_PDF_SOURCE_INFO', [
+            'document_id'  => $document->id,
+            'pdf_path'     => $baseRelPath,
+            'absolute_path'=> $baseAbsPath,
+            'bytes'        => $sourceInfo['bytes'],
+            'pdf_header'   => $sourceInfo['header'],
+            'has_objstm'   => $sourceInfo['has_objstm'],
+        ]);
+
         $positions = [];
         foreach ($placedFields as $pf) {
             $positions[(int) $pf['id']] = $pf;
         }
 
-        // Build lookup: field_id → signed value (from all recipients' signed_fields)
         $signedValues = [];
         foreach ($document->recipients as $recipient) {
             foreach ($recipient->signed_fields ?? [] as $sf) {
-                $signedValues[(int) $sf['id']] = [
-                    'type'  => $sf['type'],
-                    'value' => $sf['value'],
+                $fieldId = (int) ($sf['id'] ?? 0);
+                if ($fieldId === 0) {
+                    continue;
+                }
+                $signedValues[$fieldId] = [
+                    'type'  => $sf['type'] ?? '',
+                    'value' => $sf['value'] ?? null,
                 ];
             }
         }
 
-        if (empty($signedValues)) {
+        if ($signedValues === []) {
+            Log::channel('cubsign')->error('SIGNED_PDF_FAIL', [
+                'document_id' => $document->id,
+                'error'       => 'no signed field values from recipients',
+            ]);
+
             return null;
         }
 
-        $basePath = Storage::disk('documents')->path($document->pdf_path);
+        $fpdiSource   = $baseAbsPath;
+        $cleanupPaths = [];
+
+        $pageCount = $this->openPdfWithFpdi($fpdiSource);
+
+        if ($pageCount === null) {
+            $normalized = $this->normalizer->normalize($baseAbsPath);
+
+            if ($normalized !== null) {
+                $fpdiSource     = $normalized['path'];
+                $cleanupPaths[] = $normalized['path'];
+
+                Log::channel('cubsign')->info('SIGNED_PDF_SOURCE_INFO', [
+                    'document_id' => $document->id,
+                    'normalized'  => true,
+                    'method'      => $normalized['method'],
+                ]);
+
+                $pageCount = $this->openPdfWithFpdi($fpdiSource);
+            }
+        }
+
+        if ($pageCount === null) {
+            Log::channel('cubsign')->error('SIGNED_PDF_FAIL', [
+                'document_id' => $document->id,
+                'error'       => 'FPDI could not open base PDF after normalization attempts',
+            ]);
+
+            return null;
+        }
+
+        Log::channel('cubsign')->info('SIGNED_PDF_PAGE_COUNT', [
+            'document_id' => $document->id,
+            'page_count'  => $pageCount,
+        ]);
 
         $pdf = new Fpdi('P', 'pt');
         $pdf->SetAutoPageBreak(false);
 
         try {
-            $pageCount = $pdf->setSourceFile($basePath);
-        } catch (\Exception $e) {
-            Log::channel('cubsign')->error('SignedPdfService: could not open base PDF', [
+            $pdf->setSourceFile($fpdiSource);
+        } catch (\Throwable $e) {
+            Log::channel('cubsign')->error('SIGNED_PDF_FAIL', [
                 'document_id' => $document->id,
                 'error'       => $e->getMessage(),
+                'class'       => $e::class,
             ]);
+
             return null;
         }
 
-        // Group placed fields by page number
         $byPage = [];
         foreach ($placedFields as $pf) {
             $byPage[(int) ($pf['pageNum'] ?? 1)][] = $pf;
         }
 
         $tempFiles = [];
+        $stamped   = 0;
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $templateId = $pdf->importPage($pageNo);
@@ -80,48 +185,79 @@ class SignedPdfService
                 $type  = $signedValues[$fieldId]['type'];
                 $value = $signedValues[$fieldId]['value'];
 
-                // Convert editor pixels → PDF points (FPDF origin is top-left, same as CSS — no Y flip needed)
                 $x = (float) $pf['x'] / $editorScale;
                 $y = (float) $pf['y'] / $editorScale;
                 $w = (float) $pf['w'] / $editorScale;
                 $h = (float) $pf['h'] / $editorScale;
 
+                if ($w <= 0 || $h <= 0) {
+                    continue;
+                }
+
                 if ($type === 'signature' || $type === 'initials') {
-                    if (! $value || ! str_starts_with((string) $value, 'data:image/png;base64,')) {
+                    $imagePath = $this->resolveImagePath($value, $document->id, $fieldId);
+                    if (! $imagePath || ! file_exists($imagePath)) {
                         continue;
                     }
-                    $pngData  = base64_decode(substr($value, strlen('data:image/png;base64,')));
-                    $tmpFile  = tempnam(sys_get_temp_dir(), 'csig_') . '.png';
-                    file_put_contents($tmpFile, $pngData);
-                    $tempFiles[] = $tmpFile;
 
-                    $pdf->Image($tmpFile, $x, $y, $w, $h, 'PNG');
+                    $imageType = $this->imageTypeForPath($imagePath);
+                    $pdf->Image($imagePath, $x, $y, $w, $h, $imageType);
+                    $stamped++;
 
-                } elseif ($type === 'date' || $type === 'name' || $type === 'text') {
+                    Log::channel('cubsign')->info('SIGNED_PDF_FIELD_STAMPED', [
+                        'document_id' => $document->id,
+                        'field_id'    => $fieldId,
+                        'type'        => $type,
+                        'page_no'     => $pageNo,
+                    ]);
+
+                    if (is_string($value) && str_starts_with($value, 'data:image/')) {
+                        $tempFiles[] = $imagePath;
+                    }
+                } elseif (in_array($type, ['date', 'name', 'text'], true)) {
                     $text = trim((string) ($value ?? ''));
                     if ($text === '') {
                         continue;
                     }
+
                     $fontSize = (float) max(8, min(14, $h * 0.55));
                     $pdf->SetFont('Helvetica', '', $fontSize);
                     $pdf->SetTextColor(0, 0, 0);
-                    // Place text baseline roughly in vertical center of the field box
                     $pdf->Text($x + 2, $y + $h * 0.72, $text);
+                    $stamped++;
 
-                } elseif ($type === 'checkbox') {
-                    if (! $value) {
-                        continue;
-                    }
+                    Log::channel('cubsign')->info('SIGNED_PDF_FIELD_STAMPED', [
+                        'document_id' => $document->id,
+                        'field_id'    => $fieldId,
+                        'type'        => $type,
+                        'page_no'     => $pageNo,
+                    ]);
+                } elseif ($type === 'checkbox' && $value) {
                     $pdf->SetDrawColor(26, 26, 204);
                     $pdf->SetLineWidth(1.5);
-                    // Draw a checkmark (two lines forming a tick)
                     $pdf->Line($x + $w * 0.15, $y + $h * 0.55, $x + $w * 0.42, $y + $h * 0.80);
                     $pdf->Line($x + $w * 0.42, $y + $h * 0.80, $x + $w * 0.85, $y + $h * 0.28);
+                    $stamped++;
+
+                    Log::channel('cubsign')->info('SIGNED_PDF_FIELD_STAMPED', [
+                        'document_id' => $document->id,
+                        'field_id'    => $fieldId,
+                        'type'        => $type,
+                        'page_no'     => $pageNo,
+                    ]);
                 }
             }
         }
 
-        // Store the completed PDF
+        if ($stamped === 0) {
+            Log::channel('cubsign')->error('SIGNED_PDF_FAIL', [
+                'document_id' => $document->id,
+                'error'       => 'zero fields stamped',
+            ]);
+
+            return null;
+        }
+
         $dir      = "signed/user_{$document->user_id}";
         $filename = "signed_{$document->id}_" . time() . '.pdf';
         $relPath  = $dir . '/' . $filename;
@@ -131,10 +267,85 @@ class SignedPdfService
 
         $pdf->Output('F', $absPath);
 
-        foreach ($tempFiles as $f) {
+        foreach (array_merge($tempFiles, $cleanupPaths) as $f) {
             @unlink($f);
         }
 
+        $outputBytes = file_exists($absPath) ? (filesize($absPath) ?: 0) : 0;
+
+        Log::channel('cubsign')->info('SIGNED_PDF_OUTPUT_CREATED', [
+            'document_id'   => $document->id,
+            'relative_path' => $relPath,
+            'bytes'         => $outputBytes,
+            'stamped'       => $stamped,
+        ]);
+
+        if ($outputBytes === 0) {
+            Log::channel('cubsign')->error('SIGNED_PDF_FAIL', [
+                'document_id' => $document->id,
+                'error'       => 'output file empty',
+            ]);
+
+            return null;
+        }
+
+        Log::channel('cubsign')->info('SIGNED_PDF_SUCCESS', [
+            'document_id'     => $document->id,
+            'signed_pdf_path' => $relPath,
+            'stamped'         => $stamped,
+        ]);
+
         return $relPath;
+    }
+
+    private function openPdfWithFpdi(string $absPath): ?int
+    {
+        $probe = new Fpdi('P', 'pt');
+
+        try {
+            return $probe->setSourceFile($absPath);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    private function resolveImagePath(mixed $value, int $documentId, int $fieldId): ?string
+    {
+        if (! is_string($value) || $value === '') {
+            return null;
+        }
+
+        if (str_starts_with($value, 'data:image/')) {
+            if (! preg_match('#^data:image/(png|jpeg|jpg);base64,(.+)$#s', $value, $matches)) {
+                return null;
+            }
+            $pngData = base64_decode($matches[2], true);
+            if ($pngData === false || $pngData === '') {
+                return null;
+            }
+            $tmpFile = tempnam(sys_get_temp_dir(), 'csig_') . '.png';
+            file_put_contents($tmpFile, $pngData);
+
+            return $tmpFile;
+        }
+
+        if (Storage::disk('documents')->exists($value)) {
+            return Storage::disk('documents')->path($value);
+        }
+
+        Log::channel('cubsign')->warning('SignedPdfService: image path not found', [
+            'document_id' => $documentId,
+            'field_id'    => $fieldId,
+            'value'       => $value,
+        ]);
+
+        return null;
+    }
+
+    private function imageTypeForPath(string $path): string
+    {
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return in_array($ext, ['jpg', 'jpeg'], true) ? 'JPEG' : 'PNG';
     }
 }

@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import SignatureField from '@/Components/SignatureField.vue';
 
 const props = defineProps({
     token:         { type: String,  required: true },
@@ -10,66 +11,21 @@ const props = defineProps({
     notYetTurn:    { type: Boolean, default: false },
 });
 
-const fieldValues = ref({});
-const canvasRefs  = ref({});
-const submitState = ref('idle'); // 'idle' | 'loading' | 'success' | 'error'
-const submitError = ref('');
+const fieldValues        = ref({});
+const signatureFieldRefs = ref({});
+const submitState        = ref('idle');
+const submitError        = ref('');
 
-let drawing = false, lastX = 0, lastY = 0;
-
-onMounted(() => {
-    const today = new Date().toISOString().split('T')[0];
-    props.fields.forEach(f => {
-        if (f.type === 'date')          fieldValues.value[f.id] = today;
-        else if (f.type === 'checkbox') fieldValues.value[f.id] = false;
-        else                            fieldValues.value[f.id] = f.value ?? '';
-    });
+props.fields.forEach(f => {
+    if (f.type === 'date')          fieldValues.value[f.id] = new Date().toISOString().split('T')[0];
+    else if (f.type === 'checkbox') fieldValues.value[f.id] = false;
+    else if (f.type !== 'signature' && f.type !== 'initials') {
+        fieldValues.value[f.id] = f.value ?? '';
+    }
 });
 
-function setCanvasRef(fieldId, el) {
-    if (el) canvasRefs.value[fieldId] = el;
-}
-
-function getPos(canvas, e) {
-    const r   = canvas.getBoundingClientRect();
-    const src = e.touches ? e.touches[0] : e;
-    return { x: src.clientX - r.left, y: src.clientY - r.top };
-}
-
-function onDrawStart(fieldId, e) {
-    drawing = true;
-    const canvas = canvasRefs.value[fieldId];
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.strokeStyle = '#1e293b';
-    ctx.lineWidth   = 2;
-    ctx.lineCap     = 'round';
-    const { x, y } = getPos(canvas, e);
-    lastX = x; lastY = y;
-}
-
-function onDraw(fieldId, e) {
-    if (!drawing) return;
-    e.preventDefault();
-    const canvas = canvasRefs.value[fieldId];
-    if (!canvas) return;
-    const ctx     = canvas.getContext('2d');
-    const { x, y } = getPos(canvas, e);
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    lastX = x; lastY = y;
-    fieldValues.value[fieldId] = canvas.toDataURL();
-}
-
-function onDrawEnd() { drawing = false; }
-
-function clearCanvas(fieldId) {
-    const canvas = canvasRefs.value[fieldId];
-    if (!canvas) return;
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-    fieldValues.value[fieldId] = '';
+function setSignatureFieldRef(fieldId, el) {
+    if (el) signatureFieldRefs.value[fieldId] = el;
 }
 
 function formatDate(value) {
@@ -80,16 +36,39 @@ function formatDate(value) {
     });
 }
 
+function collectSignedFields() {
+    return props.fields.map(f => {
+        if (f.type === 'signature' || f.type === 'initials') {
+            const comp = signatureFieldRefs.value[f.id];
+            const png  = comp?.exportPng?.() ?? '';
+            return { id: f.id, type: f.type, value: png };
+        }
+        return {
+            id:    f.id,
+            type:  f.type,
+            value: fieldValues.value[f.id] ?? '',
+        };
+    });
+}
+
 async function finishSigning() {
     if (submitState.value === 'loading') return;
     submitState.value = 'loading';
     submitError.value = '';
 
-    const signed = props.fields.map(f => ({
-        id:    f.id,
-        type:  f.type,
-        value: fieldValues.value[f.id] ?? '',
-    }));
+    const signed = collectSignedFields();
+
+    const missingDrawn = props.fields.some(f => {
+        if (f.type !== 'signature' && f.type !== 'initials') return false;
+        const val = signed.find(s => s.id === f.id)?.value ?? '';
+        return val === '';
+    });
+
+    if (missingDrawn) {
+        submitError.value = 'Please complete all signature and initials fields before finishing.';
+        submitState.value = 'error';
+        return;
+    }
 
     try {
         const xsrf = decodeURIComponent(
@@ -215,7 +194,6 @@ async function finishSigning() {
             <div class="flex w-full flex-col overflow-y-auto lg:w-96 lg:shrink-0">
                 <div class="px-6 py-6">
 
-                    <!-- Recipient info -->
                     <div class="mb-5 flex items-center gap-3">
                         <span
                             class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
@@ -234,7 +212,6 @@ async function finishSigning() {
                         Complete the fields below to sign <em>{{ document.name }}</em>.
                     </p>
 
-                    <!-- No fields assigned -->
                     <div
                         v-if="fields.length === 0"
                         class="mb-6 rounded-lg border border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-800"
@@ -242,7 +219,6 @@ async function finishSigning() {
                         No fields have been assigned to you in this document.
                     </div>
 
-                    <!-- Fields -->
                     <div v-else class="mb-6 space-y-5">
                         <div v-for="field in fields" :key="field.id">
 
@@ -254,39 +230,12 @@ async function finishSigning() {
                                 <template v-else>{{ field.label || 'Text' }}</template>
                             </p>
 
-                            <!-- Signature / Initials canvas -->
-                            <template v-if="field.type === 'signature' || field.type === 'initials'">
-                                <div class="relative overflow-hidden rounded-lg border border-gray-200 bg-white">
-                                    <canvas
-                                        :ref="el => setCanvasRef(field.id, el)"
-                                        :width="field.type === 'initials' ? 200 : 320"
-                                        :height="field.type === 'initials' ? 80  : 120"
-                                        class="block w-full touch-none cursor-crosshair"
-                                        @mousedown="e => onDrawStart(field.id, e)"
-                                        @mousemove="e => onDraw(field.id, e)"
-                                        @mouseup="onDrawEnd"
-                                        @mouseleave="onDrawEnd"
-                                        @touchstart.prevent="e => onDrawStart(field.id, e)"
-                                        @touchmove.prevent="e => onDraw(field.id, e)"
-                                        @touchend="onDrawEnd"
-                                    />
-                                    <p
-                                        v-if="!fieldValues[field.id]"
-                                        class="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-gray-300"
-                                    >
-                                        {{ field.type === 'initials' ? 'Draw initials here' : 'Draw signature here' }}
-                                    </p>
-                                </div>
-                                <button
-                                    type="button"
-                                    class="mt-1 text-xs text-gray-400 hover:text-gray-600"
-                                    @click="clearCanvas(field.id)"
-                                >
-                                    Clear
-                                </button>
-                            </template>
+                            <SignatureField
+                                v-if="field.type === 'signature' || field.type === 'initials'"
+                                :ref="el => setSignatureFieldRef(field.id, el)"
+                                :is-initials="field.type === 'initials'"
+                            />
 
-                            <!-- Date -->
                             <input
                                 v-else-if="field.type === 'date'"
                                 v-model="fieldValues[field.id]"
@@ -294,7 +243,6 @@ async function finishSigning() {
                                 class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                             />
 
-                            <!-- Checkbox -->
                             <div v-else-if="field.type === 'checkbox'" class="flex items-center gap-2">
                                 <input
                                     :id="`field-${field.id}`"
@@ -307,7 +255,6 @@ async function finishSigning() {
                                 </label>
                             </div>
 
-                            <!-- Text fallback -->
                             <input
                                 v-else
                                 v-model="fieldValues[field.id]"
@@ -319,7 +266,6 @@ async function finishSigning() {
                         </div>
                     </div>
 
-                    <!-- Error -->
                     <div
                         v-if="submitState === 'error'"
                         class="mb-4 flex items-center gap-2.5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700"
@@ -331,7 +277,6 @@ async function finishSigning() {
                         {{ submitError }}
                     </div>
 
-                    <!-- Finish Signing -->
                     <button
                         :disabled="submitState === 'loading'"
                         :class="[

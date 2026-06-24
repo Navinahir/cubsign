@@ -1004,7 +1004,7 @@ async function generateSignedPdf() {
         }
     }
 
-    return pdflibDoc.save();
+    return pdflibDoc.save({ useObjectStreams: false });
 }
 
 function scheduleAutosave() {
@@ -1048,21 +1048,41 @@ async function persistEditorState() {
 }
 
 async function goToReview() {
-    if (placedFields.value.length === 0 || isFinishing.value) return;
+    console.log('REVIEW_BUTTON_CLICKED');
+    console.log('GO_TO_REVIEW_ENTER', {
+        placedFields: placedFields.value.length,
+        isFinishing: isFinishing.value,
+        documentId: props.documentId,
+        authenticated: !!usePage().props.auth?.user,
+    });
+    if (placedFields.value.length === 0 || isFinishing.value) {
+        console.log('GO_TO_REVIEW_EARLY_EXIT', {
+            reason: placedFields.value.length === 0 ? 'no_fields' : 'already_finishing',
+        });
+        return;
+    }
     isFinishing.value = true;
     try {
         await persistEditorState();
         const bytes = await generateSignedPdf();
+        console.log('AFTER_GENERATE_PDF', { byteLength: bytes?.byteLength ?? bytes?.length ?? 0 });
+
         const isAuthenticated = !!usePage().props.auth?.user;
         let documentSaved = window.__cubsignSession?.token === props.session.token
             ? (window.__cubsignSession.documentSaved ?? false)
             : false;
 
-        if (isAuthenticated && props.documentId) {
-            const result = await persistSignedPdf(bytes, props.session.filename);
-            if (result.ok) {
+        if (isAuthenticated) {
+            console.log('BEFORE_PERSIST', { route: route('sign.save'), documentId: props.documentId });
+            const response = await persistSignedPdf(bytes, props.session.filename);
+            console.log('AFTER_PERSIST', response);
+            if (response.ok) {
                 documentSaved = true;
+            } else {
+                console.warn('[CubSign] persistSignedPdf failed before Review', response);
             }
+        } else {
+            console.log('PERSIST_SKIPPED', { isAuthenticated, documentId: props.documentId });
         }
 
         const recipientFieldCounts = {};
@@ -1086,9 +1106,10 @@ async function goToReview() {
             },
             documentSaved,
         };
+        console.log('BEFORE_REVIEW_NAVIGATION', { documentSaved });
         router.visit(route('sign.review'));
     } catch (err) {
-        console.error('[CubSign] PDF generation error:', err);
+        console.error('[CubSign] GO_TO_REVIEW_EXCEPTION', err);
         isFinishing.value = false;
     }
 }
