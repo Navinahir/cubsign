@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Web\Workspace;
 
 use App\Http\Controllers\Controller;
+use App\Mail\RecipientInvitationMail;
 use App\Models\Document;
 use App\Models\DocumentActivity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -135,8 +138,9 @@ class DocumentsController extends Controller
             ->sortBy(fn ($r) => $r['signing_order'] ?? 1)
             ->values();
 
+        $firstRecipient = null;
         foreach ($sorted as $idx => $data) {
-            $document->recipients()->create([
+            $recipient = $document->recipients()->create([
                 'name'                => $data['name'],
                 'email'               => $data['email'],
                 'color'               => $data['color']         ?? '#3B82F6',
@@ -145,6 +149,9 @@ class DocumentsController extends Controller
                 'status'              => $idx === 0 ? 'sent' : 'pending',
                 'sign_token'          => Str::random(40),
             ]);
+            if ($idx === 0) {
+                $firstRecipient = $recipient;
+            }
         }
 
         DocumentActivity::create([
@@ -153,6 +160,27 @@ class DocumentsController extends Controller
             'event'        => 'sent',
             'meta'         => ['recipient_count' => count($validated['recipients'])],
         ]);
+
+        // Send invitation email to the first recipient
+        if ($firstRecipient) {
+            DocumentActivity::create([
+                'document_id'  => $document->id,
+                'recipient_id' => $firstRecipient->id,
+                'event'        => 'recipient_notified',
+                'meta'         => ['name' => $firstRecipient->name, 'email' => $firstRecipient->email],
+            ]);
+
+            try {
+                // Load the document relationship so the Mailable can access document->user
+                $firstRecipient->load('document.user');
+                Mail::to($firstRecipient->email)->send(new RecipientInvitationMail($firstRecipient));
+            } catch (\Throwable $e) {
+                Log::error('RecipientInvitationMail failed (first recipient)', [
+                    'recipient_id' => $firstRecipient->id,
+                    'error'        => $e->getMessage(),
+                ]);
+            }
+        }
 
         return response()->json(['ok' => true]);
     }

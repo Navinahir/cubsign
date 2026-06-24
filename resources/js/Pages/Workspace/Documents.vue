@@ -106,10 +106,11 @@ function openDraft(doc) {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const STATUS_OPTIONS = [
-    { value: '',         label: 'All statuses' },
-    { value: 'signed',   label: 'Signed'       },
-    { value: 'archived', label: 'Completed'    },
-    { value: 'draft',    label: 'Draft'        },
+    { value: '',          label: 'All statuses' },
+    { value: 'completed', label: 'Completed'    },
+    { value: 'signed',    label: 'Signed'       },
+    { value: 'archived',  label: 'Archived'     },
+    { value: 'draft',     label: 'Draft'        },
 ];
 
 const SORT_OPTIONS = [
@@ -120,15 +121,16 @@ const SORT_OPTIONS = [
 ];
 
 function statusLabel(status) {
-    const map = { draft: 'Draft', signed: 'Signed', archived: 'Completed' };
+    const map = { draft: 'Draft', signed: 'Signed', archived: 'Archived', completed: 'Completed' };
     return map[status] ?? status;
 }
 
 function statusBadgeClass(status) {
     const map = {
-        draft:    'bg-gray-100 text-gray-600',
-        signed:   'bg-emerald-100 text-emerald-700',
-        archived: 'bg-blue-100 text-blue-700',
+        draft:     'bg-gray-100 text-gray-600',
+        signed:    'bg-emerald-100 text-emerald-700',
+        archived:  'bg-blue-100 text-blue-700',
+        completed: 'bg-emerald-100 text-emerald-700',
     };
     return `inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${map[status] ?? map.draft}`;
 }

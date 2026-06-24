@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RecipientInvitationMail;
 use App\Models\DocumentActivity;
 use App\Models\Recipient;
+use App\Services\SignedPdfService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -126,6 +130,16 @@ class RecipientSignController extends Controller
                 'event'        => 'recipient_notified',
                 'meta'         => ['name' => $next->name, 'email' => $next->email],
             ]);
+
+            try {
+                $next->load('document.user');
+                Mail::to($next->email)->send(new RecipientInvitationMail($next));
+            } catch (\Throwable $e) {
+                Log::error('RecipientInvitationMail failed (next recipient)', [
+                    'recipient_id' => $next->id,
+                    'error'        => $e->getMessage(),
+                ]);
+            }
         } else {
             $document->update(['status' => 'completed']);
 
@@ -135,6 +149,20 @@ class RecipientSignController extends Controller
                 'event'        => 'document_completed',
                 'meta'         => [],
             ]);
+
+            // Generate the final signed PDF with all recipient signatures overlaid
+            try {
+                $document->load('recipients');
+                $signedPath = (new SignedPdfService())->generate($document);
+                if ($signedPath) {
+                    $document->update(['signed_pdf_path' => $signedPath]);
+                }
+            } catch (\Throwable $e) {
+                Log::error('SignedPdfService failed', [
+                    'document_id' => $document->id,
+                    'error'       => $e->getMessage(),
+                ]);
+            }
         }
 
         return response()->json(['ok' => true]);

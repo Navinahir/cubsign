@@ -15,6 +15,7 @@ class Document extends Model
         'name',
         'status',
         'pdf_path',
+        'signed_pdf_path',
         'sign_token',
         'editor_state',
     ];
