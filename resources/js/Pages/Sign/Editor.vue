@@ -345,9 +345,14 @@ function restorePlacedFields() {
 }
 
 function finalizeWorkspaceUi() {
-    if (isSelfSignMode.value && savedAssetForType(activeFieldType.value)) {
+    if (isSelfSignMode.value && activeFieldType.value !== 'signature' && savedAssetForType(activeFieldType.value)) {
         placementMode.value = 'manual';
     }
+}
+
+async function runAutoDetection() {
+    if (initAborted || !pdfDoc || isDetecting.value || detectionRan.value) return;
+    await detectFields();
 }
 
 function teardownPdf() {
@@ -407,6 +412,7 @@ async function initializeWorkspace() {
             scrollToPage(props.editorState.activePage);
         }
         setupScrollObserver();
+        await runAutoDetection();
     } catch (err) {
         console.error('[CubSign] Workspace init failed:', err);
         workspaceInitState.value = 'error';
@@ -597,18 +603,24 @@ function captureSignature() {
     if (activeFieldType.value === 'initials') {
         savedInitials.value = asset;
         isChangingInitials.value = false;
-    } else {
-        savedSignature.value = asset;
-        isChangingSignature.value = false;
+        resetCreationDraft();
+        if (hasTemplatePlaceholders.value) {
+            fillTemplatePlaceholders();
+        }
+        placementMode.value = 'manual';
+        return;
     }
 
+    savedSignature.value = asset;
+    isChangingSignature.value = false;
     detectionRan.value = false;
     resetCreationDraft();
 
     if (hasTemplatePlaceholders.value) {
         fillTemplatePlaceholders();
     }
-    placementMode.value = 'manual';
+    placementMode.value = null;
+    detectFields();
 }
 
 function resetCreationDraft() {
@@ -639,7 +651,12 @@ function useExistingAsset() {
         isChangingSignature.value = false;
     }
     resetCreationDraft();
-    if (savedAssetForType(activeFieldType.value)) {
+    if (!savedAssetForType(activeFieldType.value)) return;
+    if (activeFieldType.value === 'signature') {
+        placementMode.value = null;
+        detectionRan.value = false;
+        detectFields();
+    } else {
         placementMode.value = 'manual';
     }
 }
@@ -724,8 +741,14 @@ const KEYWORDS = [
     'signatory', 'undersigned', 'authorized signatory',
 ];
 
+function clearDetectedFields() {
+    showFields.value     = false;
+    detectedFields.value = [];
+    detectionRan.value   = false;
+}
+
 async function detectFields() {
-    if (!pdfDoc || !savedSignature.value) return;
+    if (!pdfDoc || isDetecting.value) return;
     placementMode.value  = null;   // exit manual mode so banner/crosshair disappear
     isDetecting.value    = true;
     detectedFields.value = [];
@@ -2029,6 +2052,101 @@ async function finishSigning() {
                         @change="startChangeAsset"
                         @use-existing="useExistingAsset"
                     />
+
+                    <!-- Placement modes — restored after component extraction removed wiring (72616ee) -->
+                    <div
+                        v-if="activeFieldType === 'signature' && savedSignature && !isChangingSignature"
+                        class="space-y-2 border-t border-gray-100 px-3 py-2.5"
+                    >
+                        <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-400">Place signature</p>
+
+                        <button
+                            type="button"
+                            :class="[
+                                'flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition',
+                                placementMode === 'manual'
+                                    ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-400'
+                                    : 'border-blue-200 bg-blue-50/60 text-blue-700 hover:bg-blue-100',
+                            ]"
+                            @click="activateManualMode"
+                        >
+                            <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+                            </svg>
+                            <div class="text-left">
+                                <p>Place Manually</p>
+                                <p class="text-[10px] font-normal text-blue-500">Click anywhere on the PDF</p>
+                            </div>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="flex w-full items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700 disabled:cursor-not-allowed disabled:opacity-60"
+                            :disabled="isDetecting"
+                            @click="detectFields"
+                        >
+                            <svg class="h-4 w-4 shrink-0" :class="isDetecting ? 'animate-spin' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <div class="text-left">
+                                <p>{{ isDetecting ? 'Scanning…' : 'Detect Signature Fields' }}</p>
+                                <p class="text-[10px] font-normal text-gray-400">Find signature lines in the PDF</p>
+                            </div>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="flex w-full items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700"
+                            @click="autoPlace"
+                        >
+                            <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            <div class="text-left">
+                                <p>Auto Place</p>
+                                <p class="text-[10px] font-normal text-gray-400">Insert at the most likely location</p>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div v-if="showFields && detectedFields.length > 0" class="border-t border-gray-100 px-3 py-2.5">
+                        <div class="mb-2 flex items-center justify-between">
+                            <p class="text-xs font-bold text-amber-700">
+                                {{ detectedFields.length }} field{{ detectedFields.length !== 1 ? 's' : '' }} found
+                            </p>
+                            <button type="button" class="text-[11px] text-gray-400 hover:text-gray-600" @click="clearDetectedFields">
+                                Clear
+                            </button>
+                        </div>
+                        <div class="space-y-1.5">
+                            <button
+                                v-for="field in detectedFields"
+                                :key="field.id"
+                                type="button"
+                                class="flex w-full items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-2 text-left transition hover:bg-amber-100"
+                                @click="placeAtField(field)"
+                            >
+                                <svg class="mt-0.5 h-3 w-3 shrink-0 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                                <div>
+                                    <p class="text-xs font-semibold text-gray-800">{{ field.label }}</p>
+                                    <p class="text-[10px] text-gray-400">Page {{ field.pageNum }} · Click to place here</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div
+                        v-else-if="detectionRan && !isDetecting && !showFields && !isLoading && detectedFields.length === 0"
+                        class="border-t border-gray-100 px-3 py-2 text-center"
+                    >
+                        <p class="text-xs text-gray-500">No signature keyword fields found in this document.</p>
+                        <p v-if="placedFields.length > 0" class="mt-0.5 text-[11px] text-gray-400">
+                            {{ placedFields.length }} field{{ placedFields.length !== 1 ? 's' : '' }} already placed. Use "Place Manually" to add more.
+                        </p>
+                        <p v-else class="mt-0.5 text-[11px] text-gray-400">Use "Place Manually" to drag your signature onto the document.</p>
+                    </div>
                 </template>
                 <input ref="uploadInput" type="file" accept="image/*" class="hidden" @change="handleUpload" />
 

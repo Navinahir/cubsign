@@ -5,6 +5,25 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.10.2] 2026-06-25 — Auto-Detection Regression Fix
+
+### Fixed
+- **Signature field auto-detection was dead code** — commit `72616ee` (Editor component extraction) removed the placement-mode UI (`Place Manually`, `Detect Signature Fields`, `Auto Place`) while leaving `detectFields()` / `autoPlace()` in `Editor.vue` with no callers. Detection never ran after upload.
+- Restored placement-mode buttons, detected-field sidebar list, and amber PDF overlays.
+- `detectFields()` no longer requires a saved signature to scan (scan runs after PDF render); placing still requires a saved signature via `placeAtField()`.
+- `initializeWorkspace()` calls `runAutoDetection()` once after pages render.
+- `captureSignature()` triggers `detectFields()` after saving a signature asset.
+
+### Files Modified
+- `resources/js/Pages/Sign/Editor.vue`
+
+### QA Performed
+- `npm run build` — pass
+- `php artisan test` — 47 passed
+- Code-path trace: upload → PDF render → `detectFields()` → `detectedFields` → overlay/list UI
+
+---
+
 ## [v0.10.1] 2026-06-25 — Guest Signing Regression Fix
 
 ### Fixed

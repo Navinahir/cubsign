@@ -105,6 +105,39 @@ Removed `verified` from the signing route group. Email verification continues to
 
 ---
 
+## Auto-Detection Regression Fix (v0.10.2)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.10.2 |
+| **Date** | 2026-06-25 |
+
+### Root Cause
+During Editor component extraction (`72616ee`), the placement-mode UI (`Place Manually`, `Detect Signature Fields`, `Auto Place`) was removed from `Editor.vue`. `detectFields()` and `autoPlace()` remained but had no template bindings or lifecycle callers — detection never executed after PDF upload.
+
+### Fix
+- Restored placement-mode buttons, detected-field list, and amber overlay rendering.
+- `runAutoDetection()` runs once after `initializeWorkspace()` completes PDF render.
+- `detectFields()` scans without requiring a saved signature; `placeAtField()` still requires one.
+- `captureSignature()` re-triggers detection after saving a signature.
+
+### Files Modified
+- `resources/js/Pages/Sign/Editor.vue`
+- `CHANGELOG.md`, `README.md`, `DEVELOPMENT_TRACKER.md`
+
+### Testing Status
+- `npm run build` — pass
+- `php artisan test` — 47 passed
+
+### Known Limitations
+- Detection engine scans **signature keywords only** (not initials/name/date field types). Those field types are placed manually via the field-type grid.
+
+### Regression Prevented
+- Placement-mode UI must remain wired to `detectFields()` / `autoPlace()` / `activateManualMode()`.
+
+---
+
 ## Template
 
 Copy this block for new features:

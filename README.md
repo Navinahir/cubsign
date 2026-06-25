@@ -128,7 +128,8 @@ resources/
 
 ```
 Owner uploads PDF
-  └─ Places fields (signature, initials, date, name, text, checkbox)
+  └─ Editor auto-scans PDF text layer for signature keywords (after render)
+       └─ Places fields (signature, initials, date, name, text, checkbox) — manually or via detected overlays
        └─ Assigns each field to a recipient
             └─ Adds recipients (name, email, signing order)
                  └─ DocumentsController::send() called
@@ -181,6 +182,14 @@ Email failures are caught, logged, and never abort the signing flow or HTTP resp
 6. `signed_pdf_path` updated; original `pdf_path` preserved
 
 `DocumentDownloadController` serves `signed_pdf_path` for completed documents, falling back to `pdf_path` for all other statuses.
+
+---
+
+## Editor Auto-Detection
+
+After a PDF is uploaded and rendered in `Sign/Editor.vue`, `detectFields()` scans the pdf.js text layer for signature-related keywords (`signature`, `sign here`, `signed by`, etc.). Matches appear as amber dashed overlays on the PDF and in the sidebar list. Users can click a suggestion to place their saved signature, use **Auto Place** for the highest-confidence match, or **Place Manually**.
+
+Detection runs automatically once after `initializeWorkspace()` finishes rendering pages, and again after saving a signature. Initials, name, date, and other field types are placed manually via the field-type grid (not keyword-scanned).
 
 ---
 
