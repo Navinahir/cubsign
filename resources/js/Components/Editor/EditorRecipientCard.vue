@@ -14,6 +14,7 @@ defineEmits(['select', 'remove', 'update:name', 'update:email', 'dragstart', 'dr
 
 <template>
     <div
+        :id="`recipient-card-${recipient.id}`"
         draggable="true"
         role="button"
         tabindex="0"
@@ -81,7 +82,12 @@ defineEmits(['select', 'remove', 'update:name', 'update:email', 'dragstart', 'dr
                 <div class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-gray-400">
                     <span>Recipient #{{ recipient.signingOrder }}</span>
                     <span>·</span>
-                    <span :style="`color:${recipient.color}`">{{ fieldCount }} {{ fieldCount === 1 ? 'Field' : 'Fields' }}</span>
+                    <span class="inline-flex items-center gap-0.5" :style="`color:${recipient.color}`">
+                        <svg class="h-3 w-3 shrink-0 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                        {{ fieldCount }} {{ fieldCount === 1 ? 'Field' : 'Fields' }} Assigned
+                    </span>
                     <span :class="statusBadgeClass(recipient.status)">{{ recipient.status }}</span>
                 </div>
             </div>

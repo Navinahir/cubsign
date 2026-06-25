@@ -214,6 +214,15 @@ class RecipientSignController extends Controller
 
         if ($next) {
             $next->update(['status' => 'sent']);
+
+            Log::channel('cubsign')->info('RECIPIENT_UPDATED', [
+                'document_id'       => $document->id,
+                'recipient_id'      => $next->id,
+                'previous_status'   => 'pending',
+                'new_status'        => 'sent',
+                'signing_order'     => $next->signing_order,
+            ]);
+
             $this->notificationService->sendInvitation($next);
 
             Log::channel('cubsign')->info('RecipientSignController::complete — SignedPdfService NOT called (more recipients pending)', [

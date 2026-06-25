@@ -1,10 +1,10 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, watch, onBeforeUnmount, nextTick } from 'vue';
+import { useSignaturePad } from './useSignaturePad';
 
 const props = defineProps({
     activeFieldType:          { type: String, required: true },
     activeTab:                { type: String, default: 'draw' },
-    hasDrawing:               { type: Boolean, default: false },
     typedName:                { type: String, default: '' },
     typedFont:                { type: String, default: 'script' },
     uploadedSig:              { type: String, default: null },
@@ -12,7 +12,6 @@ const props = defineProps({
     savedAsset:               { type: Object, default: null },
     isChanging:               { type: Boolean, default: false },
     typeFonts:                { type: Array, required: true },
-    selectedFontCls:          { type: String, default: '' },
     hasTemplatePlaceholders:  { type: Boolean, default: false },
     templatePlaceholderCount: { type: Number, default: 0 },
 });
@@ -21,50 +20,81 @@ const emit = defineEmits([
     'update:activeTab',
     'update:typedName',
     'update:typedFont',
+    'update:hasDrawing',
     'upload',
-    'clear-canvas',
     'save',
     'change',
     'use-existing',
-    'canvas-mousedown',
-    'canvas-mousemove',
-    'canvas-mouseup',
-    'canvas-mouseleave',
-    'canvas-touchstart',
-    'canvas-touchmove',
-    'canvas-touchend',
 ]);
 
-const sigCanvas = ref(null);
-defineExpose({ sigCanvas });
+const {
+    canvasRef,
+    containerRef,
+    hasDrawing,
+    initPad,
+    setupResizeObserver,
+    setReadOnly,
+    clearPad,
+    undoStroke,
+    exportPng,
+    isEmpty,
+    destroy,
+    CANVAS_HEIGHT_PX,
+} = useSignaturePad();
 
 const isInitials = computed(() => props.activeFieldType === 'initials');
 const assetLabel = computed(() => (isInitials.value ? 'Initials' : 'Signature'));
-const showCreation = computed(() => !props.savedAsset || props.isChanging);
 const showReady    = computed(() => props.savedAsset && !props.isChanging);
+const showCreation = computed(() => !props.savedAsset || props.isChanging);
+
+watch(hasDrawing, (v) => emit('update:hasDrawing', v));
+
+watch(showReady, (ready) => {
+    setReadOnly(ready);
+}, { immediate: true });
+
+watch(
+    () => [showCreation.value, props.activeTab],
+    async ([creating, tab]) => {
+        if (!creating || tab !== 'draw') return;
+        await nextTick();
+        initPad();
+        setupResizeObserver();
+        if (!showReady.value) {
+            setReadOnly(false);
+        }
+    },
+    { immediate: true },
+);
+
+onBeforeUnmount(() => {
+    destroy();
+});
+
+defineExpose({ exportPng, isEmpty, clearPad, undoStroke, hasDrawing });
 </script>
 
 <template>
     <div v-if="activeFieldType === 'signature' || activeFieldType === 'initials'" class="px-3 py-2.5">
         <p class="text-xs font-semibold text-gray-900">{{ assetLabel }}</p>
 
-        <!-- Saved asset — preview only, no canvas -->
-        <div v-if="showReady" class="mt-2">
+        <!-- Saved — read-only preview -->
+        <div v-show="showReady" class="mt-2">
             <div class="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50/60 px-3 py-2">
                 <svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                 </svg>
-                <span class="text-xs font-semibold text-emerald-700">{{ assetLabel }} Ready</span>
+                <span class="text-xs font-semibold text-emerald-700">{{ assetLabel }} Saved</span>
             </div>
 
             <div class="mt-2 flex min-h-[56px] items-center justify-center rounded-lg border border-gray-200 bg-white p-2">
                 <img
-                    v-if="savedAsset.type === 'image'"
+                    v-if="savedAsset?.type === 'image'"
                     :src="savedAsset.src"
                     class="max-h-14 object-contain"
                     :alt="`${assetLabel} preview`"
                 />
-                <span v-else :class="savedAsset.font" class="text-xl" style="color:#1e40af">{{ savedAsset.src }}</span>
+                <span v-else-if="savedAsset" :class="savedAsset.font" class="text-xl" style="color:#1e40af">{{ savedAsset.src }}</span>
             </div>
 
             <p class="mt-2 text-center text-[10px] text-gray-400">
@@ -80,8 +110,8 @@ const showReady    = computed(() => props.savedAsset && !props.isChanging);
             </button>
         </div>
 
-        <!-- Draw / Type / Upload — only when creating or changing -->
-        <div v-else class="mt-2">
+        <!-- Create / change — draw, type, upload -->
+        <div v-show="showCreation" class="mt-2">
             <div v-if="savedAsset && isChanging" class="mb-2">
                 <button
                     type="button"
@@ -105,30 +135,36 @@ const showReady    = computed(() => props.savedAsset && !props.isChanging);
                 >{{ tab }}</button>
             </div>
 
-            <div v-if="activeTab === 'draw'" class="mt-2">
-                <div class="relative overflow-hidden rounded-lg border border-gray-200 bg-white">
+            <!-- Draw tab: canvas always in DOM (v-show) so SignaturePad is not recreated on tab switch -->
+            <div v-show="activeTab === 'draw'" class="mt-2">
+                <div
+                    ref="containerRef"
+                    class="relative overflow-hidden rounded-lg border border-gray-200 bg-white"
+                    style="touch-action: none"
+                >
                     <canvas
-                        ref="sigCanvas"
+                        ref="canvasRef"
                         class="block w-full touch-none"
-                        style="height:100px"
-                        @mousedown="$emit('canvas-mousedown', $event)"
-                        @mousemove="$emit('canvas-mousemove', $event)"
-                        @mouseup="$emit('canvas-mouseup', $event)"
-                        @mouseleave="$emit('canvas-mouseleave', $event)"
-                        @touchstart.prevent="$emit('canvas-touchstart', $event)"
-                        @touchmove.prevent="$emit('canvas-touchmove', $event)"
-                        @touchend.prevent="$emit('canvas-touchend', $event)"
+                        :style="{ height: `${CANVAS_HEIGHT_PX}px` }"
                     />
-                    <p v-if="!hasDrawing" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-gray-400">
+                    <p
+                        v-if="!hasDrawing"
+                        class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-gray-400"
+                    >
                         Draw here
                     </p>
                 </div>
-                <button v-if="hasDrawing" type="button" class="mt-1 text-[11px] text-gray-400 hover:text-gray-600" @click="$emit('clear-canvas')">
-                    Clear
-                </button>
+                <div v-if="hasDrawing" class="mt-1.5 flex items-center gap-3">
+                    <button type="button" class="text-[11px] text-gray-400 hover:text-gray-600" @click="undoStroke">
+                        Undo
+                    </button>
+                    <button type="button" class="text-[11px] text-gray-400 hover:text-gray-600" @click="clearPad">
+                        Clear
+                    </button>
+                </div>
             </div>
 
-            <div v-else-if="activeTab === 'type'" class="mt-2 space-y-2">
+            <div v-show="activeTab === 'type'" class="mt-2 space-y-2">
                 <input
                     :value="typedName"
                     type="text"
@@ -152,7 +188,7 @@ const showReady    = computed(() => props.savedAsset && !props.isChanging);
                 </div>
             </div>
 
-            <div v-else class="mt-2">
+            <div v-show="activeTab === 'upload'" class="mt-2">
                 <button
                     type="button"
                     class="flex w-full flex-col items-center rounded-lg border border-dashed border-gray-200 py-5 text-center transition hover:border-blue-300 hover:bg-blue-50/40"

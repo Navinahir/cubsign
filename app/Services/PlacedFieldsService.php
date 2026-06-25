@@ -81,7 +81,8 @@ class PlacedFieldsService
     public function recipientSummaries(array $placedFields, array $recipients): array
     {
         return collect($recipients)
-            ->filter(fn (array $r) => ! empty($r['name']) || ! empty($r['email']))
+            ->filter(fn (array $r) => trim((string) ($r['name'] ?? '')) !== ''
+                && trim((string) ($r['email'] ?? '')) !== '')
             ->map(function (array $r) use ($placedFields) {
                 $assignedFields = $this->fieldsForSigner($placedFields, $r['id'] ?? null);
                 $fieldTypes      = $this->fieldTypesForSigner($placedFields, $r['id'] ?? null);

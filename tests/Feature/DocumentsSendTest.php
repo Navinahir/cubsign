@@ -55,8 +55,16 @@ class DocumentsSendTest extends TestCase
     public function test_send_succeeds_when_pdf_path_exists(): void
     {
         $document = $this->makeDocument([
-            'status'   => 'signed',
-            'pdf_path' => 'documents/user_1/test.pdf',
+            'status'       => 'signed',
+            'pdf_path'     => 'documents/user_1/test.pdf',
+            'editor_state' => [
+                'placedFields' => [
+                    ['id' => 1, 'type' => 'signature', 'signerId' => 1, 'pageNum' => 1, 'x' => 10, 'y' => 10, 'w' => 100, 'h' => 40],
+                ],
+                'recipients' => [
+                    ['id' => 1, 'name' => 'Alice', 'email' => 'alice@example.com', 'signingOrder' => 1],
+                ],
+            ],
         ]);
 
         $response = $this->actingAs($this->user)->postJson(route('documents.send', $document), [
@@ -104,6 +112,34 @@ class DocumentsSendTest extends TestCase
             ->assertJson(['message' => 'Signing requests have already been prepared.']);
 
         $this->assertDatabaseCount('recipients', 1);
+    }
+
+    public function test_send_rejects_recipient_without_assigned_fields(): void
+    {
+        $document = $this->makeDocument([
+            'status'       => 'signed',
+            'pdf_path'     => 'documents/user_1/test.pdf',
+            'editor_state' => [
+                'placedFields' => [
+                    ['id' => 1, 'type' => 'signature', 'signerId' => 1, 'pageNum' => 1, 'x' => 10, 'y' => 10, 'w' => 100, 'h' => 40],
+                ],
+            ],
+        ]);
+
+        $response = $this->actingAs($this->user)->postJson(route('documents.send', $document), [
+            'recipients' => [
+                [
+                    'name'                => 'Bob',
+                    'email'               => 'bob@example.com',
+                    'editor_recipient_id' => 2,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonFragment(['message' => 'Recipient Bob has no assigned fields.']);
+
+        $this->assertDatabaseCount('recipients', 0);
     }
 
     public function test_send_rejects_completed_document(): void

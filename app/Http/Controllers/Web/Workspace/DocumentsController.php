@@ -7,6 +7,7 @@ use App\Models\Document;
 use App\Models\DocumentActivity;
 use App\Services\PlacedFieldsService;
 use App\Services\RecipientNotificationService;
+use App\Services\RequestSigningValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ class DocumentsController extends Controller
     public function __construct(
         private readonly RecipientNotificationService $notificationService,
         private readonly PlacedFieldsService $placedFieldsService,
+        private readonly RequestSigningValidator $signingValidator,
     ) {}
 
     public function show(Document $document): Response
@@ -150,95 +152,163 @@ class DocumentsController extends Controller
     {
         $this->gate($document);
 
-        if (in_array($document->status, ['completed', 'archived'], true)) {
-            return response()->json([
-                'message' => 'Only draft documents can be prepared.',
-            ], 409);
-        }
-
-        if ($document->recipients()->whereIn('status', ['sent', 'pending', 'signed'])->exists()) {
-            return response()->json([
-                'message' => 'Signing requests have already been prepared.',
-            ], 409);
-        }
-
-        if (! $document->pdf_path) {
-            return response()->json([
-                'message' => 'Document must be finalized before requests can be sent.',
-            ], 422);
-        }
-
-        $validated = $request->validate([
-            'recipients'                        => ['required', 'array', 'min:1'],
-            'recipients.*.name'                 => ['required', 'string', 'max:255'],
-            'recipients.*.email'                => ['required', 'email', 'max:255'],
-            'recipients.*.color'                => ['nullable', 'string', 'max:10'],
-            'recipients.*.signing_order'        => ['nullable', 'integer', 'min:1'],
-            'recipients.*.editor_recipient_id'  => ['required', 'integer'],
+        Log::channel('cubsign')->info('SEND_START', [
+            'document_id' => $document->id,
+            'user_id'     => auth()->id(),
         ]);
 
-        $placedFields = ($document->editor_state ?? [])['placedFields'] ?? [];
+        try {
+            if (in_array($document->status, ['completed', 'archived'], true)) {
+                Log::channel('cubsign')->warning('SEND_FAILED', [
+                    'document_id' => $document->id,
+                    'reason'      => 'document_not_draft',
+                ]);
 
-        foreach ($validated['recipients'] as $data) {
-            $editorRecipientId = $data['editor_recipient_id'];
-            Log::channel('cubsign')->info('SEND_FIELDS', $this->placedFieldsService->logPayload(
-                $document->id,
-                $editorRecipientId,
-                $placedFields,
-                $editorRecipientId,
-            ));
-        }
+                return response()->json([
+                    'message' => 'Only draft documents can be prepared.',
+                ], 409);
+            }
 
-        Log::channel('cubsign')->info('SEND_FIELDS', array_merge(
-            $this->placedFieldsService->logPayload($document->id, null, $placedFields),
-            ['scope' => 'document', 'recipient_count' => count($validated['recipients'])],
-        ));
+            if ($document->recipients()->whereIn('status', ['sent', 'pending', 'signed'])->exists()) {
+                Log::channel('cubsign')->warning('SEND_FAILED', [
+                    'document_id' => $document->id,
+                    'reason'      => 'already_prepared',
+                ]);
 
-        $document->recipients()->delete();
+                return response()->json([
+                    'message' => 'Signing requests have already been prepared.',
+                ], 409);
+            }
 
-        // Sort by signing_order so the first in sequence gets status='sent'; rest start as 'pending'
-        $sorted = collect($validated['recipients'])
-            ->sortBy(fn ($r) => $r['signing_order'] ?? 1)
-            ->values();
+            if (! $document->pdf_path) {
+                Log::channel('cubsign')->warning('SEND_FAILED', [
+                    'document_id' => $document->id,
+                    'reason'      => 'pdf_not_finalized',
+                ]);
 
-        $firstRecipient = null;
-        foreach ($sorted as $idx => $data) {
-            $recipient = $document->recipients()->create([
-                'name'                => $data['name'],
-                'email'               => $data['email'],
-                'color'               => $data['color']         ?? '#3B82F6',
-                'signing_order'       => $data['signing_order'] ?? 1,
-                'editor_recipient_id' => $data['editor_recipient_id'],
-                'status'              => $idx === 0 ? 'sent' : 'pending',
-                'sign_token'          => Str::random(40),
+                return response()->json([
+                    'message' => 'Document must be finalized before requests can be sent.',
+                ], 422);
+            }
+
+            $validated = $request->validate([
+                'recipients'                        => ['required', 'array', 'min:1'],
+                'recipients.*.name'                 => ['required', 'string', 'max:255'],
+                'recipients.*.email'                => ['required', 'email', 'max:255'],
+                'recipients.*.color'                => ['nullable', 'string', 'max:10'],
+                'recipients.*.signing_order'        => ['nullable', 'integer', 'min:1'],
+                'recipients.*.editor_recipient_id'  => ['required', 'integer'],
             ]);
-            if ($idx === 0) {
-                $firstRecipient = $recipient;
+
+            $validationErrors = $this->signingValidator->validateSendPayload($document, $validated['recipients']);
+            if ($validationErrors !== []) {
+                Log::channel('cubsign')->warning('SEND_FAILED', [
+                    'document_id' => $document->id,
+                    'reason'      => 'validation',
+                    'errors'      => $validationErrors,
+                ]);
+
+                return response()->json([
+                    'message' => $validationErrors[0],
+                    'errors'  => $validationErrors,
+                ], 422);
             }
-        }
 
-        DocumentActivity::create([
-            'document_id'  => $document->id,
-            'recipient_id' => null,
-            'event'        => 'sent',
-            'meta'         => ['recipient_count' => count($validated['recipients'])],
-        ]);
+            $placedFields = ($document->editor_state ?? [])['placedFields'] ?? [];
 
-        // Send invitation email to the first recipient
-        $mailWarning = null;
-
-        if ($firstRecipient) {
-            if (! $this->notificationService->sendInvitation($firstRecipient)) {
-                $mailWarning = 'Recipients were prepared, but the invitation email could not be sent. Please notify the recipient manually.';
+            foreach ($validated['recipients'] as $data) {
+                $editorRecipientId = $data['editor_recipient_id'];
+                Log::channel('cubsign')->info('SEND_FIELDS', $this->placedFieldsService->logPayload(
+                    $document->id,
+                    $editorRecipientId,
+                    $placedFields,
+                    $editorRecipientId,
+                ));
             }
-        }
 
-        $response = ['ok' => true];
-        if ($mailWarning) {
-            $response['warning'] = $mailWarning;
-        }
+            Log::channel('cubsign')->info('SEND_FIELDS', array_merge(
+                $this->placedFieldsService->logPayload($document->id, null, $placedFields),
+                ['scope' => 'document', 'recipient_count' => count($validated['recipients'])],
+            ));
 
-        return response()->json($response);
+            $document->recipients()->delete();
+
+            $sorted = collect($validated['recipients'])
+                ->sortBy(fn ($r) => $r['signing_order'] ?? 1)
+                ->values();
+
+            $firstRecipient = null;
+            foreach ($sorted as $idx => $data) {
+                $token = Str::random(40);
+
+                $recipient = $document->recipients()->create([
+                    'name'                => $data['name'],
+                    'email'               => $data['email'],
+                    'color'               => $data['color']         ?? '#3B82F6',
+                    'signing_order'       => $data['signing_order'] ?? 1,
+                    'editor_recipient_id' => $data['editor_recipient_id'],
+                    'status'              => $idx === 0 ? 'sent' : 'pending',
+                    'sign_token'          => $token,
+                ]);
+
+                Log::channel('cubsign')->info('RECIPIENT_CREATED', [
+                    'document_id'         => $document->id,
+                    'recipient_id'        => $recipient->id,
+                    'editor_recipient_id'   => $recipient->editor_recipient_id,
+                    'email'               => $recipient->email,
+                    'signing_order'       => $recipient->signing_order,
+                    'status'              => $recipient->status,
+                ]);
+
+                Log::channel('cubsign')->info('TOKEN_CREATED', [
+                    'document_id'  => $document->id,
+                    'recipient_id' => $recipient->id,
+                    'token_suffix' => '…' . substr($token, -8),
+                ]);
+
+                if ($idx === 0) {
+                    $firstRecipient = $recipient;
+                }
+            }
+
+            DocumentActivity::create([
+                'document_id'  => $document->id,
+                'recipient_id' => null,
+                'event'        => 'sent',
+                'meta'         => ['recipient_count' => count($validated['recipients'])],
+            ]);
+
+            $mailWarning = null;
+
+            if ($firstRecipient) {
+                if (! $this->notificationService->sendInvitation($firstRecipient)) {
+                    $mailWarning = 'Recipients were prepared, but the invitation email could not be sent. Please notify the recipient manually.';
+                }
+            }
+
+            Log::channel('cubsign')->info('SEND_COMPLETED', [
+                'document_id'      => $document->id,
+                'recipient_count'  => count($validated['recipients']),
+                'mail_warning'     => $mailWarning !== null,
+            ]);
+
+            $response = ['ok' => true];
+            if ($mailWarning) {
+                $response['warning'] = $mailWarning;
+            }
+
+            return response()->json($response);
+        } catch (\Throwable $e) {
+            Log::channel('cubsign')->error('SEND_FAILED', [
+                'document_id' => $document->id,
+                'error'       => $e->getMessage(),
+                'class'       => $e::class,
+            ]);
+
+            return response()->json([
+                'message' => 'Failed to prepare signing requests. Please try again.',
+            ], 500);
+        }
     }
 
     private function gate(Document $document): void

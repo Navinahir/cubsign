@@ -21,20 +21,89 @@ export function fieldTypesForRecipient(placedFields, recipientId) {
     return counts;
 }
 
+export function configuredRecipients(recipients) {
+    return recipients.filter(
+        r => (r.name ?? '').trim() !== '' && (r.email ?? '').trim() !== '',
+    );
+}
+
+export function recipientFieldCount(placedFields, recipientId) {
+    return fieldsForRecipient(placedFields, recipientId).length;
+}
+
 export function recipientFieldSummaries(placedFields, recipients) {
-    return recipients
-        .filter(r => (r.name ?? '').trim() || (r.email ?? '').trim())
-        .map(r => {
-            const assigned = fieldsForRecipient(placedFields, r.id);
-            const assignedFieldTypes = fieldTypesForRecipient(placedFields, r.id);
-            return {
-                ...r,
-                assignedFields: assigned,
-                assigned_fields_count: assigned.length,
-                assigned_field_types: assignedFieldTypes,
-                fieldCount: assigned.length,
-            };
-        });
+    return configuredRecipients(recipients).map(r => {
+        const assigned = fieldsForRecipient(placedFields, r.id);
+        const assignedFieldTypes = fieldTypesForRecipient(placedFields, r.id);
+        return {
+            ...r,
+            assignedFields: assigned,
+            assigned_fields_count: assigned.length,
+            assigned_field_types: assignedFieldTypes,
+            fieldCount: assigned.length,
+        };
+    });
+}
+
+/**
+ * Validate request-signing workflow before finish / prepare.
+ *
+ * @returns {string[]} error messages (empty = valid)
+ */
+export function validateRequestSigning({
+    signingMode,
+    recipients,
+    placedFields,
+    documentId,
+    documentSaved,
+}) {
+    const errors = [];
+
+    if (!documentId) {
+        errors.push('Document must be saved before continuing.');
+    }
+
+    if (!documentSaved) {
+        errors.push('Please save the document PDF before finishing.');
+    }
+
+    if (signingMode !== 'request' && signingMode !== 'self') {
+        errors.push('Invalid signing mode.');
+    }
+
+    if (signingMode === 'request') {
+        const configured = configuredRecipients(recipients);
+
+        if (configured.length === 0) {
+            errors.push('Add at least one recipient before finishing.');
+        }
+
+        const seenEmails = new Set();
+
+        for (const r of configured) {
+            const email = (r.email ?? '').trim().toLowerCase();
+            const name  = (r.name ?? '').trim() || 'A recipient';
+
+            if (!email) {
+                errors.push(`${name} must have an email address.`);
+                continue;
+            }
+
+            if (seenEmails.has(email)) {
+                errors.push(`Duplicate email address: ${r.email}.`);
+            }
+            seenEmails.add(email);
+
+            const count = fieldsForRecipient(placedFields, r.id).length;
+            if (count === 0) {
+                errors.push(`Recipient ${name} has no assigned fields.`);
+            }
+        }
+    } else if (placedFields.length === 0) {
+        errors.push('Place at least one field before finishing.');
+    }
+
+    return errors;
 }
 
 export function buildFieldsLogPayload(documentId, recipientId, placedFields, signerId = null) {

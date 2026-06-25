@@ -13,7 +13,10 @@ import {
     fieldTypesForRecipient,
     recipientFieldSummaries,
     buildFieldsLogPayload,
+    configuredRecipients,
+    validateRequestSigning,
 } from '@/Components/Editor/editorHelpers';
+import EditorAddRecipientModal from '@/Components/Editor/EditorAddRecipientModal.vue';
 import EditorSigningMode from '@/Components/Editor/EditorSigningMode.vue';
 import EditorRequestFieldHint from '@/Components/Editor/EditorRequestFieldHint.vue';
 import EditorRecipientSection from '@/Components/Editor/EditorRecipientSection.vue';
@@ -55,14 +58,16 @@ const signatureTab        = ref('draw');
 const initialsTab         = ref('draw');
 const isChangingSignature = ref(false);
 const isChangingInitials  = ref(false);
-const sigCanvasRef        = ref(null);
-const hasDrawing          = ref(false);
-const isDrawing           = ref(false);
+const sigPanelRef            = ref(null);
+const initialsPanelRef       = ref(null);
+const recipientSectionRef    = ref(null);
+const hasDrawingSignature    = ref(false);
+const hasDrawingInitials     = ref(false);
+
 const typedName           = ref('');
 const typedFont           = ref('script');
 const uploadedSig         = ref(null);
 const uploadInput         = ref(null);
-const sigPanelRef         = ref(null);
 
 const activeTab = computed({
     get() {
@@ -139,6 +144,14 @@ const isChangingAsset = computed(() =>
     activeFieldType.value === 'initials' ? isChangingInitials.value : isChangingSignature.value,
 );
 
+function activeSignaturePanel() {
+    return activeFieldType.value === 'initials' ? initialsPanelRef.value : sigPanelRef.value;
+}
+
+const hasDrawing = computed(() =>
+    activeFieldType.value === 'initials' ? hasDrawingInitials.value : hasDrawingSignature.value,
+);
+
 function fillTemplatePlaceholders() {
     placedFields.value.forEach(f => {
         if (!isTemplatePlaceholder(f)) return;
@@ -183,20 +196,27 @@ const realPlacedFields = computed(() => {
 });
 
 const hasRecipientConfigured = computed(() =>
-    recipients.value.length > 1 ||
-    recipients.value.some(r => (r.name ?? '').trim() || (r.email ?? '').trim())
+    configuredRecipients(recipients.value).length > 0,
+);
+
+const existingRecipientEmails = computed(() =>
+    configuredRecipients(recipients.value).map(r => (r.email ?? '').trim().toLowerCase()),
 );
 
 const setupFieldsPlaced = computed(() => placedFields.value.length > 0);
 
 const emptyStateStep = computed(() => {
-    if (placementMode.value === 'manual') return 3;
-    if (isRequestMode.value && !hasRecipientConfigured.value && placedFields.value.length === 0) return 1;
-    if (placedFields.value.length === 0) return 2;
+    if (placementMode.value === 'manual') return 2;
+    if (placedFields.value.length === 0) return 1;
     return null;
 });
 
-const authUserName = computed(() => usePage().props.auth?.user?.name ?? '');
+const recipientListVisible = ref(false);
+const showAddRecipientModal = ref(false);
+
+watch(() => configuredRecipients(recipients.value).length, (count) => {
+    if (count > 0) recipientListVisible.value = true;
+});
 
 const selectedFont = computed(
     () => typeFonts.find(f => f.id === typedFont.value) ?? typeFonts[0]
@@ -277,13 +297,20 @@ onMounted(async () => {
         initialsTab.value = props.editorState.selectedInitialsTab;
     }
 
-    if (isSelfSignMode.value && savedAssetForType(activeFieldType.value)) {
-        placementMode.value = 'manual';
+    if (
+        recipients.value.length > 1
+        || configuredRecipients(recipients.value).length > 0
+    ) {
+        recipientListVisible.value = true;
     }
 
-    await nextTick();
-    if (isChangingAsset.value || !activeSavedAsset.value) {
-        initSigCanvas();
+    if (signingMode.value === 'request') {
+        recipients.value = configuredRecipients(recipients.value);
+        activeRecipientId.value = recipients.value[0]?.id ?? null;
+    }
+
+    if (isSelfSignMode.value && savedAssetForType(activeFieldType.value)) {
+        placementMode.value = 'manual';
     }
 });
 
@@ -295,24 +322,6 @@ onBeforeUnmount(() => {
     window.removeEventListener('keydown',   onKeyDown);
     if (intersectionObs) intersectionObs.disconnect();
     if (autosaveTimer) clearTimeout(autosaveTimer);
-});
-
-watch(activeTab, async (tab) => {
-    if (tab !== 'draw') return;
-    if (!isSelfSignMode.value) return;
-    if (activeFieldType.value !== 'signature' && activeFieldType.value !== 'initials') return;
-    if (activeSavedAsset.value && !isChangingAsset.value) return;
-    await nextTick();
-    initSigCanvas();
-});
-
-watch([activeFieldType, isChangingAsset], async () => {
-    if (!isSelfSignMode.value) return;
-    if (activeFieldType.value !== 'signature' && activeFieldType.value !== 'initials') return;
-    if (activeSavedAsset.value && !isChangingAsset.value) return;
-    if (activeTab.value !== 'draw') return;
-    await nextTick();
-    initSigCanvas();
 });
 
 watch(activePage, async (pageNum) => {
@@ -428,64 +437,6 @@ function scrollToPage(pageNum) {
     }
 }
 
-// ── Signature canvas (Draw tab) ───────────────────────────────────────────
-function getSigCanvas() {
-    const exposed = sigPanelRef.value?.sigCanvas;
-    if (exposed) return exposed.value ?? exposed;
-    return sigCanvasRef.value;
-}
-
-function initSigCanvas() {
-    const canvas = getSigCanvas();
-    if (!canvas) return;
-    const dpr = window.devicePixelRatio || 1;
-    const w   = Math.max(canvas.parentElement?.clientWidth ?? 0, 240);
-    const h   = 120;
-    canvas.width  = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width  = w + 'px';
-    canvas.style.height = h + 'px';
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
-    ctx.strokeStyle = '#1e40af';
-    ctx.lineWidth   = 2.5;
-    ctx.lineCap     = 'round';
-    ctx.lineJoin    = 'round';
-    hasDrawing.value = false;
-}
-
-function beginDraw(e) {
-    isDrawing.value = true;
-    const pos = getCanvasPos(e);
-    const ctx = getSigCanvas()?.getContext('2d');
-    if (!ctx) return;
-    ctx.beginPath();
-    ctx.moveTo(pos.x, pos.y);
-}
-
-function continueDraw(e) {
-    if (!isDrawing.value) return;
-    const pos = getCanvasPos(e);
-    const ctx = getSigCanvas()?.getContext('2d');
-    if (!ctx) return;
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-    hasDrawing.value = true;
-}
-
-function endDraw() { isDrawing.value = false; }
-
-function getCanvasPos(e) {
-    const canvas = getSigCanvas();
-    if (!canvas) return { x: 0, y: 0 };
-    const rect  = canvas.getBoundingClientRect();
-    // Support both mouse events and touch events
-    const point = e.touches?.[0] ?? e.changedTouches?.[0] ?? e;
-    return { x: point.clientX - rect.left, y: point.clientY - rect.top };
-}
-
-function clearCanvas() { initSigCanvas(); }
-
 function handleUpload(e) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -497,11 +448,11 @@ function handleUpload(e) {
 // ── Capture → placement ───────────────────────────────────────────────────
 function captureSignature() {
     if (!signatureReady.value) return;
-    const canvas = getSigCanvas();
     let asset;
     if (activeTab.value === 'draw') {
-        if (!canvas) return;
-        asset = { type: 'image', src: canvas.toDataURL() };
+        const png = activeSignaturePanel()?.exportPng?.();
+        if (!png) return;
+        asset = { type: 'image', src: png };
     } else if (activeTab.value === 'type') {
         asset = { type: 'text', src: typedName.value.trim(), font: selectedFont.value.cls };
     } else {
@@ -526,9 +477,14 @@ function captureSignature() {
 }
 
 function resetCreationDraft() {
-    hasDrawing.value = false;
-    typedName.value  = '';
+    if (activeFieldType.value === 'initials') {
+        hasDrawingInitials.value = false;
+    } else {
+        hasDrawingSignature.value = false;
+    }
+    typedName.value   = '';
     uploadedSig.value = null;
+    activeSignaturePanel()?.clearPad?.();
 }
 
 function startChangeAsset() {
@@ -539,9 +495,6 @@ function startChangeAsset() {
     }
     placementMode.value = null;
     resetCreationDraft();
-    if (activeTab.value === 'draw') {
-        nextTick(() => initSigCanvas());
-    }
 }
 
 function useExistingAsset() {
@@ -571,6 +524,7 @@ function onPageClick(e, pageNum) {
         return;
     }
     const type = activeFieldType.value;
+    if (isRequestMode.value && !activeRecipientId.value) return;
     if ((type === 'signature' || type === 'initials') && !savedAssetForType(type) && !isRequestMode.value) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const def  = FIELD_DEFAULTS[type];
@@ -812,33 +766,50 @@ function setSigningMode(mode) {
     placementMode.value       = null;
     detectedFields.value      = [];
     showFields.value          = false;
-    if (mode === 'self') {
+    if (mode === 'request') {
+        recipients.value = configuredRecipients(recipients.value);
+        activeRecipientId.value = recipients.value[0]?.id ?? null;
+        recipientListVisible.value = recipients.value.length > 0;
+    } else {
+        if (recipients.value.length === 0) {
+            recipients.value = [{
+                id: 1, name: '', email: '', color: RECIPIENT_COLORS[0],
+                role: 'signer', signingOrder: 1, status: 'pending',
+            }];
+            recipientSeq = Math.max(recipientSeq, 1);
+        }
         activeRecipientId.value = recipients.value[0]?.id ?? 1;
     }
 }
 
-function addRecipient() {
+function openAddRecipientModal() {
     if (isSelfSignMode.value) {
         setSigningMode('request');
     }
+    showAddRecipientModal.value = true;
+}
+
+async function saveRecipientFromModal({ name, email }) {
     const id           = ++recipientSeq;
     const signingOrder = recipients.value.length + 1;
     const color        = RECIPIENT_COLORS[(recipients.value.length) % RECIPIENT_COLORS.length];
-    recipients.value.push({ id, name: '', email: '', color, role: 'signer', signingOrder, status: 'pending' });
-    activeRecipientId.value = id;
+    recipients.value.push({
+        id, name, email, color, role: 'signer', signingOrder, status: 'pending',
+    });
+    activeRecipientId.value    = id;
+    recipientListVisible.value = true;
+    showAddRecipientModal.value = false;
+    await recipientSectionRef.value?.scrollToRecipient(id);
 }
 
 function removeRecipient(id) {
-    if (recipients.value.length <= 1) return;
     recipients.value = recipients.value.filter(r => r.id !== id);
-    // Renumber signingOrder after removal
+    placedFields.value = placedFields.value.filter(f => f.signerId !== id);
     recipients.value.forEach((r, i) => { r.signingOrder = i + 1; });
     if (activeRecipientId.value === id) {
-        activeRecipientId.value = recipients.value[0].id;
+        activeRecipientId.value = recipients.value[0]?.id ?? null;
     }
-    placedFields.value.forEach(f => {
-        if (f.signerId === id) f.signerId = recipients.value[0].id;
-    });
+    recipientListVisible.value = recipients.value.length > 0;
 }
 
 // ── Recipient UI helpers ──────────────────────────────────────────────────
@@ -1309,6 +1280,8 @@ async function goToReview() {
                 fieldCount:     placedFields.value.length,
                 recipientCount: namedRecipients.length,
                 recipients:     namedRecipients,
+                signingMode:    signingMode.value,
+                placedFields:   placedFields.value,
             },
             documentSaved,
         };
@@ -1655,12 +1628,14 @@ async function finishSigning() {
 
                 <EditorRecipientSection
                     v-if="isAuthenticated && isRequestMode"
+                    ref="recipientSectionRef"
                     :recipients="recipients"
                     :active-recipient-id="activeRecipientId"
                     :drag-over-recipient-id="dragOverRecipientId"
                     :field-count-for="fieldCountForRecipient"
                     :has-configured-recipient="hasRecipientConfigured"
-                    @add="addRecipient"
+                    :recipients-visible="recipientListVisible"
+                    @add="openAddRecipientModal"
                     @select="activeRecipientId = $event"
                     @remove="removeRecipient"
                     @update:name="(id, v) => updateRecipientField(id, 'name', v)"
@@ -1674,9 +1649,8 @@ async function finishSigning() {
                 <EditorGuestRecipient v-else-if="!isAuthenticated" :user-name="authUserName" />
 
                 <EditorEmptyState
-                    v-if="emptyStateStep"
+                    v-if="emptyStateStep && !(isRequestMode && !hasRecipientConfigured)"
                     :step="emptyStateStep"
-                    @add-recipient="addRecipient"
                 />
 
                 <EditorFieldTypeGrid
@@ -1699,38 +1673,54 @@ async function finishSigning() {
                     :active-field-type="activeFieldType"
                 />
 
-                <EditorSignaturePanel
-                    v-if="isSelfSignMode && (activeFieldType === 'signature' || activeFieldType === 'initials')"
-                    ref="sigPanelRef"
-                    :active-field-type="activeFieldType"
-                    :active-tab="activeTab"
-                    :has-drawing="hasDrawing"
-                    :typed-name="typedName"
-                    :typed-font="typedFont"
-                    :uploaded-sig="uploadedSig"
-                    :signature-ready="signatureReady"
-                    :saved-asset="activeSavedAsset"
-                    :is-changing="isChangingAsset"
-                    :type-fonts="typeFonts"
-                    :selected-font-cls="selectedFont.cls"
-                    :has-template-placeholders="hasTemplatePlaceholders"
-                    :template-placeholder-count="templatePlaceholderCount"
-                    @update:active-tab="activeTab = $event"
-                    @update:typed-name="typedName = $event"
-                    @update:typed-font="typedFont = $event"
-                    @upload="uploadInput?.click()"
-                    @clear-canvas="clearCanvas"
-                    @save="captureSignature"
-                    @change="startChangeAsset"
-                    @use-existing="useExistingAsset"
-                    @canvas-mousedown="beginDraw"
-                    @canvas-mousemove="continueDraw"
-                    @canvas-mouseup="endDraw"
-                    @canvas-mouseleave="endDraw"
-                    @canvas-touchstart="beginDraw"
-                    @canvas-touchmove="continueDraw"
-                    @canvas-touchend="endDraw"
-                />
+                <template v-if="isSelfSignMode">
+                    <EditorSignaturePanel
+                        v-show="activeFieldType === 'signature'"
+                        ref="sigPanelRef"
+                        active-field-type="signature"
+                        :active-tab="signatureTab"
+                        :typed-name="typedName"
+                        :typed-font="typedFont"
+                        :uploaded-sig="uploadedSig"
+                        :signature-ready="signatureReady"
+                        :saved-asset="savedSignature"
+                        :is-changing="isChangingSignature"
+                        :type-fonts="typeFonts"
+                        :has-template-placeholders="hasTemplatePlaceholders && activeFieldType === 'signature'"
+                        :template-placeholder-count="templatePlaceholderCount"
+                        @update:active-tab="signatureTab = $event"
+                        @update:typed-name="typedName = $event"
+                        @update:typed-font="typedFont = $event"
+                        @update:has-drawing="hasDrawingSignature = $event"
+                        @upload="uploadInput?.click()"
+                        @save="captureSignature"
+                        @change="startChangeAsset"
+                        @use-existing="useExistingAsset"
+                    />
+                    <EditorSignaturePanel
+                        v-show="activeFieldType === 'initials'"
+                        ref="initialsPanelRef"
+                        active-field-type="initials"
+                        :active-tab="initialsTab"
+                        :typed-name="typedName"
+                        :typed-font="typedFont"
+                        :uploaded-sig="uploadedSig"
+                        :signature-ready="signatureReady"
+                        :saved-asset="savedInitials"
+                        :is-changing="isChangingInitials"
+                        :type-fonts="typeFonts"
+                        :has-template-placeholders="hasTemplatePlaceholders && activeFieldType === 'initials'"
+                        :template-placeholder-count="templatePlaceholderCount"
+                        @update:active-tab="initialsTab = $event"
+                        @update:typed-name="typedName = $event"
+                        @update:typed-font="typedFont = $event"
+                        @update:has-drawing="hasDrawingInitials = $event"
+                        @upload="uploadInput?.click()"
+                        @save="captureSignature"
+                        @change="startChangeAsset"
+                        @use-existing="useExistingAsset"
+                    />
+                </template>
                 <input ref="uploadInput" type="file" accept="image/*" class="hidden" @change="handleUpload" />
 
             </aside>
@@ -1741,6 +1731,13 @@ async function finishSigning() {
             :fields-placed="setupFieldsPlaced"
             :is-finishing="isFinishing"
             @review="goToReview"
+        />
+
+        <EditorAddRecipientModal
+            :open="showAddRecipientModal"
+            :existing-emails="existingRecipientEmails"
+            @close="showAddRecipientModal = false"
+            @save="saveRecipientFromModal"
         />
 
     </SignLayout>

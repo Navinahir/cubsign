@@ -1,15 +1,17 @@
 <script setup>
+import { nextTick } from 'vue';
 import EditorRecipientCard from './EditorRecipientCard.vue';
 
-defineProps({
-    recipients:          { type: Array, required: true },
-    activeRecipientId:   { type: Number, required: true },
-    dragOverRecipientId: { type: Number, default: null },
-    fieldCountFor:       { type: Function, required: true },
+const props = defineProps({
+    recipients:             { type: Array, required: true },
+    activeRecipientId:      { type: Number, required: true },
+    dragOverRecipientId:    { type: Number, default: null },
+    fieldCountFor:          { type: Function, required: true },
     hasConfiguredRecipient: { type: Boolean, default: false },
+    recipientsVisible:      { type: Boolean, default: false },
 });
 
-defineEmits([
+const emit = defineEmits([
     'add',
     'select',
     'remove',
@@ -21,12 +23,22 @@ defineEmits([
     'drop',
     'dragend',
 ]);
+
+const showCards = () => props.recipients.length > 0;
+
+async function scrollToRecipient(id) {
+    await nextTick();
+    document.getElementById(`recipient-card-${id}`)
+        ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+defineExpose({ scrollToRecipient });
 </script>
 
 <template>
     <div class="border-t border-gray-100 px-3 py-2.5">
-        <p class="text-xs font-semibold text-gray-900">Recipient</p>
-        <p class="mt-0.5 text-[11px] text-gray-500">Choose who will fill this field.</p>
+        <p class="text-xs font-semibold text-gray-900">Recipients</p>
+        <p class="mt-0.5 text-[11px] text-gray-500">Invite people who need to sign this document.</p>
 
         <button
             type="button"
@@ -39,7 +51,15 @@ defineEmits([
             Add Recipient
         </button>
 
-        <div class="mt-2 space-y-1.5">
+        <p
+            v-if="!showCards()"
+            class="mt-3 rounded-lg border border-dashed border-gray-200 bg-gray-50 px-3 py-2.5 text-center text-[11px] leading-relaxed text-gray-500"
+        >
+            No recipients yet.<br>
+            Click <span class="font-semibold text-gray-700">Add Recipient</span> above to invite someone to sign.
+        </p>
+
+        <div v-else class="mt-2 space-y-1.5">
             <EditorRecipientCard
                 v-for="r in recipients"
                 :key="r.id"
@@ -47,7 +67,7 @@ defineEmits([
                 :is-active="activeRecipientId === r.id"
                 :is-drag-over="dragOverRecipientId === r.id"
                 :field-count="fieldCountFor(r.id)"
-                :can-remove="recipients.length > 1"
+                :can-remove="true"
                 @select="$emit('select', r.id)"
                 @remove="$emit('remove', r.id)"
                 @update:name="$emit('update:name', r.id, $event)"

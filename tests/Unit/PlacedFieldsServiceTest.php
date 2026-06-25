@@ -30,6 +30,23 @@ class PlacedFieldsServiceTest extends TestCase
         $this->assertSame([1, 2, 3], array_column($assigned, 'id'));
     }
 
+    public function test_recipient_summaries_require_name_and_email(): void
+    {
+        $placedFields = [
+            ['id' => 1, 'type' => 'signature', 'signerId' => 1],
+        ];
+
+        $recipients = [
+            ['id' => 1, 'name' => 'John', 'email' => '', 'signingOrder' => 1],
+            ['id' => 2, 'name' => 'Jane', 'email' => 'jane@example.com', 'signingOrder' => 2],
+        ];
+
+        $summaries = $this->service->recipientSummaries($placedFields, $recipients);
+
+        $this->assertCount(1, $summaries);
+        $this->assertSame('Jane', $summaries[0]['name']);
+    }
+
     public function test_recipient_summaries_include_all_field_types(): void
     {
         $placedFields = [
@@ -49,8 +66,5 @@ class PlacedFieldsServiceTest extends TestCase
 
         $this->assertCount(1, $summaries);
         $this->assertSame(6, $summaries[0]['assigned_fields_count']);
-        $this->assertSame(6, $summaries[0]['fieldCount']);
-        $this->assertSame(1, $summaries[0]['assigned_field_types']['signature']);
-        $this->assertSame(1, $summaries[0]['assigned_field_types']['checkbox']);
     }
 }

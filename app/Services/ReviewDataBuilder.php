@@ -28,6 +28,8 @@ class ReviewDataBuilder
             'fieldCount'     => count($placedFields),
             'recipientCount' => count($namedRecipients),
             'recipients'     => $namedRecipients,
+            'signingMode'    => (string) ($state['signingMode'] ?? 'self'),
+            'placedFields'   => $placedFields,
         ];
     }
 }

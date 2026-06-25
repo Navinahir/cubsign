@@ -15,6 +15,12 @@ class RecipientNotificationService
      */
     public function sendInvitation(Recipient $recipient): bool
     {
+        Log::channel('cubsign')->info('MAIL_DISPATCHED', [
+            'document_id'  => $recipient->document_id,
+            'recipient_id' => $recipient->id,
+            'email'        => $recipient->email,
+        ]);
+
         try {
             $recipient->load('document.user');
             Mail::to($recipient->email)->send(new RecipientInvitationMail($recipient));
@@ -29,11 +35,18 @@ class RecipientNotificationService
                 ],
             ]);
 
+            Log::channel('cubsign')->info('MAIL_SUCCESS', [
+                'document_id'  => $recipient->document_id,
+                'recipient_id' => $recipient->id,
+                'email'        => $recipient->email,
+            ]);
+
             return true;
         } catch (\Throwable $e) {
-            Log::channel('cubsign')->error('RecipientInvitationMail failed', [
-                'recipient_id' => $recipient->id,
+            Log::channel('cubsign')->error('MAIL_FAILED', [
                 'document_id'  => $recipient->document_id,
+                'recipient_id' => $recipient->id,
+                'email'        => $recipient->email,
                 'error'        => $e->getMessage(),
             ]);
 
