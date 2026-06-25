@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Web\Workspace;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\DocumentActivity;
+use App\Services\PlacedFieldsService;
 use App\Services\RecipientNotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,6 +19,7 @@ class DocumentsController extends Controller
 {
     public function __construct(
         private readonly RecipientNotificationService $notificationService,
+        private readonly PlacedFieldsService $placedFieldsService,
     ) {}
 
     public function show(Document $document): Response
@@ -108,6 +111,25 @@ class DocumentsController extends Controller
         $validated = $request->validate(['state' => ['required', 'array']]);
         $document->update(['editor_state' => $validated['state']]);
 
+        $placedFields = $validated['state']['placedFields'] ?? [];
+        $recipients   = $validated['state']['recipients'] ?? [];
+
+        Log::channel('cubsign')->info('EDITOR_STATE_SAVED', [
+            'document_id'         => $document->id,
+            'placed_fields_count' => count($placedFields),
+            'recipient_count'     => count($recipients),
+            'signing_mode'        => $validated['state']['signingMode'] ?? null,
+        ]);
+
+        foreach ($this->placedFieldsService->recipientSummaries($placedFields, $recipients) as $recipient) {
+            Log::channel('cubsign')->info('EDITOR_FIELDS', $this->placedFieldsService->logPayload(
+                $document->id,
+                (int) ($recipient['id'] ?? 0),
+                $placedFields,
+                $recipient['id'] ?? null,
+            ));
+        }
+
         return response()->json(['ok' => true]);
     }
 
@@ -154,6 +176,23 @@ class DocumentsController extends Controller
             'recipients.*.signing_order'        => ['nullable', 'integer', 'min:1'],
             'recipients.*.editor_recipient_id'  => ['required', 'integer'],
         ]);
+
+        $placedFields = ($document->editor_state ?? [])['placedFields'] ?? [];
+
+        foreach ($validated['recipients'] as $data) {
+            $editorRecipientId = $data['editor_recipient_id'];
+            Log::channel('cubsign')->info('SEND_FIELDS', $this->placedFieldsService->logPayload(
+                $document->id,
+                $editorRecipientId,
+                $placedFields,
+                $editorRecipientId,
+            ));
+        }
+
+        Log::channel('cubsign')->info('SEND_FIELDS', array_merge(
+            $this->placedFieldsService->logPayload($document->id, null, $placedFields),
+            ['scope' => 'document', 'recipient_count' => count($validated['recipients'])],
+        ));
 
         $document->recipients()->delete();
 

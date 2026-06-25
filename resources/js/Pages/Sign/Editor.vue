@@ -3,6 +3,28 @@ import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 import { persistSignedPdf } from '@/utils/persistSignedPdf';
+import { FIELD_TYPES, FIELD_DEFAULTS, RECIPIENT_COLORS, TYPE_FONTS } from '@/Components/Editor/editorConstants';
+import {
+    recipientInitials,
+    recipientDisplayName as displayRecipientName,
+    isSignPlaceholder,
+    signPlaceholderLabel,
+    fieldsForRecipient,
+    fieldTypesForRecipient,
+    recipientFieldSummaries,
+    buildFieldsLogPayload,
+} from '@/Components/Editor/editorHelpers';
+import EditorSigningMode from '@/Components/Editor/EditorSigningMode.vue';
+import EditorRequestFieldHint from '@/Components/Editor/EditorRequestFieldHint.vue';
+import EditorRecipientSection from '@/Components/Editor/EditorRecipientSection.vue';
+import EditorGuestRecipient from '@/Components/Editor/EditorGuestRecipient.vue';
+import EditorFieldTypeGrid from '@/Components/Editor/EditorFieldTypeGrid.vue';
+import EditorFieldSettings from '@/Components/Editor/EditorFieldSettings.vue';
+import EditorSignaturePanel from '@/Components/Editor/EditorSignaturePanel.vue';
+import EditorDocumentInfo from '@/Components/Editor/EditorDocumentInfo.vue';
+import EditorEmptyState from '@/Components/Editor/EditorEmptyState.vue';
+import EditorBottomActionBar from '@/Components/Editor/EditorBottomActionBar.vue';
+import EditorPlacementHelper from '@/Components/Editor/EditorPlacementHelper.vue';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
 
@@ -29,41 +51,30 @@ const loadError     = ref(null);
 const centerRef     = ref(null);    // scrollable center column
 
 // ── Signature creation ──────────────────────────────────────────────────
-const activeTab     = ref('draw');
-const sigCanvasRef  = ref(null);
-const hasDrawing    = ref(false);
-const isDrawing     = ref(false);
-const typedName     = ref('');
-const typedFont     = ref('script');
-const uploadedSig   = ref(null);
-const uploadInput   = ref(null);
+const signatureTab        = ref('draw');
+const initialsTab         = ref('draw');
+const isChangingSignature = ref(false);
+const isChangingInitials  = ref(false);
+const sigCanvasRef        = ref(null);
+const hasDrawing          = ref(false);
+const isDrawing           = ref(false);
+const typedName           = ref('');
+const typedFont           = ref('script');
+const uploadedSig         = ref(null);
+const uploadInput         = ref(null);
+const sigPanelRef         = ref(null);
 
-const typeFonts = [
-    { id: 'script',  label: 'Script',  cls: "font-['Georgia'] italic text-2xl tracking-wide" },
-    { id: 'cursive', label: 'Cursive', cls: 'font-sans italic text-2xl tracking-wide text-gray-700' },
-    { id: 'print',   label: 'Print',   cls: 'font-sans font-bold text-xl tracking-wider text-gray-900' },
-];
+const activeTab = computed({
+    get() {
+        return activeFieldType.value === 'initials' ? initialsTab.value : signatureTab.value;
+    },
+    set(val) {
+        if (activeFieldType.value === 'initials') initialsTab.value = val;
+        else signatureTab.value = val;
+    },
+});
 
-const FIELD_TYPES = [
-    { id: 'signature', label: 'Signature' },
-    { id: 'initials',  label: 'Initials'  },
-    { id: 'date',      label: 'Date'      },
-    { id: 'name',      label: 'Name'      },
-    { id: 'text',      label: 'Text'      },
-    { id: 'checkbox',  label: 'Checkbox'  },
-];
-
-const FIELD_DEFAULTS = {
-    signature: { w: 180, h: 60 },
-    initials:  { w: 90,  h: 40 },
-    date:      { w: 140, h: 32 },
-    name:      { w: 160, h: 32 },
-    text:      { w: 160, h: 32 },
-    checkbox:  { w: 28,  h: 28 },
-};
-
-const RECIPIENT_COLORS = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#EC4899'];
-const COLOR_NAMES      = { '#3B82F6':'Blue', '#10B981':'Green', '#F59E0B':'Amber', '#EF4444':'Red', '#8B5CF6':'Purple', '#EC4899':'Pink' };
+const typeFonts = TYPE_FONTS;
 
 // Prepared for future multi-step send workflow — no UI built yet
 const SEND_WORKFLOW_STEPS = [
@@ -81,8 +92,12 @@ const dragOverRecipientId = ref(null);
 const recipients          = ref([{ id: 1, name: '', email: '', color: RECIPIENT_COLORS[0], role: 'signer', signingOrder: 1, status: 'pending' }]);
 const activeRecipientId   = ref(1);
 
+// ── Signing mode: self = owner signs now, request = recipient placeholders ──
+const signingMode = ref('self'); // 'self' | 'request'
+
 // ── Placement state ─────────────────────────────────────────────────────
-const capturedSig     = ref(null);    // { type, src, font? } — pending sig/initials before placement
+const savedSignature  = ref(null);    // { type, src, font? } — reusable session asset
+const savedInitials   = ref(null);
 const placedFields    = ref([]);      // [{ id, type, pageNum, x, y, w, h, value }]
 const placementMode   = ref(null);    // 'manual' | null
 const detectedFields  = ref([]);      // detected signature field positions
@@ -105,28 +120,37 @@ let   intersectionObs = null;        // scroll-based active-page tracking
 // Template editor stores placeholder values: { sigType:'text', src:'Signature'/'Initials' }
 // These must be filled with the actual signature before the PDF is generated.
 function isTemplatePlaceholder(field) {
-    return (field.type === 'signature' || field.type === 'initials') &&
-        typeof field.value === 'object' &&
-        field.value !== null &&
-        (field.value.src === 'Signature' || field.value.src === 'Initials');
+    return isSignPlaceholder(field);
 }
 
 const hasTemplatePlaceholders = computed(() => placedFields.value.some(isTemplatePlaceholder));
 
 const templatePlaceholderCount = computed(() => placedFields.value.filter(isTemplatePlaceholder).length);
 
+function savedAssetForType(type) {
+    if (type === 'signature') return savedSignature.value;
+    if (type === 'initials') return savedInitials.value;
+    return null;
+}
+
+const activeSavedAsset = computed(() => savedAssetForType(activeFieldType.value));
+
+const isChangingAsset = computed(() =>
+    activeFieldType.value === 'initials' ? isChangingInitials.value : isChangingSignature.value,
+);
+
 function fillTemplatePlaceholders() {
-    if (!capturedSig.value) return;
     placedFields.value.forEach(f => {
-        if (isTemplatePlaceholder(f)) {
-            f.value = {
-                sigType: capturedSig.value.type,
-                src:     capturedSig.value.src,
-                font:    capturedSig.value.font,
-            };
-            if (!f.signerId) {
-                f.signerId = activeRecipientId.value;
-            }
+        if (!isTemplatePlaceholder(f)) return;
+        const asset = savedAssetForType(f.type);
+        if (!asset) return;
+        f.value = {
+            sigType: asset.type,
+            src:     asset.src,
+            font:    asset.font,
+        };
+        if (!f.signerId) {
+            f.signerId = activeRecipientId.value;
         }
     });
 }
@@ -143,6 +167,9 @@ let rsClientX = 0, rsClientY = 0;
 // ── Computed ─────────────────────────────────────────────────────────────
 const isAuthenticated = computed(() => !!usePage().props.auth?.user);
 
+const isRequestMode = computed(() => signingMode.value === 'request');
+const isSelfSignMode = computed(() => signingMode.value === 'self');
+
 const signatureReady = computed(() => {
     if (activeTab.value === 'draw')   return hasDrawing.value;
     if (activeTab.value === 'type')   return typedName.value.trim().length >= 2;
@@ -150,13 +177,26 @@ const signatureReady = computed(() => {
     return false;
 });
 
-const workflowStep = computed(() => {
-    // Template placeholder fields don't count as "signed" — only real placed fields do
-    const realFields = placedFields.value.filter(f => !isTemplatePlaceholder(f));
-    if (realFields.length > 0) return 3;
-    if (capturedSig.value)     return 2;
-    return 1;
+const realPlacedFields = computed(() => {
+    if (isRequestMode.value) return placedFields.value;
+    return placedFields.value.filter(f => !isSignPlaceholder(f));
 });
+
+const hasRecipientConfigured = computed(() =>
+    recipients.value.length > 1 ||
+    recipients.value.some(r => (r.name ?? '').trim() || (r.email ?? '').trim())
+);
+
+const setupFieldsPlaced = computed(() => placedFields.value.length > 0);
+
+const emptyStateStep = computed(() => {
+    if (placementMode.value === 'manual') return 3;
+    if (isRequestMode.value && !hasRecipientConfigured.value && placedFields.value.length === 0) return 1;
+    if (placedFields.value.length === 0) return 2;
+    return null;
+});
+
+const authUserName = computed(() => usePage().props.auth?.user?.name ?? '');
 
 const selectedFont = computed(
     () => typeFonts.find(f => f.id === typedFont.value) ?? typeFonts[0]
@@ -214,6 +254,37 @@ onMounted(async () => {
         recipientSeq        = Math.max(...props.editorState.recipients.map(r => (typeof r.id === 'number' ? r.id : 0)));
         activeRecipientId.value = props.editorState.recipients[0]?.id ?? 1;
     }
+
+    if (props.editorState?.signingMode === 'request' || props.editorState?.signingMode === 'self') {
+        signingMode.value = props.editorState.signingMode;
+    } else if (
+        props.editorState?.recipients?.length > 1 ||
+        props.editorState?.recipients?.some(r => (r.name ?? '').trim() || (r.email ?? '').trim())
+    ) {
+        signingMode.value = 'request';
+    }
+
+    if (props.editorState?.savedSignature) {
+        savedSignature.value = props.editorState.savedSignature;
+    }
+    if (props.editorState?.savedInitials) {
+        savedInitials.value = props.editorState.savedInitials;
+    }
+    if (props.editorState?.selectedSignatureTab) {
+        signatureTab.value = props.editorState.selectedSignatureTab;
+    }
+    if (props.editorState?.selectedInitialsTab) {
+        initialsTab.value = props.editorState.selectedInitialsTab;
+    }
+
+    if (isSelfSignMode.value && savedAssetForType(activeFieldType.value)) {
+        placementMode.value = 'manual';
+    }
+
+    await nextTick();
+    if (isChangingAsset.value || !activeSavedAsset.value) {
+        initSigCanvas();
+    }
 });
 
 onBeforeUnmount(() => {
@@ -227,10 +298,21 @@ onBeforeUnmount(() => {
 });
 
 watch(activeTab, async (tab) => {
-    if (tab === 'draw') {
-        await nextTick();
-        initSigCanvas();
-    }
+    if (tab !== 'draw') return;
+    if (!isSelfSignMode.value) return;
+    if (activeFieldType.value !== 'signature' && activeFieldType.value !== 'initials') return;
+    if (activeSavedAsset.value && !isChangingAsset.value) return;
+    await nextTick();
+    initSigCanvas();
+});
+
+watch([activeFieldType, isChangingAsset], async () => {
+    if (!isSelfSignMode.value) return;
+    if (activeFieldType.value !== 'signature' && activeFieldType.value !== 'initials') return;
+    if (activeSavedAsset.value && !isChangingAsset.value) return;
+    if (activeTab.value !== 'draw') return;
+    await nextTick();
+    initSigCanvas();
 });
 
 watch(activePage, async (pageNum) => {
@@ -240,7 +322,7 @@ watch(activePage, async (pageNum) => {
         ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 });
 
-watch([placedFields, recipients, scale], () => scheduleAutosave(), { deep: true });
+watch([placedFields, recipients, scale, signingMode, savedSignature, savedInitials, signatureTab, initialsTab], () => scheduleAutosave(), { deep: true });
 
 // ── PDF loading ───────────────────────────────────────────────────────────
 async function loadPdf(url) {
@@ -347,8 +429,14 @@ function scrollToPage(pageNum) {
 }
 
 // ── Signature canvas (Draw tab) ───────────────────────────────────────────
+function getSigCanvas() {
+    const exposed = sigPanelRef.value?.sigCanvas;
+    if (exposed) return exposed.value ?? exposed;
+    return sigCanvasRef.value;
+}
+
 function initSigCanvas() {
-    const canvas = sigCanvasRef.value;
+    const canvas = getSigCanvas();
     if (!canvas) return;
     const dpr = window.devicePixelRatio || 1;
     const w   = Math.max(canvas.parentElement?.clientWidth ?? 0, 240);
@@ -366,12 +454,11 @@ function initSigCanvas() {
     hasDrawing.value = false;
 }
 
-onMounted(initSigCanvas);
-
 function beginDraw(e) {
     isDrawing.value = true;
     const pos = getCanvasPos(e);
-    const ctx = sigCanvasRef.value.getContext('2d');
+    const ctx = getSigCanvas()?.getContext('2d');
+    if (!ctx) return;
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
 }
@@ -379,7 +466,8 @@ function beginDraw(e) {
 function continueDraw(e) {
     if (!isDrawing.value) return;
     const pos = getCanvasPos(e);
-    const ctx = sigCanvasRef.value.getContext('2d');
+    const ctx = getSigCanvas()?.getContext('2d');
+    if (!ctx) return;
     ctx.lineTo(pos.x, pos.y);
     ctx.stroke();
     hasDrawing.value = true;
@@ -388,7 +476,9 @@ function continueDraw(e) {
 function endDraw() { isDrawing.value = false; }
 
 function getCanvasPos(e) {
-    const rect  = sigCanvasRef.value.getBoundingClientRect();
+    const canvas = getSigCanvas();
+    if (!canvas) return { x: 0, y: 0 };
+    const rect  = canvas.getBoundingClientRect();
     // Support both mouse events and touch events
     const point = e.touches?.[0] ?? e.changedTouches?.[0] ?? e;
     return { x: point.clientX - rect.left, y: point.clientY - rect.top };
@@ -407,31 +497,63 @@ function handleUpload(e) {
 // ── Capture → placement ───────────────────────────────────────────────────
 function captureSignature() {
     if (!signatureReady.value) return;
+    const canvas = getSigCanvas();
+    let asset;
     if (activeTab.value === 'draw') {
-        capturedSig.value = { type: 'image', src: sigCanvasRef.value.toDataURL() };
+        if (!canvas) return;
+        asset = { type: 'image', src: canvas.toDataURL() };
     } else if (activeTab.value === 'type') {
-        capturedSig.value = { type: 'text', src: typedName.value.trim(), font: selectedFont.value.cls };
+        asset = { type: 'text', src: typedName.value.trim(), font: selectedFont.value.cls };
     } else {
-        capturedSig.value = { type: 'image', src: uploadedSig.value };
+        asset = { type: 'image', src: uploadedSig.value };
     }
-    detectionRan.value = false;
 
-    // When document was created from a template, fill all placeholder positions immediately
-    // so the user's real signature replaces the "Signature"/"Initials" placeholder text.
+    if (activeFieldType.value === 'initials') {
+        savedInitials.value = asset;
+        isChangingInitials.value = false;
+    } else {
+        savedSignature.value = asset;
+        isChangingSignature.value = false;
+    }
+
+    detectionRan.value = false;
+    resetCreationDraft();
+
     if (hasTemplatePlaceholders.value) {
         fillTemplatePlaceholders();
-        placementMode.value = null;
+    }
+    placementMode.value = 'manual';
+}
+
+function resetCreationDraft() {
+    hasDrawing.value = false;
+    typedName.value  = '';
+    uploadedSig.value = null;
+}
+
+function startChangeAsset() {
+    if (activeFieldType.value === 'initials') {
+        isChangingInitials.value = true;
     } else {
-        placementMode.value = 'manual';
+        isChangingSignature.value = true;
+    }
+    placementMode.value = null;
+    resetCreationDraft();
+    if (activeTab.value === 'draw') {
+        nextTick(() => initSigCanvas());
     }
 }
 
-function cancelCapture() {
-    capturedSig.value    = null;
-    placementMode.value  = null;
-    showFields.value     = false;
-    detectedFields.value = [];
-    detectionRan.value   = false;
+function useExistingAsset() {
+    if (activeFieldType.value === 'initials') {
+        isChangingInitials.value = false;
+    } else {
+        isChangingSignature.value = false;
+    }
+    resetCreationDraft();
+    if (savedAssetForType(activeFieldType.value)) {
+        placementMode.value = 'manual';
+    }
 }
 
 // ── Manual placement ──────────────────────────────────────────────────────
@@ -445,34 +567,52 @@ function activateManualMode() {
 
 function onPageClick(e, pageNum) {
     if (placementMode.value !== 'manual') {
-        selectedSigId.value = null;   // deselect when clicking empty space
+        selectedSigId.value = null;
         return;
     }
     const type = activeFieldType.value;
-    if ((type === 'signature' || type === 'initials') && !capturedSig.value) return;
+    if ((type === 'signature' || type === 'initials') && !savedAssetForType(type) && !isRequestMode.value) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const def  = FIELD_DEFAULTS[type];
     const x    = Math.max(0, e.clientX - rect.left - def.w / 2);
     const y    = Math.max(0, e.clientY - rect.top  - def.h / 2);
     placeField(pageNum, x, y);
-    placementMode.value = null;
+    if (type !== 'signature' && type !== 'initials') {
+        placementMode.value = null;
+    }
+}
+
+function buildFieldValue(type) {
+    if (isRequestMode.value) {
+        if (type === 'signature') return { sigType: 'text', src: 'Sign Here' };
+        if (type === 'initials')  return { sigType: 'text', src: 'Initial Here' };
+        if (type === 'date' || type === 'name' || type === 'text') return '';
+        return false;
+    }
+    if (type === 'signature' || type === 'initials') {
+        const asset = savedAssetForType(type);
+        return { sigType: asset.type, src: asset.src, font: asset.font };
+    }
+    if (type === 'date') {
+        return pendingDate.value || new Date().toLocaleDateString();
+    }
+    if (type === 'name' || type === 'text') {
+        return pendingText.value;
+    }
+    return false;
 }
 
 function placeField(pageNum, x, y, w, h) {
     const type = activeFieldType.value;
     const id   = ++fieldSeq;
     const def  = FIELD_DEFAULTS[type];
-    let value;
-    if (type === 'signature' || type === 'initials') {
-        value = { sigType: capturedSig.value.type, src: capturedSig.value.src, font: capturedSig.value.font };
-    } else if (type === 'date') {
-        value = pendingDate.value || new Date().toLocaleDateString();
-    } else if (type === 'name' || type === 'text') {
-        value = pendingText.value;
-    } else {
-        value = false; // checkbox — starts unchecked
-    }
-    placedFields.value.push({ id, type, pageNum, x, y, w: w ?? def.w, h: h ?? def.h, value, signerId: activeRecipientId.value });
+    const value = buildFieldValue(type);
+    placedFields.value.push({
+        id, type, pageNum, x, y,
+        w: w ?? def.w, h: h ?? def.h,
+        value,
+        signerId: isSelfSignMode.value ? (activeRecipientId.value ?? 1) : activeRecipientId.value,
+    });
     selectedSigId.value = id;
 }
 
@@ -484,7 +624,7 @@ const KEYWORDS = [
 ];
 
 async function detectFields() {
-    if (!pdfDoc || !capturedSig.value) return;
+    if (!pdfDoc || !savedSignature.value) return;
     placementMode.value  = null;   // exit manual mode so banner/crosshair disappear
     isDetecting.value    = true;
     detectedFields.value = [];
@@ -561,7 +701,7 @@ async function detectFields() {
 }
 
 function placeAtField(field) {
-    if (!capturedSig.value) return;
+    if (!savedSignature.value) return;
     placeField(field.pageNum, Math.max(0, field.x - 5), field.y, 180, 60);
     detectedFields.value = [];   // remove yellow field markers from PDF
     showFields.value     = false;
@@ -572,7 +712,7 @@ function placeAtField(field) {
 
 // ── AI Auto place (MODE 3) ────────────────────────────────────────────────
 async function autoPlace() {
-    if (!capturedSig.value) return;
+    if (!savedSignature.value) return;
     if (detectedFields.value.length === 0) {
         await detectFields();
     }
@@ -591,6 +731,7 @@ function removeField(id) {
 }
 
 function toggleCheckbox(field) {
+    if (isRequestMode.value) return;
     field.value = !field.value;
 }
 
@@ -604,27 +745,82 @@ function detectedFieldsOnPage(pageNum) {
 
 // ── Field type selector ───────────────────────────────────────────────────
 function setFieldType(type) {
+    const prev = activeFieldType.value;
     activeFieldType.value = type;
-    if (type !== 'signature' && type !== 'initials') {
-        capturedSig.value    = null;
-        placementMode.value  = null;
-        detectedFields.value = [];
-        showFields.value     = false;
-        detectionRan.value   = false;
-    }
-    if (type === 'date') {
-        pendingDate.value = new Date().toLocaleDateString();
+    if (prev === 'signature' && type !== 'signature') isChangingSignature.value = false;
+    if (prev === 'initials' && type !== 'initials') isChangingInitials.value = false;
+    detectedFields.value = [];
+    showFields.value     = false;
+    detectionRan.value   = false;
+
+    if (isRequestMode.value) {
+        placementMode.value = 'manual';
+    } else if (type === 'signature' || type === 'initials') {
+        const changing = type === 'initials' ? isChangingInitials.value : isChangingSignature.value;
+        if (savedAssetForType(type) && !changing) {
+            placementMode.value = 'manual';
+        } else {
+            placementMode.value = null;
+        }
     } else {
+        placementMode.value = 'manual';
+    }
+
+    if (type === 'date') {
+        pendingDate.value = isSelfSignMode.value ? new Date().toLocaleDateString() : '';
+    } else if (type === 'name' && isSelfSignMode.value && authUserName.value) {
+        pendingText.value = authUserName.value;
+    } else if (type !== 'name' && type !== 'text') {
         pendingText.value = '';
     }
 }
 
 // ── Recipient management ──────────────────────────────────────────────────
+function onFieldDoubleClick(field) {
+    selectedSigId.value = field.id;
+    scrollToPage(field.pageNum);
+}
+
 function recipientById(id) {
     return recipients.value.find(r => r.id === id);
 }
 
+function updateRecipientField(id, field, value) {
+    const r = recipientById(id);
+    if (r) r[field] = value;
+}
+
+function cancelPlacement() {
+    placementMode.value = null;
+}
+
+function onPageContextMenu(e) {
+    if (placementMode.value === 'manual') {
+        e.preventDefault();
+        placementMode.value = null;
+    }
+}
+
+function setSigningMode(mode) {
+    if (mode !== 'self' && mode !== 'request') return;
+    if (signingMode.value === mode) return;
+    signingMode.value         = mode;
+    savedSignature.value      = null;
+    savedInitials.value       = null;
+    isChangingSignature.value = false;
+    isChangingInitials.value  = false;
+    placementMode.value       = null;
+    detectedFields.value      = [];
+    showFields.value          = false;
+    if (mode === 'self') {
+        activeRecipientId.value = recipients.value[0]?.id ?? 1;
+    }
+}
+
 function addRecipient() {
+    if (isSelfSignMode.value) {
+        setSigningMode('request');
+    }
     const id           = ++recipientSeq;
     const signingOrder = recipients.value.length + 1;
     const color        = RECIPIENT_COLORS[(recipients.value.length) % RECIPIENT_COLORS.length];
@@ -646,12 +842,12 @@ function removeRecipient(id) {
 }
 
 // ── Recipient UI helpers ──────────────────────────────────────────────────
+function fieldCountForRecipient(recipientId) {
+    return fieldsForRecipient(placedFields.value, recipientId).length;
+}
+
 function fieldCountsForRecipient(recipientId) {
-    const counts = {};
-    placedFields.value.forEach(f => {
-        if (f.signerId === recipientId) counts[f.type] = (counts[f.type] || 0) + 1;
-    });
-    return counts;
+    return fieldTypesForRecipient(placedFields.value, recipientId);
 }
 
 function fieldCountLabel(type, count) {
@@ -669,17 +865,12 @@ function fieldCountLabel(type, count) {
 
 function recipientDisplayName(id) {
     const r = recipientById(id);
-    if (!r) return '?';
-    const name = (r.name ?? '').trim();
-    return name ? name.split(' ')[0] : `#${r.signingOrder}`;
-}
-
-function fieldsForRecipient(recipientId) {
-    return placedFields.value.filter(f => f.signerId === recipientId);
+    return displayRecipientName(r);
 }
 
 function fieldLabel(field) {
-    const peers = placedFields.value.filter(f => f.signerId === field.signerId && f.type === field.type);
+    const peers = fieldsForRecipient(placedFields.value, field.signerId)
+        .filter(f => f.type === field.type);
     const n     = peers.findIndex(f => f.id === field.id) + 1;
     const type  = field.type.charAt(0).toUpperCase() + field.type.slice(1);
     return `${type} #${n}`;
@@ -1023,6 +1214,35 @@ async function flushAutosave() {
 async function persistEditorState() {
     if (!props.documentId) return false;
     try {
+        const state = {
+            placedFields: placedFields.value,
+            scale:        scale.value,
+            activePage:   activePage.value,
+            recipients:   recipients.value,
+            signingMode:  signingMode.value,
+            pageCount:    numPages.value,
+            savedSignature:      savedSignature.value,
+            savedInitials:       savedInitials.value,
+            selectedSignatureTab: signatureTab.value,
+            selectedInitialsTab:  initialsTab.value,
+        };
+
+        console.log('[CubSign] Placed fields before save:', placedFields.value.length);
+        console.log('[CubSign] Recipient assignment:', recipientFieldSummaries(placedFields.value, recipients.value).map(r => ({
+            id: r.id,
+            name: r.name,
+            assigned_fields_count: r.assigned_fields_count,
+            assigned_field_types: r.assigned_field_types,
+        })));
+        console.log('[CubSign] Field types:', placedFields.value.reduce((acc, f) => {
+            acc[f.type] = (acc[f.type] ?? 0) + 1;
+            return acc;
+        }, {}));
+
+        for (const r of recipients.value) {
+            console.log('[CubSign] EDITOR_FIELDS', buildFieldsLogPayload(props.documentId, r.id, placedFields.value, r.id));
+        }
+
         const xsrf = decodeURIComponent(
             document.cookie.split('; ').find(r => r.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? '',
         );
@@ -1030,15 +1250,7 @@ async function persistEditorState() {
             method:      'PATCH',
             credentials: 'same-origin',
             headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': xsrf },
-            body: JSON.stringify({
-                state: {
-                    placedFields: placedFields.value,
-                    scale:        scale.value,
-                    activePage:   activePage.value,
-                    recipients:   recipients.value,
-                    pageCount:    numPages.value,
-                },
-            }),
+            body: JSON.stringify({ state }),
         });
         return res.ok;
     } catch (e) {
@@ -1085,13 +1297,7 @@ async function goToReview() {
             console.log('PERSIST_SKIPPED', { isAuthenticated, documentId: props.documentId });
         }
 
-        const recipientFieldCounts = {};
-        placedFields.value.forEach(f => {
-            if (f.signerId) recipientFieldCounts[f.signerId] = (recipientFieldCounts[f.signerId] || 0) + 1;
-        });
-        const namedRecipients = recipients.value
-            .filter(r => r.name || r.email)
-            .map(r => ({ ...r, fieldCount: recipientFieldCounts[r.id] || 0 }));
+        const namedRecipients = recipientFieldSummaries(placedFields.value, recipients.value);
 
         window.__cubsignSession = {
             token:         props.session.token,
@@ -1236,25 +1442,18 @@ async function finishSigning() {
                     </div>
                 </div>
 
-                <!-- Manual-placement banner -->
-                <div v-if="placementMode === 'manual'" class="flex shrink-0 items-center justify-between bg-blue-600 px-3 py-2 md:px-4">
-                    <div class="flex items-center gap-2">
-                        <svg class="h-4 w-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
-                        </svg>
-                        <span class="text-xs font-semibold text-white md:text-sm">Tap anywhere on the document to place your {{ activeFieldType }}</span>
-                    </div>
-                    <button class="rounded px-2 py-0.5 text-xs font-medium text-blue-200 hover:bg-blue-700 hover:text-white" @click="placementMode = null">
-                        Cancel
-                    </button>
-                </div>
+                <!-- Manual-placement banner removed — floating tooltip only -->
 
                 <!-- Scrollable pages -->
                 <div
                     ref="centerRef"
-                    class="flex-1 overflow-y-auto overflow-x-auto"
+                    class="relative flex-1 overflow-y-auto overflow-x-auto"
                     :class="placementMode === 'manual' ? 'cursor-crosshair' : 'cursor-default'"
                 >
+                    <EditorPlacementHelper
+                        :active="placementMode === 'manual'"
+                        @cancel="cancelPlacement"
+                    />
                     <!-- Loading state -->
                     <div v-if="isLoading" class="flex h-full items-center justify-center">
                         <div class="flex flex-col items-center gap-4">
@@ -1288,18 +1487,36 @@ async function finishSigning() {
                             />
 
                             <!-- Interaction overlay -->
-                            <div class="absolute inset-0 z-10" @click="onPageClick($event, i + 1)" @mousedown.stop>
+                            <div
+                                class="absolute inset-0 z-10"
+                                @click="onPageClick($event, i + 1)"
+                                @contextmenu="onPageContextMenu"
+                                @mousedown.stop
+                            >
 
                                 <!-- Placed fields (signature, initials, date, name, text, checkbox) -->
                                 <div
                                     v-for="field in placedFieldsOnPage(i + 1)"
                                     :key="field.id"
-                                    class="absolute select-none transition-opacity duration-150"
-                                    :style="`left:${field.x}px; top:${field.y}px; width:${field.w}px; height:${field.h}px; cursor:move; opacity:${recipients.length > 1 && field.signerId !== activeRecipientId ? '0.4' : '1'}`"
+                                    class="group/field absolute select-none transition-all duration-200"
+                                    :class="field.id === selectedSigId ? 'z-20' : 'z-10'"
+                                    :title="`Assigned to ${recipientDisplayName(field.signerId)}`"
+                                    :style="`left:${field.x}px; top:${field.y}px; width:${field.w}px; height:${field.h}px; cursor:move; opacity:${recipients.length > 1 && field.signerId !== activeRecipientId ? '0.55' : '1'}`"
                                     @mousedown.stop="startDrag($event, field)"
                                     @touchstart.stop="startDrag($event, field)"
+                                    @dblclick.stop="onFieldDoubleClick(field)"
                                     @click.stop
                                 >
+                                    <!-- Recipient + field badge -->
+                                    <div
+                                        class="absolute -left-px -top-5 flex items-center gap-1 rounded-t px-1.5 py-0.5 text-[8px] font-bold text-white shadow-sm transition-opacity duration-200"
+                                        :style="`background:${isSignPlaceholder(field) && field.value?.src !== 'Signature' && field.value?.src !== 'Initials' ? (recipientById(field.signerId)?.color ?? '#3B82F6') : isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}`"
+                                    >
+                                        <span
+                                            class="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white/25 text-[7px]"
+                                        >{{ isTemplatePlaceholder(field) ? '?' : recipientInitials(recipientById(field.signerId)) }}</span>
+                                        <span class="truncate capitalize">{{ field.type }}</span>
+                                    </div>
                                     <div
                                         class="relative h-full w-full overflow-hidden rounded"
                                         :style="`background:${isTemplatePlaceholder(field) ? 'rgba(254,243,199,0.6)' : 'rgba(239,246,255,0.4)'}; outline:${field.id === selectedSigId ? '2px' : '1px'} solid ${isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}${field.id === selectedSigId ? '' : '50'}; outline-offset:${field.id === selectedSigId ? '1px' : '0'}`"
@@ -1308,13 +1525,24 @@ async function finishSigning() {
                                         <div
                                             v-if="field.id === selectedSigId"
                                             class="absolute left-0 right-0 top-0 z-10 truncate px-1.5 py-px text-[8px] font-semibold text-white"
-                                            :style="`background:${isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}`"
-                                        >{{ isTemplatePlaceholder(field) ? '✎ Draw your signature below' : (recipientById(field.signerId)?.name || 'Signer') }}</div>
+                                            :style="`background:${isSignPlaceholder(field) && field.value?.src !== 'Signature' && field.value?.src !== 'Initials' ? (recipientById(field.signerId)?.color ?? '#3B82F6') : isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}`"
+                                        >{{ isSignPlaceholder(field) ? recipientDisplayName(field.signerId) : (recipientById(field.signerId)?.name || 'Signer') }}</div>
 
                                         <!-- Signature / Initials -->
                                         <template v-if="field.type === 'signature' || field.type === 'initials'">
+                                            <div
+                                                v-if="isSignPlaceholder(field)"
+                                                class="flex h-full w-full flex-col items-center justify-center border-2 border-dashed bg-[#FFFDF5] px-1"
+                                                :style="`border-color:${recipientById(field.signerId)?.color ?? '#3B82F6'}`"
+                                            >
+                                                <svg class="mb-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                    :style="`color:${recipientById(field.signerId)?.color ?? '#3B82F6'}`">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                </svg>
+                                                <span class="text-[9px] font-bold uppercase tracking-wide text-gray-700">{{ signPlaceholderLabel(field) }}</span>
+                                            </div>
                                             <img
-                                                v-if="field.value?.sigType === 'image'"
+                                                v-else-if="field.value?.sigType === 'image'"
                                                 :src="field.value.src"
                                                 class="h-full w-full object-contain"
                                                 draggable="false"
@@ -1344,6 +1572,14 @@ async function finishSigning() {
                                         <!-- Date / Name / Text -->
                                         <template v-else>
                                             <div
+                                                v-if="isRequestMode && !field.value"
+                                                class="flex h-full w-full items-center justify-center border-2 border-dashed bg-[#FFFDF5] px-1"
+                                                :style="`border-color:${recipientById(field.signerId)?.color ?? '#3B82F6'}60`"
+                                            >
+                                                <span class="text-[9px] font-semibold capitalize text-gray-500">{{ field.type }}</span>
+                                            </div>
+                                            <div
+                                                v-else
                                                 class="flex h-full w-full items-center overflow-hidden px-2"
                                                 :style="`border:1px solid ${recipientById(field.signerId)?.color ?? '#3B82F6'}40; background:${recipientById(field.signerId)?.color ?? '#3B82F6'}0d`"
                                             >
@@ -1352,11 +1588,16 @@ async function finishSigning() {
                                         </template>
                                     </div>
 
-                                    <!-- Type + recipient badge -->
-                                    <span
-                                        class="absolute -left-px -top-4 max-w-[160px] truncate rounded-t px-1.5 py-px text-[8px] font-bold uppercase tracking-wide text-white"
-                                        :style="`background:${isTemplatePlaceholder(field) ? '#F59E0B' : (recipientById(field.signerId)?.color ?? '#3B82F6')}`"
-                                    >{{ isTemplatePlaceholder(field) ? field.type + ' — sign below ↓' : (recipientDisplayName(field.signerId) + ' · ' + field.type) }}</span>
+                                    <!-- Delete on hover -->
+                                    <button
+                                        type="button"
+                                        class="absolute -right-2 -top-2 z-30 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow transition-opacity duration-150 hover:bg-red-600 group-hover/field:opacity-100"
+                                        style="font-size:9px"
+                                        title="Delete field"
+                                        @mousedown.stop
+                                        @touchstart.stop
+                                        @click.stop="removeField(field.id)"
+                                    >✕</button>
 
                                     <!-- Resize handles (when selected) -->
                                     <template v-if="field.id === selectedSigId">
@@ -1369,14 +1610,6 @@ async function finishSigning() {
                                             @mousedown.stop="startResize($event, field, h.id)"
                                             @touchstart.stop="startResize($event, field, h.id)"
                                         />
-                                        <!-- Delete — mousedown.stop / touchstart.stop prevent bubbling to startDrag -->
-                                        <button
-                                            class="absolute -right-3 -top-3 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600"
-                                            style="font-size:9px;line-height:1"
-                                            @mousedown.stop
-                                            @touchstart.stop
-                                            @click.stop="removeField(field.id)"
-                                        >✕</button>
                                     </template>
                                 </div>
 
@@ -1406,646 +1639,109 @@ async function finishSigning() {
             </div>
 
             <!-- ═══ SIGNATURE PANEL — full-width below PDF on mobile, 300px right panel on md+ ═══ -->
-            <aside class="flex max-h-[280px] w-full flex-col overflow-y-auto border-t border-gray-200 bg-white sm:max-h-[320px] md:max-h-none md:w-[300px] md:shrink-0 md:border-t-0 md:border-l">
+            <aside class="flex max-h-[240px] w-full flex-col overflow-y-auto border-t border-gray-200 bg-white sm:max-h-[320px] md:max-h-none md:w-[252px] md:shrink-0 md:border-t-0 md:border-l">
 
-                <!-- File info -->
-                <div class="border-b border-gray-100 bg-gray-50 px-4 py-3">
-                    <div class="flex items-center gap-2">
-                        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-red-100">
-                            <svg class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
-                            </svg>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="truncate text-xs font-semibold text-gray-800">{{ session.filename }}</p>
-                            <p class="text-[10px] text-gray-400">
-                                {{ numPages ? numPages + ' page' + (numPages !== 1 ? 's' : '') : 'Loading…' }}
-                                · {{ Math.round(session.fileSize / 1024) }} KB
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <EditorDocumentInfo
+                    :filename="session.filename"
+                    :num-pages="numPages"
+                    :file-size="session.fileSize"
+                />
 
-                <!-- ── RECIPIENTS (authenticated users only) ── -->
-                <div v-if="isAuthenticated" class="border-b border-gray-100 px-4 py-4">
+                <EditorSigningMode
+                    v-if="isAuthenticated"
+                    :mode="signingMode"
+                    @update:mode="setSigningMode"
+                />
 
-                    <!-- Summary line -->
-                    <p class="mb-2 text-[10px] text-gray-400">
-                        {{ recipients.length }} {{ recipients.length === 1 ? 'recipient' : 'recipients' }}
-                        · {{ placedFields.length }} {{ placedFields.length === 1 ? 'field' : 'fields' }} assigned
-                    </p>
+                <EditorRecipientSection
+                    v-if="isAuthenticated && isRequestMode"
+                    :recipients="recipients"
+                    :active-recipient-id="activeRecipientId"
+                    :drag-over-recipient-id="dragOverRecipientId"
+                    :field-count-for="fieldCountForRecipient"
+                    :has-configured-recipient="hasRecipientConfigured"
+                    @add="addRecipient"
+                    @select="activeRecipientId = $event"
+                    @remove="removeRecipient"
+                    @update:name="(id, v) => updateRecipientField(id, 'name', v)"
+                    @update:email="(id, v) => updateRecipientField(id, 'email', v)"
+                    @dragstart="onRecipientDragStart"
+                    @dragover="onRecipientDragOver"
+                    @dragleave="onRecipientDragLeave"
+                    @drop="onRecipientDrop"
+                    @dragend="onRecipientDragEnd"
+                />
+                <EditorGuestRecipient v-else-if="!isAuthenticated" :user-name="authUserName" />
 
-                    <!-- Header row -->
-                    <div class="mb-3 flex items-center justify-between">
-                        <p class="text-xs font-bold uppercase tracking-wider text-gray-500">Recipients</p>
-                        <button
-                            class="flex items-center gap-1 rounded-md border border-blue-200 bg-white px-2 py-1 text-[11px] font-semibold text-blue-600 shadow-sm transition hover:bg-blue-50"
-                            @click="addRecipient"
-                        >
-                            <svg class="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                            </svg>
-                            Add Recipient
-                        </button>
-                    </div>
+                <EditorEmptyState
+                    v-if="emptyStateStep"
+                    :step="emptyStateStep"
+                    @add-recipient="addRecipient"
+                />
 
-                    <!-- Recipient cards (drag-reorderable) -->
-                    <div class="space-y-2">
-                        <div
-                            v-for="r in recipients"
-                            :key="r.id"
-                            draggable="true"
-                            class="cursor-pointer rounded-xl border transition-all duration-150"
-                            :style="activeRecipientId === r.id
-                                ? `border-color:${r.color}; background:${r.color}0f; box-shadow:0 2px 8px ${r.color}30`
-                                : dragOverRecipientId === r.id
-                                    ? `border:1.5px dashed ${r.color}80; background:${r.color}08`
-                                    : 'border-color:#e5e7eb; background:#f9fafb'"
-                            @click="activeRecipientId = r.id"
-                            @dragstart="onRecipientDragStart($event, r.id)"
-                            @dragover="onRecipientDragOver($event, r.id)"
-                            @dragleave="onRecipientDragLeave"
-                            @drop="onRecipientDrop($event, r.id)"
-                            @dragend="onRecipientDragEnd"
-                        >
-                            <div class="px-3 py-2.5">
+                <EditorFieldTypeGrid
+                    :field-types="FIELD_TYPES"
+                    :active-field-type="activeFieldType"
+                    @select="setFieldType"
+                />
 
-                                <!-- Row 1: drag handle + order badge + name + status + delete -->
-                                <div class="flex items-center gap-1.5">
-                                    <svg class="h-3.5 w-3.5 shrink-0 cursor-grab text-gray-300 active:cursor-grabbing" fill="currentColor" viewBox="0 0 24 24">
-                                        <circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/>
-                                        <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
-                                        <circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
-                                    </svg>
-                                    <span
-                                        class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
-                                        :style="`background:${r.color}`"
-                                    >#{{ r.signingOrder }}</span>
-                                    <input
-                                        v-model="r.name"
-                                        placeholder="Full name"
-                                        class="min-w-0 flex-1 bg-transparent text-xs font-semibold text-gray-800 placeholder:text-gray-300 focus:outline-none"
-                                        @click.stop
-                                    />
-                                    <span :class="statusBadgeClass(r.status)">{{ r.status }}</span>
-                                    <button
-                                        v-if="recipients.length > 1"
-                                        class="shrink-0 text-gray-200 transition hover:text-red-400"
-                                        title="Remove recipient"
-                                        @click.stop="removeRecipient(r.id)"
-                                    >
-                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                        </svg>
-                                    </button>
-                                </div>
+                <EditorFieldSettings
+                    v-if="isSelfSignMode && (activeFieldType === 'date' || activeFieldType === 'name' || activeFieldType === 'text')"
+                    :active-field-type="activeFieldType"
+                    :pending-date="pendingDate"
+                    :pending-text="pendingText"
+                    @update:pending-date="pendingDate = $event"
+                    @update:pending-text="pendingText = $event"
+                />
 
-                                <!-- Row 2: email -->
-                                <div class="ml-[26px] mt-0.5">
-                                    <input
-                                        v-model="r.email"
-                                        type="email"
-                                        placeholder="email@example.com"
-                                        class="w-full bg-transparent text-[11px] text-gray-400 placeholder:text-gray-300 focus:outline-none"
-                                        @click.stop
-                                    />
-                                </div>
+                <EditorRequestFieldHint
+                    v-if="isRequestMode"
+                    :active-field-type="activeFieldType"
+                />
 
-                                <!-- Row 3: field type counts -->
-                                <div class="ml-[26px] mt-2">
-                                    <div v-if="Object.keys(fieldCountsForRecipient(r.id)).length > 0" class="flex flex-wrap gap-x-3 gap-y-0.5">
-                                        <span
-                                            v-for="(count, type) in fieldCountsForRecipient(r.id)"
-                                            :key="type"
-                                            class="flex items-center gap-1 text-[10px] font-medium text-gray-500"
-                                        >
-                                            <span class="h-1.5 w-1.5 shrink-0 rounded-full" :style="`background:${r.color}`"></span>
-                                            {{ count }} {{ fieldCountLabel(type, count) }}
-                                        </span>
-                                    </div>
-                                    <span v-else class="text-[10px] italic text-gray-300">No fields assigned yet</span>
-                                </div>
+                <EditorSignaturePanel
+                    v-if="isSelfSignMode && (activeFieldType === 'signature' || activeFieldType === 'initials')"
+                    ref="sigPanelRef"
+                    :active-field-type="activeFieldType"
+                    :active-tab="activeTab"
+                    :has-drawing="hasDrawing"
+                    :typed-name="typedName"
+                    :typed-font="typedFont"
+                    :uploaded-sig="uploadedSig"
+                    :signature-ready="signatureReady"
+                    :saved-asset="activeSavedAsset"
+                    :is-changing="isChangingAsset"
+                    :type-fonts="typeFonts"
+                    :selected-font-cls="selectedFont.cls"
+                    :has-template-placeholders="hasTemplatePlaceholders"
+                    :template-placeholder-count="templatePlaceholderCount"
+                    @update:active-tab="activeTab = $event"
+                    @update:typed-name="typedName = $event"
+                    @update:typed-font="typedFont = $event"
+                    @upload="uploadInput?.click()"
+                    @clear-canvas="clearCanvas"
+                    @save="captureSignature"
+                    @change="startChangeAsset"
+                    @use-existing="useExistingAsset"
+                    @canvas-mousedown="beginDraw"
+                    @canvas-mousemove="continueDraw"
+                    @canvas-mouseup="endDraw"
+                    @canvas-mouseleave="endDraw"
+                    @canvas-touchstart="beginDraw"
+                    @canvas-touchmove="continueDraw"
+                    @canvas-touchend="endDraw"
+                />
+                <input ref="uploadInput" type="file" accept="image/*" class="hidden" @change="handleUpload" />
 
-                                <!-- Row 4: clickable field list (only when fields exist) -->
-                                <div v-if="fieldsForRecipient(r.id).length > 0" class="ml-[26px] mt-2 space-y-0.5">
-                                    <button
-                                        v-for="f in fieldsForRecipient(r.id)"
-                                        :key="f.id"
-                                        class="flex w-full items-center gap-1.5 rounded-md px-1.5 py-1 text-left transition"
-                                        :class="f.id === selectedSigId
-                                            ? 'bg-white/80 font-semibold text-gray-800 shadow-sm'
-                                            : 'text-gray-400 hover:bg-white/60 hover:text-gray-600'"
-                                        :style="f.id === selectedSigId ? `color:${r.color}` : ''"
-                                        @click.stop="navigateToField(f)"
-                                    >
-                                        <span class="h-1 w-1 shrink-0 rounded-full" :style="`background:${r.color}`"></span>
-                                        <span class="truncate text-[10px]">{{ fieldLabel(f) }}</span>
-                                        <span class="ml-auto shrink-0 text-[9px] text-gray-300">p.{{ f.pageNum }}</span>
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Color legend (only with multiple recipients) -->
-                    <div v-if="recipients.length > 1" class="mt-3 border-t border-gray-100 pt-2.5">
-                        <p class="mb-1.5 text-[9px] font-semibold uppercase tracking-wider text-gray-400">Color Guide</p>
-                        <div class="flex flex-wrap gap-x-3 gap-y-1">
-                            <div v-for="r in recipients" :key="r.id" class="flex items-center gap-1">
-                                <span class="h-2 w-2 shrink-0 rounded-full" :style="`background:${r.color}`"></span>
-                                <span class="text-[10px] text-gray-400">
-                                    {{ COLOR_NAMES[r.color] ?? r.color }} = {{ r.name?.trim() || `Recipient ${r.signingOrder}` }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ── FIELD TYPE SELECTOR ── -->
-                <div class="border-b border-gray-100 px-4 py-3">
-                    <p class="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Field Type</p>
-                    <div class="grid grid-cols-3 gap-1">
-                        <button
-                            v-for="ft in FIELD_TYPES"
-                            :key="ft.id"
-                            :class="[
-                                'rounded-md py-1.5 text-xs font-medium transition',
-                                activeFieldType === ft.id
-                                    ? 'bg-blue-600 text-white'
-                                    : 'border border-gray-200 text-gray-600 hover:border-blue-300 hover:text-blue-600',
-                            ]"
-                            @click="setFieldType(ft.id)"
-                        >{{ ft.label }}</button>
-                    </div>
-                </div>
-
-                <!-- ── CREATE / CONFIGURE FIELD ── -->
-                <div class="border-b border-gray-100 px-4 py-4">
-                    <p class="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
-                        {{ activeFieldType === 'signature' ? 'Create Signature' : activeFieldType === 'initials' ? 'Create Initials' : activeFieldType === 'checkbox' ? 'Checkbox' : 'Field Value' }}
-                    </p>
-
-                    <!-- Signature / Initials: draw / type / upload flow -->
-                    <template v-if="activeFieldType === 'signature' || activeFieldType === 'initials'">
-                        <!-- Tabs -->
-                        <div class="mb-3 flex rounded-lg border border-gray-200 bg-gray-50 p-0.5">
-                            <button
-                                v-for="tab in ['draw', 'type', 'upload']"
-                                :key="tab"
-                                :class="[
-                                    'flex-1 rounded-md py-1.5 text-xs font-medium capitalize transition',
-                                    activeTab === tab
-                                        ? 'bg-white text-blue-600 shadow-sm'
-                                        : 'text-gray-500 hover:text-gray-700',
-                                ]"
-                                @click="activeTab = tab"
-                            >{{ tab }}</button>
-                        </div>
-
-                        <!-- Draw tab -->
-                        <div v-if="activeTab === 'draw'" class="space-y-1.5">
-                            <div class="relative overflow-hidden rounded-lg border-2 border-dashed border-blue-200 bg-blue-50/30">
-                                <canvas
-                                    ref="sigCanvasRef"
-                                    class="block touch-none"
-                                    style="width:100%;height:120px"
-                                    @mousedown="beginDraw"
-                                    @mousemove="continueDraw"
-                                    @mouseup="endDraw"
-                                    @mouseleave="endDraw"
-                                    @touchstart.prevent="beginDraw"
-                                    @touchmove.prevent="continueDraw"
-                                    @touchend.prevent="endDraw"
-                                />
-                                <p v-if="!hasDrawing" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-gray-400">
-                                    Draw your {{ activeFieldType }} here
-                                </p>
-                            </div>
-                            <button v-if="hasDrawing" class="text-[11px] text-gray-400 hover:text-gray-600" @click="clearCanvas">
-                                Clear &amp; redraw
-                            </button>
-                        </div>
-
-                        <!-- Type tab -->
-                        <div v-else-if="activeTab === 'type'" class="space-y-2">
-                            <input
-                                v-model="typedName"
-                                type="text"
-                                :placeholder="activeFieldType === 'initials' ? 'Type your initials' : 'Type your full name'"
-                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                            <!-- Font style selector — always shows static label, never changes on typing -->
-                            <div class="grid grid-cols-3 gap-1.5">
-                                <button
-                                    v-for="f in typeFonts"
-                                    :key="f.id"
-                                    :class="[
-                                        'flex items-center justify-center overflow-hidden rounded-lg border px-1 py-3 transition',
-                                        typedFont === f.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300',
-                                    ]"
-                                    style="min-height:48px;color:#1e40af"
-                                    @click="typedFont = f.id"
-                                >
-                                    <span :class="f.cls" class="leading-tight" style="font-size:15px">{{ f.label }}</span>
-                                </button>
-                            </div>
-                            <!-- Live preview -->
-                            <div
-                                v-if="typedName.trim()"
-                                class="flex min-h-[48px] items-center justify-center overflow-hidden rounded-lg border border-blue-100 bg-blue-50/30 px-3 py-2"
-                            >
-                                <span
-                                    :class="selectedFont.cls"
-                                    class="block w-full overflow-hidden whitespace-nowrap text-center"
-                                    style="color:#1e40af;font-size:22px;text-overflow:ellipsis"
-                                >{{ typedName }}</span>
-                            </div>
-                        </div>
-
-                        <!-- Upload tab -->
-                        <div v-else class="space-y-2">
-                            <div
-                                class="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 py-6 text-center transition hover:border-blue-400 hover:bg-blue-50/30"
-                                @click="uploadInput?.click()"
-                            >
-                                <svg class="mb-2 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                                <p class="text-xs font-medium text-gray-600">Upload {{ activeFieldType }} image</p>
-                                <p class="text-[11px] text-gray-400">PNG with transparent background</p>
-                            </div>
-                            <input ref="uploadInput" type="file" accept="image/*" class="hidden" @change="handleUpload" />
-                            <img v-if="uploadedSig" :src="uploadedSig" class="h-16 w-full rounded-lg border border-gray-200 object-contain" />
-                        </div>
-                    </template>
-
-                    <!-- Date: editable text value (defaults to today) -->
-                    <template v-else-if="activeFieldType === 'date'">
-                        <div class="space-y-2">
-                            <p class="text-xs text-gray-500">Defaults to today. Edit before placing.</p>
-                            <input
-                                v-model="pendingDate"
-                                type="text"
-                                placeholder="e.g. 6/22/2026"
-                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                            <div class="flex min-h-[36px] items-center rounded-lg border border-blue-100 bg-blue-50/30 px-3">
-                                <span class="text-sm text-gray-700">{{ pendingDate || '—' }}</span>
-                            </div>
-                        </div>
-                    </template>
-
-                    <!-- Name / Text: simple text input -->
-                    <template v-else-if="activeFieldType === 'name' || activeFieldType === 'text'">
-                        <div class="space-y-2">
-                            <p class="text-xs text-gray-500">
-                                {{ activeFieldType === 'name' ? 'Pre-fill a name, or leave empty.' : 'Enter text, or leave empty.' }}
-                            </p>
-                            <input
-                                v-model="pendingText"
-                                type="text"
-                                :placeholder="activeFieldType === 'name' ? 'Full name…' : 'Enter text…'"
-                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                        </div>
-                    </template>
-
-                    <!-- Checkbox: static preview -->
-                    <template v-else>
-                        <div class="space-y-2">
-                            <p class="text-xs text-gray-500">Places an unchecked checkbox. Click placed checkboxes to toggle.</p>
-                            <div class="flex h-10 w-10 items-center justify-center rounded border-2 border-blue-400 bg-white">
-                                <svg class="h-6 w-6 text-blue-500 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-
-                <!-- ── PLACEMENT SECTION ── -->
-                <div class="border-b border-gray-100 px-4 py-4">
-                    <p class="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">Place Field</p>
-
-                    <!-- ── Signature / Initials: 3-mode flow ── -->
-                    <template v-if="activeFieldType === 'signature' || activeFieldType === 'initials'">
-
-                        <!-- Template document banner — explains what to do when fields are pre-placed -->
-                        <div
-                            v-if="hasTemplatePlaceholders && !capturedSig"
-                            class="mb-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3"
-                        >
-                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <div>
-                                <p class="text-[11px] font-semibold text-amber-800">Template document</p>
-                                <p class="text-[10px] leading-relaxed text-amber-700">
-                                    {{ templatePlaceholderCount }} signature {{ templatePlaceholderCount === 1 ? 'position' : 'positions' }} pre-placed on this PDF.
-                                    Draw or type your signature, then click <strong>Add {{ activeFieldType === 'initials' ? 'Initials' : 'Signature' }}</strong> to fill {{ templatePlaceholderCount === 1 ? 'it' : 'them all' }} automatically.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- No signature created -->
-                        <p v-if="!capturedSig && !signatureReady && !hasTemplatePlaceholders" class="text-xs text-gray-400">
-                            Create a {{ activeFieldType }} above, then choose how to place it.
-                        </p>
-
-                        <!-- Ready to capture -->
-                        <div v-else-if="!capturedSig">
-                            <button
-                                class="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]"
-                                @click="captureSignature"
-                            >
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
-                                </svg>
-                                Add {{ activeFieldType === 'initials' ? 'Initials' : 'Signature' }}
-                            </button>
-                        </div>
-
-                        <!-- Captured — three placement options -->
-                        <div v-else class="space-y-2">
-                            <!-- Active mode indicator -->
-                            <div
-                                v-if="placementMode === 'manual'"
-                                class="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700"
-                            >
-                                <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-blue-500"></span>
-                                Click on the PDF to place
-                                <button class="ml-auto text-blue-400 hover:text-blue-700" @click="placementMode = null">✕</button>
-                            </div>
-
-                            <!-- Preview captured sig -->
-                            <div class="mb-1 flex min-h-[52px] items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-2">
-                                <img v-if="capturedSig.type === 'image'" :src="capturedSig.src" class="max-h-12 max-w-full object-contain" />
-                                <span v-else :class="capturedSig.font" class="text-xl" style="color:#1e40af">{{ capturedSig.src }}</span>
-                            </div>
-
-                            <!-- MODE 1 -->
-                            <button
-                                :class="[
-                                    'flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition',
-                                    placementMode === 'manual'
-                                        ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-400'
-                                        : 'border-blue-200 bg-blue-50/60 text-blue-700 hover:bg-blue-100',
-                                ]"
-                                @click="activateManualMode"
-                            >
-                                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
-                                </svg>
-                                <div class="text-left">
-                                    <p>Place Manually</p>
-                                    <p class="text-[10px] font-normal text-blue-500">Click anywhere on the PDF</p>
-                                </div>
-                            </button>
-
-                            <!-- MODE 2 -->
-                            <button
-                                class="flex w-full items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700 disabled:cursor-not-allowed disabled:opacity-60"
-                                :disabled="isDetecting"
-                                @click="detectFields"
-                            >
-                                <svg class="h-4 w-4 shrink-0" :class="isDetecting ? 'animate-spin' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                                </svg>
-                                <div class="text-left">
-                                    <p>{{ isDetecting ? 'Scanning…' : 'Detect Signature Fields' }}</p>
-                                    <p class="text-[10px] font-normal text-gray-400">Find signature lines in the PDF</p>
-                                </div>
-                            </button>
-
-                            <!-- MODE 3 -->
-                            <button
-                                class="flex w-full items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700"
-                                @click="autoPlace"
-                            >
-                                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                </svg>
-                                <div class="text-left">
-                                    <p>Auto Place</p>
-                                    <p class="text-[10px] font-normal text-gray-400">Insert at the most likely location</p>
-                                </div>
-                            </button>
-
-                            <button class="w-full text-center text-[11px] text-gray-400 hover:text-gray-600" @click="cancelCapture">
-                                Use a different {{ activeFieldType }}
-                            </button>
-                        </div>
-                    </template>
-
-                    <!-- ── Non-sig types: single place button ── -->
-                    <template v-else>
-                        <div
-                            v-if="placementMode === 'manual'"
-                            class="mb-2 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700"
-                        >
-                            <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-blue-500"></span>
-                            Click on the PDF to place
-                            <button class="ml-auto text-blue-400 hover:text-blue-700" @click="placementMode = null">✕</button>
-                        </div>
-                        <button
-                            :class="[
-                                'flex w-full items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-semibold transition active:scale-[0.98]',
-                                placementMode === 'manual'
-                                    ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-400'
-                                    : 'bg-blue-600 text-white hover:bg-blue-700',
-                            ]"
-                            @click="placementMode = 'manual'"
-                        >
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
-                            </svg>
-                            Place {{ activeFieldType.charAt(0).toUpperCase() + activeFieldType.slice(1) }}
-                        </button>
-                    </template>
-                </div>
-
-                <!-- ── DETECTED FIELDS LIST ── -->
-                <div v-if="showFields && detectedFields.length > 0" class="border-b border-gray-100 px-4 py-3">
-                    <div class="mb-2 flex items-center justify-between">
-                        <p class="text-xs font-bold text-amber-700">
-                            {{ detectedFields.length }} field{{ detectedFields.length !== 1 ? 's' : '' }} found
-                        </p>
-                        <button class="text-[11px] text-gray-400 hover:text-gray-600" @click="showFields = false; detectedFields = []; detectionRan = false">
-                            Clear
-                        </button>
-                    </div>
-                    <div class="space-y-1.5">
-                        <button
-                            v-for="field in detectedFields"
-                            :key="field.id"
-                            class="flex w-full items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-2 text-left transition hover:bg-amber-100"
-                            @click="placeAtField(field)"
-                        >
-                            <svg class="mt-0.5 h-3 w-3 shrink-0 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                            </svg>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-800">{{ field.label }}</p>
-                                <p class="text-[10px] text-gray-400">Page {{ field.pageNum }} · Click to place here</p>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- No fields found feedback -->
-                <div
-                    v-else-if="detectionRan && !isDetecting && !showFields && capturedSig && !isLoading && detectedFields.length === 0"
-                    class="px-4 py-2 text-center"
-                >
-                    <p class="text-xs text-gray-500">No signature keyword fields found in this document.</p>
-                    <p v-if="placedFields.length > 0" class="mt-0.5 text-[11px] text-gray-400">
-                        {{ placedFields.length }} field{{ placedFields.length !== 1 ? 's' : '' }} already placed on the document. Use "Place Manually" to add more.
-                    </p>
-                    <p v-else class="mt-0.5 text-[11px] text-gray-400">Use "Place Manually" to drag your signature onto the document.</p>
-                </div>
-
-                <!-- ── PLACED FIELDS ── -->
-                <div v-if="placedFields.length > 0" class="px-4 py-3">
-                    <p class="mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">
-                        Placed ({{ placedFields.length }})
-                    </p>
-                    <div class="space-y-1.5">
-                        <div
-                            v-for="field in placedFields"
-                            :key="field.id"
-                            :class="[
-                                'flex cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-1.5 transition',
-                                field.id === selectedSigId
-                                    ? 'border-blue-300 bg-blue-50'
-                                    : 'border-gray-100 bg-gray-50 hover:border-gray-200',
-                            ]"
-                            @click="selectedSigId = field.id; scrollToPage(field.pageNum)"
-                        >
-                            <!-- Thumbnail -->
-                            <div class="h-7 w-10 shrink-0 overflow-hidden rounded border border-gray-200 bg-white">
-                                <template v-if="field.type === 'signature' || field.type === 'initials'">
-                                    <img v-if="field.value?.sigType === 'image'" :src="field.value.src" class="h-full w-full object-contain" />
-                                    <span v-else class="flex h-full w-full items-center justify-center text-[8px] font-bold text-blue-700">Aa</span>
-                                </template>
-                                <template v-else-if="field.type === 'checkbox'">
-                                    <span class="flex h-full w-full items-center justify-center text-[11px] text-blue-600">{{ field.value ? '✓' : '☐' }}</span>
-                                </template>
-                                <template v-else>
-                                    <span class="flex h-full w-full items-center justify-center overflow-hidden px-1 text-[7px] text-gray-600">
-                                        {{ String(field.value || '').slice(0, 10) || '—' }}
-                                    </span>
-                                </template>
-                            </div>
-
-                            <div class="min-w-0 flex-1">
-                                <p class="text-[11px] font-medium capitalize text-gray-700">{{ field.type }} {{ field.id }}</p>
-                                <p class="text-[10px] text-gray-400">Page {{ field.pageNum }}</p>
-                            </div>
-                            <div class="flex shrink-0 items-center gap-0.5">
-                                <button
-                                    class="rounded p-0.5 text-gray-300 hover:bg-blue-50 hover:text-blue-500"
-                                    title="Duplicate (Ctrl+D)"
-                                    @click.stop="duplicateField(field.id)"
-                                >
-                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                    </svg>
-                                </button>
-                                <button
-                                    class="rounded p-0.5 text-gray-300 hover:bg-red-50 hover:text-red-500"
-                                    title="Delete (Delete key)"
-                                    @click.stop="removeField(field.id)"
-                                >
-                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex-1" />
-
-                <!-- Trust signals -->
-                <div class="border-t border-gray-100 px-4 py-3">
-                    <p class="flex items-center gap-1.5 text-[10px] text-gray-400">
-                        <svg class="h-3 w-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                        End-to-end encrypted · Legally binding
-                    </p>
-                </div>
             </aside>
             </div><!-- /pdf-panel inner wrapper -->
         </div><!-- /outer workspace wrapper -->
 
-        <!-- ░░ BOTTOM ACTION BAR ░░ -->
-        <div class="flex h-14 shrink-0 items-center justify-between border-t border-gray-200 bg-white px-3 shadow-[0_-1px_4px_rgba(0,0,0,0.06)] md:px-6">
-            <div class="flex items-center gap-4">
-                <div v-for="(label, i) in ['Upload', 'Sign', 'Download']" :key="i" class="flex items-center gap-1.5">
-                    <div
-                        :class="[
-                            'flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold',
-                            workflowStep > i + 1
-                                ? 'bg-emerald-500 text-white'
-                                : workflowStep === i + 1
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 text-gray-500',
-                        ]"
-                    >
-                        <svg v-if="workflowStep > i + 1" class="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                        </svg>
-                        <span v-else>{{ i + 1 }}</span>
-                    </div>
-                    <span :class="['hidden text-xs sm:block', workflowStep >= i + 1 ? 'font-medium text-gray-800' : 'text-gray-400']">
-                        {{ label }}
-                    </span>
-                    <svg v-if="i < 2" class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <span
-                    v-if="documentId && saveStatus !== 'idle'"
-                    :class="[
-                        'hidden text-xs font-medium sm:block',
-                        saveStatus === 'saved'   ? 'text-emerald-600' :
-                        saveStatus === 'failed'  ? 'text-red-600' :
-                        'text-gray-500',
-                    ]"
-                >
-                    {{ saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? 'Saved' : 'Failed' }}
-                </span>
-                <span v-if="placedFields.length > 0" class="hidden text-xs font-medium text-emerald-600 sm:block">
-                    ✓ {{ placedFields.length }} field{{ placedFields.length !== 1 ? 's' : '' }} placed
-                </span>
-                <button
-                    :disabled="placedFields.length === 0 || isFinishing"
-                    :class="[
-                        'flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition',
-                        placedFields.length > 0 && !isFinishing
-                            ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:scale-[0.98]'
-                            : 'cursor-not-allowed bg-gray-100 text-gray-400',
-                    ]"
-                    @click="goToReview"
-                >
-                    <svg v-if="isFinishing" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-                    </svg>
-                    <span class="hidden sm:inline">{{ isFinishing ? 'Preparing…' : 'Review' }}</span>
-                    <span class="sm:hidden">{{ isFinishing ? '…' : 'Review' }}</span>
-                    <svg v-if="!isFinishing" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
+        <EditorBottomActionBar
+            :fields-placed="setupFieldsPlaced"
+            :is-finishing="isFinishing"
+            @review="goToReview"
+        />
 
     </SignLayout>
 </template>

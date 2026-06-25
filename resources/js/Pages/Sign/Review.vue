@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
-import { persistSignedPdf } from '@/utils/persistSignedPdf';
+import { fieldTypeLabel } from '@/Components/Editor/editorHelpers';
 
 const props = defineProps({
     session: {
@@ -27,12 +27,12 @@ const props = defineProps({
     },
 });
 
-const pageCount      = ref(0);
-const fieldCount     = ref(0);
-const recipientCount = ref(0);
+const pageCount        = ref(0);
+const fieldCount       = ref(0);
+const recipientCount   = ref(0);
 const reviewRecipients = ref([]);
-const documentId     = ref(null);
-const dataReady      = ref(false);
+const documentId       = ref(null);
+const dataReady        = ref(false);
 
 const sendState   = ref('idle');
 const sendError   = ref('');
@@ -40,6 +40,17 @@ const sendWarning = ref('');
 const isFinalized = ref(props.documentFinalized);
 
 const isAuthenticated = computed(() => !!usePage().props.auth?.user);
+
+function recipientFieldCount(r) {
+    return r.assigned_fields_count ?? r.fieldCount ?? 0;
+}
+
+function recipientFieldTypeLabels(r) {
+    const types = r.assigned_field_types ?? {};
+    return Object.entries(types)
+        .filter(([, count]) => count > 0)
+        .map(([type]) => fieldTypeLabel(type));
+}
 
 function hydrateFromReviewData(data, docId) {
     pageCount.value        = data.pageCount      ?? 0;
@@ -51,6 +62,10 @@ function hydrateFromReviewData(data, docId) {
 }
 
 onMounted(() => {
+    const sessionReview = window.__cubsignSession?.token === props.session.token
+        ? window.__cubsignSession?.reviewData
+        : null;
+
     if (props.reviewData && props.documentId) {
         hydrateFromReviewData(props.reviewData, props.documentId);
         isFinalized.value = props.documentFinalized;
@@ -60,10 +75,9 @@ onMounted(() => {
         return;
     }
 
-    const s = window.__cubsignSession;
-    if (s?.token === props.session.token && s?.reviewData) {
-        hydrateFromReviewData(s.reviewData, s.documentId ?? null);
-        if (s.documentSaved) {
+    if (sessionReview) {
+        hydrateFromReviewData(sessionReview, window.__cubsignSession.documentId ?? null);
+        if (window.__cubsignSession.documentSaved) {
             isFinalized.value = true;
         }
         return;
@@ -223,24 +237,34 @@ function statusBadgeClass(status) {
                         <li
                             v-for="r in reviewRecipients"
                             :key="r.id"
-                            class="flex items-center gap-3 px-5 py-3"
+                            class="px-5 py-3"
                         >
-                            <!-- Color dot -->
-                            <span
-                                class="h-2.5 w-2.5 shrink-0 rounded-full"
-                                :style="{ backgroundColor: r.color }"
-                            />
-                            <!-- Name + email -->
-                            <div class="min-w-0 flex-1">
-                                <p class="truncate text-sm font-medium text-gray-900">{{ r.name || '(no name)' }}</p>
-                                <p class="truncate text-xs text-gray-400">{{ r.email || '(no email)' }}</p>
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="h-2.5 w-2.5 shrink-0 rounded-full"
+                                    :style="{ backgroundColor: r.color }"
+                                />
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate text-sm font-medium text-gray-900">{{ r.name || '(no name)' }}</p>
+                                    <p class="truncate text-xs text-gray-400">{{ r.email || '(no email)' }}</p>
+                                </div>
+                                <span class="shrink-0 text-xs font-medium text-gray-700">
+                                    {{ recipientFieldCount(r) }} {{ recipientFieldCount(r) === 1 ? 'Field' : 'Fields' }}
+                                </span>
+                                <span class="shrink-0 text-xs text-gray-400">#{{ r.signingOrder }}</span>
                             </div>
-                            <!-- Field count -->
-                            <span class="shrink-0 text-xs text-gray-500">
-                                {{ r.fieldCount }} {{ r.fieldCount === 1 ? 'field' : 'fields' }}
-                            </span>
-                            <!-- Signing order -->
-                            <span class="shrink-0 text-xs text-gray-400">#{{ r.signingOrder }}</span>
+                            <div
+                                v-if="recipientFieldCount(r) > 0"
+                                class="mt-2 flex flex-wrap gap-1.5 pl-5"
+                            >
+                                <span
+                                    v-for="label in recipientFieldTypeLabels(r)"
+                                    :key="label"
+                                    class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600"
+                                >
+                                    {{ label }}
+                                </span>
+                            </div>
                         </li>
                     </ul>
 

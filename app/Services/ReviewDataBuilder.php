@@ -6,8 +6,12 @@ use App\Models\Document;
 
 class ReviewDataBuilder
 {
+    public function __construct(
+        private readonly PlacedFieldsService $placedFieldsService,
+    ) {}
+
     /**
-     * Build review summary from persisted editor_state.
+     * Build review summary from persisted editor_state.placedFields (single source of truth).
      *
      * @return array{pageCount: int, fieldCount: int, recipientCount: int, recipients: list<array<string, mixed>>}
      */
@@ -17,26 +21,7 @@ class ReviewDataBuilder
         $placedFields = $state['placedFields'] ?? [];
         $recipients   = $state['recipients'] ?? [];
 
-        $recipientFieldCounts = [];
-        foreach ($placedFields as $field) {
-            $signerId = $field['signerId'] ?? null;
-            if ($signerId !== null) {
-                $recipientFieldCounts[$signerId] = ($recipientFieldCounts[$signerId] ?? 0) + 1;
-            }
-        }
-
-        $namedRecipients = collect($recipients)
-            ->filter(fn ($r) => ! empty($r['name']) || ! empty($r['email']))
-            ->map(fn ($r) => [
-                'id'           => $r['id'],
-                'name'         => $r['name'] ?? '',
-                'email'        => $r['email'] ?? '',
-                'color'        => $r['color'] ?? '#3B82F6',
-                'signingOrder' => $r['signingOrder'] ?? 1,
-                'fieldCount'   => $recipientFieldCounts[$r['id']] ?? 0,
-            ])
-            ->values()
-            ->all();
+        $namedRecipients = $this->placedFieldsService->recipientSummaries($placedFields, $recipients);
 
         return [
             'pageCount'      => (int) ($state['pageCount'] ?? 0),

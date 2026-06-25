@@ -167,6 +167,7 @@ class SignedPdfService
 
         $tempFiles = [];
         $stamped   = 0;
+        $stampedIds = [];
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $templateId = $pdf->importPage($pageNo);
@@ -203,6 +204,7 @@ class SignedPdfService
                     $imageType = $this->imageTypeForPath($imagePath);
                     $pdf->Image($imagePath, $x, $y, $w, $h, $imageType);
                     $stamped++;
+                    $stampedIds[] = $fieldId;
 
                     Log::channel('cubsign')->info('SIGNED_PDF_FIELD_STAMPED', [
                         'document_id' => $document->id,
@@ -225,6 +227,7 @@ class SignedPdfService
                     $pdf->SetTextColor(0, 0, 0);
                     $pdf->Text($x + 2, $y + $h * 0.72, $text);
                     $stamped++;
+                    $stampedIds[] = $fieldId;
 
                     Log::channel('cubsign')->info('SIGNED_PDF_FIELD_STAMPED', [
                         'document_id' => $document->id,
@@ -238,6 +241,7 @@ class SignedPdfService
                     $pdf->Line($x + $w * 0.15, $y + $h * 0.55, $x + $w * 0.42, $y + $h * 0.80);
                     $pdf->Line($x + $w * 0.42, $y + $h * 0.80, $x + $w * 0.85, $y + $h * 0.28);
                     $stamped++;
+                    $stampedIds[] = $fieldId;
 
                     Log::channel('cubsign')->info('SIGNED_PDF_FIELD_STAMPED', [
                         'document_id' => $document->id,
@@ -247,6 +251,40 @@ class SignedPdfService
                     ]);
                 }
             }
+        }
+
+        $stampedIds = array_values(array_unique($stampedIds));
+        $signedFieldIds = array_keys($signedValues);
+        $missingFields = array_values(array_diff($signedFieldIds, $stampedIds));
+
+        $typeCounts = [];
+        foreach ($placedFields as $pf) {
+            $fid = (int) ($pf['id'] ?? 0);
+            if (! in_array($fid, $stampedIds, true)) {
+                continue;
+            }
+            $type = (string) ($pf['type'] ?? 'unknown');
+            $typeCounts[$type] = ($typeCounts[$type] ?? 0) + 1;
+        }
+
+        Log::channel('cubsign')->info('STAMP_FIELDS', [
+            'document_id'     => $document->id,
+            'recipient_id'    => null,
+            'expected_fields' => count($signedFieldIds),
+            'stamped_fields'  => count($stampedIds),
+            'missing_fields'  => $missingFields,
+            'field_count'     => count($stampedIds),
+            'field_types'     => $typeCounts,
+            'field_ids'       => $stampedIds,
+        ]);
+
+        if ($missingFields !== []) {
+            Log::channel('cubsign')->warning('STAMP_FIELDS mismatch', [
+                'document_id'    => $document->id,
+                'expected'       => count($signedFieldIds),
+                'stamped'        => count($stampedIds),
+                'missing_fields' => $missingFields,
+            ]);
         }
 
         if ($stamped === 0) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Sign;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Repositories\SignSessionRepository;
+use App\Services\PlacedFieldsService;
 use App\Services\ReviewDataBuilder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ class ReviewController extends Controller
     public function __construct(
         private readonly SignSessionRepository $repository,
         private readonly ReviewDataBuilder $reviewDataBuilder,
+        private readonly PlacedFieldsService $placedFieldsService,
     ) {}
 
     public function __invoke(Request $request): Response|RedirectResponse
@@ -58,6 +60,22 @@ class ReviewController extends Controller
                 $request->session()->put('sign_document_id', $document->id);
                 $documentId        = $document->id;
                 $reviewData        = $this->reviewDataBuilder->fromDocument($document);
+                $placedFields      = ($document->editor_state ?? [])['placedFields'] ?? [];
+
+                foreach ($reviewData['recipients'] as $recipient) {
+                    Log::channel('cubsign')->info('REVIEW_FIELDS', $this->placedFieldsService->logPayload(
+                        $document->id,
+                        (int) ($recipient['id'] ?? 0),
+                        $placedFields,
+                        $recipient['id'] ?? null,
+                    ));
+                }
+
+                Log::channel('cubsign')->info('REVIEW_FIELDS', array_merge(
+                    $this->placedFieldsService->logPayload($document->id, null, $placedFields),
+                    ['scope' => 'document'],
+                ));
+
                 $alreadyPrepared   = $document->recipients()
                     ->whereIn('status', ['sent', 'pending', 'signed'])
                     ->exists();
@@ -91,14 +109,21 @@ class ReviewController extends Controller
     {
         $sessionDocumentId = $request->session()->get('sign_document_id');
 
+        if ($sessionDocumentId) {
+            $bySession = Document::query()
+                ->where('user_id', auth()->id())
+                ->where('id', $sessionDocumentId)
+                ->whereIn('status', ['draft', 'signed'])
+                ->first();
+
+            if ($bySession) {
+                return $bySession;
+            }
+        }
+
         return Document::query()
             ->where('user_id', auth()->id())
-            ->where(function ($query) use ($token, $sessionDocumentId) {
-                $query->where('sign_token', $token);
-                if ($sessionDocumentId) {
-                    $query->orWhere('id', $sessionDocumentId);
-                }
-            })
+            ->where('sign_token', $token)
             ->whereIn('status', ['draft', 'signed'])
             ->latest('updated_at')
             ->first();

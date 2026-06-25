@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Document;
 use App\Models\DocumentActivity;
 use App\Models\Recipient;
+use App\Services\PlacedFieldsService;
 use App\Services\RecipientNotificationService;
 use App\Services\RecipientSignatureStorage;
 use App\Services\SignedPdfService;
@@ -21,6 +22,7 @@ class RecipientSignController extends Controller
     public function __construct(
         private readonly RecipientNotificationService $notificationService,
         private readonly RecipientSignatureStorage $signatureStorage,
+        private readonly PlacedFieldsService $placedFieldsService,
     ) {}
 
     public function show(string $token): Response
@@ -38,9 +40,16 @@ class RecipientSignController extends Controller
         $editorState = $document->editor_state ?? [];
         $allFields   = $editorState['placedFields'] ?? [];
 
-        $myFields = array_values(array_filter(
+        $myFields = $this->placedFieldsService->fieldsForSigner(
             $allFields,
-            fn ($f) => ($f['signerId'] ?? null) === $recipient->editor_recipient_id
+            $recipient->editor_recipient_id,
+        );
+
+        Log::channel('cubsign')->info('RECIPIENT_FIELDS', $this->placedFieldsService->logPayload(
+            $document->id,
+            $recipient->id,
+            $allFields,
+            $recipient->editor_recipient_id,
         ));
 
         return Inertia::render('RecipientSign', [
@@ -332,8 +341,7 @@ class RecipientSignController extends Controller
     {
         $placedFields = ($document->editor_state ?? [])['placedFields'] ?? [];
 
-        return collect($placedFields)
-            ->filter(fn ($f) => ($f['signerId'] ?? null) === $recipient->editor_recipient_id)
+        return collect($this->placedFieldsService->fieldsForSigner($placedFields, $recipient->editor_recipient_id))
             ->pluck('id')
             ->map(fn ($id) => (int) $id)
             ->values()

@@ -101,6 +101,16 @@ class SaveDocumentController extends Controller
 
             $document->update($update);
 
+            $editorStateAfter = $document->fresh()->editor_state ?? [];
+            $placedCount      = count($editorStateAfter['placedFields'] ?? []);
+
+            Log::channel('cubsign')->info('EDITOR_STATE_SAVED', [
+                'document_id'         => $document->id,
+                'placed_fields_count' => $placedCount,
+                'recipient_count'     => count($editorStateAfter['recipients'] ?? []),
+                'context'             => 'save_document',
+            ]);
+
             Log::channel('cubsign')->info('DOCUMENT_CREATED', [
                 'document_id' => $document->id,
                 'action'      => 'updated',
