@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserStatus;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -33,9 +34,17 @@ class ProfileController extends Controller
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
+            $request->user()->status = UserStatus::PendingVerification;
         }
 
         $request->user()->save();
+
+        if ($request->user()->wasChanged('email')) {
+            $request->user()->sendEmailVerificationNotification();
+
+            return Redirect::route('verification.notice')
+                ->with('status', 'verification-link-sent');
+        }
 
         return Redirect::route('profile.edit');
     }

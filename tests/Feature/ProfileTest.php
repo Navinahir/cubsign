@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -34,13 +35,14 @@ class ProfileTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/profile');
+            ->assertRedirect(route('verification.notice', absolute: false));
 
         $user->refresh();
 
         $this->assertSame('Test User', $user->name);
         $this->assertSame('test@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
+        $this->assertSame(UserStatus::PendingVerification, $user->status);
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void

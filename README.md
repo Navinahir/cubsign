@@ -208,7 +208,15 @@ DB_USERNAME=root
 DB_PASSWORD=
 
 MAIL_MAILER=log   # use 'log' for local dev, check storage/logs/laravel.log
+
+# Email verification (optional — defaults shown)
+AUTH_VERIFICATION_EXPIRE=1440          # link expiry in minutes (24 hours)
+AUTH_VERIFICATION_RESEND_COOLDOWN=60   # seconds between resend clicks
+AUTH_VERIFICATION_RESEND_LIMIT=5       # max resends per hour
+AUTH_VERIFICATION_RESEND_DECAY=60      # rate-limit window in minutes
 ```
+
+**PHPUnit note:** Tests use `.env.testing` with `APP_URL=http://localhost`. If tests return 404, run `php artisan config:clear` — a cached config with a subdirectory `APP_URL` (e.g. `http://localhost/cubsign/public`) breaks route matching in tests.
 
 ```bash
 php artisan migrate
@@ -228,6 +236,55 @@ Storage disks:
 
 ---
 
+## Email Verification
+
+Mandatory email verification is enforced for all email/password accounts. Users must verify before accessing the workspace, signing editor (when logged in), settings, or any authenticated feature.
+
+### User flow
+
+1. User registers → account created with `email_verified_at = null`, `status = pending_verification`
+2. Verification email sent immediately (Laravel signed URL, 24-hour expiry)
+3. User redirected to `/verify-email` (not the workspace)
+4. User clicks **Verify Email** in email → auto-logged in → redirected to `/overview` with success toast
+5. Unverified users who log in are redirected to `/verify-email`
+6. Google OAuth users are auto-verified (`status = active`)
+
+### Verify Email screen (`/verify-email`)
+
+- Resend verification email (60-second cooldown, max 5 per hour)
+- Change email address (`/verify-email/change`)
+- Log out
+- Expired links show `/verify-email/expired`
+
+### Technical implementation
+
+| Layer | Files |
+|---|---|
+| Model | `app/Models/User.php` — implements `MustVerifyEmail`, `UserStatus` enum |
+| Notification | `app/Notifications/VerifyEmailNotification.php` |
+| Email template | `resources/views/emails/verify-email.blade.php` |
+| Middleware | `app/Http/Middleware/EnsureEmailIsVerified.php` — returns `403 Email Verification Required` for JSON |
+| Controllers | `RegisteredUserController`, `VerifyEmailController`, `EmailVerificationPromptController`, `EmailVerificationNotificationController`, `ChangeVerificationEmailController`, `VerificationExpiredController` |
+| Vue pages | `Auth/VerifyEmail.vue`, `Auth/VerificationExpired.vue`, `Auth/ChangeEmail.vue` |
+| Migration | `2026_06_25_000001_add_status_to_users_table.php` |
+
+### Routes added
+
+```
+GET  /verify-email                    verification.notice        [auth]
+GET  /verify-email/change             verification.change        [auth]
+PUT  /verify-email/change             verification.update-email  [auth]
+GET  /verify-email/expired            verification.expired
+GET  /verify-email/{id}/{hash}        verification.verify        [signed]
+POST /email/verification-notification verification.send          [auth]
+```
+
+### Database
+
+`users.status` — `pending_verification` | `active`
+
+---
+
 ## Routes
 
 ```
@@ -237,15 +294,17 @@ GET    /pricing                   pricing            Pricing page
 GET    /faq                       faq                FAQ page
 
 GET    /overview                  overview           Workspace  [auth + verified]
-GET    /documents                 documents.index
-GET    /documents/{document}      documents.show
-DELETE /documents/{document}      documents.destroy
-GET    /documents/{document}/download  documents.download
-POST   /documents/{document}/send      documents.send
+GET    /documents                 documents.index    [auth + verified]
+GET    /profile                   profile.edit       [auth + verified]
 
-GET    /sign                      sign.index         Upload page (guests + auth)
-POST   /sign                      sign.store         Handle upload
-GET    /sign/editor               sign.editor        PDF editor
+GET    /verify-email              verification.notice           [auth]
+GET    /verify-email/{id}/{hash}  verification.verify           [signed]
+GET    /verify-email/expired      verification.expired
+POST   /email/verification-notification  verification.send      [auth]
+
+GET    /sign                      sign.index         Upload (guests OK; auth users need verified)
+POST   /sign                      sign.store         [verified if authenticated]
+GET    /sign/editor               sign.editor        [verified if authenticated]
 GET    /sign/pdf                  sign.pdf           Serve original PDF
 GET    /sign/complete             sign.complete      Download / account CTA
 
@@ -297,4 +356,6 @@ Logs rotate daily and are kept for 30 days. The token is partially masked (`…l
 
 ## Changelog
 
-See [docs/CHANGELOG.md](docs/CHANGELOG.md) for the full build history.
+See [CHANGELOG.md](CHANGELOG.md) and [docs/CHANGELOG.md](docs/CHANGELOG.md) for the full build history.
+
+See [DEVELOPMENT_TRACKER.md](DEVELOPMENT_TRACKER.md) for feature completion status.

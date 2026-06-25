@@ -8,6 +8,15 @@ All notable changes to CubSign are documented here.
 
 ---
 
+## [0.10.1] — 2026-06-25
+
+### Mandatory Email Verification
+
+- Full production-grade email verification flow (registration, login gating, signed URLs, resend limits, expired link handling)
+- See root `CHANGELOG.md` and `DEVELOPMENT_TRACKER.md` for implementation details
+
+---
+
 ## [0.10.0] — 2026-06-24
 
 ### Phase 5 — Signed PDF Generation + Download

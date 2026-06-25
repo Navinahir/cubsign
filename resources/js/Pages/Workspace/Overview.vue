@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import WorkspaceLayout from '@/Layouts/WorkspaceLayout.vue';
 
@@ -16,6 +16,24 @@ const props = defineProps({
 
 const user = computed(() => usePage().props.auth.user);
 const firstName = computed(() => user.value?.name?.split(' ')[0] ?? 'there');
+
+const page = usePage();
+const toast = ref('');
+let toastTimer = null;
+
+onMounted(() => {
+    if (page.props.flash?.status === 'email-verified') {
+        showToast('Your email has been verified successfully. Welcome to CubSign.');
+    }
+});
+
+function showToast(message) {
+    toast.value = message;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+        toast.value = '';
+    }, 6000);
+}
 
 const statCards = computed(() => [
     {
@@ -64,6 +82,23 @@ function formatDate(value) {
 <template>
     <WorkspaceLayout>
         <template #header>Overview</template>
+
+        <!-- Verification success toast -->
+        <Transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="translate-y-2 opacity-0"
+            enter-to-class="translate-y-0 opacity-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+        >
+            <div
+                v-if="toast"
+                class="fixed bottom-6 right-6 z-50 max-w-sm rounded-lg border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-medium text-emerald-800 shadow-lg"
+            >
+                {{ toast }}
+            </div>
+        </Transition>
 
         <!-- Welcome -->
         <div class="mb-6">

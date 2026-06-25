@@ -56,15 +56,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/templates/{template}/replace-pdf',     [TemplatesController::class, 'replacePdf'])->name('templates.replace-pdf');
 });
 
-// Profile
-Route::middleware('auth')->group(function () {
+// Profile — authenticated + verified
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Signing flow — guests + authenticated, token stored in session (not URL)
-Route::prefix('sign')->name('sign.')->group(function () {
+// Signing flow — guests allowed; authenticated users must be verified
+Route::prefix('sign')->name('sign.')->middleware('verified')->group(function () {
     Route::get('/',        [SignUploadController::class, 'show'])->name('index');
     Route::post('/',       [SignUploadController::class, 'store'])->name('store');
     Route::get('/editor',  SignEditorController::class)->name('editor');

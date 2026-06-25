@@ -5,6 +5,32 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.10.0] 2026-06-25 — Mandatory Email Verification
+
+### Added
+- Mandatory email verification for email/password registration
+- `users.status` column (`pending_verification` | `active`) with `UserStatus` enum
+- CubSign-branded verification email (`VerifyEmailNotification`, `emails/verify-email.blade.php`)
+- Verify Email screen with resend cooldown (60s), hourly limit (5), change email, and log out
+- Expired verification link page (`/verify-email/expired`)
+- Guest-accessible signed verification URLs with auto-login on success
+- Custom `EnsureEmailIsVerified` middleware returning `403 Email Verification Required` for JSON/API requests
+- `DEVELOPMENT_TRACKER.md` and `docs/architecture.md`
+- Cursor rule for feature-completion documentation policy
+
+### Changed
+- Registration redirects to `/verify-email` instead of workspace
+- Login redirects unverified users to `/verify-email`
+- `User` model implements `MustVerifyEmail`
+- Profile and signing routes require verified email for authenticated users
+- Profile email change resets verification and sends new email
+- Overview shows success toast after email verification
+
+### Fixed
+- Verification emails were never sent (MustVerifyEmail was commented out)
+
+---
+
 ## [v0.9.0] 2026-06-22 — Logging & Documentation
 
 ### Added

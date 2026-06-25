@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -38,9 +39,10 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'status'   => UserStatus::PendingVerification,
         ]);
 
         event(new Registered($user));
@@ -48,6 +50,6 @@ class RegisteredUserController extends Controller
         Auth::login($user);
         $request->session()->forget('guest_completed');
 
-        return redirect(route('overview', absolute: false));
+        return redirect(route('verification.notice', absolute: false));
     }
 }

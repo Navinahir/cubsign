@@ -114,4 +114,20 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Email Verification
+    |--------------------------------------------------------------------------
+    |
+    | Controls verification link expiry (minutes) and resend rate limits.
+    |
+    */
+
+    'verification' => [
+        'expire'          => env('AUTH_VERIFICATION_EXPIRE', 1440),
+        'resend_cooldown' => env('AUTH_VERIFICATION_RESEND_COOLDOWN', 60),
+        'resend_limit'    => env('AUTH_VERIFICATION_RESEND_LIMIT', 5),
+        'resend_decay'    => env('AUTH_VERIFICATION_RESEND_DECAY', 60),
+    ],
+
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -36,9 +37,12 @@ class SocialiteController extends Controller
             ?? User::where('email', $socialUser->getEmail())->first();
 
         if ($user) {
-            // Link google_id if the account was created via email/password
             if (! $user->google_id) {
                 $user->update(['google_id' => $socialUser->getId()]);
+            }
+
+            if (! $user->hasVerifiedEmail()) {
+                $user->markEmailAsVerified();
             }
         } else {
             $user = User::create([
@@ -46,6 +50,7 @@ class SocialiteController extends Controller
                 'email'             => $socialUser->getEmail(),
                 'google_id'         => $socialUser->getId(),
                 'email_verified_at' => now(),
+                'status'            => UserStatus::Active,
                 'password'          => bcrypt(Str::random(32)),
             ]);
 

@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserStatus;
+use App\Notifications\VerifyEmailNotification;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -19,6 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'google_id',
+        'status',
     ];
 
     protected $hidden = [
@@ -31,6 +34,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
+            'status'            => UserStatus::class,
         ];
     }
 
@@ -42,5 +46,23 @@ class User extends Authenticatable
     public function templates(): HasMany
     {
         return $this->hasMany(Template::class);
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailNotification);
+    }
+
+    public function markEmailAsVerified(): bool
+    {
+        return $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+            'status'            => UserStatus::Active,
+        ])->save();
+    }
+
+    public function isPendingVerification(): bool
+    {
+        return $this->status === UserStatus::PendingVerification;
     }
 }
