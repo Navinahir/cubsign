@@ -45,6 +45,126 @@ export function recipientFieldSummaries(placedFields, recipients) {
     });
 }
 
+/** Resolve which workflow a placed field belongs to (self vs request). */
+export function resolveFieldSigningMode(field, fallbackDocumentMode = 'self') {
+    if (field?.signingMode === 'request' || field?.signingMode === 'self') {
+        return field.signingMode;
+    }
+    if (isSignPlaceholder(field)) {
+        return 'request';
+    }
+    if (field?.type === 'signature' || field?.type === 'initials') {
+        return 'self';
+    }
+    return fallbackDocumentMode === 'request' ? 'request' : 'self';
+}
+
+export function fieldsForSigningMode(placedFields, mode, documentSigningMode = mode) {
+    return placedFields.filter(
+        f => resolveFieldSigningMode(f, documentSigningMode) === mode,
+    );
+}
+
+/**
+ * Build confirmation copy for switching signing mode.
+ *
+ * @returns {{ title: string, lead: string, subtitle: string, bullets: string[], footer: string|null, confirmLabel: string }}
+ */
+export function buildModeSwitchModal(targetMode, placedFields, recipients, documentSigningMode) {
+    if (targetMode === 'self') {
+        const requestFields = fieldsForSigningMode(placedFields, 'request', documentSigningMode);
+        const configured    = configuredRecipients(recipients);
+        const bullets       = [];
+
+        if (configured.length > 0) {
+            bullets.push(`${configured.length} recipient${configured.length === 1 ? '' : 's'}`);
+        }
+        if (requestFields.length > 0) {
+            bullets.push(`${requestFields.length} assigned field${requestFields.length === 1 ? '' : 's'}`);
+        }
+
+        const sigPlaceholders = requestFields.filter(f => f.type === 'signature').length;
+        const initPlaceholders = requestFields.filter(f => f.type === 'initials').length;
+        if (sigPlaceholders > 0) {
+            bullets.push(`${sigPlaceholders} signature placeholder${sigPlaceholders === 1 ? '' : 's'}`);
+        }
+        if (initPlaceholders > 0) {
+            bullets.push(`${initPlaceholders} initials placeholder${initPlaceholders === 1 ? '' : 's'}`);
+        }
+
+        return {
+            title:        'Switch to Just Me?',
+            lead:         'This document currently contains recipient fields.',
+            subtitle:     'Switching to Just Me will remove:',
+            bullets,
+            footer:       'Your document itself will remain unchanged.',
+            confirmLabel: 'Switch & Remove',
+        };
+    }
+
+    const selfFields = fieldsForSigningMode(placedFields, 'self', documentSigningMode);
+    const bullets    = selfFields.length > 0
+        ? [`${selfFields.length} personal field${selfFields.length === 1 ? '' : 's'}`]
+        : [];
+
+    return {
+        title:        'Switch to Request Signatures?',
+        lead:         'This document already contains personal signing fields.',
+        subtitle:     bullets.length > 0 ? 'Switching modes will remove:' : 'Switching modes will prepare the document for recipients.',
+        bullets,
+        footer:       'Your saved signature will be kept. Add at least one recipient before placing fields.',
+        confirmLabel: 'Switch',
+    };
+}
+
+const MODE_CONSISTENCY_ERROR =
+    'This document contains fields from different signing modes. Please choose a single signing mode.';
+
+/**
+ * Ensure placed fields match the active signing workflow.
+ *
+ * @returns {string[]} error messages (empty = valid)
+ */
+export function validateSigningModeConsistency({ signingMode, placedFields, recipients }) {
+    if (signingMode !== 'request' && signingMode !== 'self') {
+        return [MODE_CONSISTENCY_ERROR];
+    }
+
+    const selfFields    = fieldsForSigningMode(placedFields, 'self', signingMode);
+    const requestFields = fieldsForSigningMode(placedFields, 'request', signingMode);
+
+    if (selfFields.length > 0 && requestFields.length > 0) {
+        return [MODE_CONSISTENCY_ERROR];
+    }
+
+    if (signingMode === 'self' && requestFields.length > 0) {
+        return [MODE_CONSISTENCY_ERROR];
+    }
+
+    if (signingMode === 'request' && selfFields.length > 0) {
+        return [MODE_CONSISTENCY_ERROR];
+    }
+
+    if (signingMode === 'request' && placedFields.length > 0) {
+        const configured = configuredRecipients(recipients);
+        if (configured.length === 0) {
+            return [MODE_CONSISTENCY_ERROR];
+        }
+
+        for (const field of placedFields) {
+            if (resolveFieldSigningMode(field, signingMode) !== 'request') {
+                continue;
+            }
+            const signerId = normalizeSignerId(field.signerId);
+            if (signerId === null || !configured.some(r => r.id === signerId)) {
+                return [MODE_CONSISTENCY_ERROR];
+            }
+        }
+    }
+
+    return [];
+}
+
 /**
  * Validate request-signing workflow before finish / prepare.
  *
@@ -58,6 +178,8 @@ export function validateRequestSigning({
     documentSaved,
 }) {
     const errors = [];
+
+    errors.push(...validateSigningModeConsistency({ signingMode, placedFields, recipients }));
 
     if (!documentId) {
         errors.push('Document must be saved before continuing.');

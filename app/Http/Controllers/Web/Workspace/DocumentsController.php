@@ -116,8 +116,8 @@ class DocumentsController extends Controller
     {
         $this->gate($document);
 
-        if ($document->status !== 'draft') {
-            return response()->json(['error' => 'Not a draft'], 422);
+        if (! in_array($document->status, ['draft', 'signed'], true)) {
+            return response()->json(['error' => 'Document is not editable'], 422);
         }
 
         $validated = $request->validate(['state' => ['required', 'array']]);
@@ -186,7 +186,7 @@ class DocumentsController extends Controller
                 ]);
 
                 return response()->json([
-                    'message' => 'Signing requests have already been prepared.',
+                    'message' => 'Signature requests have already been sent for this document.',
                 ], 409);
             }
 
@@ -300,6 +300,16 @@ class DocumentsController extends Controller
                 'document_id'      => $document->id,
                 'recipient_count'  => count($validated['recipients']),
                 'mail_warning'     => $mailWarning !== null,
+            ]);
+
+            $request->session()->put('sign_sent_summary', [
+                'document_id'   => $document->id,
+                'document_name' => $document->name,
+                'recipients'    => $sorted->map(fn ($data) => [
+                    'name'  => $data['name'],
+                    'email' => $data['email'],
+                ])->values()->all(),
+                'warning' => $mailWarning,
             ]);
 
             $response = ['ok' => true];

@@ -8,6 +8,7 @@ use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\OverviewController;
 use App\Http\Controllers\Web\PricingController;
 use App\Http\Controllers\Web\Sign\CompleteController as SignCompleteController;
+use App\Http\Controllers\Web\Sign\SentController as SignSentController;
 use App\Http\Controllers\Web\Sign\EditorController as SignEditorController;
 use App\Http\Controllers\Web\Sign\PdfController as SignPdfController;
 use App\Http\Controllers\Web\Sign\ReviewController as SignReviewController;
@@ -71,6 +72,7 @@ Route::prefix('sign')->name('sign.')->group(function () {
     Route::get('/review',  SignReviewController::class)->name('review');
     Route::post('/review-snapshot', \App\Http\Controllers\Web\Sign\ReviewSnapshotController::class)->name('review.snapshot');
     Route::get('/complete', SignCompleteController::class)->name('complete');
+    Route::get('/sent', SignSentController::class)->name('sent')->middleware('auth');
     Route::middleware('auth')->post('/save', SignSaveDocumentController::class)->name('save');
 });
 

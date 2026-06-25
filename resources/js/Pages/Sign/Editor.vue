@@ -15,9 +15,14 @@ import {
     buildFieldsLogPayload,
     configuredRecipients,
     validateRequestSigning,
+    validateSigningModeConsistency,
+    resolveFieldSigningMode,
+    fieldsForSigningMode,
+    buildModeSwitchModal,
 } from '@/Components/Editor/editorHelpers';
 import EditorAddRecipientModal from '@/Components/Editor/EditorAddRecipientModal.vue';
 import EditorSigningMode from '@/Components/Editor/EditorSigningMode.vue';
+import EditorSigningModeSwitchModal from '@/Components/Editor/EditorSigningModeSwitchModal.vue';
 import EditorRequestFieldHint from '@/Components/Editor/EditorRequestFieldHint.vue';
 import EditorRecipientSection from '@/Components/Editor/EditorRecipientSection.vue';
 import EditorGuestRecipient from '@/Components/Editor/EditorGuestRecipient.vue';
@@ -230,6 +235,18 @@ const showAddRecipientModal = ref(false);
 const requestToast          = ref('');
 const requestOnboardingHint = ref(false);
 let   requestToastTimer     = null;
+let   pendingAfterModeSwitch = null;
+
+const modeSwitchModal = ref({
+    show:         false,
+    targetMode:   null,
+    title:        '',
+    lead:         '',
+    subtitle:     '',
+    bullets:      [],
+    footer:       null,
+    confirmLabel: 'Continue',
+});
 
 watch(() => configuredRecipients(recipients.value).length, (count) => {
     if (count > 0) recipientListVisible.value = true;
@@ -316,10 +333,14 @@ function restorePlacedFields() {
     const es = props.editorState;
     if (!es?.placedFields?.length) return;
 
-    placedFields.value = es.placedFields.map(f => ({
-        ...f,
-        value: f.value ?? '',
-    }));
+    placedFields.value = es.placedFields.map(f => {
+        const value = f.value ?? '';
+        const field = { ...f, value };
+        return {
+            ...field,
+            signingMode: f.signingMode ?? resolveFieldSigningMode(field, es.signingMode ?? 'self'),
+        };
+    });
     fieldSeq = Math.max(0, ...es.placedFields.map(f => (typeof f.id === 'number' ? f.id : 0)));
 }
 
@@ -427,7 +448,7 @@ watch(activePage, async (pageNum) => {
         ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 });
 
-watch([placedFields, recipients, scale, signingMode, savedSignature, savedInitials, signatureTab, initialsTab], () => scheduleAutosave(), { deep: true });
+watch([placedFields, recipients, scale, signingMode, savedSignature, savedInitials, signatureTab, initialsTab, activeRecipientId], () => scheduleAutosave(), { deep: true });
 
 // ── PDF loading ───────────────────────────────────────────────────────────
 async function renderAllPages() {
@@ -687,6 +708,7 @@ function placeField(pageNum, x, y, w, h) {
         w: w ?? def.w, h: h ?? def.h,
         value,
         signerId: isSelfSignMode.value ? (activeRecipientId.value ?? 1) : activeRecipientId.value,
+        signingMode: signingMode.value,
     });
     selectedSigId.value = id;
 
@@ -885,38 +907,102 @@ function onPageContextMenu(e) {
     }
 }
 
-function setSigningMode(mode) {
-    if (mode !== 'self' && mode !== 'request') return;
-    if (signingMode.value === mode) return;
+function modeSwitchNeedsConfirm(targetMode) {
+    const selfFields    = fieldsForSigningMode(placedFields.value, 'self', signingMode.value);
+    const requestFields = fieldsForSigningMode(placedFields.value, 'request', signingMode.value);
+    const configured    = configuredRecipients(recipients.value);
+
+    if (targetMode === 'self') {
+        return requestFields.length > 0 || configured.length > 0;
+    }
+
+    return selfFields.length > 0;
+}
+
+function applySigningModeSwitch(mode) {
+    if (mode === 'self') {
+        placedFields.value = placedFields.value.filter(
+            f => resolveFieldSigningMode(f, signingMode.value) !== 'request',
+        );
+        recipientSeq = 1;
+        recipients.value = [{
+            id: 1, name: '', email: '', color: RECIPIENT_COLORS[0],
+            role: 'signer', signingOrder: 1, status: 'pending',
+        }];
+        activeRecipientId.value    = 1;
+        recipientListVisible.value = false;
+        requestOnboardingHint.value = false;
+    } else {
+        placedFields.value = placedFields.value.filter(
+            f => resolveFieldSigningMode(f, signingMode.value) !== 'self',
+        );
+        recipients.value = configuredRecipients(recipients.value);
+        activeRecipientId.value     = recipients.value[0]?.id ?? null;
+        recipientListVisible.value  = recipients.value.length > 0;
+        requestOnboardingHint.value = false;
+    }
+
     signingMode.value         = mode;
-    savedSignature.value      = null;
-    savedInitials.value       = null;
-    isChangingSignature.value = false;
-    isChangingInitials.value  = false;
+    selectedSigId.value       = null;
     placementMode.value       = null;
     detectedFields.value      = [];
     showFields.value          = false;
-    if (mode === 'request') {
-        recipients.value = configuredRecipients(recipients.value);
-        activeRecipientId.value = recipients.value[0]?.id ?? null;
-        recipientListVisible.value = recipients.value.length > 0;
-        placementMode.value       = recipients.value.length > 0 ? placementMode.value : null;
-        requestOnboardingHint.value = false;
-    } else {
-        if (recipients.value.length === 0) {
-            recipients.value = [{
-                id: 1, name: '', email: '', color: RECIPIENT_COLORS[0],
-                role: 'signer', signingOrder: 1, status: 'pending',
-            }];
-            recipientSeq = Math.max(recipientSeq, 1);
-        }
-        activeRecipientId.value = recipients.value[0]?.id ?? 1;
+    isChangingSignature.value = false;
+    isChangingInitials.value  = false;
+
+    if (mode === 'self' && savedAssetForType(activeFieldType.value)) {
+        placementMode.value = 'manual';
     }
+}
+
+async function requestSigningModeChange(mode, afterConfirm = null) {
+    if (mode !== 'self' && mode !== 'request') return;
+    if (signingMode.value === mode) return;
+
+    if (!modeSwitchNeedsConfirm(mode)) {
+        applySigningModeSwitch(mode);
+        await flushAutosave();
+        afterConfirm?.();
+        return;
+    }
+
+    pendingAfterModeSwitch = afterConfirm;
+    const copy = buildModeSwitchModal(mode, placedFields.value, recipients.value, signingMode.value);
+    modeSwitchModal.value = {
+        show: true,
+        targetMode: mode,
+        ...copy,
+    };
+}
+
+function closeModeSwitchModal() {
+    modeSwitchModal.value.show = false;
+    pendingAfterModeSwitch     = null;
+}
+
+async function confirmModeSwitch() {
+    const mode    = modeSwitchModal.value.targetMode;
+    const pending = pendingAfterModeSwitch;
+    modeSwitchModal.value.show = false;
+    pendingAfterModeSwitch     = null;
+
+    if (mode !== 'self' && mode !== 'request') return;
+
+    applySigningModeSwitch(mode);
+    await flushAutosave();
+    pending?.();
+}
+
+function setSigningMode(mode) {
+    requestSigningModeChange(mode);
 }
 
 function openAddRecipientModal() {
     if (isSelfSignMode.value) {
-        setSigningMode('request');
+        requestSigningModeChange('request', () => {
+            showAddRecipientModal.value = true;
+        });
+        return;
     }
     showAddRecipientModal.value = true;
 }
@@ -1385,6 +1471,17 @@ async function goToReview() {
         });
         return;
     }
+
+    const consistencyErrors = validateSigningModeConsistency({
+        signingMode:  signingMode.value,
+        placedFields: placedFields.value,
+        recipients:   recipients.value,
+    });
+    if (consistencyErrors.length > 0) {
+        showRequestToast(consistencyErrors[0]);
+        return;
+    }
+
     isFinishing.value = true;
     try {
         await persistEditorState();
@@ -1950,6 +2047,18 @@ async function finishSigning() {
             :existing-emails="existingRecipientEmails"
             @close="showAddRecipientModal = false"
             @save="saveRecipientFromModal"
+        />
+
+        <EditorSigningModeSwitchModal
+            :show="modeSwitchModal.show"
+            :title="modeSwitchModal.title"
+            :lead="modeSwitchModal.lead"
+            :subtitle="modeSwitchModal.subtitle"
+            :bullets="modeSwitchModal.bullets"
+            :footer="modeSwitchModal.footer"
+            :confirm-label="modeSwitchModal.confirmLabel"
+            @close="closeModeSwitchModal"
+            @confirm="confirmModeSwitch"
         />
 
         <!-- Request-mode toast -->

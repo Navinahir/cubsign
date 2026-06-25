@@ -80,6 +80,12 @@ class DocumentsSendTest extends TestCase
         $response->assertOk()->assertJson(['ok' => true]);
         $this->assertDatabaseCount('recipients', 1);
         $this->assertDatabaseHas('document_activities', ['event' => 'sent']);
+
+        $summary = session('sign_sent_summary');
+        $this->assertIsArray($summary);
+        $this->assertSame($document->id, $summary['document_id']);
+        $this->assertCount(1, $summary['recipients']);
+        $this->assertSame('Alice', $summary['recipients'][0]['name']);
     }
 
     public function test_send_rejects_duplicate_prepare(): void
@@ -109,7 +115,7 @@ class DocumentsSendTest extends TestCase
         ]);
 
         $response->assertStatus(409)
-            ->assertJson(['message' => 'Signing requests have already been prepared.']);
+            ->assertJson(['message' => 'Signature requests have already been sent for this document.']);
 
         $this->assertDatabaseCount('recipients', 1);
     }
