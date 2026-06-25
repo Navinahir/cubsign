@@ -75,7 +75,33 @@ Running log of feature implementation status. Update this file when a feature is
 ### Developer Notes
 - Run `php artisan migrate` to add `users.status`
 - Verification links use Laravel `URL::temporarySignedRoute` (24h default)
-- `verified` middleware allows guests through on sign routes; only blocks authenticated unverified users
+- `verified` middleware is applied only to workspace and profile routes — **not** to `/sign` or `/r/{token}` (guest/public signing)
+
+---
+
+## Guest Signing Regression Fix (v0.10.1)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.10.1 |
+| **Date** | 2026-06-25 |
+
+### Root Cause
+`routes/web.php` applied `verified` middleware to the `/sign` route group. Laravel's stock `Illuminate\Auth\Middleware\EnsureEmailIsVerified` redirects when `! $request->user()`, so guests were sent to `/verify-email` → `/login` instead of the upload page.
+
+### Fix
+Removed `verified` from the signing route group. Email verification continues to protect workspace routes only.
+
+### Files Modified
+- `routes/web.php`
+- `bootstrap/app.php`
+- `database/migrations/2026_06_22_000004_add_sign_token_to_documents_table.php` (SQLite test compatibility)
+- `tests/Feature/GuestSigningAccessTest.php` (new)
+- `README.md`, `CHANGELOG.md`, `DEVELOPMENT_TRACKER.md`
+
+### Testing Status
+- `tests/Feature/GuestSigningAccessTest.php` — guest + unverified user sign access, workspace still protected
 
 ---
 

@@ -238,7 +238,9 @@ Storage disks:
 
 ## Email Verification
 
-Mandatory email verification is enforced for all email/password accounts. Users must verify before accessing the workspace, signing editor (when logged in), settings, or any authenticated feature.
+Mandatory email verification is enforced for all email/password accounts. Users must verify before accessing the workspace (overview, documents, templates, profile) and other authenticated workspace features.
+
+Guest signing (`/sign`), public signing, and recipient signing (`/r/{token}`) do **not** require authentication or email verification.
 
 ### User flow
 
@@ -302,15 +304,17 @@ GET    /verify-email/{id}/{hash}  verification.verify           [signed]
 GET    /verify-email/expired      verification.expired
 POST   /email/verification-notification  verification.send      [auth]
 
-GET    /sign                      sign.index         Upload (guests OK; auth users need verified)
-POST   /sign                      sign.store         [verified if authenticated]
-GET    /sign/editor               sign.editor        [verified if authenticated]
+GET    /sign                      sign.index         Upload (public — no auth)
+POST   /sign                      sign.store         Upload PDF
+GET    /sign/editor               sign.editor        Editor
 GET    /sign/pdf                  sign.pdf           Serve original PDF
 GET    /sign/complete             sign.complete      Download / account CTA
+POST   /sign/save                 sign.save          Save draft to workspace [auth]
+GET    /sign/sent                 sign.sent          Post-send summary [auth]
 
-GET    /sign/{token}              recipient.sign     Recipient signing page
-GET    /sign/{token}/pdf          recipient.pdf      Serve PDF to recipient
-POST   /sign/{token}/complete     recipient.complete Submit signed fields
+GET    /r/{token}                 recipient.sign     Recipient signing page
+GET    /r/{token}/pdf             recipient.pdf      Serve PDF to recipient
+POST   /r/{token}/complete        recipient.complete Submit signed fields
 ```
 
 ---

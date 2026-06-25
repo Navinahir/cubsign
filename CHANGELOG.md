@@ -5,6 +5,18 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.10.1] 2026-06-25 — Guest Signing Regression Fix
+
+### Fixed
+- **Guest signing blocked by email verification middleware** — `verified` was applied to the entire `/sign` route group. Laravel's default `EnsureEmailIsVerified` treats unauthenticated requests as unverified and redirects guests to `/verify-email`, which requires `auth` and then sends them to `/login`. Removed `verified` from signing routes; verification remains enforced only on workspace routes (`/overview`, `/documents`, `/templates`, `/profile`).
+- **Expired verification links returned 403** — `bootstrap/app.php` now redirects invalid/expired signed URLs on `verification.verify` to `/verify-email/expired` (as documented in `docs/architecture.md`).
+- **PHPUnit SQLite compatibility** — `2026_06_22_000004` migration now uses `Schema::hasColumn()` instead of MySQL-only `information_schema` queries.
+
+### Added
+- `tests/Feature/GuestSigningAccessTest.php` — regression tests for guest and unverified-user access to `/sign`
+
+---
+
 ## [v0.10.0] 2026-06-25 — Mandatory Email Verification
 
 ### Added

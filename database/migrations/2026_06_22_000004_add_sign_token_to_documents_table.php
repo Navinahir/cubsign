@@ -2,20 +2,13 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     private function columnExists(): bool
     {
-        $result = DB::selectOne(
-            "SELECT COUNT(*) AS cnt FROM information_schema.COLUMNS
-             WHERE TABLE_SCHEMA = DATABASE()
-               AND TABLE_NAME   = 'documents'
-               AND COLUMN_NAME  = 'sign_token'"
-        );
-        return (int) $result->cnt > 0;
+        return Schema::hasColumn('documents', 'sign_token');
     }
 
     public function up(): void

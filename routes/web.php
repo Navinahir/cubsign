@@ -63,8 +63,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Signing flow — guests allowed; authenticated users must be verified
-Route::prefix('sign')->name('sign.')->middleware('verified')->group(function () {
+// Signing flow — public; no auth or verification required
+Route::prefix('sign')->name('sign.')->group(function () {
     Route::get('/',        [SignUploadController::class, 'show'])->name('index');
     Route::post('/',       [SignUploadController::class, 'store'])->name('store');
     Route::get('/editor',  SignEditorController::class)->name('editor');
