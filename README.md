@@ -187,9 +187,9 @@ Email failures are caught, logged, and never abort the signing flow or HTTP resp
 
 ## Editor Auto-Detection
 
-After a PDF is uploaded and rendered in `Sign/Editor.vue`, `detectFields()` scans the pdf.js text layer for signature-related keywords (`signature`, `sign here`, `signed by`, etc.). Matches appear as amber dashed overlays on the PDF and in the sidebar list. Users can click a suggestion to place their saved signature, use **Auto Place** for the highest-confidence match, or **Place Manually**.
+Signature detection in `Sign/Editor.vue` is **user-initiated only** — it never runs automatically on PDF load. When the user clicks **Detect Signature Fields**, `detectFields()` scans the pdf.js text layer for signature-related keywords (`signature`, `sign here`, `signed by`, etc.). Matches appear as amber dashed overlays on the PDF and in the sidebar list. Users can click a suggestion to place their saved signature, use **Auto Place** (which runs detection first if needed) for the highest-confidence match, or **Place Manually**.
 
-Detection runs automatically once after `initializeWorkspace()` finishes rendering pages, and again after saving a signature. Initials, name, date, and other field types are placed manually via the field-type grid (not keyword-scanned).
+Initials, name, date, and other field types are placed manually via the field-type grid (not keyword-scanned). Detection results are temporary UI helpers and are not restored from saved editor state.
 
 ---
 

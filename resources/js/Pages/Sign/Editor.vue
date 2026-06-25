@@ -350,11 +350,6 @@ function finalizeWorkspaceUi() {
     }
 }
 
-async function runAutoDetection() {
-    if (initAborted || !pdfDoc || isDetecting.value || detectionRan.value) return;
-    await detectFields();
-}
-
 function teardownPdf() {
     pdfRenderer.cancelAll();
     if (intersectionObs) {
@@ -412,7 +407,6 @@ async function initializeWorkspace() {
             scrollToPage(props.editorState.activePage);
         }
         setupScrollObserver();
-        await runAutoDetection();
     } catch (err) {
         console.error('[CubSign] Workspace init failed:', err);
         workspaceInitState.value = 'error';
@@ -613,14 +607,12 @@ function captureSignature() {
 
     savedSignature.value = asset;
     isChangingSignature.value = false;
-    detectionRan.value = false;
     resetCreationDraft();
 
     if (hasTemplatePlaceholders.value) {
         fillTemplatePlaceholders();
     }
     placementMode.value = null;
-    detectFields();
 }
 
 function resetCreationDraft() {
@@ -654,8 +646,6 @@ function useExistingAsset() {
     if (!savedAssetForType(activeFieldType.value)) return;
     if (activeFieldType.value === 'signature') {
         placementMode.value = null;
-        detectionRan.value = false;
-        detectFields();
     } else {
         placementMode.value = 'manual';
     }

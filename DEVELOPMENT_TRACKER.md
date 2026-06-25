@@ -105,6 +105,36 @@ Removed `verified` from the signing route group. Email verification continues to
 
 ---
 
+## User-Initiated Detection Only (v0.10.3)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.10.3 |
+| **Date** | 2026-06-25 |
+
+### Change
+Signature detection is now completely user-initiated and never runs automatically on PDF load. On open/upload the editor restores PDF render, placed fields, saved signatures, recipients, signing mode, zoom, and page — then stops. No suggestion cards, overlays, or `detectFields()` execution until the user clicks **Detect Signature Fields** or **Auto Place**.
+
+### Removed Automatic Triggers
+- `initializeWorkspace()` — removed `runAutoDetection()` call after PDF render
+- `captureSignature()` — removed post-save `detectFields()` call
+- `useExistingAsset()` — removed `detectFields()` call when reusing saved signature
+- Deleted `runAutoDetection()` helper (no longer needed)
+
+### Allowed Detection Entry Points
+- **Detect Signature Fields** button → `detectFields()`
+- **Auto Place** button → `autoPlace()` → `detectFields()` only if `detectedFields` is empty
+
+### Files Modified
+- `resources/js/Pages/Sign/Editor.vue`
+- `CHANGELOG.md`, `README.md`, `DEVELOPMENT_TRACKER.md`
+
+### Regression Prevented
+- Do not re-add automatic detection in lifecycle hooks, PDF load callbacks, signature save callbacks, or watchers.
+
+---
+
 ## Auto-Detection Regression Fix (v0.10.2)
 
 | Field | Value |

@@ -5,6 +5,18 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.10.3] 2026-06-25 — User-Initiated Signature Detection Only
+
+### Changed
+- **Signature detection is now completely user-initiated and never runs automatically on PDF load.** Removed automatic `detectFields()` triggers from `initializeWorkspace()`, `captureSignature()`, and `useExistingAsset()`. Detection runs only when the user clicks **Detect Signature Fields** or **Auto Place** (which calls detection if results are not already present).
+- Removed unused `runAutoDetection()` helper.
+
+### Files Modified
+- `resources/js/Pages/Sign/Editor.vue`
+- `CHANGELOG.md`, `README.md`, `DEVELOPMENT_TRACKER.md`
+
+---
+
 ## [v0.10.2] 2026-06-25 — Auto-Detection Regression Fix
 
 ### Fixed
