@@ -69,6 +69,7 @@ Route::prefix('sign')->name('sign.')->group(function () {
     Route::get('/editor',  SignEditorController::class)->name('editor');
     Route::get('/pdf',     SignPdfController::class)->name('pdf');
     Route::get('/review',  SignReviewController::class)->name('review');
+    Route::post('/review-snapshot', \App\Http\Controllers\Web\Sign\ReviewSnapshotController::class)->name('review.snapshot');
     Route::get('/complete', SignCompleteController::class)->name('complete');
     Route::middleware('auth')->post('/save', SignSaveDocumentController::class)->name('save');
 });

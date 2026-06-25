@@ -53,6 +53,8 @@ class ReviewController extends Controller
         $alreadyPrepared = false;
         $documentFinalized = false;
 
+        $sessionSnapshot = $request->session()->get('sign_review_snapshot');
+
         if (auth()->check()) {
             $document = $this->resolveDocument($request, $token);
 
@@ -81,6 +83,10 @@ class ReviewController extends Controller
                     ->exists();
                 $documentFinalized = (bool) $document->pdf_path;
             }
+        }
+
+        if ($reviewData === null && is_array($sessionSnapshot)) {
+            $reviewData = $sessionSnapshot;
         }
 
         Log::channel('cubsign')->info('Review loaded', [

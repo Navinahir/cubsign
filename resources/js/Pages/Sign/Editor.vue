@@ -28,11 +28,16 @@ import EditorDocumentInfo from '@/Components/Editor/EditorDocumentInfo.vue';
 import EditorEmptyState from '@/Components/Editor/EditorEmptyState.vue';
 import EditorBottomActionBar from '@/Components/Editor/EditorBottomActionBar.vue';
 import EditorPlacementHelper from '@/Components/Editor/EditorPlacementHelper.vue';
+import SignWorkspaceLoader from '@/Components/Sign/SignWorkspaceLoader.vue';
+import { createPdfRenderer } from '@/utils/pdfPageRenderer';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
 
 const { getDocument, GlobalWorkerOptions, Util } = pdfjsLib;
 GlobalWorkerOptions.workerSrc = workerUrl;
+
+const pdfRenderer = createPdfRenderer();
+const THUMB_SCALE   = 0.14;
 
 const props = defineProps({
     session:     { type: Object, required: true },
@@ -51,7 +56,12 @@ const activePage    = ref(1);
 const scale         = ref(1.3);
 const isLoading     = ref(true);
 const loadError     = ref(null);
+const workspaceInitState = ref('loading'); // loading | ready | error
+const initError     = ref(null);
 const centerRef     = ref(null);    // scrollable center column
+
+let initStarted     = false;
+let initAborted     = false;
 
 // ── Signature creation ──────────────────────────────────────────────────
 const signatureTab        = ref('draw');
@@ -236,71 +246,56 @@ const zoomSelect = computed({
 });
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────
-onMounted(async () => {
+function attachGlobalListeners() {
     window.addEventListener('mousemove', onGlobalMove);
     window.addEventListener('mouseup',   onGlobalUp);
-    // non-passive so we can preventDefault() to stop scroll during touch drag/resize
     window.addEventListener('touchmove', onGlobalMove, { passive: false });
     window.addEventListener('touchend',  onGlobalUp);
     window.addEventListener('keydown',   onKeyDown);
+}
 
-    // Restore zoom before rendering so pages are sized correctly for the saved field positions
-    if (props.editorState?.scale) {
-        scale.value = props.editorState.scale;
+function detachGlobalListeners() {
+    window.removeEventListener('mousemove', onGlobalMove);
+    window.removeEventListener('mouseup',   onGlobalUp);
+    window.removeEventListener('touchmove', onGlobalMove);
+    window.removeEventListener('touchend',  onGlobalUp);
+    window.removeEventListener('keydown',   onKeyDown);
+}
+
+function restoreEditorMetadata() {
+    const es = props.editorState;
+    if (!es) return;
+
+    if (es.scale) {
+        scale.value = es.scale;
     }
 
-    await loadPdf(props.session.pdfUrl);
-
-    // Restore placed fields after pages render (positions are in px at the saved scale)
-    if (props.editorState?.placedFields?.length) {
-        placedFields.value = props.editorState.placedFields.map(f => ({
-            ...f,
-            value: f.value ?? '',
-        }));
-        fieldSeq = Math.max(0, ...props.editorState.placedFields.map(f => (typeof f.id === 'number' ? f.id : 0)));
-        if (props.editorState.activePage) {
-            await nextTick();
-            scrollToPage(props.editorState.activePage);
-        }
-    }
-
-    // Restore recipients so signerId mappings on fields remain valid
-    if (props.editorState?.recipients?.length) {
-        recipients.value = props.editorState.recipients.map(r => ({
+    if (es.recipients?.length) {
+        recipients.value = es.recipients.map(r => ({
             ...r,
             name:  r.name  ?? '',
             email: r.email ?? '',
         }));
-        recipientSeq        = Math.max(...props.editorState.recipients.map(r => (typeof r.id === 'number' ? r.id : 0)));
-        activeRecipientId.value = props.editorState.recipients[0]?.id ?? 1;
+        recipientSeq = Math.max(...es.recipients.map(r => (typeof r.id === 'number' ? r.id : 0)));
+        activeRecipientId.value = es.activeRecipientId ?? es.recipients[0]?.id ?? 1;
     }
 
-    if (props.editorState?.signingMode === 'request' || props.editorState?.signingMode === 'self') {
-        signingMode.value = props.editorState.signingMode;
+    if (es.signingMode === 'request' || es.signingMode === 'self') {
+        signingMode.value = es.signingMode;
     } else if (
-        props.editorState?.recipients?.length > 1 ||
-        props.editorState?.recipients?.some(r => (r.name ?? '').trim() || (r.email ?? '').trim())
+        es.recipients?.length > 1 ||
+        es.recipients?.some(r => (r.name ?? '').trim() || (r.email ?? '').trim())
     ) {
         signingMode.value = 'request';
     }
 
-    if (props.editorState?.savedSignature) {
-        savedSignature.value = props.editorState.savedSignature;
-    }
-    if (props.editorState?.savedInitials) {
-        savedInitials.value = props.editorState.savedInitials;
-    }
-    if (props.editorState?.selectedSignatureTab) {
-        signatureTab.value = props.editorState.selectedSignatureTab;
-    }
-    if (props.editorState?.selectedInitialsTab) {
-        initialsTab.value = props.editorState.selectedInitialsTab;
-    }
+    if (es.savedSignature) savedSignature.value = es.savedSignature;
+    if (es.savedInitials)  savedInitials.value  = es.savedInitials;
+    if (es.selectedSignatureTab) signatureTab.value = es.selectedSignatureTab;
+    if (es.selectedInitialsTab)  initialsTab.value  = es.selectedInitialsTab;
+    if (es.activeFieldType)        activeFieldType.value = es.activeFieldType;
 
-    if (
-        recipients.value.length > 1
-        || configuredRecipients(recipients.value).length > 0
-    ) {
+    if (recipients.value.length > 1 || configuredRecipients(recipients.value).length > 0) {
         recipientListVisible.value = true;
     }
 
@@ -308,19 +303,104 @@ onMounted(async () => {
         recipients.value = configuredRecipients(recipients.value);
         activeRecipientId.value = recipients.value[0]?.id ?? null;
     }
+}
 
+function restorePlacedFields() {
+    const es = props.editorState;
+    if (!es?.placedFields?.length) return;
+
+    placedFields.value = es.placedFields.map(f => ({
+        ...f,
+        value: f.value ?? '',
+    }));
+    fieldSeq = Math.max(0, ...es.placedFields.map(f => (typeof f.id === 'number' ? f.id : 0)));
+}
+
+function finalizeWorkspaceUi() {
     if (isSelfSignMode.value && savedAssetForType(activeFieldType.value)) {
         placementMode.value = 'manual';
     }
+}
+
+function teardownPdf() {
+    pdfRenderer.cancelAll();
+    if (intersectionObs) {
+        intersectionObs.disconnect();
+        intersectionObs = null;
+    }
+    if (pdfDoc?.destroy) {
+        try {
+            pdfDoc.destroy();
+        } catch (e) {
+            console.warn('[CubSign PDF] destroy failed:', e);
+        }
+    }
+    pdfDoc        = null;
+    pageCanvases  = [];
+    thumbCanvases = [];
+    pageDims.value = [];
+    numPages.value = 0;
+}
+
+async function initializeWorkspace() {
+    if (initStarted && workspaceInitState.value !== 'error') return;
+    initStarted         = true;
+    initAborted         = false;
+    workspaceInitState.value = 'loading';
+    initError.value     = null;
+    loadError.value     = null;
+    isLoading.value     = true;
+
+    try {
+        if (!props.session?.pdfUrl) {
+            throw new Error('Missing document session.');
+        }
+
+        restoreEditorMetadata();
+
+        const ok = await loadPdf(props.session.pdfUrl);
+        if (initAborted) return;
+
+        if (!ok) {
+            workspaceInitState.value = 'error';
+            initError.value = loadError.value ?? 'Unable to load document.';
+            return;
+        }
+
+        restorePlacedFields();
+
+        if (initAborted) return;
+
+        finalizeWorkspaceUi();
+        workspaceInitState.value = 'ready';
+
+        await nextTick();
+        if (props.editorState?.activePage) {
+            scrollToPage(props.editorState.activePage);
+        }
+        setupScrollObserver();
+    } catch (err) {
+        console.error('[CubSign] Workspace init failed:', err);
+        workspaceInitState.value = 'error';
+        initError.value = 'Unable to load document.';
+    }
+}
+
+async function retryInit() {
+    teardownPdf();
+    initStarted = false;
+    await initializeWorkspace();
+}
+
+onMounted(() => {
+    attachGlobalListeners();
+    initializeWorkspace();
 });
 
 onBeforeUnmount(() => {
-    window.removeEventListener('mousemove', onGlobalMove);
-    window.removeEventListener('mouseup',   onGlobalUp);
-    window.removeEventListener('touchmove', onGlobalMove);
-    window.removeEventListener('touchend',  onGlobalUp);
-    window.removeEventListener('keydown',   onKeyDown);
-    if (intersectionObs) intersectionObs.disconnect();
+    initAborted = true;
+    detachGlobalListeners();
+    teardownPdf();
     if (autosaveTimer) clearTimeout(autosaveTimer);
 });
 
@@ -334,13 +414,48 @@ watch(activePage, async (pageNum) => {
 watch([placedFields, recipients, scale, signingMode, savedSignature, savedInitials, signatureTab, initialsTab], () => scheduleAutosave(), { deep: true });
 
 // ── PDF loading ───────────────────────────────────────────────────────────
+async function renderAllPages() {
+    if (!pdfDoc || numPages.value === 0) return;
+
+    for (let i = 1; i <= numPages.value; i++) {
+        if (initAborted) return;
+        const canvas = await pdfRenderer.waitForCanvas(
+            (idx) => pageCanvases[idx],
+            i - 1,
+            { label: 'main' },
+        );
+        if (!canvas) {
+            throw new Error(`Main canvas for page ${i} is not mounted`);
+        }
+        await pdfRenderer.renderToCanvas(pdfDoc, i, canvas, scale.value, `main-${i}`);
+    }
+}
+
+async function renderAllThumbs() {
+    if (!pdfDoc || numPages.value === 0) return;
+
+    for (let i = 1; i <= numPages.value; i++) {
+        if (initAborted) return;
+        const canvas = await pdfRenderer.waitForCanvas(
+            (idx) => thumbCanvases[idx],
+            i - 1,
+            { label: 'thumb' },
+        );
+        if (!canvas) {
+            throw new Error(`Thumbnail canvas for page ${i} is not mounted`);
+        }
+        await pdfRenderer.renderToCanvas(pdfDoc, i, canvas, THUMB_SCALE, `thumb-${i}`);
+    }
+}
+
 async function loadPdf(url) {
+    pdfRenderer.cancelAll();
     isLoading.value = true;
     loadError.value = null;
     pageCanvases    = [];
     thumbCanvases   = [];
+    pageDims.value  = [];
 
-    // Fetch in main thread so the session cookie is always included
     let arrayBuffer;
     try {
         const res = await fetch(url, { credentials: 'same-origin' });
@@ -350,72 +465,55 @@ async function loadPdf(url) {
         console.error('[CubSign] PDF fetch error:', err);
         loadError.value = 'Could not load the document. Try re-uploading.';
         isLoading.value = false;
-        return;
+        return false;
     }
 
-    // Parse document
     try {
         const task = getDocument({ data: arrayBuffer });
-        pdfDoc   = await task.promise;
+        pdfDoc         = await task.promise;
         numPages.value = pdfDoc.numPages;
+        if (import.meta.env.DEV) {
+            console.debug('[CubSign PDF] PDF loaded', { pages: numPages.value });
+        }
     } catch (err) {
         console.error('[CubSign] PDF parse error:', err);
         loadError.value = 'Could not parse the document. Try re-uploading.';
         isLoading.value = false;
-        return;
+        return false;
+    }
+
+    try {
+        // Set final layout dimensions first, then mount canvases, then render.
+        // Main canvases must stay in the DOM during render (never behind v-if="isLoading").
+        pageDims.value = await pdfRenderer.computePageDimensions(pdfDoc, numPages.value, scale.value);
+        await nextTick();
+
+        if (import.meta.env.DEV) {
+            console.debug('[CubSign PDF] Pages created in DOM', { count: pageDims.value.length });
+        }
+
+        await renderAllPages();
+        await renderAllThumbs();
+
+        if (window.innerWidth < 768 && pageDims.value[0] && !props.editorState?.scale) {
+            await fitWidth();
+        }
+    } catch (err) {
+        console.error('[CubSign] PDF render pipeline failed:', err);
+        loadError.value = 'Could not render the document. Try refreshing the page.';
+        isLoading.value = false;
+        return false;
     }
 
     isLoading.value = false;
-
-    // Render pages — errors here are non-fatal (show blank page, log error)
-    for (let i = 1; i <= numPages.value; i++) {
-        await nextTick();
-        try { await renderPage(i); }  catch (e) { console.error(`[CubSign] Page ${i} render:`, e); }
-        try { await renderThumb(i); } catch (e) { console.error(`[CubSign] Thumb ${i} render:`, e); }
-    }
-
-    // Auto-fit PDF width on narrow screens so the page is immediately readable
-    if (window.innerWidth < 768 && pageDims.value[0]) {
-        await fitWidth();
-        await nextTick();
-    }
-    setupScrollObserver();
-}
-
-async function renderPage(pageNum) {
-    const page     = await pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: scale.value });
-
-    pageDims.value[pageNum - 1] = { w: viewport.width, h: viewport.height };
-
-    await nextTick();
-    const canvas = pageCanvases[pageNum - 1];
-    if (!canvas) return;
-
-    canvas.width  = viewport.width;
-    canvas.height = viewport.height;
-    const renderTask = page.render({ canvasContext: canvas.getContext('2d'), viewport });
-    await (renderTask.promise ?? renderTask);
-}
-
-async function renderThumb(pageNum) {
-    const page     = await pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 0.14 });
-
-    await nextTick();
-    const canvas = thumbCanvases[pageNum - 1];
-    if (!canvas) return;
-
-    canvas.width  = viewport.width;
-    canvas.height = viewport.height;
-    const renderTask = page.render({ canvasContext: canvas.getContext('2d'), viewport });
-    await (renderTask.promise ?? renderTask);
+    return true;
 }
 
 async function rerenderAll() {
-    for (let i = 1; i <= numPages.value; i++) {
-        try { await renderPage(i); } catch (e) { console.error(`[CubSign] Rerender page ${i}:`, e); }
-    }
+    if (!pdfDoc) return;
+    pageDims.value = await pdfRenderer.computePageDimensions(pdfDoc, numPages.value, scale.value);
+    await nextTick();
+    await renderAllPages();
 }
 
 async function zoomIn() {
@@ -1170,6 +1268,7 @@ async function generateSignedPdf() {
 }
 
 function scheduleAutosave() {
+    if (workspaceInitState.value !== 'ready') return;
     if (!props.documentId) return;
     if (autosaveTimer) clearTimeout(autosaveTimer);
     autosaveTimer = setTimeout(() => flushAutosave(), 2500);
@@ -1192,10 +1291,12 @@ async function persistEditorState() {
             recipients:   recipients.value,
             signingMode:  signingMode.value,
             pageCount:    numPages.value,
-            savedSignature:      savedSignature.value,
-            savedInitials:       savedInitials.value,
+            savedSignature:       savedSignature.value,
+            savedInitials:        savedInitials.value,
             selectedSignatureTab: signatureTab.value,
             selectedInitialsTab:  initialsTab.value,
+            activeFieldType:      activeFieldType.value,
+            activeRecipientId:    activeRecipientId.value,
         };
 
         console.log('[CubSign] Placed fields before save:', placedFields.value.length);
@@ -1270,21 +1371,38 @@ async function goToReview() {
 
         const namedRecipients = recipientFieldSummaries(placedFields.value, recipients.value);
 
+        const reviewData = {
+            pageCount:      numPages.value,
+            fieldCount:     placedFields.value.length,
+            recipientCount: namedRecipients.length,
+            recipients:     namedRecipients,
+            signingMode:    signingMode.value,
+            placedFields:   placedFields.value,
+        };
+
         window.__cubsignSession = {
             token:         props.session.token,
             documentId:    props.documentId,
             signedPdf:     bytes,
             filename:      props.session.filename,
-            reviewData:    {
-                pageCount:      numPages.value,
-                fieldCount:     placedFields.value.length,
-                recipientCount: namedRecipients.length,
-                recipients:     namedRecipients,
-                signingMode:    signingMode.value,
-                placedFields:   placedFields.value,
-            },
+            reviewData,
             documentSaved,
         };
+
+        try {
+            const xsrf = decodeURIComponent(
+                document.cookie.split('; ').find(r => r.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? '',
+            );
+            await fetch(route('sign.review.snapshot'), {
+                method:      'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': xsrf },
+                body: JSON.stringify({ reviewData }),
+            });
+        } catch (e) {
+            console.warn('[CubSign] review snapshot save failed:', e);
+        }
+
         console.log('BEFORE_REVIEW_NAVIGATION', { documentSaved });
         router.visit(route('sign.review'));
     } catch (err) {
@@ -1318,8 +1436,43 @@ async function finishSigning() {
 <template>
     <SignLayout :step="2">
 
+        <!-- Initialization error -->
+        <div
+            v-if="workspaceInitState === 'error'"
+            class="flex h-full min-h-[400px] flex-col items-center justify-center gap-4 px-6 text-center"
+        >
+            <p class="text-sm font-semibold text-red-600">{{ initError ?? 'Unable to load document.' }}</p>
+            <div class="flex items-center gap-3">
+                <button
+                    type="button"
+                    class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                    @click="retryInit"
+                >
+                    Retry
+                </button>
+                <Link :href="route('sign.index')" class="text-sm text-blue-600 hover:underline">
+                    Re-upload document
+                </Link>
+            </div>
+        </div>
+
+        <!-- Workspace (always mounted so PDF canvases can render during init) -->
+        <div
+            v-else
+            class="relative flex h-full min-h-0 flex-col overflow-hidden"
+            :class="workspaceInitState !== 'ready' && 'pointer-events-none'"
+        >
+
+        <!-- Loading overlay -->
+        <div
+            v-if="workspaceInitState === 'loading'"
+            class="absolute inset-0 z-50 flex bg-[#e2e4e9]"
+        >
+            <SignWorkspaceLoader message="Loading document…" />
+        </div>
+
         <!-- ░░░░ EDITOR WORKSPACE — responsive 3-col (lg) / 2-col (md) / stacked (mobile) ░░░░ -->
-        <div class="flex h-full min-h-0 flex-col overflow-hidden lg:flex-row">
+        <div class="flex h-full min-h-0 w-full flex-col overflow-hidden lg:flex-row">
 
             <!-- ═══ THUMBNAILS — horizontal strip on mobile/tablet, vertical sidebar on desktop ═══ -->
             <aside
@@ -1337,7 +1490,10 @@ async function finishSigning() {
                                     : 'border-gray-300 group-hover:border-gray-400',
                             ]"
                         >
-                            <canvas :ref="el => { if (el) thumbCanvases[i] = el }" class="block h-full w-auto mx-auto lg:h-auto lg:w-full" />
+                            <canvas
+                                :ref="el => { thumbCanvases[i] = el ?? undefined }"
+                                class="block h-full w-auto mx-auto lg:h-auto lg:w-full"
+                            />
                         </div>
                         <span class="hidden text-[9px] font-medium text-gray-500 lg:block">{{ i + 1 }}</span>
                     </button>
@@ -1427,8 +1583,12 @@ async function finishSigning() {
                         :active="placementMode === 'manual'"
                         @cancel="cancelPlacement"
                     />
-                    <!-- Loading state -->
-                    <div v-if="isLoading" class="flex h-full items-center justify-center">
+
+                    <!-- Loading overlay (does NOT unmount page canvases) -->
+                    <div
+                        v-show="isLoading"
+                        class="absolute inset-0 z-20 flex items-center justify-center bg-gray-200/80"
+                    >
                         <div class="flex flex-col items-center gap-4">
                             <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
                             <p class="text-sm text-gray-500">Loading document…</p>
@@ -1436,27 +1596,35 @@ async function finishSigning() {
                     </div>
 
                     <!-- Error state -->
-                    <div v-else-if="loadError" class="flex h-full items-center justify-center p-8 text-center">
+                    <div v-if="loadError" class="flex h-full items-center justify-center p-8 text-center">
                         <div>
                             <p class="mb-2 text-sm font-semibold text-red-600">{{ loadError }}</p>
+                            <button
+                                type="button"
+                                class="mr-3 text-xs font-medium text-blue-600 hover:underline"
+                                @click="retryInit"
+                            >
+                                Retry
+                            </button>
                             <Link :href="route('sign.index')" class="text-xs text-blue-600 hover:underline">Re-upload document</Link>
                         </div>
                     </div>
 
-                    <!-- PDF pages -->
-                    <div v-else class="flex flex-col items-start gap-8 py-6 px-3 md:items-center md:px-6">
+                    <!-- PDF pages — always mounted when pageDims exist so render can target canvases -->
+                    <div
+                        v-else-if="pageDims.length > 0"
+                        class="flex flex-col items-start gap-8 py-6 px-3 md:items-center md:px-6"
+                    >
                         <div
                             v-for="(dim, i) in pageDims"
-                            :key="i"
+                            :key="`page-${i}`"
                             class="page-wrapper relative shadow-xl ring-1 ring-black/10"
-                            :style="`width:${dim.w}px; height:${dim.h}px`"
+                            :style="{ width: `${dim.w}px`, height: `${dim.h}px` }"
                         >
-                            <!-- PDF canvas -->
+                            <!-- PDF canvas: dimensions set only in renderToCanvas, not reactive bindings -->
                             <canvas
-                                :ref="el => { if (el) pageCanvases[i] = el }"
+                                :ref="el => { pageCanvases[i] = el ?? undefined }"
                                 class="block"
-                                :width="dim.w"
-                                :height="dim.h"
                             />
 
                             <!-- Interaction overlay -->
@@ -1739,6 +1907,8 @@ async function finishSigning() {
             @close="showAddRecipientModal = false"
             @save="saveRecipientFromModal"
         />
+
+        </div><!-- /workspace wrapper -->
 
     </SignLayout>
 </template>

@@ -54,10 +54,7 @@ class EditorController extends Controller
         $editorState = null;
 
         if (auth()->check()) {
-            $draft = Document::where('sign_token', $token)
-                ->where('user_id', auth()->id())
-                ->where('status', 'draft')
-                ->first();
+            $draft = $this->resolveDocument($request, $token);
             if ($draft) {
                 $documentId  = $draft->id;
                 $editorState = $draft->editor_state;
@@ -75,5 +72,29 @@ class EditorController extends Controller
             'documentId'  => $documentId,
             'editorState' => $editorState,
         ]);
+    }
+
+    private function resolveDocument(Request $request, string $token): ?Document
+    {
+        $sessionDocumentId = $request->session()->get('sign_document_id');
+
+        if ($sessionDocumentId) {
+            $bySession = Document::query()
+                ->where('user_id', auth()->id())
+                ->where('id', $sessionDocumentId)
+                ->whereIn('status', ['draft', 'signed'])
+                ->first();
+
+            if ($bySession) {
+                return $bySession;
+            }
+        }
+
+        return Document::query()
+            ->where('user_id', auth()->id())
+            ->where('sign_token', $token)
+            ->where('status', 'draft')
+            ->latest('updated_at')
+            ->first();
     }
 }
