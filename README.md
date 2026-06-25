@@ -191,6 +191,20 @@ Signature detection in `Sign/Editor.vue` is **user-initiated only** — it never
 
 Initials, name, date, and other field types are placed manually via the field-type grid (not keyword-scanned). Detection results are temporary UI helpers and are not restored from saved editor state.
 
+After **Save Signature** or **Save Initials**, the editor automatically enters manual placement mode (highlighted **Place Manually** button + floating “Click anywhere…” banner) so the user can click the PDF immediately — no extra step required.
+
+---
+
+## Workspace Loading
+
+The signing editor shows a full-screen CubSign-branded overlay while the PDF initializes (`SignWorkspaceLoader.vue`, teleported to `body`). The workspace layout stays mounted underneath with pointer events disabled until rendering completes, then the overlay fades out smoothly — no layout jump.
+
+---
+
+## Document Delete & Missing Routes
+
+Deleting a document redirects to **My Documents** with a “Document deleted successfully.” toast. Accessing a deleted or missing document (show, open, download, etc.) redirects to the documents list with “This document is no longer available.” instead of Laravel’s default 404. Custom `document` route binding lives in `AppServiceProvider`.
+
 ---
 
 ## Local Development Setup

@@ -85,9 +85,7 @@ function confirmDelete() {
         confirmClass: 'rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700',
         onConfirm: () => {
             closeModal();
-            router.delete(route('documents.destroy', props.document.id), {
-                onSuccess: () => router.visit(route('documents.index')),
-            });
+            router.delete(route('documents.destroy', props.document.id));
         },
     };
 }

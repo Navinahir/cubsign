@@ -107,9 +107,15 @@ class DocumentsController extends Controller
     {
         $this->gate($document);
 
+        if (session('sign_document_id') === $document->id) {
+            session()->forget('sign_document_id');
+        }
+
         $document->delete();
 
-        return back();
+        return redirect()
+            ->route('documents.index')
+            ->with('status', 'document-deleted');
     }
 
     public function saveEditorState(Request $request, Document $document): JsonResponse

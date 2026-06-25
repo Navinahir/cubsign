@@ -63,6 +63,7 @@ const isLoading     = ref(true);
 const loadError     = ref(null);
 const workspaceInitState = ref('loading'); // loading | ready | error
 const initError     = ref(null);
+const showWorkspaceLoader = ref(true);
 const centerRef     = ref(null);    // scrollable center column
 
 let initStarted     = false;
@@ -166,6 +167,16 @@ function activeSignaturePanel() {
 const hasDrawing = computed(() =>
     activeFieldType.value === 'initials' ? hasDrawingInitials.value : hasDrawingSignature.value,
 );
+
+const placementHelperMessage = computed(() => {
+    if (activeFieldType.value === 'initials') {
+        return 'Click anywhere on the document to place your initials.';
+    }
+    if (activeFieldType.value === 'signature') {
+        return 'Click anywhere on the document to place your signature.';
+    }
+    return 'Click anywhere on the document.';
+});
 
 function fillTemplatePlaceholders() {
     placedFields.value.forEach(f => {
@@ -390,6 +401,7 @@ async function initializeWorkspace() {
         if (initAborted) return;
 
         if (!ok) {
+            showWorkspaceLoader.value = false;
             workspaceInitState.value = 'error';
             initError.value = loadError.value ?? 'Unable to load document.';
             return;
@@ -403,12 +415,17 @@ async function initializeWorkspace() {
         workspaceInitState.value = 'ready';
 
         await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 150));
+        showWorkspaceLoader.value = false;
+
+        await nextTick();
         if (props.editorState?.activePage) {
             scrollToPage(props.editorState.activePage);
         }
         setupScrollObserver();
     } catch (err) {
         console.error('[CubSign] Workspace init failed:', err);
+        showWorkspaceLoader.value = false;
         workspaceInitState.value = 'error';
         initError.value = 'Unable to load document.';
     }
@@ -417,6 +434,7 @@ async function initializeWorkspace() {
 async function retryInit() {
     teardownPdf();
     initStarted = false;
+    showWorkspaceLoader.value = true;
     await initializeWorkspace();
 }
 
@@ -581,6 +599,13 @@ function handleUpload(e) {
 }
 
 // ── Capture → placement ───────────────────────────────────────────────────
+function enterPlacementModeAfterSave() {
+    detectedFields.value = [];
+    showFields.value     = false;
+    detectionRan.value   = false;
+    placementMode.value  = 'manual';
+}
+
 function captureSignature() {
     if (!signatureReady.value) return;
     let asset;
@@ -601,7 +626,7 @@ function captureSignature() {
         if (hasTemplatePlaceholders.value) {
             fillTemplatePlaceholders();
         }
-        placementMode.value = 'manual';
+        enterPlacementModeAfterSave();
         return;
     }
 
@@ -612,7 +637,7 @@ function captureSignature() {
     if (hasTemplatePlaceholders.value) {
         fillTemplatePlaceholders();
     }
-    placementMode.value = null;
+    enterPlacementModeAfterSave();
 }
 
 function resetCreationDraft() {
@@ -1586,6 +1611,20 @@ async function finishSigning() {
 <template>
     <SignLayout :step="2">
 
+        <!-- Full-screen workspace loader (workspace stays mounted underneath) -->
+        <Teleport to="body">
+            <Transition
+                enter-active-class="transition-opacity duration-300 ease-out"
+                enter-from-class="opacity-0"
+                enter-to-class="opacity-100"
+                leave-active-class="transition-opacity duration-400 ease-in"
+                leave-from-class="opacity-100"
+                leave-to-class="opacity-0"
+            >
+                <SignWorkspaceLoader v-if="showWorkspaceLoader" />
+            </Transition>
+        </Teleport>
+
         <!-- Initialization error -->
         <div
             v-if="workspaceInitState === 'error'"
@@ -1612,14 +1651,6 @@ async function finishSigning() {
             class="relative flex h-full min-h-0 flex-col overflow-hidden"
             :class="workspaceInitState !== 'ready' && 'pointer-events-none'"
         >
-
-        <!-- Loading overlay -->
-        <div
-            v-if="workspaceInitState === 'loading'"
-            class="absolute inset-0 z-50 flex bg-[#e2e4e9]"
-        >
-            <SignWorkspaceLoader message="Loading document…" />
-        </div>
 
         <!-- ░░░░ EDITOR WORKSPACE — responsive 3-col (lg) / 2-col (md) / stacked (mobile) ░░░░ -->
         <div class="flex h-full min-h-0 w-full flex-col overflow-hidden lg:flex-row">
@@ -1731,19 +1762,9 @@ async function finishSigning() {
                 >
                     <EditorPlacementHelper
                         :active="placementMode === 'manual'"
+                        :message="placementHelperMessage"
                         @cancel="cancelPlacement"
                     />
-
-                    <!-- Loading overlay (does NOT unmount page canvases) -->
-                    <div
-                        v-show="isLoading"
-                        class="absolute inset-0 z-20 flex items-center justify-center bg-gray-200/80"
-                    >
-                        <div class="flex flex-col items-center gap-4">
-                            <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
-                            <p class="text-sm text-gray-500">Loading document…</p>
-                        </div>
-                    </div>
 
                     <!-- Error state -->
                     <div v-if="loadError" class="flex h-full items-center justify-center p-8 text-center">
@@ -2095,6 +2116,32 @@ async function finishSigning() {
                             <div class="text-left">
                                 <p>Auto Place</p>
                                 <p class="text-[10px] font-normal text-gray-400">Insert at the most likely location</p>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div
+                        v-if="activeFieldType === 'initials' && savedInitials && !isChangingInitials"
+                        class="space-y-2 border-t border-gray-100 px-3 py-2.5"
+                    >
+                        <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-400">Place initials</p>
+
+                        <button
+                            type="button"
+                            :class="[
+                                'flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition',
+                                placementMode === 'manual'
+                                    ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-400'
+                                    : 'border-blue-200 bg-blue-50/60 text-blue-700 hover:bg-blue-100',
+                            ]"
+                            @click="activateManualMode"
+                        >
+                            <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+                            </svg>
+                            <div class="text-left">
+                                <p>Place Manually</p>
+                                <p class="text-[10px] font-normal text-blue-500">Click anywhere on the PDF</p>
                             </div>
                         </button>
                     </div>

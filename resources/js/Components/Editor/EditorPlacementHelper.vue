@@ -1,6 +1,7 @@
 <script setup>
 defineProps({
     active: { type: Boolean, default: false },
+    message: { type: String, default: 'Click anywhere on the document to place your signature.' },
 });
 
 defineEmits(['cancel']);
@@ -21,7 +22,7 @@ defineEmits(['cancel']);
         >
             <div class="pointer-events-auto flex items-center gap-2 rounded-full bg-gray-900/90 px-4 py-2 text-xs font-medium text-white shadow-lg">
                 <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
-                Click anywhere on the document
+                {{ message }}
                 <button
                     type="button"
                     class="ml-1 rounded-full p-0.5 text-gray-400 hover:text-white"

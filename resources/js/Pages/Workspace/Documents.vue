@@ -1,6 +1,6 @@
 <script setup>
-import { ref, watch, toRef } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { ref, watch, toRef, onMounted } from 'vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import WorkspaceLayout from '@/Layouts/WorkspaceLayout.vue';
 import DocumentInlineRename from '@/Components/Workspace/DocumentInlineRename.vue';
 import { useDocumentRename } from '@/composables/useDocumentRename';
@@ -107,6 +107,30 @@ function confirmArchive(doc) {
 function openDraft(doc) {
     router.post(route('documents.open', doc.id), {}, { preserveScroll: true });
 }
+
+// ── Flash toasts (delete / unavailable document) ───────────────────────────────
+const page = usePage();
+const flashToast = ref('');
+let flashToastTimer = null;
+
+onMounted(() => {
+    const status = page.props.flash?.status;
+    if (status === 'document-deleted') {
+        showFlashToast('Document deleted successfully.');
+    } else if (status === 'document-unavailable') {
+        showFlashToast('This document is no longer available.');
+    }
+});
+
+function showFlashToast(message) {
+    flashToast.value = message;
+    clearTimeout(flashToastTimer);
+    flashToastTimer = setTimeout(() => {
+        flashToast.value = '';
+    }, 5000);
+}
+
+const activeToast = () => toast.value || flashToast.value;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const STATUS_OPTIONS = [
@@ -436,14 +460,14 @@ function formatDate(value) {
                 leave-to-class="translate-y-2 opacity-0"
             >
                 <div
-                    v-if="toast"
+                    v-if="activeToast()"
                     class="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-lg"
                     role="status"
                 >
                     <svg class="h-4 w-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                     </svg>
-                    {{ toast }}
+                    {{ activeToast() }}
                 </div>
             </Transition>
         </Teleport>

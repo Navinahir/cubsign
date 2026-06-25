@@ -4,6 +4,54 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
+## Workspace UX, Delete Redirects & Auto-Placement (v0.10.4)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.10.4 |
+| **Date** | 2026-06-25 |
+
+### Root Cause
+1. **Loading UI** — workspace loader was an in-layout absolute panel beside the editor, not a full-screen overlay.
+2. **404 after delete** — `DocumentsController::destroy()` returned `back()`, reloading the deleted document URL; soft-deleted `Document` route binding then threw Laravel’s default 404.
+3. **Placement friction** — `captureSignature()` set `placementMode = null` for signatures after save, requiring an extra “Place Manually” click.
+
+### Fix Summary
+- Redesigned `SignWorkspaceLoader` as a Teleport’d full-screen overlay with CubSign branding, dual messages, and fade-out transition.
+- `destroy()` redirects to `documents.index` with `document-deleted` flash; custom route binding redirects missing documents with `document-unavailable`.
+- `enterPlacementModeAfterSave()` activates manual placement + helper banner after Save Signature / Save Initials only.
+
+### Files Modified
+- `resources/js/Components/Sign/SignWorkspaceLoader.vue`
+- `resources/js/Components/Editor/EditorPlacementHelper.vue`
+- `resources/js/Pages/Sign/Editor.vue`
+- `resources/js/Pages/Workspace/Documents.vue`
+- `resources/js/Pages/Workspace/DocumentShow.vue`
+- `app/Http/Controllers/Web/Workspace/DocumentsController.php`
+- `app/Providers/AppServiceProvider.php`
+- `tests/Feature/DocumentDeleteRedirectTest.php`
+
+### Regression Checklist
+- [x] Guest Signing — unchanged (sign routes not modified)
+- [x] Self Sign — placement auto-activates after save (improvement only)
+- [x] Request Signatures — unchanged
+- [x] Email Verification — unchanged
+- [x] Auto Detection — still user-initiated only
+- [x] PDF Rendering — unchanged init pipeline
+- [x] Signature Persistence — unchanged
+- [x] Review Flow — unchanged
+- [x] Dashboard — delete redirect + toast added
+- [x] Autosave — unchanged
+- [x] Document Download — missing doc redirects instead of 404
+- [x] Recipient Signing — unchanged
+
+### Testing Status
+- `tests/Feature/DocumentDeleteRedirectTest.php` — delete redirect, show/open missing doc, session cleanup
+- `npm run build` — pass
+
+---
+
 ## Mandatory Email Verification
 
 | Field | Value |

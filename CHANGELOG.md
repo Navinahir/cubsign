@@ -5,6 +5,41 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.10.4] 2026-06-25 — Workspace UX, Delete Redirects & Auto-Placement
+
+### Added
+- **Full-screen workspace loading overlay** — CubSign-branded centered loader with dual-ring spinner, “Loading document…” / “Preparing your signing workspace…” copy, smooth fade-out after PDF init; workspace stays mounted underneath with interaction blocked until ready.
+- **Graceful document-delete redirects** — deleting a document always redirects to My Documents with a success toast; accessing a deleted or missing document redirects instead of Laravel’s default 404.
+- **Auto placement mode after Save Signature / Save Initials** — `captureSignature()` now enters manual placement immediately (highlighted Place Manually button + floating helper banner). Does not auto-switch after Change Signature, Cancel, or failed upload.
+- **Initials placement panel** — Place Manually button for initials (parity with signature flow).
+- `tests/Feature/DocumentDeleteRedirectTest.php` — regression tests for delete redirect and missing-document handling.
+
+### Fixed
+- **404 after deleting documents** — `destroy()` returned `back()`, which could reload the deleted document’s show URL and hit soft-deleted route model binding (404). Now redirects to `documents.index` with flash status `document-deleted`.
+- **Missing document routes** — custom `document` route binding in `AppServiceProvider` redirects to My Documents with `document-unavailable` instead of throwing `ModelNotFoundException`.
+
+### Changed
+- `SignWorkspaceLoader.vue` — redesigned as fixed full-screen overlay (Teleport from Editor).
+- `EditorPlacementHelper.vue` — accepts dynamic `message` prop for signature vs initials.
+- `Documents.vue` — shows flash toasts for delete success and unavailable documents.
+
+### Files Modified
+- `resources/js/Components/Sign/SignWorkspaceLoader.vue`
+- `resources/js/Components/Editor/EditorPlacementHelper.vue`
+- `resources/js/Pages/Sign/Editor.vue`
+- `resources/js/Pages/Workspace/Documents.vue`
+- `resources/js/Pages/Workspace/DocumentShow.vue`
+- `app/Http/Controllers/Web/Workspace/DocumentsController.php`
+- `app/Providers/AppServiceProvider.php`
+- `tests/Feature/DocumentDeleteRedirectTest.php`
+- `CHANGELOG.md`, `README.md`, `DEVELOPMENT_TRACKER.md`
+
+### QA Performed
+- `npm run build` — pass
+- `php artisan test --filter=DocumentDeleteRedirectTest` — pass
+
+---
+
 ## [v0.10.3] 2026-06-25 — User-Initiated Signature Detection Only
 
 ### Changed
