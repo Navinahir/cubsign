@@ -78,7 +78,17 @@ class DocumentsController extends Controller
     {
         $this->gate($document);
 
-        $validated = $request->validate(['name' => ['required', 'string', 'max:255']]);
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[^<>:"\/\\\\|?*\\x00]+$/u',
+            ],
+        ], [
+            'name.required' => 'Filename cannot be empty.',
+            'name.regex'    => 'Filename contains invalid characters.',
+        ]);
         $document->update(['name' => $validated['name']]);
 
         return back();

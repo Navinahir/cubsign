@@ -1,7 +1,9 @@
 <script setup>
-import { ref, watch, nextTick } from 'vue';
+import { ref, watch, toRef } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import WorkspaceLayout from '@/Layouts/WorkspaceLayout.vue';
+import DocumentInlineRename from '@/Components/Workspace/DocumentInlineRename.vue';
+import { useDocumentRename } from '@/composables/useDocumentRename';
 
 const props = defineProps({
     documents: { type: Object, required: true },
@@ -35,29 +37,31 @@ function applyFilters() {
 const hasActiveFilter = () => !!(search.value || statusFilter.value);
 
 // ── Inline rename ─────────────────────────────────────────────────────────────
-const editingId   = ref(null);
-const editingName = ref('');
-const editInput   = ref(null);
+const documentsRef = toRef(props, 'documents');
+const {
+    editingId,
+    editingBase,
+    editingExt,
+    savingId,
+    renameError,
+    toast,
+    editRootRef,
+    renameComponentRef,
+    startEdit,
+    onEditKeydown,
+    duplicateWarning,
+} = useDocumentRename(() => documentsRef.value);
 
-function startEdit(doc) {
-    editingId.value   = doc.id;
-    editingName.value = doc.name;
-    nextTick(() => editInput.value?.focus());
+function setEditRootRef(el, doc) {
+    if (el && editingId.value === doc.id) {
+        editRootRef.value = el;
+    }
 }
 
-function cancelEdit() {
-    editingId.value   = null;
-    editingName.value = '';
-}
-
-function saveRename(doc) {
-    const name = editingName.value.trim();
-    if (!name || name === doc.name) { cancelEdit(); return; }
-    router.patch(
-        route('documents.rename', doc.id),
-        { name },
-        { preserveScroll: true, onSuccess: () => cancelEdit() },
-    );
+function setRenameRefs(el, doc) {
+    if (el && editingId.value === doc.id) {
+        renameComponentRef.value = el;
+    }
 }
 
 // ── Confirmation modal ────────────────────────────────────────────────────────
@@ -265,30 +269,19 @@ function formatDate(value) {
                     >
                         <!-- Name -->
                         <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <svg class="h-5 w-5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-
-                                <!-- Editing inline -->
-                                <input
-                                    v-if="editingId === doc.id"
-                                    ref="editInput"
-                                    v-model="editingName"
-                                    class="w-full max-w-xs rounded border border-blue-400 px-2 py-0.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                    @blur="saveRename(doc)"
-                                    @keyup.enter="saveRename(doc)"
-                                    @keyup.escape="cancelEdit"
+                            <div :ref="(el) => setEditRootRef(el, doc)">
+                                <DocumentInlineRename
+                                    :ref="(el) => setRenameRefs(el, doc)"
+                                    :doc="doc"
+                                    :is-editing="editingId === doc.id"
+                                    :is-saving="savingId === doc.id"
+                                    :base-name="editingBase"
+                                    :extension="editingExt"
+                                    :error="editingId === doc.id ? renameError : ''"
+                                    :warning="duplicateWarning(doc)"
+                                    @update:base-name="editingBase = $event"
+                                    @keydown="onEditKeydown"
                                 />
-                                <!-- Display -->
-                                <Link
-                                    v-else
-                                    :href="route('documents.show', doc.id)"
-                                    class="max-w-xs truncate text-sm font-medium text-gray-900 transition hover:text-blue-600"
-                                    :title="doc.name"
-                                >
-                                    {{ doc.name }}
-                                </Link>
                             </div>
                         </td>
 
@@ -310,6 +303,7 @@ function formatDate(value) {
                                 <button
                                     class="rounded p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
                                     title="Rename"
+                                    :disabled="savingId === doc.id"
                                     @click.stop="startEdit(doc)"
                                 >
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -429,6 +423,29 @@ function formatDate(value) {
                     </div>
                 </div>
             </div>
+        </Teleport>
+
+        <!-- ── Success toast ── -->
+        <Teleport to="body">
+            <Transition
+                enter-active-class="transition duration-200 ease-out"
+                enter-from-class="translate-y-2 opacity-0"
+                enter-to-class="translate-y-0 opacity-100"
+                leave-active-class="transition duration-150 ease-in"
+                leave-from-class="translate-y-0 opacity-100"
+                leave-to-class="translate-y-2 opacity-0"
+            >
+                <div
+                    v-if="toast"
+                    class="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-lg"
+                    role="status"
+                >
+                    <svg class="h-4 w-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {{ toast }}
+                </div>
+            </Transition>
         </Teleport>
 
     </WorkspaceLayout>
