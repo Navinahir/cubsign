@@ -209,6 +209,10 @@ const hasRecipientConfigured = computed(() =>
     configuredRecipients(recipients.value).length > 0,
 );
 
+const requestFieldsLocked = computed(() =>
+    isRequestMode.value && !hasRecipientConfigured.value,
+);
+
 const existingRecipientEmails = computed(() =>
     configuredRecipients(recipients.value).map(r => (r.email ?? '').trim().toLowerCase()),
 );
@@ -223,6 +227,9 @@ const emptyStateStep = computed(() => {
 
 const recipientListVisible = ref(false);
 const showAddRecipientModal = ref(false);
+const requestToast          = ref('');
+const requestOnboardingHint = ref(false);
+let   requestToastTimer     = null;
 
 watch(() => configuredRecipients(recipients.value).length, (count) => {
     if (count > 0) recipientListVisible.value = true;
@@ -402,7 +409,16 @@ onBeforeUnmount(() => {
     detachGlobalListeners();
     teardownPdf();
     if (autosaveTimer) clearTimeout(autosaveTimer);
+    if (requestToastTimer) clearTimeout(requestToastTimer);
 });
+
+function showRequestToast(message = 'Please add a recipient before placing fields.') {
+    requestToast.value = message;
+    clearTimeout(requestToastTimer);
+    requestToastTimer = setTimeout(() => {
+        requestToast.value = '';
+    }, 3200);
+}
 
 watch(activePage, async (pageNum) => {
     await nextTick();
@@ -621,8 +637,15 @@ function onPageClick(e, pageNum) {
         selectedSigId.value = null;
         return;
     }
+    if (requestFieldsLocked.value) {
+        showRequestToast();
+        return;
+    }
     const type = activeFieldType.value;
-    if (isRequestMode.value && !activeRecipientId.value) return;
+    if (isRequestMode.value && !activeRecipientId.value) {
+        showRequestToast();
+        return;
+    }
     if ((type === 'signature' || type === 'initials') && !savedAssetForType(type) && !isRequestMode.value) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const def  = FIELD_DEFAULTS[type];
@@ -666,6 +689,10 @@ function placeField(pageNum, x, y, w, h) {
         signerId: isSelfSignMode.value ? (activeRecipientId.value ?? 1) : activeRecipientId.value,
     });
     selectedSigId.value = id;
+
+    if (isRequestMode.value) {
+        requestOnboardingHint.value = false;
+    }
 }
 
 // ── Smart detection (MODE 2) ──────────────────────────────────────────────
@@ -797,6 +824,11 @@ function detectedFieldsOnPage(pageNum) {
 
 // ── Field type selector ───────────────────────────────────────────────────
 function setFieldType(type) {
+    if (requestFieldsLocked.value) {
+        showRequestToast();
+        return;
+    }
+
     const prev = activeFieldType.value;
     activeFieldType.value = type;
     if (prev === 'signature' && type !== 'signature') isChangingSignature.value = false;
@@ -868,6 +900,8 @@ function setSigningMode(mode) {
         recipients.value = configuredRecipients(recipients.value);
         activeRecipientId.value = recipients.value[0]?.id ?? null;
         recipientListVisible.value = recipients.value.length > 0;
+        placementMode.value       = recipients.value.length > 0 ? placementMode.value : null;
+        requestOnboardingHint.value = false;
     } else {
         if (recipients.value.length === 0) {
             recipients.value = [{
@@ -894,8 +928,10 @@ async function saveRecipientFromModal({ name, email }) {
     recipients.value.push({
         id, name, email, color, role: 'signer', signingOrder, status: 'pending',
     });
-    activeRecipientId.value    = id;
-    recipientListVisible.value = true;
+    activeRecipientId.value     = id;
+    recipientListVisible.value  = true;
+    requestOnboardingHint.value = true;
+    placementMode.value         = null;
     showAddRecipientModal.value = false;
     await recipientSectionRef.value?.scrollToRecipient(id);
 }
@@ -908,6 +944,10 @@ function removeRecipient(id) {
         activeRecipientId.value = recipients.value[0]?.id ?? null;
     }
     recipientListVisible.value = recipients.value.length > 0;
+    if (!configuredRecipients(recipients.value).length) {
+        placementMode.value         = null;
+        requestOnboardingHint.value = false;
+    }
 }
 
 // ── Recipient UI helpers ──────────────────────────────────────────────────
@@ -1824,7 +1864,9 @@ async function finishSigning() {
                 <EditorFieldTypeGrid
                     :field-types="FIELD_TYPES"
                     :active-field-type="activeFieldType"
+                    :disabled="requestFieldsLocked"
                     @select="setFieldType"
+                    @blocked="showRequestToast()"
                 />
 
                 <EditorFieldSettings
@@ -1839,6 +1881,8 @@ async function finishSigning() {
                 <EditorRequestFieldHint
                     v-if="isRequestMode"
                     :active-field-type="activeFieldType"
+                    :has-recipients="hasRecipientConfigured"
+                    :show-onboarding-hint="requestOnboardingHint"
                 />
 
                 <template v-if="isSelfSignMode">
@@ -1907,6 +1951,26 @@ async function finishSigning() {
             @close="showAddRecipientModal = false"
             @save="saveRecipientFromModal"
         />
+
+        <!-- Request-mode toast -->
+        <Teleport to="body">
+            <Transition
+                enter-active-class="transition duration-200 ease-out"
+                enter-from-class="translate-y-2 opacity-0"
+                enter-to-class="translate-y-0 opacity-100"
+                leave-active-class="transition duration-150 ease-in"
+                leave-from-class="translate-y-0 opacity-100"
+                leave-to-class="translate-y-2 opacity-0"
+            >
+                <div
+                    v-if="requestToast"
+                    class="fixed bottom-6 left-1/2 z-50 max-w-sm -translate-x-1/2 rounded-lg bg-gray-900 px-4 py-2.5 text-center text-sm font-medium text-white shadow-lg"
+                    role="status"
+                >
+                    {{ requestToast }}
+                </div>
+            </Transition>
+        </Teleport>
 
         </div><!-- /workspace wrapper -->
 

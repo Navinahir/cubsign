@@ -4,7 +4,7 @@ import EditorRecipientCard from './EditorRecipientCard.vue';
 
 const props = defineProps({
     recipients:             { type: Array, required: true },
-    activeRecipientId:      { type: Number, required: true },
+    activeRecipientId:      { type: Number, default: null },
     dragOverRecipientId:    { type: Number, default: null },
     fieldCountFor:          { type: Function, required: true },
     hasConfiguredRecipient: { type: Boolean, default: false },
@@ -51,13 +51,21 @@ defineExpose({ scrollToRecipient });
             Add Recipient
         </button>
 
-        <p
+        <!-- Empty state -->
+        <div
             v-if="!showCards()"
-            class="mt-3 rounded-lg border border-dashed border-gray-200 bg-gray-50 px-3 py-2.5 text-center text-[11px] leading-relaxed text-gray-500"
+            class="mt-3 flex flex-col items-center rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-5 text-center"
         >
-            No recipients yet.<br>
-            Click <span class="font-semibold text-gray-700">Add Recipient</span> above to invite someone to sign.
-        </p>
+            <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-gray-100">
+                <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
+            <p class="text-sm font-semibold text-gray-800">No recipients yet</p>
+            <p class="mt-1 max-w-[220px] text-[11px] leading-relaxed text-gray-500">
+                Add your first recipient before placing fields.
+            </p>
+        </div>
 
         <div v-else class="mt-2 space-y-1.5">
             <EditorRecipientCard

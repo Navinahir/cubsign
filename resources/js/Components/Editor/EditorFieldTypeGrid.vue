@@ -1,10 +1,20 @@
 <script setup>
-defineProps({
+const props = defineProps({
     fieldTypes:      { type: Array, required: true },
     activeFieldType: { type: String, required: true },
+    disabled:        { type: Boolean, default: false },
+    disabledTitle:   { type: String, default: 'Add a recipient first.' },
 });
 
-defineEmits(['select']);
+const emit = defineEmits(['select', 'blocked']);
+
+function onSelect(id) {
+    if (props.disabled) {
+        emit('blocked');
+        return;
+    }
+    emit('select', id);
+}
 </script>
 
 <template>
@@ -15,20 +25,27 @@ defineEmits(['select']);
                 v-for="ft in fieldTypes"
                 :key="ft.id"
                 type="button"
-                :aria-pressed="activeFieldType === ft.id"
-                :title="ft.description"
+                :aria-pressed="!disabled && activeFieldType === ft.id"
+                :aria-disabled="disabled"
+                :title="disabled ? disabledTitle : ft.description"
                 :class="[
                     'group flex flex-col items-center rounded-lg px-1 py-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
-                    activeFieldType === ft.id
-                        ? 'bg-blue-600 text-white shadow-sm'
-                        : 'bg-gray-50 text-gray-700 hover:bg-blue-50 hover:text-blue-700',
+                    disabled
+                        ? 'cursor-not-allowed opacity-40'
+                        : activeFieldType === ft.id
+                            ? 'bg-blue-600 text-white shadow-sm'
+                            : 'bg-gray-50 text-gray-700 hover:bg-blue-50 hover:text-blue-700',
                 ]"
-                @click="$emit('select', ft.id)"
+                @click="onSelect(ft.id)"
             >
                 <div
                     :class="[
-                        'mb-1 flex h-7 w-7 items-center justify-center rounded-md transition-transform duration-200 group-hover:scale-110',
-                        activeFieldType === ft.id ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 group-hover:text-blue-600',
+                        'mb-1 flex h-7 w-7 items-center justify-center rounded-md transition-transform duration-200',
+                        disabled
+                            ? 'bg-gray-100 text-gray-400'
+                            : activeFieldType === ft.id
+                                ? 'bg-blue-500 text-white group-hover:scale-110'
+                                : 'bg-white text-gray-500 group-hover:scale-110 group-hover:text-blue-600',
                     ]"
                 >
                     <svg v-if="ft.icon === 'signature'" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
