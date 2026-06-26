@@ -2,11 +2,17 @@
 
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\AboutController;
+use App\Http\Controllers\Web\BlogController;
+use App\Http\Controllers\Web\ContactController;
+use App\Http\Controllers\Web\CookiePolicyController;
 use App\Http\Controllers\Web\FaqController;
 use App\Http\Controllers\Web\FeaturesController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\OverviewController;
 use App\Http\Controllers\Web\PricingController;
+use App\Http\Controllers\Web\PrivacyController;
+use App\Http\Controllers\Web\TermsController;
 use App\Http\Controllers\Web\Sign\CompleteController as SignCompleteController;
 use App\Http\Controllers\Web\Sign\SentController as SignSentController;
 use App\Http\Controllers\Web\Sign\EditorController as SignEditorController;
@@ -26,6 +32,13 @@ Route::redirect('/dashboard', '/overview')->name('dashboard');
 Route::get('/features', FeaturesController::class)->name('features');
 Route::get('/pricing', PricingController::class)->name('pricing');
 Route::get('/faq', FaqController::class)->name('faq');
+Route::get('/about', AboutController::class)->name('about');
+Route::get('/contact', ContactController::class)->name('contact');
+Route::get('/privacy', PrivacyController::class)->name('privacy');
+Route::get('/terms', TermsController::class)->name('terms');
+Route::get('/cookies', CookiePolicyController::class)->name('cookies');
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Google OAuth
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');

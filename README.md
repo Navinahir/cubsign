@@ -366,6 +366,60 @@ Logs rotate daily and are kept for 30 days. The token is partially masked (`…l
 
 ---
 
+## Marketing Website
+
+Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLayout.vue`. Frontend-only — no backend API changes.
+
+### Public Pages
+
+| Route | Page |
+|---|---|
+| `/` | Home — redesigned SaaS landing page |
+| `/features` | Features |
+| `/pricing` | Pricing |
+| `/faq` | FAQ with search |
+| `/about` | About Us |
+| `/contact` | Contact Us (frontend form + success state) |
+| `/privacy` | Privacy Policy |
+| `/terms` | Terms of Service |
+| `/cookies` | Cookie Policy |
+| `/blog` | Blog homepage |
+| `/blog/{slug}` | Blog article detail |
+
+### Marketing Components
+
+Reusable components live in `resources/js/Components/Marketing/`:
+
+- `ScrollReveal.vue` — Intersection Observer fade/slide animations (respects `prefers-reduced-motion`)
+- `SectionHeader.vue`, `WorkflowTimeline.vue`, `FeatureGrid.vue`, `SecuritySection.vue`
+- `SocialProof.vue`, `PricingSection.vue`, `FaqAccordion.vue`, `LegalToc.vue`
+
+### Shared Constants
+
+- `resources/js/constants/marketing.js` — copy, feature cards, security cards, footer links
+- `resources/js/constants/blog.js` — static blog posts and helpers
+
+### Responsive Checklist
+
+- [x] Desktop (1280px+)
+- [x] Laptop (1024px)
+- [x] Tablet (768px)
+- [x] Mobile (375px)
+- [x] No horizontal scrolling
+
+### Regression Checklist (Marketing Redesign)
+
+- [x] Authentication — unchanged
+- [x] Signing Editor — unchanged
+- [x] Dashboard / Workspace — unchanged
+- [x] Upload / Review / Complete flows — unchanged
+- [x] Email Verification — unchanged
+- [x] Request Signatures — unchanged
+- [x] Auto Detection — unchanged
+- [x] Backend APIs — unchanged (only new public page routes added)
+
+---
+
 ## Remaining Planned Features
 
 - **Audit Trail PDF** — downloadable certificate with all signing events, timestamps, and IP addresses

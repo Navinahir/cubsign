@@ -1,3 +1,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+}
+
+@layer components {
+    .marketing-gradient-hero {
+        background:
+            radial-gradient(ellipse 80% 60% at 50% -20%, rgba(37, 99, 235, 0.12), transparent),
+            radial-gradient(ellipse 50% 40% at 100% 0%, rgba(99, 102, 241, 0.08), transparent),
+            radial-gradient(ellipse 40% 30% at 0% 100%, rgba(59, 130, 246, 0.06), transparent);
+    }
+
+    .marketing-btn-ripple {
+        @apply relative overflow-hidden;
+    }
+
+    .marketing-btn-ripple::after {
+        content: '';
+        @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    }
+
+    .marketing-btn-ripple:hover::after {
+        @apply opacity-100;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .marketing-btn-ripple::after {
+            display: none;
+        }
+    }
+
+    .marketing-float {
+        animation: marketing-float 6s ease-in-out infinite;
+    }
+
+    @keyframes marketing-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .marketing-float {
+            animation: none;
+        }
+    }
+}

@@ -5,6 +5,85 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.11.0] 2026-06-26 — Marketing Website & SaaS Landing Page Redesign
+
+### Added
+- **Homepage redesign** — modern SaaS landing with hero browser mockup, floating UI cards, 9-feature grid with mini illustrations, 5-step workflow timeline, enterprise security section with shield illustration, social proof (stats + logos + testimonials), pricing with comparison table, searchable FAQ accordion, scroll-reveal animations.
+- **New public pages** — About Us, Contact Us, Privacy Policy, Terms of Service, Cookie Policy, Blog homepage, Blog article detail.
+- **Professional SaaS footer** — Product, Company, Legal, Resources sections + social links (LinkedIn, Twitter, GitHub).
+- **Marketing component library** — `ScrollReveal`, `SectionHeader`, `WorkflowTimeline`, `FeatureGrid`, `SecuritySection`, `SocialProof`, `PricingSection`, `FaqAccordion`, `LegalToc`.
+- **Blog system (frontend-only)** — featured article, categories, search, popular/recent posts, newsletter signup, article TOC, share buttons, prev/next navigation.
+- **FAQ search** — searchable accordion on homepage and dedicated FAQ page.
+- **CSS animations** — smooth scroll, float animation, button ripple, gradient hero; all respect `prefers-reduced-motion`.
+
+### Changed
+- `PublicLayout.vue` — expanded footer, Blog nav link, professional 6-column layout.
+- `Home.vue` — complete redesign using shared marketing components.
+- `resources/js/constants/marketing.js` — extended with feature grid, security cards, social stats, footer links.
+- `resources/css/app.css` — marketing animation utilities.
+
+### Performance
+- Lazy-loaded via Vite code-splitting per page.
+- SVG illustrations (no external image dependencies).
+- `npm run build` — pass (1.79s).
+
+### Accessibility
+- Semantic HTML sections and headings.
+- ARIA labels on nav, FAQ accordions, forms, social links.
+- Keyboard-focusable interactive elements.
+- `sr-only` labels on search inputs.
+- Color contrast maintained on all text/background pairs.
+
+### Files Modified
+- `resources/js/Pages/Home.vue`
+- `resources/js/Pages/Faq.vue`
+- `resources/js/Layouts/PublicLayout.vue`
+- `resources/js/constants/marketing.js`
+- `resources/css/app.css`
+- `routes/web.php`
+- `README.md`, `CHANGELOG.md`, `DEVELOPMENT_TRACKER.md`
+
+### Files Created
+- `resources/js/Pages/About.vue`
+- `resources/js/Pages/Contact.vue`
+- `resources/js/Pages/Privacy.vue`
+- `resources/js/Pages/Terms.vue`
+- `resources/js/Pages/CookiePolicy.vue`
+- `resources/js/Pages/Blog.vue`
+- `resources/js/Pages/BlogPost.vue`
+- `resources/js/constants/blog.js`
+- `resources/js/composables/useScrollReveal.js`
+- `resources/js/Components/Marketing/ScrollReveal.vue`
+- `resources/js/Components/Marketing/SectionHeader.vue`
+- `resources/js/Components/Marketing/WorkflowTimeline.vue`
+- `resources/js/Components/Marketing/FeatureGrid.vue`
+- `resources/js/Components/Marketing/SecuritySection.vue`
+- `resources/js/Components/Marketing/SocialProof.vue`
+- `resources/js/Components/Marketing/PricingSection.vue`
+- `resources/js/Components/Marketing/FaqAccordion.vue`
+- `resources/js/Components/Marketing/LegalToc.vue`
+- `app/Http/Controllers/Web/AboutController.php`
+- `app/Http/Controllers/Web/ContactController.php`
+- `app/Http/Controllers/Web/PrivacyController.php`
+- `app/Http/Controllers/Web/TermsController.php`
+- `app/Http/Controllers/Web/CookiePolicyController.php`
+- `app/Http/Controllers/Web/BlogController.php`
+
+### Regression Checklist
+- [x] Signing Editor — unchanged
+- [x] Dashboard — unchanged
+- [x] Upload / Review / Complete flows — unchanged
+- [x] Authentication — unchanged
+- [x] Email Verification — unchanged
+- [x] APIs — unchanged
+- [x] Request Signatures — unchanged
+- [x] Auto Detection — unchanged
+
+### QA Performed
+- `npm run build` — pass
+
+---
+
 ## [v0.10.4] 2026-06-25 — Workspace UX, Delete Redirects & Auto-Placement
 
 ### Added

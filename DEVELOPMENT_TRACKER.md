@@ -4,6 +4,77 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
+## Marketing Website & SaaS Landing Page Redesign (v0.11.0)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.11.0 |
+| **Date** | 2026-06-26 |
+
+### Scope
+Frontend-only marketing website redesign. No changes to authentication, signing workflow, PDF editor, dashboard, or backend APIs.
+
+### New Pages
+- `/about` — About Us (mission, vision, timeline, team, stats, CTA)
+- `/contact` — Contact form with validation + success state, business hours, map placeholder
+- `/privacy` — Privacy Policy with sticky table of contents
+- `/terms` — Terms of Service with sticky table of contents
+- `/cookies` — Cookie Policy with cookie table
+- `/blog` — Blog homepage (featured, categories, search, sidebar)
+- `/blog/{slug}` — Blog article detail (hero, TOC, share, related, prev/next)
+
+### UI Improvements
+- Homepage hero with browser mockup, floating cards, trust badges, gradient background
+- 9-feature grid with per-card mini illustrations
+- 5-step workflow timeline with connecting lines
+- Enterprise security section with shield SVG + 6 security cards
+- Social proof: 2,500+ docs, 900+ users, 99.9% availability, customer logos, testimonials
+- Pricing card with "Most Popular" badge + comparison table
+- Searchable FAQ accordion (homepage + FAQ page)
+- Professional 6-column footer with social links
+- Scroll-reveal animations via Intersection Observer
+
+### Components Created
+`resources/js/Components/Marketing/` — ScrollReveal, SectionHeader, WorkflowTimeline, FeatureGrid, SecuritySection, SocialProof, PricingSection, FaqAccordion, LegalToc
+
+### Responsive Checklist
+- [x] Desktop (1280px+)
+- [x] Laptop (1024px)
+- [x] Tablet (768px)
+- [x] Mobile (375px)
+- [x] No horizontal scroll
+
+### Accessibility Checklist
+- [x] Semantic HTML (`section`, `article`, `nav`, `aside`)
+- [x] ARIA labels on interactive elements
+- [x] Keyboard navigation (accordions, forms, links)
+- [x] `sr-only` labels on search inputs
+- [x] `prefers-reduced-motion` respected
+- [x] Focus-visible outlines on FAQ buttons
+
+### Performance
+- Vite code-splitting per page
+- Inline SVG illustrations (no CLS from images)
+- `npm run build` — pass (1.79s)
+
+### Regression Checklist
+- [x] Signing Editor — unchanged
+- [x] Dashboard — unchanged
+- [x] Upload Flow — unchanged
+- [x] Review Flow — unchanged
+- [x] Complete Flow — unchanged
+- [x] Authentication — unchanged
+- [x] Email Verification — unchanged
+- [x] Request Signatures — unchanged
+- [x] Auto Detection — unchanged
+- [x] Backend APIs — unchanged
+
+### Testing Status
+- `npm run build` — pass
+
+---
+
 ## Workspace UX, Delete Redirects & Auto-Placement (v0.10.4)
 
 | Field | Value |

@@ -10,6 +10,8 @@ import {
     pageHeaderClass,
 } from '@/constants/marketing';
 
+const searchQuery = ref('');
+
 const categories = [
     {
         title: 'Getting Started',
@@ -101,6 +103,19 @@ const categories = [
     },
 ];
 
+const filteredCategories = computed(() => {
+    if (!searchQuery.value.trim()) return categories;
+    const q = searchQuery.value.toLowerCase();
+    return categories
+        .map((cat) => ({
+            ...cat,
+            items: cat.items.filter(
+                (item) => item.question.toLowerCase().includes(q) || item.answer.toLowerCase().includes(q),
+            ),
+        }))
+        .filter((cat) => cat.items.length > 0);
+});
+
 const faqSchema = computed(() =>
     categories.flatMap((category) => category.items),
 );
@@ -142,8 +157,18 @@ function isOpen(categoryIndex, itemIndex) {
         </section>
 
         <section class="bg-white px-4 py-16 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-3xl space-y-14">
-                <div v-for="(category, categoryIndex) in categories" :key="category.title">
+            <div class="mx-auto max-w-3xl">
+                <div class="mb-10">
+                    <label for="faq-page-search" class="sr-only">Search FAQ</label>
+                    <div class="relative">
+                        <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        <input id="faq-page-search" v-model="searchQuery" type="search" placeholder="Search questions..." class="w-full rounded-xl border border-gray-200 py-3.5 pl-12 pr-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
+                    </div>
+                    <p v-if="searchQuery && filteredCategories.length === 0" class="mt-4 text-center text-sm text-gray-500">No matching questions found.</p>
+                </div>
+
+                <div class="space-y-14">
+                <div v-for="(category, categoryIndex) in filteredCategories" :key="category.title">
                     <h2 class="mb-6 text-lg font-bold text-gray-900">{{ category.title }}</h2>
 
                     <div class="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
@@ -181,6 +206,7 @@ function isOpen(categoryIndex, itemIndex) {
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
         </section>
 
@@ -194,12 +220,9 @@ function isOpen(categoryIndex, itemIndex) {
                     <Link :href="route('register')" :class="[btnPrimary, 'w-full sm:w-auto']">
                         {{ CTA_START_SIGNING }}
                     </Link>
-                    <a
-                        href="mailto:support@cubsign.com"
-                        class="w-full rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 sm:w-auto"
-                    >
+                    <Link :href="route('contact')" class="w-full rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 sm:w-auto">
                         Contact Support
-                    </a>
+                    </Link>
                 </div>
             </div>
         </section>
