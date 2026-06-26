@@ -7,7 +7,7 @@ import AnimatedCounter from '@/Components/Marketing/AnimatedCounter.vue';
 import CtaBanner from '@/Components/Marketing/CtaBanner.vue';
 import DecorativeBg from '@/Components/Marketing/DecorativeBg.vue';
 import {
-    companyStats, companyValues, aboutTimeline, aboutTeam,
+    companyStats, companyValues, aboutTimeline,
     CTA_START_SIGNING, btnPrimary,
 } from '@/constants/marketing';
 </script>
@@ -105,16 +105,11 @@ import {
 
         <!-- Team -->
         <section class="marketing-section-alt">
-            <div class="mx-auto max-w-6xl">
-                <h2 class="mb-10 text-center text-2xl font-bold text-gray-900">Meet the Team</h2>
-                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    <div v-for="member in aboutTeam" :key="member.name" class="marketing-card-lift rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm">
-                        <div :class="['mx-auto flex h-16 w-16 items-center justify-center rounded-2xl text-lg font-bold text-white shadow-md', member.bg]">{{ member.initials }}</div>
-                        <h3 class="mt-4 font-semibold text-gray-900">{{ member.name }}</h3>
-                        <p class="text-sm text-blue-600">{{ member.role }}</p>
-                        <p class="mt-1 text-xs text-gray-400">{{ member.dept }}</p>
-                    </div>
-                </div>
+            <div class="mx-auto max-w-2xl text-center">
+                <h2 class="text-2xl font-bold text-gray-900">Who We Are</h2>
+                <p class="mt-4 text-sm leading-relaxed text-gray-600">
+                    CubSign is built by Cubiz Infotech — a small team focused on making document signing simple, secure, and accessible. We're in Early Access and improving the product based on real user feedback.
+                </p>
             </div>
         </section>
 

@@ -3,14 +3,11 @@ import { computed, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
-import LegalPageLayout from '@/Components/Marketing/LegalPageLayout.vue';
 import BlogCover from '@/Components/Marketing/BlogCover.vue';
 import { blogPosts, blogCategories, formatDate } from '@/constants/blog';
 
 const searchQuery = ref('');
 const activeCategory = ref('All');
-const newsletterEmail = ref('');
-const newsletterSubmitted = ref(false);
 
 const featuredPost = computed(() => blogPosts.find((p) => p.featured) ?? blogPosts[0]);
 const popularSlug = 'how-to-sign-pdf-online';
@@ -29,10 +26,6 @@ const popularPosts = computed(() => [...blogPosts].sort((a, b) => b.readingTime 
 const recentPosts = computed(() => [...blogPosts].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)).slice(0, 5));
 
 const categoryColors = { Product: 'from-cyan-600 to-blue-700', Security: 'from-rose-600 to-orange-700', Guides: 'from-emerald-600 to-teal-700', Company: 'from-blue-600 to-indigo-700', Legal: 'from-violet-600 to-purple-700' };
-
-function subscribeNewsletter() {
-    if (newsletterEmail.value.trim()) newsletterSubmitted.value = true;
-}
 </script>
 
 <template>
@@ -118,12 +111,11 @@ function subscribeNewsletter() {
                         </div>
                         <div class="rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-lg">
                             <h3 class="font-semibold">Newsletter</h3>
-                            <p class="mt-2 text-sm text-blue-100">Get signing tips and product updates.</p>
-                            <div v-if="newsletterSubmitted" class="mt-4 text-sm font-medium">Thanks for subscribing!</div>
-                            <form v-else class="mt-4" @submit.prevent="subscribeNewsletter">
-                                <input v-model="newsletterEmail" type="email" placeholder="you@email.com" required class="w-full rounded-lg border-0 px-4 py-2.5 text-sm text-gray-900" aria-label="Newsletter email" />
-                                <button type="submit" class="mt-3 w-full rounded-lg bg-white py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50">Subscribe</button>
-                            </form>
+                            <p class="mt-2 text-sm text-blue-100">Product updates and signing tips — coming soon.</p>
+                            <div class="mt-4 flex gap-2 opacity-70" aria-hidden="true">
+                                <input type="email" disabled placeholder="you@email.com" class="w-full rounded-lg border-0 px-4 py-2.5 text-sm text-gray-500" tabindex="-1" />
+                            </div>
+                            <span class="mt-3 inline-block rounded-lg border border-blue-400/50 px-3 py-1.5 text-xs font-semibold text-blue-100">Coming Soon</span>
                         </div>
                     </aside>
                 </div>

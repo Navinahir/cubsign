@@ -12,8 +12,6 @@ const props = defineProps({ slug: { type: String, required: true } });
 const post = computed(() => getPostBySlug(props.slug));
 const relatedPosts = computed(() => getRelatedPosts(props.slug));
 const activeHeading = ref('');
-const newsletterEmail = ref('');
-const newsletterSubmitted = ref(false);
 
 const postIndex = computed(() => blogPosts.findIndex((p) => p.slug === props.slug));
 const prevPost = computed(() => postIndex.value > 0 ? blogPosts[postIndex.value - 1] : null);
@@ -44,10 +42,6 @@ onMounted(() => {
     headings.value.forEach((h) => { const el = document.getElementById(h.id); if (el) observer.observe(el); });
 });
 onUnmounted(() => observer?.disconnect());
-
-function subscribeNewsletter() {
-    if (newsletterEmail.value.trim()) newsletterSubmitted.value = true;
-}
 </script>
 
 <template>

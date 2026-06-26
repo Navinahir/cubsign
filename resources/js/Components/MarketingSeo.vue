@@ -35,11 +35,6 @@ const orgJsonLd = computed(() => JSON.stringify({
     name: 'CubSign',
     url: appUrl.value,
     logo: `${appUrl.value}/images/og-cubsign.png`,
-    sameAs: [
-        'https://linkedin.com/company/cubsign',
-        'https://twitter.com/cubsign',
-        'https://github.com/cubsign',
-    ],
 }));
 
 const articleJsonLd = computed(() => {
@@ -85,7 +80,6 @@ const websiteJsonLd = computed(() => JSON.stringify({
         <meta v-if="article" head-key="article:author" property="article:author" :content="article.author.name" />
 
         <meta head-key="twitter:card" name="twitter:card" content="summary_large_image" />
-        <meta head-key="twitter:site" name="twitter:site" content="@cubsign" />
         <meta head-key="twitter:title" name="twitter:title" :content="title" />
         <meta head-key="twitter:description" name="twitter:description" :content="description" />
         <meta head-key="twitter:image" name="twitter:image" :content="ogImage" />

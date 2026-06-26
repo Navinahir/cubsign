@@ -17,7 +17,7 @@ defineProps({
         </div>
 
         <div :class="compact ? 'mb-8' : 'mb-12'">
-            <p class="mb-4 text-center text-xs font-semibold uppercase tracking-widest text-gray-400">Trusted by teams worldwide</p>
+            <p class="mb-4 text-center text-xs font-semibold uppercase tracking-widest text-gray-400">Built for teams of every size</p>
             <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
                 <div v-for="logo in customerLogos" :key="logo.name" class="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-3 py-2 shadow-sm" :aria-label="logo.name">
                     <div class="flex h-6 w-6 items-center justify-center rounded-md bg-gray-100 text-[9px] font-bold text-gray-600">{{ logo.initials }}</div>

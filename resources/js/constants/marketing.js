@@ -66,7 +66,16 @@ export const journeySteps = [
     { title: 'Complete', description: 'Download the fully signed PDF.' },
 ];
 
-export const APP_VERSION = '0.11.2';
+export const APP_VERSION = '0.11.3';
+
+/** Social profiles — use # until official accounts are live */
+export const SOCIAL_LINKS = [
+    { label: 'LinkedIn', href: '#', icon: 'linkedin' },
+    { label: 'Twitter', href: '#', icon: 'twitter' },
+    { label: 'GitHub', href: '#', icon: 'github' },
+];
+
+export const SUPPORT_EMAIL = 'support@cubsign.com';
 
 /** Homepage-only: 6 key features (full list remains on /features) */
 export const homeFeatureGrid = [
@@ -122,11 +131,11 @@ export const homePricingComparison = [
 ];
 
 export const companyStats = [
-    { value: '2,500+', label: 'Documents Signed' },
-    { value: '900+', label: 'Active Users' },
-    { value: '40+', label: 'Countries' },
-    { value: '99.9%', label: 'Uptime' },
-    { value: '<2h', label: 'Support Response' },
+    { value: 'Free', label: 'During Early Access' },
+    { value: 'Secure', label: 'Encrypted documents' },
+    { value: 'Simple', label: 'Sign in minutes' },
+    { value: 'Mobile', label: 'Works on any device' },
+    { value: 'Support', label: 'Email assistance' },
 ];
 
 export const companyValues = [
@@ -146,15 +155,6 @@ export const aboutTimeline = [
     { year: 'Future', title: 'Enterprise', description: 'Team workspaces, API access, and SOC 2 readiness.' },
 ];
 
-export const aboutTeam = [
-    { name: 'Alex Chen', role: 'CEO & Founder', dept: 'Leadership', initials: 'AC', bg: 'bg-blue-600' },
-    { name: 'Priya Sharma', role: 'Co-Founder & CTO', dept: 'Engineering', initials: 'PS', bg: 'bg-violet-600' },
-    { name: 'Jordan Lee', role: 'Head of Product', dept: 'Product', initials: 'JL', bg: 'bg-emerald-600' },
-    { name: 'Morgan Davis', role: 'Lead Engineer', dept: 'Engineering', initials: 'MD', bg: 'bg-rose-600' },
-    { name: 'Sarah Kim', role: 'Support Lead', dept: 'Support', initials: 'SK', bg: 'bg-amber-600' },
-    { name: 'Riley Torres', role: 'Marketing Director', dept: 'Marketing', initials: 'RT', bg: 'bg-cyan-600' },
-];
-
 export const successStories = [
     { company: 'Brightpath Agency', quote: 'We cut contract turnaround from 3 days to 20 minutes.', metric: '90% faster', initials: 'BP', bg: 'bg-blue-500' },
     { company: 'Summit Legal', quote: 'Client NDAs are signed before the meeting ends.', metric: '500+ docs/mo', initials: 'SL', bg: 'bg-emerald-500' },
@@ -170,18 +170,18 @@ export const securityPageFeatures = [
 ];
 
 export const socialStats = [
-    { value: '2,500+', label: 'Documents Signed' },
-    { value: '900+', label: 'Happy Users' },
-    { value: '99.9%', label: 'Availability' },
+    { value: 'Free', label: 'During Early Access' },
+    { value: 'Secure', label: 'Bank-grade encryption' },
+    { value: 'Simple', label: 'Sign in under 60s' },
 ];
 
 export const customerLogos = [
-    { name: 'Acme Corp', initials: 'AC' },
-    { name: 'Northline', initials: 'NL' },
-    { name: 'Brightpath', initials: 'BP' },
-    { name: 'Summit Legal', initials: 'SL' },
-    { name: 'Vertex HR', initials: 'VH' },
-    { name: 'Clearview', initials: 'CV' },
+    { name: 'Freelancers', initials: 'FL' },
+    { name: 'Agencies', initials: 'AG' },
+    { name: 'HR Teams', initials: 'HR' },
+    { name: 'Legal', initials: 'LG' },
+    { name: 'Real Estate', initials: 'RE' },
+    { name: 'Startups', initials: 'ST' },
 ];
 
 export const heroTrustBadges = [
@@ -362,27 +362,17 @@ export const footerLinks = {
         { label: 'FAQ', routeName: 'faq' },
     ],
     company: [
-        { label: 'About Us', routeName: 'about' },
+        { label: 'About', routeName: 'about' },
         { label: 'Blog', routeName: 'blog' },
         { label: 'Contact', routeName: 'contact' },
     ],
     legal: [
         { label: 'Privacy Policy', routeName: 'privacy' },
-        { label: 'Terms of Service', routeName: 'terms' },
+        { label: 'Terms', routeName: 'terms' },
         { label: 'Cookie Policy', routeName: 'cookies' },
     ],
     resources: [
+        { label: 'Documentation', href: '#', unavailable: true },
         { label: 'Help Center', routeName: 'faq' },
-        { label: 'Documentation', href: 'https://docs.cubsign.com', external: true },
-        { label: 'Status', href: 'https://status.cubsign.com', external: true },
-    ],
-    developers: [
-        { label: 'API', href: 'https://docs.cubsign.com/api', external: true },
-        { label: 'Documentation', href: 'https://docs.cubsign.com', external: true },
-    ],
-    support: [
-        { label: 'Contact Support', routeName: 'contact' },
-        { label: 'FAQ', routeName: 'faq' },
-        { label: 'Status', href: 'https://status.cubsign.com', external: true },
     ],
 };

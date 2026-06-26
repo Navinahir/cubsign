@@ -5,6 +5,49 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.11.3] 2026-06-26 — Marketing Website Final Production Cleanup
+
+### Footer Cleanup
+- Simplified to 4 link columns: **Product**, **Company**, **Legal**, **Resources**.
+- Removed **Developers** and **Support** columns (duplicate/broken links).
+- Removed duplicate Privacy/Terms/Cookies from footer bottom bar (kept in Legal column).
+- **Documentation** → `href="#"` with coming-soon handling (no 404).
+- **Help Center** → `/faq` (valid route).
+- Removed broken links: `docs.cubsign.com`, `status.cubsign.com`, API docs.
+
+### Contact Page
+- Removed: office address, business hours, map placeholder, Sales/Support/Technical/Partnerships cards, social links.
+- Kept: hero, contact form (name, email, subject, message), single support card (`support@cubsign.com`), FAQ shortcut.
+
+### Newsletter & Social
+- Footer and blog newsletter: UI retained, submission disabled, **Coming Soon** messaging.
+- Social links (LinkedIn, Twitter, GitHub): `href="#"` with `@click.prevent` until official accounts exist.
+- Removed fake `sameAs` URLs from Organization JSON-LD; removed `@cubsign` Twitter meta tag.
+
+### Demo Content Removed
+- Replaced fake homepage stats (`2,500+`, `900+`, `99.9%`) with qualitative Early Access messaging.
+- Replaced fake company stats on About page.
+- Replaced fake customer logo names with audience categories (Freelancers, Agencies, etc.).
+- Replaced fictional team grid with neutral “Who We Are” copy.
+
+### Files Modified
+- `resources/js/constants/marketing.js` — `SOCIAL_LINKS`, `SUPPORT_EMAIL`, `footerLinks`, stats, logos
+- `resources/js/Layouts/PublicLayout.vue` — footer restructure, newsletter, social
+- `resources/js/Pages/Contact.vue` — simplified layout
+- `resources/js/Pages/About.vue` — neutral team section
+- `resources/js/Pages/Blog.vue` — newsletter coming soon
+- `resources/js/Components/Marketing/SocialProof.vue` — audience label
+- `resources/js/Components/MarketingSeo.vue` — removed fake social schema/meta
+
+### Regression Checklist
+- [x] Authentication, Editor, Dashboard, Signing flows — unchanged
+- [x] Backend APIs, routes, controllers — unchanged
+
+### Build
+- `npm run build` — pass (1.87s)
+
+---
+
 ## [v0.11.2] 2026-06-26 — Homepage Optimization (Reduce Length & Improve Conversion)
 
 ### Removed

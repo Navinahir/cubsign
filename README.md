@@ -370,7 +370,18 @@ Logs rotate daily and are kept for 30 days. The token is partially masked (`…l
 
 Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLayout.vue`. Frontend-only — no backend API changes.
 
-**Current version:** v0.11.2 — Homepage optimized for conversion (~30–40% shorter scroll depth, compact sections, single CTA).
+**Current version:** v0.11.3 — Production cleanup: simplified footer, contact page, placeholder links, neutral copy.
+
+### Footer (v0.11.3)
+
+| Section | Links |
+|---|---|
+| Product | Features, Pricing, Security, FAQ |
+| Company | About, Blog, Contact |
+| Legal | Privacy Policy, Terms, Cookie Policy |
+| Resources | Documentation (coming soon), Help Center → `/faq` |
+
+Removed: Developers column, Support column, duplicate bottom legal links, broken external URLs (Status, API, docs.cubsign.com). Social links and newsletter are UI-only until launch.
 
 ### Homepage Structure (v0.11.2)
 
@@ -435,7 +446,9 @@ Reusable components live in `resources/js/Components/Marketing/`:
 - [x] Request Signatures — unchanged
 - [x] Auto Detection — unchanged
 - [x] Backend APIs — unchanged
-- [x] Routes — unchanged (v0.11.2 is marketing UI only)
+- [x] Routes — unchanged (v0.11.3 is marketing UI only)
+- [x] Footer — no broken external links; Documentation uses `#` until live
+- [x] Contact form — frontend validation only (no backend mail yet; documented in audit)
 
 ---
 

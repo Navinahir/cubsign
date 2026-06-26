@@ -4,6 +4,121 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
+## Marketing Website Final Production Cleanup (v0.11.3)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.11.3 |
+| **Date** | 2026-06-26 |
+
+### Summary
+Final marketing UI cleanup before production. Simplified footer and contact page, disabled newsletter submission, replaced broken/unavailable links with graceful placeholders, removed demo addresses and fake statistics. **No application logic, auth, signing, dashboard, editor, APIs, routes, or controllers modified.**
+
+### Footer Cleanup
+| Removed | Kept |
+|---|---|
+| Developers column (API, duplicate Documentation) | Product: Features, Pricing, Security, FAQ |
+| Support column (duplicate FAQ, Status) | Company: About, Blog, Contact |
+| Bottom-bar duplicate Privacy/Terms/Cookies | Legal: Privacy Policy, Terms, Cookie Policy |
+| `docs.cubsign.com`, `status.cubsign.com` external URLs | Resources: Documentation (`#`), Help Center (`/faq`) |
+
+### Contact Page Simplification
+- **Removed:** office address, business hours, Google Maps placeholder, Sales/Support/Technical/Partnerships cards, social links section.
+- **Kept:** hero, form (name, email, subject, message), single support card, FAQ shortcut.
+
+### Placeholder Links Handled
+| Link | Behavior |
+|---|---|
+| Documentation | `href="#"` + `@click.prevent` + `aria-disabled` |
+| Social (LinkedIn, Twitter, GitHub) | `href="#"` + `@click.prevent` |
+| Help Center | `/faq` (valid) |
+| Sitemap | `/sitemap.xml` (valid static file) |
+
+### Navigation Audit
+| Nav item | Route | Status |
+|---|---|---|
+| Features | `/features` | ✅ Valid |
+| Security | `/security` | ✅ Valid |
+| Pricing | `/pricing` | ✅ Valid |
+| Blog | `/blog` | ✅ Valid |
+| FAQ | `/faq` | ✅ Valid |
+| Home logo | `/` | ✅ Valid |
+| Login / Register | auth routes | ✅ Unchanged |
+
+### Responsive Verification
+- [x] Footer — 2-col mobile, 6-col desktop, no overflow
+- [x] Contact — single-column mobile, 2-column desktop
+- [x] Blog, Privacy, About — existing layouts verified via build
+- [x] No duplicate mobile/desktop nav menus
+
+### Accessibility Verification
+- [x] Footer social: `aria-label` includes “coming soon”
+- [x] Unavailable links: `aria-disabled`, `title="Coming soon"`
+- [x] Newsletter disabled inputs: `aria-hidden`, `tabindex="-1"`
+- [x] Contact form: labels on all fields, `autocomplete` on name/email
+- [x] Mobile nav: `aria-expanded`, `aria-label` on toggle
+- [x] Focus states on form inputs and buttons (existing Tailwind rings)
+
+### Files Modified
+`marketing.js`, `PublicLayout.vue`, `Contact.vue`, `About.vue`, `Blog.vue`, `SocialProof.vue`, `MarketingSeo.vue`
+
+### Build Status
+- `npm run build` — pass (1.87s)
+
+---
+
+## Production Readiness Audit (2026-06-26)
+
+### High Priority — Before Public Launch
+
+| Item | Status | Notes |
+|---|---|---|
+| Broken footer routes | ✅ Fixed | v0.11.3 — no 404s from footer |
+| Placeholder office address | ✅ Fixed | Removed from Contact |
+| Fake statistics | ✅ Fixed | Replaced with qualitative Early Access copy |
+| Fake social URLs | ✅ Fixed | `href="#"` until accounts exist |
+| Newsletter backend | ⚠️ Open | UI shows “Coming Soon”; no API wired |
+| Contact form backend | ⚠️ Open | Frontend validation + success state only; no email sent |
+| OG image (`/images/og-cubsign.png`) | ⚠️ Open | Referenced in SEO meta; file not in `public/images/` |
+| Testimonials | ⚠️ Open | Fictional names/quotes on homepage — acceptable for Early Access or replace with real quotes |
+| Blog authors | ⚠️ Open | Static fictional authors in `blog.js` |
+| DevNav component | ⚠️ Open | Dev shortcut bar visible on all public pages — hide in production `.env` or build flag |
+
+### Medium Priority
+
+| Item | Notes |
+|---|---|
+| Contact form mail integration | Wire to Laravel Mail or external service |
+| Real social profiles | Update `SOCIAL_LINKS` when accounts are live |
+| Documentation site | Add route or external URL when ready |
+| Status page | Add `/status` or external status page |
+| Typography/spacing consistency | Marketing pages share `marketing-section`, `btnPrimary`, `rounded-2xl` cards — minor page-level variance acceptable |
+| FAQ search query param | `MarketingSeo` SearchAction references `/faq?q=` — FAQ page may not filter by `q` yet |
+| SOC 2 badge on Security page | Marked “Coming Soon” — intentional |
+
+### Low Priority
+
+| Item | Notes |
+|---|---|
+| Customer logo illustrations | Now audience categories; could become real logos later |
+| Blog newsletter backend | When marketing email service is chosen |
+| Animation polish | Workflow timeline, scroll reveal — working |
+| Image optimization | Inline SVG mockups — no CLS issues |
+| API / developer docs | Future SaaS feature |
+| Team page with real photos | Post-launch |
+
+### Confirmed Unchanged (Regression)
+- [x] Authentication & email verification
+- [x] Dashboard / workspace
+- [x] PDF editor & signature pad
+- [x] Auto detection
+- [x] Request signatures & self sign flows
+- [x] Database, controllers, APIs, middleware
+- [x] All `routes/web.php` signing and auth routes
+
+---
+
 ## Homepage Optimization — Reduce Length & Improve Conversion (v0.11.2)
 
 | Field | Value |
