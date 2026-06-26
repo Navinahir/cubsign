@@ -4,6 +4,75 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
+## Features Page UX Redesign (v0.12.3)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.12.3 |
+| **Date** | 2026-06-26 |
+| **Scope** | `/features` page only |
+
+### Structure
+| Section | Notes |
+|---|---|
+| Hero | "Features" badge, product dashboard mockup, dual CTAs |
+| Core features | 6 alternating compact sections (Self Sign, Request, Templates, Audit, Secure Storage, Document Tracking) |
+| Designed for every workflow | 6 audience cards |
+| Everything included | 9-item capability grid |
+| Final CTA | Single bottom CTA only |
+
+### Removed (homepage duplicates)
+- Everything in one workspace, How CubSign Works, Why choose CubSign, statistics, testimonial, extra CTAs
+
+### Files
+- `Pages/Features.vue`, `constants/featuresPage.js`
+- `Components/Marketing/Features/*` (added storage + tracking illustrations; removed workflow)
+
+### Build Status
+- `npm run build` — pass (1.52s)
+
+---
+
+## Features Page Premium Redesign (v0.12.2)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.12.2 |
+| **Date** | 2026-06-26 |
+| **Scope** | `/features` page only |
+
+### Sections Added
+| Section | Description |
+|---|---|
+| Hero | Badge, headline, subtitle, CTAs, composite product illustration |
+| Product showcases | 4 alternating mockup + content blocks (Self Sign, Request, Templates, Audit) |
+| Workspace grid | 6 premium capability cards |
+| Workflow | 5-step animated horizontal timeline |
+| Comparison | Traditional vs CubSign |
+| Testimonial | Large quote card |
+| Statistics | Animated counters |
+| CTA | Gradient banner |
+
+### Files
+| File | Purpose |
+|---|---|
+| `Pages/Features.vue` | Full page redesign |
+| `constants/featuresPage.js` | Page-only content |
+| `Components/Marketing/Features/*` | Inline SVG illustrations + workflow |
+
+### Regression Checklist
+- [x] Home, Blog, Pricing, About, Contact, Privacy — unchanged
+- [x] Footer, header, auth, dashboard, signing — unchanged
+- [x] Responsive layout verified (desktop alternating, mobile stacked)
+- [x] ARIA labels, focus states, reduced-motion support
+
+### Build Status
+- `npm run build` — pass (1.74s)
+
+---
+
 ## Guest Self-Sign Review Flow Fix (v0.12.1)
 
 | Field | Value |

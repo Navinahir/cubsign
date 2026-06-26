@@ -372,7 +372,15 @@ Logs rotate daily and are kept for 30 days. The token is partially masked (`…l
 
 Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLayout.vue`. Frontend-only — no backend API changes.
 
-**Current version:** v0.12.0 — Final marketing cleanup: shorter homepage, human copy tone, dead code removed.
+**Current version:** v0.12.3 — Features page compact UX redesign (dedicated product overview, no homepage duplicates).
+
+### Features Page (v0.12.3)
+
+Compact product overview at `/features`: hero with dashboard mockup, six alternating feature sections, audience workflow cards, included-capabilities grid, and a single bottom CTA. Removed homepage-duplicate sections (workflow, stats, testimonial, comparison). Content in `resources/js/constants/featuresPage.js`.
+
+### Features Page (v0.12.2)
+
+Premium SaaS-style product page at `/features`: hero with product illustration, four alternating feature showcases, workspace grid, workflow timeline, comparison block, testimonial, statistics, and gradient CTA. Content in `resources/js/constants/featuresPage.js`; illustrations in `resources/js/Components/Marketing/Features/`.
 
 ### Homepage Structure (v0.12.0)
 

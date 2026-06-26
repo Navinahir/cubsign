@@ -1,138 +1,239 @@
 <script setup>
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
+import ScrollReveal from '@/Components/Marketing/ScrollReveal.vue';
+import ProductMockup from '@/Components/Marketing/ProductMockup.vue';
+import DecorativeBg from '@/Components/Marketing/DecorativeBg.vue';
+import FeaturesHeroIllustration from '@/Components/Marketing/Features/FeaturesHeroIllustration.vue';
+import FeaturesTemplatesIllustration from '@/Components/Marketing/Features/FeaturesTemplatesIllustration.vue';
+import FeaturesAuditIllustration from '@/Components/Marketing/Features/FeaturesAuditIllustration.vue';
+import FeaturesSecureStorageIllustration from '@/Components/Marketing/Features/FeaturesSecureStorageIllustration.vue';
+import FeaturesTrackingIllustration from '@/Components/Marketing/Features/FeaturesTrackingIllustration.vue';
 import { Link } from '@inertiajs/vue3';
 import {
     EARLY_ACCESS_HEADLINE,
     CTA_START_SIGNING,
     btnPrimary,
-    pageHeaderClass,
+    btnSecondary,
 } from '@/constants/marketing';
-
-const features = [
-    {
-        title: 'Self Sign PDFs',
-        description: 'Upload any PDF from your device and sign it yourself in seconds. Draw your signature on a canvas, type it in any style, or upload an existing signature image. Download the completed, signed document instantly.',
-        icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z',
-        color: 'bg-blue-50 text-blue-600',
-        bullets: [
-            'Draw, type, or upload your signature',
-            'Place signature fields anywhere on the document',
-            'Download the signed PDF instantly',
-        ],
-    },
-    {
-        title: 'Send for Signature',
-        description: 'Need others to sign? Invite recipients by email and let CubSign handle the rest. Recipients receive a secure link, sign without needing an account, and you get notified the moment everyone has signed.',
-        icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-        color: 'bg-violet-50 text-violet-600',
-        bullets: [
-            'Send to multiple recipients',
-            'Recipients sign without creating an account',
-            'Real-time status tracking',
-            'Automatic completion notifications',
-        ],
-    },
-    {
-        title: 'Reusable Templates',
-        description: 'Stop recreating the same documents from scratch. Save frequently-used forms as templates with pre-defined signature fields. Send them to new recipients in seconds, every time.',
-        icon: 'M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2',
-        color: 'bg-emerald-50 text-emerald-600',
-        bullets: [
-            'Save any document as a reusable template',
-            'Pre-define signature fields and positions',
-            'Send to new recipients instantly',
-        ],
-    },
-    {
-        title: 'Audit Trail',
-        description: 'Every action on every document is logged: who viewed it, who signed it, and when. Timestamps and IP addresses help you verify what happened.',
-        icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
-        color: 'bg-amber-50 text-amber-600',
-        bullets: [
-            'Full activity log per document',
-            'Timestamps and IP addresses recorded',
-            'Downloadable audit certificate',
-        ],
-    },
-];
+import {
+    featuresShowcases,
+    featuresAudience,
+    featuresIncluded,
+} from '@/constants/featuresPage';
 </script>
 
 <template>
     <MarketingSeo
         title="Features — CubSign | Free PDF Signing"
-        description="Explore CubSign features: self-sign PDFs, send for signature, reusable templates, and full audit trails. Free during early access."
+        description="Self-sign PDFs, request signatures, use templates, track documents, and keep audit trails. Free during early access."
         path="/features"
     />
 
     <PublicLayout>
-        <section :class="pageHeaderClass">
-            <div class="mx-auto max-w-3xl">
-                <span class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
-                    {{ EARLY_ACCESS_HEADLINE }}
-                </span>
-                <h1 class="mt-5 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-                    Tools for signing PDFs online
-                </h1>
-                <p class="mx-auto mt-5 max-w-2xl text-lg text-gray-500">
-                    Sign documents yourself, send them to others, and keep a record of what was signed and when.
-                </p>
+        <!-- Hero -->
+        <section class="marketing-gradient-hero relative overflow-hidden px-4 pb-10 pt-10 sm:px-6 lg:pb-12 lg:pt-12">
+            <DecorativeBg pattern="grid" />
+            <div class="pointer-events-none absolute -right-24 top-16 h-56 w-56 rounded-full bg-blue-200/20 blur-3xl" aria-hidden="true" />
+
+            <div class="relative mx-auto max-w-6xl">
+                <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-10">
+                    <ScrollReveal>
+                        <span class="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-xs font-semibold text-blue-700">
+                            Features
+                        </span>
+
+                        <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
+                            Everything CubSign offers,
+                            <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">in one place</span>
+                        </h1>
+
+                        <p class="mt-3 max-w-md text-sm leading-relaxed text-gray-600 sm:text-base">
+                            Sign PDFs yourself, collect signatures from others, reuse templates, and see exactly where each document stands.
+                        </p>
+
+                        <p class="mt-2 text-xs font-medium text-blue-600">{{ EARLY_ACCESS_HEADLINE }}</p>
+
+                        <div class="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center">
+                            <Link :href="route('register')" :class="[btnPrimary, 'marketing-btn-ripple']">
+                                {{ CTA_START_SIGNING }}
+                            </Link>
+                            <Link :href="route('sign.index')" :class="btnSecondary">
+                                Try Without Account
+                            </Link>
+                        </div>
+                    </ScrollReveal>
+
+                    <ScrollReveal direction="right" :delay="100">
+                        <FeaturesHeroIllustration />
+                    </ScrollReveal>
+                </div>
             </div>
         </section>
 
-        <section class="bg-white px-4 py-16 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-5xl space-y-12">
+        <!-- Core features -->
+        <section
+            v-for="(feature, index) in featuresShowcases"
+            :key="feature.id"
+            :class="[
+                'px-4 py-10 sm:px-6 lg:px-8 lg:py-12',
+                index % 2 === 1 ? 'bg-gray-50/70' : 'bg-white',
+            ]"
+            :aria-labelledby="`feature-${feature.id}`"
+        >
+            <div class="mx-auto max-w-6xl">
                 <div
-                    v-for="(feature, index) in features"
-                    :key="feature.title"
                     :class="[
-                        'flex flex-col gap-8 rounded-2xl border border-gray-100 bg-gray-50 p-8 shadow-sm transition-shadow hover:shadow-md lg:flex-row lg:items-start',
-                        index % 2 === 1 ? 'lg:flex-row-reverse' : '',
+                        'grid items-center gap-6 lg:grid-cols-2 lg:gap-10',
+                        index % 2 === 1 ? 'lg:[&>*:first-child]:order-2' : '',
                     ]"
                 >
-                    <div class="shrink-0">
-                        <div :class="['flex h-14 w-14 items-center justify-center rounded-2xl', feature.color]">
-                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" :d="feature.icon" />
-                            </svg>
+                    <ScrollReveal :direction="index % 2 === 0 ? 'left' : 'right'">
+                        <div class="relative max-w-md lg:max-w-none">
+                            <ProductMockup
+                                v-if="feature.mockup === 'signature'"
+                                variant="signature"
+                                size="compact"
+                            />
+                            <ProductMockup
+                                v-else-if="feature.mockup === 'request'"
+                                variant="request"
+                                size="compact"
+                            />
+                            <FeaturesTemplatesIllustration v-else-if="feature.mockup === 'templates'" />
+                            <FeaturesAuditIllustration v-else-if="feature.mockup === 'audit'" />
+                            <FeaturesSecureStorageIllustration v-else-if="feature.mockup === 'storage'" />
+                            <FeaturesTrackingIllustration v-else-if="feature.mockup === 'tracking'" />
                         </div>
-                    </div>
+                    </ScrollReveal>
 
-                    <div class="flex-1">
-                        <h2 class="text-xl font-bold text-gray-900">{{ feature.title }}</h2>
-                        <p class="mt-3 text-sm leading-relaxed text-gray-500">{{ feature.description }}</p>
-                        <ul class="mt-5 space-y-2">
-                            <li
-                                v-for="bullet in feature.bullets"
-                                :key="bullet"
-                                class="flex items-start gap-2.5 text-sm text-gray-600"
+                    <ScrollReveal :direction="index % 2 === 0 ? 'right' : 'left'" :delay="60">
+                        <div>
+                            <h2 :id="`feature-${feature.id}`" class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                                {{ feature.title }}
+                            </h2>
+                            <p class="mt-2 text-sm leading-relaxed text-gray-500 sm:text-base">
+                                {{ feature.description }}
+                            </p>
+                            <ul class="mt-4 space-y-2">
+                                <li
+                                    v-for="bullet in feature.bullets"
+                                    :key="bullet"
+                                    class="flex items-start gap-2 text-sm text-gray-700"
+                                >
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    {{ bullet }}
+                                </li>
+                            </ul>
+                            <Link
+                                :href="route('register')"
+                                class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700"
                             >
-                                <svg class="mt-0.5 h-4 w-4 shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                Learn more
+                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
-                                {{ bullet }}
-                            </li>
-                        </ul>
-                    </div>
+                            </Link>
+                        </div>
+                    </ScrollReveal>
                 </div>
             </div>
         </section>
 
-        <section class="bg-gray-50 px-4 py-16 text-center sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-xl">
-                <h2 class="text-2xl font-bold text-gray-900">{{ EARLY_ACCESS_HEADLINE }}</h2>
-                <p class="mt-3 text-gray-500">No credit card required.</p>
-                <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                    <Link :href="route('register')" :class="[btnPrimary, 'w-full sm:w-auto']">
-                        {{ CTA_START_SIGNING }}
-                    </Link>
-                    <Link
-                        :href="route('sign.index')"
-                        class="w-full rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 sm:w-auto"
+        <!-- Designed for every workflow -->
+        <section class="bg-white px-4 py-10 sm:px-6 lg:px-8 lg:py-12" aria-labelledby="audience-heading">
+            <div class="mx-auto max-w-6xl">
+                <ScrollReveal>
+                    <h2 id="audience-heading" class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                        Designed for every workflow
+                    </h2>
+                    <p class="mt-2 max-w-xl text-sm text-gray-500">
+                        Whether you work alone or with a team, CubSign fits how you handle documents.
+                    </p>
+                </ScrollReveal>
+
+                <div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <ScrollReveal
+                        v-for="(card, i) in featuresAudience"
+                        :key="card.title"
+                        :delay="i * 40"
                     >
-                        Sign a PDF Now
-                    </Link>
+                        <div class="marketing-card-lift group h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div
+                                :class="[
+                                    'mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none',
+                                    card.gradient,
+                                ]"
+                            >
+                                <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" :d="card.icon" />
+                                </svg>
+                            </div>
+                            <h3 class="text-sm font-bold text-gray-900">{{ card.title }}</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">{{ card.description }}</p>
+                        </div>
+                    </ScrollReveal>
                 </div>
+            </div>
+        </section>
+
+        <!-- Everything included -->
+        <section class="bg-gray-50/70 px-4 py-10 sm:px-6 lg:px-8 lg:py-12" aria-labelledby="included-heading">
+            <div class="mx-auto max-w-4xl">
+                <ScrollReveal>
+                    <h2 id="included-heading" class="text-center text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                        Everything included
+                    </h2>
+                    <p class="mx-auto mt-2 max-w-md text-center text-sm text-gray-500">
+                        All of this is available free during early access.
+                    </p>
+                </ScrollReveal>
+
+                <ScrollReveal :delay="60">
+                    <ul class="mt-8 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3" role="list">
+                        <li
+                            v-for="item in featuresIncluded"
+                            :key="item"
+                            class="flex items-center gap-2.5 rounded-xl border border-gray-200/80 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition-shadow hover:shadow-md motion-reduce:transition-none"
+                        >
+                            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600" aria-hidden="true">✓</span>
+                            {{ item }}
+                        </li>
+                    </ul>
+                </ScrollReveal>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="px-4 py-10 sm:px-6 lg:px-8 lg:py-14" aria-labelledby="features-cta">
+            <div class="mx-auto max-w-3xl">
+                <ScrollReveal>
+                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 px-6 py-10 text-center shadow-xl sm:px-10 sm:py-12">
+                        <div class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
+                        <h2 id="features-cta" class="relative text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                            Ready to simplify document signing?
+                        </h2>
+                        <p class="relative mt-2 text-sm text-blue-100">
+                            Create a free account or sign a PDF right now. No credit card needed.
+                        </p>
+                        <div class="relative mt-6 flex flex-col items-center justify-center gap-2.5 sm:flex-row">
+                            <Link
+                                :href="route('register')"
+                                class="marketing-btn-ripple w-full rounded-xl bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-sm transition-all hover:bg-gray-50 sm:w-auto"
+                            >
+                                {{ CTA_START_SIGNING }}
+                            </Link>
+                            <Link
+                                :href="route('sign.index')"
+                                class="w-full rounded-xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:w-auto"
+                            >
+                                Try Without Account
+                            </Link>
+                        </div>
+                    </div>
+                </ScrollReveal>
             </div>
         </section>
     </PublicLayout>

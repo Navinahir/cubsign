@@ -5,6 +5,51 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.12.3] 2026-06-26 — Features Page UX Redesign (Compact)
+
+### Changed (Features page only)
+- **Restructured** into a dedicated product overview: hero, 6 core feature showcases, audience cards, included checklist, single bottom CTA.
+- **Removed** homepage-duplicate sections: workspace grid, workflow timeline, comparison block, statistics, testimonial, and mid-page CTAs.
+- **Added** Secure Storage and Document Tracking feature sections with inline SVG mockups.
+- **Added** "Designed for every workflow" audience cards and "Everything included" capability grid.
+- **Tightened** spacing (~40% shorter page), compact alternating layouts, natural human copy.
+
+### Removed
+- `FeaturesWorkflow.vue` (unused)
+- Dead constants: `featuresWorkspaceCards`, `featuresWorkflowSteps`, `featuresStats`, `featuresComparison`, `featuresTestimonial`
+
+### Unchanged
+- All other pages, routes, backend, auth, dashboard, signing flows.
+
+### Build
+- `npm run build` — pass (1.52s)
+
+---
+
+## [v0.12.2] 2026-06-26 — Features Page Premium Redesign
+
+### Changed (Features page only)
+- **Hero** — badge, gradient headline, dual CTAs, large inline product illustration (PDF viewer, signature field, recipients, audit trail, completed badge).
+- **Product showcases** — four alternating sections (Self Sign, Request Signatures, Templates, Audit Trail) with mockups/illustrations, bullets, and CTAs.
+- **Workspace grid** — six premium cards with gradient icons and hover lift.
+- **Workflow** — horizontal animated timeline (Upload → Prepare → Send → Track → Complete).
+- **Comparison** — Traditional vs CubSign two-column cards.
+- **Testimonial** — large quote card with star rating.
+- **Statistics** — animated counters (2,500+ documents, 900+ users, 99.9% availability, 24/7 cloud access).
+- **CTA** — gradient banner with Start Signing Free / Try Without Account.
+
+### Added
+- `resources/js/constants/featuresPage.js` — Features-only content constants.
+- `resources/js/Components/Marketing/Features/` — hero, templates, audit illustrations, workflow component.
+
+### Unchanged
+- Home, Blog, Pricing, About, Contact, Privacy, footer, header, auth, dashboard, signing workflow, APIs, backend.
+
+### Build
+- `npm run build` — pass (1.74s)
+
+---
+
 ## [v0.12.1] 2026-06-26 — Guest Self-Sign Review Flow Fix
 
 ### Fixed
