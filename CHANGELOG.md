@@ -5,6 +5,95 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.11.2] 2026-06-26 — Homepage Optimization (Reduce Length & Improve Conversion)
+
+### Removed
+- **7-screen Product Showcase** — redundant with the compact Upload → Sign → Download demo.
+- **Duplicate CTA banners** — removed mid-page CTAs after Features and Security; one final CTA before footer only.
+- **Section dividers** — decorative dividers between sections removed to reduce vertical height.
+- **Homepage FAQ search** — search remains on `/faq`; homepage shows top 5 questions only.
+- **Success story cards** — removed from homepage social proof (stats, logos, testimonials retained).
+
+### Merged / Consolidated
+- **Product demo** — single 3-column section (Upload → Sign → Download) with `ProductMockup` variants.
+- **Security messaging** — one `SecuritySection` with shield + 6 cards; link to `/security` for full details.
+- **Features** — 6 key features via `homeFeatureGrid` (full 9+ list remains on `/features`).
+- **Pricing comparison** — 3 essential rows via `homePricingComparison` (full table on `/pricing`).
+
+### Spacing & Compactness
+- Section padding: `py-14 lg:py-20` (~56px mobile / ~80px desktop), down from ~90px / ~140px.
+- Added `marketing-section-tight` for final CTA.
+- `MarketingHero` — reduced vertical padding.
+- `FeatureGrid` compact mode — max-height ~180px cards.
+- `WorkflowTimeline` — smaller icons, tighter descriptions.
+- `SecuritySection` compact — smaller shield illustration, p-4 cards.
+- `SocialProof` compact — 3 testimonials only, tighter stats/logos.
+- `PricingSection` compact — 5 benefits, 3-row comparison.
+- Footer — reduced top padding (`py-10`).
+
+### Changed
+- `Home.vue` — streamlined to 9 sections (Hero → Demo → Features → Workflow → Security → Social Proof → Pricing → FAQ → CTA).
+- Marketing components — `compact` prop on FeatureGrid, SecuritySection, SocialProof, PricingSection.
+- `APP_VERSION` → `0.11.2`.
+
+### Performance
+- Homepage bundle reduced (Home chunk ~37 kB gzip ~10 kB).
+- `npm run build` — pass (1.53s).
+
+### Regression Checklist
+- [x] Authentication, Editor, Dashboard, Signing flows — unchanged
+- [x] Backend APIs and routes — unchanged (marketing pages only)
+
+---
+
+## [v0.11.1] 2026-06-26 — Marketing Website Final SaaS Polish
+
+### Added
+- **Product mockup system** — `ProductBrowserFrame`, `ProductMockup` (7 variants: dashboard, editor, signature, request, review, complete, mobile) with realistic UI chrome — no placeholder rectangles.
+- **Enhanced hero** — `MarketingHero` with customer avatars, star ratings, security badges, floating dashboard cards, animated signature draw.
+- **Product showcase section** — 7-screen product tour on homepage.
+- **Animated workflow timeline** — 6-step process (Upload → Prepare → Sign → Send → Track → Complete) with auto-cycling progress bar.
+- **Animated counters** — `AnimatedCounter` for social proof and About page stats.
+- **Multiple CTA banners** — after Features, Security, and before footer with distinct messaging.
+- **Dedicated Security page** — `/security` with encryption, audit trail, GDPR, infrastructure, SOC 2 readiness.
+- **Blog polish** — `BlogCover` illustrations, featured/popular ribbons, category colors, hover lift, sticky TOC sidebar.
+- **About page expansion** — Our Story, 6 company values, 5-step timeline, 6 team cards, 5 company stats.
+- **Contact page expansion** — Sales/Support/Tech/Partnerships cards, office address, map placeholder, response time.
+- **Legal page layout** — `LegalPageLayout` with hero, sticky TOC, section icons (Privacy redesigned).
+- **Footer redesign** — dark theme, newsletter signup, Developers column, version display, sitemap link.
+- **SEO** — Organization + WebSite + Article JSON-LD, Twitter site tag, `sitemap.xml`, updated `robots.txt`.
+
+### Changed
+- Homepage spacing tightened (`marketing-section` utilities), decorative SVG patterns, section dividers, gradient backgrounds.
+- `SocialProof` — animated counters, star ratings, success story cards.
+- `MarketingSeo` — structured data for Organization, WebSite, Article.
+- `PublicLayout` — Security nav link, expanded 7-column footer.
+
+### Performance
+- Vite code-splitting maintained; inline SVG mockups (zero image CLS).
+- `npm run build` — pass (1.59s).
+
+### Regression Checklist
+- [x] Authentication, Editor, Dashboard, Signing flows — unchanged
+- [x] Backend APIs — unchanged (one new public route: `/security`)
+
+### Files Created
+- `resources/js/Components/Marketing/ProductBrowserFrame.vue`
+- `resources/js/Components/Marketing/ProductMockup.vue`
+- `resources/js/Components/Marketing/MarketingHero.vue`
+- `resources/js/Components/Marketing/ProductShowcase.vue`
+- `resources/js/Components/Marketing/AnimatedCounter.vue`
+- `resources/js/Components/Marketing/CtaBanner.vue`
+- `resources/js/Components/Marketing/SectionDivider.vue`
+- `resources/js/Components/Marketing/DecorativeBg.vue`
+- `resources/js/Components/Marketing/BlogCover.vue`
+- `resources/js/Components/Marketing/LegalPageLayout.vue`
+- `resources/js/Pages/Security.vue`
+- `app/Http/Controllers/Web/SecurityController.php`
+- `public/sitemap.xml`
+
+---
+
 ## [v0.11.0] 2026-06-26 — Marketing Website & SaaS Landing Page Redesign
 
 ### Added

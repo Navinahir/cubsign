@@ -58,11 +58,115 @@ export const credibilityCards = [
 ];
 
 export const journeySteps = [
-    { title: 'Upload PDF', description: 'Drop any PDF and start in seconds.' },
-    { title: 'Add Signature', description: 'Draw, type, or upload your signature.' },
-    { title: 'Request Signatures', description: 'Invite recipients by email — no account needed.' },
-    { title: 'Track Progress', description: 'See who signed and who is still pending.' },
-    { title: 'Download Signed PDF', description: 'Get the completed document instantly.' },
+    { title: 'Upload', description: 'Drop your PDF and start instantly.' },
+    { title: 'Prepare', description: 'Add fields, dates, and text boxes.' },
+    { title: 'Sign', description: 'Draw, type, or upload your signature.' },
+    { title: 'Send', description: 'Invite recipients with secure email links.' },
+    { title: 'Track', description: 'Monitor who signed and who is pending.' },
+    { title: 'Complete', description: 'Download the fully signed PDF.' },
+];
+
+export const APP_VERSION = '0.11.2';
+
+/** Homepage-only: 6 key features (full list remains on /features) */
+export const homeFeatureGrid = [
+    {
+        title: 'Draw Signature',
+        description: 'Sign naturally with mouse, trackpad, or finger.',
+        icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z',
+        iconBg: 'bg-blue-50',
+        iconColor: 'text-blue-600',
+    },
+    {
+        title: 'Type Signature',
+        description: 'Elegant handwriting fonts for a professional look.',
+        icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
+        iconBg: 'bg-violet-50',
+        iconColor: 'text-violet-600',
+    },
+    {
+        title: 'Request Signatures',
+        description: 'Send documents and track status in real time.',
+        icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+        iconBg: 'bg-rose-50',
+        iconColor: 'text-rose-600',
+    },
+    {
+        title: 'Audit Trail',
+        description: 'Every event logged with timestamps for compliance.',
+        icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
+        iconBg: 'bg-amber-50',
+        iconColor: 'text-amber-600',
+    },
+    {
+        title: 'Secure Storage',
+        description: 'Encrypted in transit and at rest on secure cloud.',
+        icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+        iconBg: 'bg-cyan-50',
+        iconColor: 'text-cyan-600',
+    },
+    {
+        title: 'Mobile Friendly',
+        description: 'Sign from any modern browser on any device.',
+        icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z',
+        iconBg: 'bg-indigo-50',
+        iconColor: 'text-indigo-600',
+    },
+];
+
+/** Homepage pricing comparison — essentials only */
+export const homePricingComparison = [
+    { feature: 'Unlimited signatures', cubsign: true, others: false },
+    { feature: 'No credit card required', cubsign: true, others: false },
+    { feature: 'Free during Early Access', cubsign: true, others: false },
+];
+
+export const companyStats = [
+    { value: '2,500+', label: 'Documents Signed' },
+    { value: '900+', label: 'Active Users' },
+    { value: '40+', label: 'Countries' },
+    { value: '99.9%', label: 'Uptime' },
+    { value: '<2h', label: 'Support Response' },
+];
+
+export const companyValues = [
+    { title: 'Security', description: 'Bank-grade encryption and audit trails on every document.', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
+    { title: 'Privacy', description: 'Your data is never sold. You control who sees your documents.', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+    { title: 'Simplicity', description: 'Sign in under 60 seconds. No training required.', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+    { title: 'Performance', description: 'Fast uploads, instant downloads, 99.9% availability.', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+    { title: 'Customer First', description: 'Free during Early Access while we build based on your feedback.', icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z' },
+    { title: 'Innovation', description: 'Continuously improving with smart detection and modern workflows.', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
+];
+
+export const aboutTimeline = [
+    { year: '2025', title: 'CubSign Founded', description: 'Born from frustration with print-sign-scan workflows.' },
+    { year: '2025', title: 'MVP Launch', description: 'Core signing engine and PDF editor built from scratch.' },
+    { year: '2025', title: 'Early Access', description: 'Opened to early users — completely free.' },
+    { year: '2026', title: 'Public Beta', description: 'Multi-recipient workflows, audit trails, and templates.' },
+    { year: 'Future', title: 'Enterprise', description: 'Team workspaces, API access, and SOC 2 readiness.' },
+];
+
+export const aboutTeam = [
+    { name: 'Alex Chen', role: 'CEO & Founder', dept: 'Leadership', initials: 'AC', bg: 'bg-blue-600' },
+    { name: 'Priya Sharma', role: 'Co-Founder & CTO', dept: 'Engineering', initials: 'PS', bg: 'bg-violet-600' },
+    { name: 'Jordan Lee', role: 'Head of Product', dept: 'Product', initials: 'JL', bg: 'bg-emerald-600' },
+    { name: 'Morgan Davis', role: 'Lead Engineer', dept: 'Engineering', initials: 'MD', bg: 'bg-rose-600' },
+    { name: 'Sarah Kim', role: 'Support Lead', dept: 'Support', initials: 'SK', bg: 'bg-amber-600' },
+    { name: 'Riley Torres', role: 'Marketing Director', dept: 'Marketing', initials: 'RT', bg: 'bg-cyan-600' },
+];
+
+export const successStories = [
+    { company: 'Brightpath Agency', quote: 'We cut contract turnaround from 3 days to 20 minutes.', metric: '90% faster', initials: 'BP', bg: 'bg-blue-500' },
+    { company: 'Summit Legal', quote: 'Client NDAs are signed before the meeting ends.', metric: '500+ docs/mo', initials: 'SL', bg: 'bg-emerald-500' },
+];
+
+export const securityPageFeatures = [
+    { title: 'Bank-Grade Encryption', description: 'AES-256 encryption at rest and TLS 1.3 in transit for all documents.', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
+    { title: 'Audit Trail', description: 'Complete event history with timestamps, IP addresses, and signer identity.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+    { title: 'Data Privacy', description: 'GDPR-aligned practices. Your data is never sold to third parties.', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+    { title: 'Secure Infrastructure', description: 'Enterprise cloud hosting with access controls and monitoring.', icon: 'M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2' },
+    { title: 'Secure Storage & Backups', description: 'Redundant storage with automated backups and disaster recovery.', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z' },
+    { title: 'SOC 2 Readiness', description: 'Building toward SOC 2 Type II certification for enterprise customers.', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
 ];
 
 export const socialStats = [
@@ -254,6 +358,7 @@ export const footerLinks = {
     product: [
         { label: 'Features', routeName: 'features' },
         { label: 'Pricing', routeName: 'pricing' },
+        { label: 'Security', routeName: 'security' },
         { label: 'FAQ', routeName: 'faq' },
     ],
     company: [
@@ -269,6 +374,15 @@ export const footerLinks = {
     resources: [
         { label: 'Help Center', routeName: 'faq' },
         { label: 'Documentation', href: 'https://docs.cubsign.com', external: true },
+        { label: 'Status', href: 'https://status.cubsign.com', external: true },
+    ],
+    developers: [
+        { label: 'API', href: 'https://docs.cubsign.com/api', external: true },
+        { label: 'Documentation', href: 'https://docs.cubsign.com', external: true },
+    ],
+    support: [
+        { label: 'Contact Support', routeName: 'contact' },
+        { label: 'FAQ', routeName: 'faq' },
         { label: 'Status', href: 'https://status.cubsign.com', external: true },
     ],
 };

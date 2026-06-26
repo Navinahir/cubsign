@@ -1,144 +1,77 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
-import LegalToc from '@/Components/Marketing/LegalToc.vue';
-
-const activeId = ref('');
+import LegalPageLayout from '@/Components/Marketing/LegalPageLayout.vue';
 
 const sections = [
-    { id: 'collection', title: 'Information We Collect' },
-    { id: 'cookies', title: 'Cookies' },
-    { id: 'usage', title: 'How We Use Your Data' },
-    { id: 'retention', title: 'Data Retention' },
-    { id: 'security', title: 'Security' },
-    { id: 'third-party', title: 'Third-Party Services' },
-    { id: 'rights', title: 'Your Rights' },
-    { id: 'contact', title: 'Contact Us' },
+    { id: 'collection', title: 'Information We Collect', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+    { id: 'cookies', title: 'Cookies', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { id: 'usage', title: 'How We Use Your Data', icon: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' },
+    { id: 'retention', title: 'Data Retention', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
+    { id: 'security', title: 'Security', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
+    { id: 'third-party', title: 'Third-Party Services', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9' },
+    { id: 'rights', title: 'Your Rights', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+    { id: 'contact', title: 'Contact Us', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
 ];
-
-function scrollTo(id) {
-    const el = document.getElementById(id);
-    if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        activeId.value = id;
-    }
-}
-
-let observer;
-onMounted(() => {
-    observer = new IntersectionObserver(
-        (entries) => {
-            for (const entry of entries) {
-                if (entry.isIntersecting) activeId.value = entry.target.id;
-            }
-        },
-        { rootMargin: '-80px 0px -60% 0px', threshold: 0 },
-    );
-    sections.forEach((s) => {
-        const el = document.getElementById(s.id);
-        if (el) observer.observe(el);
-    });
-});
-onUnmounted(() => observer?.disconnect());
 </script>
 
 <template>
     <MarketingSeo title="Privacy Policy – CubSign" description="CubSign Privacy Policy. Learn how we collect, use, and protect your personal information." path="/privacy" />
 
     <PublicLayout>
-        <section class="px-4 py-14 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-6xl">
-                <div class="mb-10">
-                    <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Privacy Policy</h1>
-                    <p class="mt-3 text-sm text-gray-500">Last updated: June 1, 2026</p>
-                </div>
+        <LegalPageLayout title="Privacy Policy" description="How CubSign collects, uses, and protects your personal information." updated="June 1, 2026" badge="Legal" :sections="sections">
+            <p class="text-base leading-relaxed text-gray-600">CubSign ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and services.</p>
 
-                <div class="grid gap-10 lg:grid-cols-4">
-                    <aside class="hidden lg:col-span-1 lg:block">
-                        <div class="sticky top-24">
-                            <LegalToc :sections="sections" :active-id="activeId" @navigate="scrollTo" />
-                        </div>
-                    </aside>
+            <section id="collection" class="mt-12 scroll-mt-28">
+                <div class="flex items-center gap-3"><div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50"><svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><h2 class="text-xl font-bold text-gray-900">Information We Collect</h2></div>
+                <ul class="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-gray-600">
+                    <li>Account information (name, email address, password)</li>
+                    <li>Documents you upload for signing</li>
+                    <li>Signature data (drawn, typed, or uploaded)</li>
+                    <li>Communications with our support team</li>
+                    <li>Usage data (pages visited, features used, device information)</li>
+                </ul>
+            </section>
 
-                    <article class="prose-sm lg:col-span-3">
-                        <p class="text-sm leading-relaxed text-gray-600">
-                            CubSign ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and services at cubsign.com.
-                        </p>
+            <section id="cookies" class="mt-12 scroll-mt-28">
+                <div class="flex items-center gap-3"><div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50"><svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><h2 class="text-xl font-bold text-gray-900">Cookies</h2></div>
+                <p class="mt-4 text-base leading-relaxed text-gray-600">We use cookies to maintain your session and analyze site usage. See our <a href="/cookies" class="text-blue-600 hover:text-blue-700">Cookie Policy</a> for details.</p>
+            </section>
 
-                        <section id="collection" class="mt-10 scroll-mt-24">
-                            <h2 class="text-xl font-bold text-gray-900">Information We Collect</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-gray-600">We collect information you provide directly, including:</p>
-                            <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm text-gray-600">
-                                <li>Account information (name, email address, password)</li>
-                                <li>Documents you upload for signing</li>
-                                <li>Signature data (drawn, typed, or uploaded)</li>
-                                <li>Communications with our support team</li>
-                                <li>Usage data (pages visited, features used, device information)</li>
-                            </ul>
-                        </section>
+            <section id="usage" class="mt-12 scroll-mt-28">
+                <div class="flex items-center gap-3"><div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50"><svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg></div><h2 class="text-xl font-bold text-gray-900">How We Use Your Data</h2></div>
+                <ul class="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-gray-600">
+                    <li>Provide, maintain, and improve our signing services</li>
+                    <li>Process documents and facilitate electronic signatures</li>
+                    <li>Send transactional emails and respond to support requests</li>
+                    <li>Detect and prevent fraud or abuse</li>
+                </ul>
+            </section>
 
-                        <section id="cookies" class="mt-10 scroll-mt-24">
-                            <h2 class="text-xl font-bold text-gray-900">Cookies</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-gray-600">
-                                We use cookies and similar technologies to maintain your session, remember preferences, and analyze site usage. You can control cookies through your browser settings. See our <a href="/cookies" class="text-blue-600 hover:text-blue-700">Cookie Policy</a> for details.
-                            </p>
-                        </section>
+            <section id="retention" class="mt-12 scroll-mt-28">
+                <h2 class="text-xl font-bold text-gray-900">Data Retention</h2>
+                <p class="mt-4 text-base leading-relaxed text-gray-600">We retain your data for as long as your account is active. Upon deletion, personal data is removed within 30 days except where required by law.</p>
+            </section>
 
-                        <section id="usage" class="mt-10 scroll-mt-24">
-                            <h2 class="text-xl font-bold text-gray-900">How We Use Your Data</h2>
-                            <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm text-gray-600">
-                                <li>Provide, maintain, and improve our signing services</li>
-                                <li>Process documents and facilitate electronic signatures</li>
-                                <li>Send transactional emails (signing invitations, confirmations)</li>
-                                <li>Respond to support requests</li>
-                                <li>Detect and prevent fraud or abuse</li>
-                                <li>Comply with legal obligations</li>
-                            </ul>
-                        </section>
+            <section id="security" class="mt-12 scroll-mt-28">
+                <h2 class="text-xl font-bold text-gray-900">Security</h2>
+                <p class="mt-4 text-base leading-relaxed text-gray-600">AES-256 encryption at rest, TLS 1.3 in transit, and access controls protect your documents. <a href="/security" class="text-blue-600 hover:text-blue-700">Learn more about our security</a>.</p>
+            </section>
 
-                        <section id="retention" class="mt-10 scroll-mt-24">
-                            <h2 class="text-xl font-bold text-gray-900">Data Retention</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-gray-600">
-                                We retain your account data and documents for as long as your account is active or as needed to provide services. You may delete documents at any time. Upon account deletion, we remove your personal data within 30 days, except where retention is required by law.
-                            </p>
-                        </section>
+            <section id="third-party" class="mt-12 scroll-mt-28">
+                <h2 class="text-xl font-bold text-gray-900">Third-Party Services</h2>
+                <p class="mt-4 text-base leading-relaxed text-gray-600">We use third-party services for hosting, email delivery, analytics, and authentication under strict data processing agreements.</p>
+            </section>
 
-                        <section id="security" class="mt-10 scroll-mt-24">
-                            <h2 class="text-xl font-bold text-gray-900">Security</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-gray-600">
-                                We implement industry-standard security measures including AES-256 encryption at rest, TLS 1.3 in transit, access controls, and regular security audits. No method of transmission over the Internet is 100% secure, but we strive to protect your data.
-                            </p>
-                        </section>
+            <section id="rights" class="mt-12 scroll-mt-28">
+                <h2 class="text-xl font-bold text-gray-900">Your Rights</h2>
+                <p class="mt-4 text-base leading-relaxed text-gray-600">You may access, correct, delete, or export your data depending on your jurisdiction. Contact us to exercise these rights.</p>
+            </section>
 
-                        <section id="third-party" class="mt-10 scroll-mt-24">
-                            <h2 class="text-xl font-bold text-gray-900">Third-Party Services</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-gray-600">
-                                We may use third-party services for hosting, email delivery, analytics, and authentication (e.g., Google OAuth). These providers process data on our behalf under strict data processing agreements.
-                            </p>
-                        </section>
-
-                        <section id="rights" class="mt-10 scroll-mt-24">
-                            <h2 class="text-xl font-bold text-gray-900">Your Rights</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-gray-600">Depending on your jurisdiction, you may have the right to:</p>
-                            <ul class="mt-3 list-disc space-y-1.5 pl-5 text-sm text-gray-600">
-                                <li>Access and receive a copy of your personal data</li>
-                                <li>Correct inaccurate data</li>
-                                <li>Request deletion of your data</li>
-                                <li>Object to or restrict processing</li>
-                                <li>Data portability</li>
-                            </ul>
-                        </section>
-
-                        <section id="contact" class="mt-10 scroll-mt-24">
-                            <h2 class="text-xl font-bold text-gray-900">Contact Us</h2>
-                            <p class="mt-3 text-sm leading-relaxed text-gray-600">
-                                For privacy-related questions, contact us at <a href="mailto:privacy@cubsign.com" class="text-blue-600 hover:text-blue-700">privacy@cubsign.com</a> or visit our <a href="/contact" class="text-blue-600 hover:text-blue-700">Contact page</a>.
-                            </p>
-                        </section>
-                    </article>
-                </div>
-            </div>
-        </section>
+            <section id="contact" class="mt-12 scroll-mt-28">
+                <h2 class="text-xl font-bold text-gray-900">Contact Us</h2>
+                <p class="mt-4 text-base leading-relaxed text-gray-600">Email <a href="mailto:privacy@cubsign.com" class="text-blue-600 hover:text-blue-700">privacy@cubsign.com</a> or visit our <a href="/contact" class="text-blue-600 hover:text-blue-700">Contact page</a>.</p>
+            </section>
+        </LegalPageLayout>
     </PublicLayout>
 </template>

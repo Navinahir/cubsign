@@ -1,2 +1,9 @@
 User-agent: *
-Disallow:
+Disallow: /overview
+Disallow: /documents
+Disallow: /templates
+Disallow: /profile
+Disallow: /sign/
+Disallow: /r/
+
+Sitemap: https://cubsign.com/sitemap.xml

@@ -4,6 +4,100 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
+## Homepage Optimization — Reduce Length & Improve Conversion (v0.11.2)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.11.2 |
+| **Date** | 2026-06-26 |
+
+### Summary
+Conversion-focused homepage trim (~30–40% shorter). Removed redundant sections, merged duplicate messaging, tightened spacing, added compact modes to shared marketing components. Marketing UI only — no application logic, auth, signing, dashboard, editor, APIs, or routes changed.
+
+### Sections Removed
+- Product Showcase (7-screen tour)
+- Duplicate CTA banners (after Features, after Security)
+- Section dividers between homepage sections
+- Homepage FAQ search input
+- Success story cards in social proof
+
+### Sections Merged / Consolidated
+- Product demo → single Upload → Sign → Download row
+- Security → one section (shield + 6 cards, link to `/security`)
+- Features → 6 cards (`homeFeatureGrid`)
+- Pricing → 3-row comparison (`homePricingComparison`)
+- FAQ → 5 questions + link to full `/faq`
+
+### Spacing Improvements
+| Area | Before | After |
+|---|---|---|
+| Section padding (desktop) | ~140px (`py-16 lg:py-24`) | ~80px (`py-14 lg:py-20`) |
+| Section padding (mobile) | ~90px | ~56px |
+| Hero padding | `pt-12 lg:pt-16` | `pt-10 lg:pt-14` |
+| Footer top padding | `py-14` | `py-10` |
+| Feature cards | tall cards | max ~180px compact cards |
+
+### Components Updated
+- `FeatureGrid.vue` — `compact` prop, `homeFeatureGrid`
+- `WorkflowTimeline.vue` — smaller icons, tighter layout
+- `SecuritySection.vue` — `compact` prop
+- `SocialProof.vue` — `compact` prop (3 testimonials)
+- `PricingSection.vue` — `compact` prop, `homePricingComparison`
+- `MarketingHero.vue` — reduced padding
+- `Home.vue` — full restructure
+- `PublicLayout.vue` — footer spacing
+- `app.css` — `marketing-section` / `marketing-section-tight`
+- `marketing.js` — `homeFeatureGrid`, `homePricingComparison`, `APP_VERSION`
+
+### Regression Checklist
+- [x] Authentication — unchanged
+- [x] Signing workflow (`/sign/*`) — unchanged
+- [x] Dashboard / Editor — unchanged
+- [x] Backend APIs — unchanged
+- [x] Routes — unchanged
+
+### Build Status
+- `npm run build` — pass (1.53s)
+
+---
+
+## Marketing Website Final SaaS Polish (v0.11.1)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.11.1 |
+| **Date** | 2026-06-26 |
+
+### Summary
+Premium polish pass on the public marketing website. Product mockups, animated workflow, multiple CTAs, Security page, blog/legal/about/contact enhancements, dark footer with newsletter, SEO structured data + sitemap.
+
+### Routes Added
+- `GET /security` → `SecurityController` → `Security.vue`
+
+### Components Added
+ProductBrowserFrame, ProductMockup, MarketingHero, ProductShowcase, AnimatedCounter, CtaBanner, SectionDivider, DecorativeBg, BlogCover, LegalPageLayout
+
+### Responsive Verification
+- [x] Desktop, Laptop, Tablet, Mobile — no horizontal overflow
+- [x] Product mockups scale in grid layouts
+- [x] Footer stacks on mobile
+
+### Accessibility Checklist
+- [x] ARIA labels on social, newsletter, share buttons
+- [x] `prefers-reduced-motion` on counters, workflow, signature animation
+- [x] Semantic sections and headings
+- [x] Focus states on forms and accordions
+
+### Regression Checklist
+- [x] Auth, Editor, Dashboard, Signing, APIs — unchanged
+
+### Build Status
+- `npm run build` — pass (1.59s)
+
+---
+
 ## Marketing Website & SaaS Landing Page Redesign (v0.11.0)
 
 | Field | Value |

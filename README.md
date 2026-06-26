@@ -370,11 +370,27 @@ Logs rotate daily and are kept for 30 days. The token is partially masked (`…l
 
 Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLayout.vue`. Frontend-only — no backend API changes.
 
+**Current version:** v0.11.2 — Homepage optimized for conversion (~30–40% shorter scroll depth, compact sections, single CTA).
+
+### Homepage Structure (v0.11.2)
+
+| Section | Description |
+|---|---|
+| Hero | Product screenshot, primary/secondary CTAs, trust badges |
+| Product demo | Upload → Sign → Download (3 interactive mockups) |
+| Features | 6 compact cards (full list on `/features`) |
+| Workflow | 6-step horizontal timeline |
+| Security | Shield illustration + 6 cards (details on `/security`) |
+| Social proof | Stats, customer logos, 3 testimonials |
+| Pricing | Early Access card + 3-row comparison |
+| FAQ | Top 5 questions + link to `/faq` |
+| Final CTA | Single banner before footer |
+
 ### Public Pages
 
 | Route | Page |
 |---|---|
-| `/` | Home — redesigned SaaS landing page |
+| `/` | Home — compact conversion-focused SaaS landing page |
 | `/features` | Features |
 | `/pricing` | Pricing |
 | `/faq` | FAQ with search |
@@ -383,6 +399,7 @@ Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLa
 | `/privacy` | Privacy Policy |
 | `/terms` | Terms of Service |
 | `/cookies` | Cookie Policy |
+| `/security` | Security — encryption, audit trail, GDPR, SOC 2 |
 | `/blog` | Blog homepage |
 | `/blog/{slug}` | Blog article detail |
 
@@ -391,12 +408,13 @@ Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLa
 Reusable components live in `resources/js/Components/Marketing/`:
 
 - `ScrollReveal.vue` — Intersection Observer fade/slide animations (respects `prefers-reduced-motion`)
-- `SectionHeader.vue`, `WorkflowTimeline.vue`, `FeatureGrid.vue`, `SecuritySection.vue`
-- `SocialProof.vue`, `PricingSection.vue`, `FaqAccordion.vue`, `LegalToc.vue`
+- `SectionHeader.vue`, `WorkflowTimeline.vue`, `FeatureGrid.vue` (supports `compact`), `SecuritySection.vue` (supports `compact`)
+- `SocialProof.vue` (supports `compact`), `PricingSection.vue` (supports `compact`), `FaqAccordion.vue`, `LegalToc.vue`
+- `MarketingHero.vue`, `ProductMockup.vue`, `CtaBanner.vue`
 
 ### Shared Constants
 
-- `resources/js/constants/marketing.js` — copy, feature cards, security cards, footer links
+- `resources/js/constants/marketing.js` — copy, `homeFeatureGrid` (6), `homePricingComparison` (3), security cards, footer links
 - `resources/js/constants/blog.js` — static blog posts and helpers
 
 ### Responsive Checklist
@@ -416,7 +434,8 @@ Reusable components live in `resources/js/Components/Marketing/`:
 - [x] Email Verification — unchanged
 - [x] Request Signatures — unchanged
 - [x] Auto Detection — unchanged
-- [x] Backend APIs — unchanged (only new public page routes added)
+- [x] Backend APIs — unchanged
+- [x] Routes — unchanged (v0.11.2 is marketing UI only)
 
 ---
 

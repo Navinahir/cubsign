@@ -55,5 +55,51 @@
         .marketing-float {
             animation: none;
         }
+        .marketing-gradient-shift {
+            animation: none;
+        }
+        .marketing-signature-path {
+            animation: none;
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .marketing-card-lift {
+        @apply transition-all duration-300 ease-out;
+    }
+
+    .marketing-card-lift:hover {
+        @apply -translate-y-1 shadow-lg motion-reduce:translate-y-0;
+    }
+
+    .marketing-gradient-shift {
+        animation: marketing-gradient-shift 8s ease-in-out infinite;
+    }
+
+    @keyframes marketing-gradient-shift {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-10px, 10px) scale(1.05); }
+    }
+
+    .marketing-signature-path {
+        stroke-dasharray: 300;
+        stroke-dashoffset: 300;
+        animation: marketing-draw-signature 2.5s ease-out forwards;
+    }
+
+    @keyframes marketing-draw-signature {
+        to { stroke-dashoffset: 0; }
+    }
+
+    .marketing-section {
+        @apply px-4 py-14 sm:px-6 lg:px-20 lg:py-20;
+    }
+
+    .marketing-section-alt {
+        @apply marketing-section bg-gradient-to-b from-gray-50/80 to-white;
+    }
+
+    .marketing-section-tight {
+        @apply px-4 py-10 sm:px-6 lg:px-8 lg:py-14;
     }
 }
