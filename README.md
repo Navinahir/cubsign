@@ -370,13 +370,23 @@ Logs rotate daily and are kept for 30 days. The token is partially masked (`…l
 
 Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLayout.vue`. Frontend-only — no backend API changes.
 
-**Current version:** v0.11.5 — Compact “How It Works” product demo on homepage.
+**Current version:** v0.12.0 — Final marketing cleanup: shorter homepage, human copy tone, dead code removed.
 
-### Homepage “How It Works” (v0.11.5)
+### Homepage Structure (v0.12.0)
 
-Three-column Upload → Sign → Download demo uses `ProductMockup` **`size="compact"`** (~320–360px card height): smaller browser chrome, tighter mockup content, compact `SectionHeader`, reduced section padding.
+| Section | Description |
+|---|---|
+| Hero | Product screenshot, CTAs, trust badges |
+| How it works | Upload → Sign → Download (compact mockups) |
+| Workflow | 6-step timeline |
+| Social proof | Stats, audience categories, testimonials |
+| Pricing | Early Access card + comparison |
+| FAQ | Top 5 questions + link to `/faq` |
+| Final CTA | Single banner before footer |
 
-### Footer (v0.11.4)
+Removed from homepage (v0.12.0): duplicate Features grid, Security section. Full feature list remains on `/features`. Security details remain in hero badges, Privacy Policy, and footer.
+
+### Footer (v0.11.4+)
 
 | Section | Links |
 |---|---|
@@ -387,25 +397,11 @@ Three-column Upload → Sign → Download demo uses `ProductMockup` **`size="com
 
 Removed: Developers column, Support column, duplicate bottom legal links, broken external URLs (Status, API, docs.cubsign.com). Social links and newsletter are UI-only until launch.
 
-### Homepage Structure (v0.11.2)
-
-| Section | Description |
-|---|---|
-| Hero | Product screenshot, primary/secondary CTAs, trust badges |
-| Product demo | Upload → Sign → Download (3 interactive mockups) |
-| Features | 6 compact cards (full list on `/features`) |
-| Workflow | 6-step horizontal timeline |
-| Security | Shield illustration + 5 cards (homepage only; no dedicated page) |
-| Social proof | Stats, customer logos, 3 testimonials |
-| Pricing | Early Access card + 3-row comparison |
-| FAQ | Top 5 questions + link to `/faq` |
-| Final CTA | Single banner before footer |
-
 ### Public Pages
 
 | Route | Page |
 |---|---|
-| `/` | Home — compact conversion-focused SaaS landing page |
+| `/` | Home — streamlined SaaS landing page |
 | `/features` | Features |
 | `/pricing` | Pricing |
 | `/faq` | FAQ with search |
@@ -422,13 +418,12 @@ Removed: Developers column, Support column, duplicate bottom legal links, broken
 Reusable components live in `resources/js/Components/Marketing/`:
 
 - `ScrollReveal.vue` — Intersection Observer fade/slide animations (respects `prefers-reduced-motion`)
-- `SectionHeader.vue`, `WorkflowTimeline.vue`, `FeatureGrid.vue` (supports `compact`), `SecuritySection.vue` (supports `compact`)
-- `SocialProof.vue` (supports `compact`), `PricingSection.vue` (supports `compact`), `FaqAccordion.vue`, `LegalToc.vue`
-- `MarketingHero.vue`, `ProductMockup.vue`, `CtaBanner.vue`
+- `SectionHeader.vue` (supports `compact`), `WorkflowTimeline.vue`, `ProductMockup.vue` (supports `size="compact"`)
+- `SocialProof.vue` (supports `compact`), `PricingSection.vue` (supports `compact`), `FaqAccordion.vue`, `MarketingHero.vue`, `CtaBanner.vue`
 
 ### Shared Constants
 
-- `resources/js/constants/marketing.js` — copy, `homeFeatureGrid` (6), `homePricingComparison` (3), security cards, footer links
+- `resources/js/constants/marketing.js` — copy, `homePricingComparison`, `securityPageFeatures` (reserved for future Trust Center), footer links
 - `resources/js/constants/blog.js` — static blog posts and helpers
 
 ### Responsive Checklist

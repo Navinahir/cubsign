@@ -7,8 +7,6 @@ import MarketingHero from '@/Components/Marketing/MarketingHero.vue';
 import ScrollReveal from '@/Components/Marketing/ScrollReveal.vue';
 import SectionHeader from '@/Components/Marketing/SectionHeader.vue';
 import WorkflowTimeline from '@/Components/Marketing/WorkflowTimeline.vue';
-import FeatureGrid from '@/Components/Marketing/FeatureGrid.vue';
-import SecuritySection from '@/Components/Marketing/SecuritySection.vue';
 import SocialProof from '@/Components/Marketing/SocialProof.vue';
 import PricingSection from '@/Components/Marketing/PricingSection.vue';
 import FaqAccordion from '@/Components/Marketing/FaqAccordion.vue';
@@ -22,7 +20,7 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
 <template>
     <MarketingSeo
         title="CubSign – Free Online PDF Signing"
-        description="Sign PDFs online for free. Upload documents, request signatures, and download signed PDFs securely with CubSign."
+        description="Sign PDFs online for free. Upload a document, add your signature, request signatures from others, and download the finished PDF."
         path="/"
         :faq-schema="homeFaqs"
         type="website"
@@ -30,18 +28,16 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
 
     <PublicLayout>
         <div class="pb-20 md:pb-0">
-            <!-- Hero -->
             <MarketingHero :has-sign-session="hasSignSession" />
 
-            <!-- Product demo: Upload → Sign → Download -->
             <section class="marketing-section-alt !py-10 lg:!py-14">
                 <div class="mx-auto max-w-6xl">
                     <ScrollReveal class="mb-4">
                         <SectionHeader
                             compact
                             eyebrow="How it works"
-                            title="Upload, sign, download — in under a minute"
-                            description="The same flow as the real app. No account required."
+                            title="Upload, sign, and download your PDF in under a minute"
+                            description="This is the same flow you get in the app. No account required."
                         />
                     </ScrollReveal>
                     <ScrollReveal :delay="60">
@@ -81,60 +77,37 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
                 </div>
             </section>
 
-            <!-- Features -->
             <section class="marketing-section">
                 <div class="mx-auto max-w-6xl">
                     <ScrollReveal class="mb-6">
-                        <SectionHeader eyebrow="Features" title="Everything you need to sign smarter" />
-                    </ScrollReveal>
-                    <ScrollReveal :delay="60"><FeatureGrid compact /></ScrollReveal>
-                    <p class="mt-6 text-center">
-                        <Link :href="route('features')" class="text-sm font-medium text-blue-600 hover:text-blue-700">See all features &rarr;</Link>
-                    </p>
-                </div>
-            </section>
-
-            <!-- Workflow -->
-            <section class="marketing-section-alt">
-                <div class="mx-auto max-w-6xl">
-                    <ScrollReveal class="mb-6">
-                        <SectionHeader eyebrow="Workflow" title="Six simple steps to a signed PDF" />
+                        <SectionHeader
+                            eyebrow="Workflow"
+                            title="From upload to signed PDF"
+                            description="Six steps. Most documents are finished in a few minutes."
+                        />
                     </ScrollReveal>
                     <ScrollReveal :delay="60"><WorkflowTimeline /></ScrollReveal>
                 </div>
             </section>
 
-            <!-- Security -->
-            <section class="marketing-section">
-                <div class="mx-auto max-w-6xl">
-                    <ScrollReveal class="mb-6">
-                        <SectionHeader eyebrow="Security" title="Enterprise-grade protection, built in" />
-                    </ScrollReveal>
-                    <ScrollReveal :delay="60"><SecuritySection compact /></ScrollReveal>
-                </div>
-            </section>
-
-            <!-- Social proof -->
             <section class="marketing-section-alt">
                 <div class="mx-auto max-w-6xl">
                     <ScrollReveal class="mb-6">
-                        <SectionHeader eyebrow="Trusted" title="Loved by people who value their time" />
+                        <SectionHeader eyebrow="Early Access" title="Used by freelancers, teams, and small businesses" />
                     </ScrollReveal>
                     <ScrollReveal :delay="60"><SocialProof compact /></ScrollReveal>
                 </div>
             </section>
 
-            <!-- Pricing -->
             <section class="marketing-section">
                 <div class="mx-auto max-w-5xl">
                     <ScrollReveal class="mb-6">
-                        <SectionHeader :eyebrow="EARLY_ACCESS_HEADLINE" title="Simple, transparent pricing" />
+                        <SectionHeader :eyebrow="EARLY_ACCESS_HEADLINE" title="Pricing" description="CubSign is free while we are in Early Access." />
                     </ScrollReveal>
                     <ScrollReveal :delay="60"><PricingSection compact /></ScrollReveal>
                 </div>
             </section>
 
-            <!-- FAQ -->
             <section class="marketing-section-alt">
                 <div class="mx-auto max-w-2xl">
                     <ScrollReveal class="mb-6">
@@ -146,12 +119,11 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
                 </div>
             </section>
 
-            <!-- Final CTA -->
             <section class="marketing-section-tight">
                 <div class="mx-auto max-w-4xl">
                     <ScrollReveal>
                         <CtaBanner
-                            title="Start signing documents today"
+                            title="Ready to sign your first document?"
                             description="Free during Early Access. No credit card required."
                             primary-label="Get Started Free"
                             secondary-label="Sign Without Account"

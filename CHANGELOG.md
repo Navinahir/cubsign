@@ -5,7 +5,35 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
-## [v0.11.5] 2026-06-26 — Compact “How It Works” Section
+## [v0.12.0] 2026-06-26 — Marketing Website Final Cleanup
+
+### Removed (Homepage)
+- **Features section** — "Everything you need to sign smarter" grid and "See all features" link (full list remains on `/features`).
+- **Security section** — shield illustration and encryption cards (security still in hero badges, Privacy Policy, footer).
+
+### Copy Refinement
+- Rewrote homepage headings and descriptions in a concise, human tone.
+- Removed AI-style phrases: em dashes, "enterprise-grade", "bank-grade", "everything you need", fake "900+ users" hero block.
+- Updated hero: "Sign PDFs online in minutes", natural subhead, "Encrypted documents" badge.
+- Updated Features page header and Contact footer tagline for consistency.
+
+### Dead Code Removed
+- **Components deleted:** `FeatureGrid.vue`, `SecuritySection.vue`, `ProductShowcase.vue`, `SectionDivider.vue`
+- **Constants removed:** `homeFeatureGrid`, `featureGrid`, `securityCards`
+- **Kept:** `securityPageFeatures` (future Trust Center)
+
+### Homepage Sections (final)
+Hero → How it works → Workflow → Social proof → Pricing → FAQ → CTA
+
+### Regression Checklist
+- [x] Authentication, signing, dashboard, editor, APIs, routes — unchanged
+
+### Build
+- `npm run build` — pass (2.35s); Home chunk ~35 kB gzip ~9.5 kB
+
+---
+
+## [v0.11.5] 2026-06-26 — Compact "How It Works" Section
 
 ### Changed
 - Homepage **Upload → Sign → Download** section height reduced ~35–45%.

@@ -116,7 +116,7 @@ function navLinkClass(routeName, mobile = false) {
                             </div>
                             <span class="font-bold text-white">CubSign</span>
                         </Link>
-                        <p class="mt-3 max-w-xs text-sm leading-relaxed text-gray-400">{{ EARLY_ACCESS_HEADLINE }} — simple, secure PDF signing.</p>
+                        <p class="mt-3 max-w-xs text-sm leading-relaxed text-gray-400">{{ EARLY_ACCESS_HEADLINE }}. Simple PDF signing.</p>
                         <div class="mt-5 flex gap-3">
                             <a
                                 v-for="social in SOCIAL_LINKS"

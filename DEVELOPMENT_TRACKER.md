@@ -4,7 +4,47 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
-## Compact “How It Works” Section (v0.11.5)
+## Marketing Website Final Cleanup (v0.12.0)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.12.0 |
+| **Date** | 2026-06-26 |
+
+### Summary
+Final marketing polish before release. Removed duplicate homepage sections, rewrote copy to sound human and professional, deleted unused components and constants. **No application logic modified.**
+
+### Homepage Simplification
+| Removed | Reason |
+|---|---|
+| Features section | Redundant with demo, workflow, and `/features` page |
+| Security section | Already covered in hero, legal pages, footer |
+
+### Copy Changes (examples)
+| Before | After |
+|---|---|
+| The fastest way to sign PDFs online | Sign PDFs online in minutes |
+| Upload, sign, download — in under a minute | Upload, sign, and download your PDF in under a minute |
+| Enterprise-grade protection, built in | *(section removed)* |
+| Loved by people who value their time | Used by freelancers, teams, and small businesses |
+| Bank-grade security | Encrypted storage |
+
+### Files Deleted
+`FeatureGrid.vue`, `SecuritySection.vue`, `ProductShowcase.vue`, `SectionDivider.vue`
+
+### Files Modified
+`Home.vue`, `MarketingHero.vue`, `marketing.js`, `Features.vue`, `Contact.vue`, `PublicLayout.vue`
+
+### Build Status
+- `npm run build` — pass (2.35s)
+
+### Regression Checklist
+- [x] Auth, guest signing, editor, dashboard, APIs, business logic — unchanged
+
+---
+
+## Compact "How It Works" Section (v0.11.5)
 
 | Field | Value |
 |---|---|

@@ -46,7 +46,7 @@ const features = [
     },
     {
         title: 'Audit Trail',
-        description: 'Every action on every document is logged — who viewed it, who signed it, and when. Timestamps, IP addresses, and a complete chain of custody make your documents legally defensible.',
+        description: 'Every action on every document is logged: who viewed it, who signed it, and when. Timestamps and IP addresses help you verify what happened.',
         icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
         color: 'bg-amber-50 text-amber-600',
         bullets: [
@@ -72,10 +72,10 @@ const features = [
                     {{ EARLY_ACCESS_HEADLINE }}
                 </span>
                 <h1 class="mt-5 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-                    Everything you need to sign smarter
+                    Tools for signing PDFs online
                 </h1>
                 <p class="mx-auto mt-5 max-w-2xl text-lg text-gray-500">
-                    CubSign is built around one goal: making PDF signing fast, simple, and professional — without the complexity.
+                    Sign documents yourself, send them to others, and keep a record of what was signed and when.
                 </p>
             </div>
         </section>

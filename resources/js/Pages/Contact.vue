@@ -34,7 +34,7 @@ function handleSubmit() {
             <DecorativeBg pattern="dots" />
             <div class="relative mx-auto max-w-2xl text-center">
                 <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Get in Touch</h1>
-                <p class="mx-auto mt-4 max-w-lg text-lg text-gray-600">Questions, feedback, or need help? Send us a message — we're a small team and read every note during Early Access.</p>
+                <p class="mx-auto mt-4 max-w-lg text-lg text-gray-600">Questions, feedback, or need help? Send us a message. We are a small team and read every note during Early Access.</p>
             </div>
         </section>
 
