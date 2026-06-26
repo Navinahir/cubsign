@@ -56,15 +56,135 @@ class TemplateEditorState
         ];
     }
 
+    /** Field types allowed on a simple single-signer self-sign template. */
+    private const SIMPLE_SELF_SIGN_TYPES = [
+        'signature',
+        'initials',
+        'date',
+        'name',
+    ];
+
     /**
-     * Editor state for a new Document created from a template — fields only, no signing metadata.
+     * Prepare editor_state for a brand-new Document from a template.
+     *
+     * Copies layout only (fields + zoom). Strips signing session metadata, re-sequences
+     * field ids, and resets every field value to an empty placeholder.
+     *
+     * Simple layouts (signature/initials ± date/name, single signer) receive a
+     * signingMode of "self", the document owner as recipient, and signer assignments
+     * so the Sign Editor opens ready for Just Me. Complex layouts omit signing
+     * defaults and behave like a freshly uploaded document.
      *
      * @param  array<string, mixed>|null  $templateState
+     * @param  object{name?: string|null, email?: string|null}|null  $owner
      * @return array<string, mixed>
      */
-    public static function forSignDocument(?array $templateState): array
+    public static function forSignDocument(?array $templateState, ?object $owner = null): array
     {
-        return self::sanitize($templateState);
+        $sanitized = self::sanitize($templateState);
+
+        $fields = [];
+        $nextId = 1;
+        foreach ($sanitized['placedFields'] as $field) {
+            $fields[] = self::fieldForSignDocument($field, $nextId++);
+        }
+
+        $state = [
+            'placedFields' => $fields,
+            'scale'        => $sanitized['scale'],
+        ];
+
+        if ($owner !== null && self::isSimpleSelfSignLayout($fields)) {
+            $state = self::applySelfSignDefaults($state, $owner);
+        }
+
+        return $state;
+    }
+
+    /**
+     * Simple templates: only signature/initials (± date/name) for a single signer.
+     *
+     * @param  list<array<string, mixed>>  $fields
+     */
+    public static function isSimpleSelfSignLayout(array $fields): bool
+    {
+        $signatureCount = 0;
+
+        foreach ($fields as $field) {
+            $type = (string) ($field['type'] ?? '');
+
+            if (! in_array($type, self::SIMPLE_SELF_SIGN_TYPES, true)) {
+                return false;
+            }
+
+            if ($type === 'signature') {
+                $signatureCount++;
+            }
+        }
+
+        return $signatureCount <= 1;
+    }
+
+    /**
+     * @param  array<string, mixed>  $state
+     * @param  object{name?: string|null, email?: string|null}  $owner
+     * @return array<string, mixed>
+     */
+    private static function applySelfSignDefaults(array $state, object $owner): array
+    {
+        $state['signingMode']       = 'self';
+        $state['recipients']        = [self::ownerRecipient($owner)];
+        $state['activeRecipientId'] = 1;
+        $state['placedFields']      = array_map(
+            static fn (array $field): array => array_merge($field, [
+                'signerId'    => 1,
+                'signingMode' => 'self',
+            ]),
+            $state['placedFields'],
+        );
+
+        return $state;
+    }
+
+    /**
+     * @param  object{name?: string|null, email?: string|null}  $owner
+     * @return array<string, mixed>
+     */
+    private static function ownerRecipient(object $owner): array
+    {
+        return [
+            'id'           => 1,
+            'name'         => (string) ($owner->name ?? ''),
+            'email'        => (string) ($owner->email ?? ''),
+            'color'        => '#3B82F6',
+            'role'         => 'signer',
+            'signingOrder' => 1,
+            'status'       => 'pending',
+        ];
+    }
+
+    /**
+     * Single placed field for a new signing document — layout keys only.
+     *
+     * @param  array<string, mixed>  $field  output of sanitizeField()
+     * @return array<string, mixed>
+     */
+    private static function fieldForSignDocument(array $field, int $id): array
+    {
+        $type = (string) $field['type'];
+
+        return [
+            'id'       => $id,
+            'type'     => $type,
+            'pageNum'  => $field['pageNum'],
+            'x'        => $field['x'],
+            'y'        => $field['y'],
+            'w'        => $field['w'],
+            'h'        => $field['h'],
+            'label'    => $field['label'],
+            'required' => $field['required'],
+            'value'    => self::placeholderValue($type),
+        ];
     }
 
     /**

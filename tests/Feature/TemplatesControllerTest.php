@@ -109,10 +109,18 @@ class TemplatesControllerTest extends TestCase
         $template = $this->makeTemplate([
             'editor_state' => [
                 'placedFields' => [
-                    ['id' => 1, 'type' => 'date', 'pageNum' => 1, 'x' => 0, 'y' => 0, 'w' => 140, 'h' => 32, 'value' => '6/26/2026'],
+                    [
+                        'id' => 1, 'type' => 'signature', 'pageNum' => 1,
+                        'x' => 10, 'y' => 20, 'w' => 180, 'h' => 60,
+                        'signerId' => 1, 'signingMode' => 'request',
+                        'value' => ['sigType' => 'image', 'src' => 'data:image/png;base64,x'],
+                    ],
+                    ['id' => 2, 'type' => 'date', 'pageNum' => 1, 'x' => 0, 'y' => 0, 'w' => 140, 'h' => 32, 'value' => '6/26/2026'],
                 ],
-                'signingMode' => 'self',
-                'recipients'  => [['id' => 1, 'name' => 'Alex']],
+                'signingMode'    => 'request',
+                'recipients'     => [['id' => 1, 'name' => 'Alex', 'email' => 'alex@example.com']],
+                'savedSignature' => ['type' => 'image', 'src' => 'x'],
+                'activePage'     => 2,
             ],
         ]);
 
@@ -123,17 +131,60 @@ class TemplatesControllerTest extends TestCase
         $response->assertRedirect(route('sign.editor'));
         $response->assertSessionHas('sign_token');
         $response->assertSessionHas('sign_document_id');
+        $this->assertNotSame('old-token', session('sign_token'));
 
         $document = Document::where('user_id', $this->user->id)->latest()->first();
         $this->assertNotNull($document);
+        $this->assertSame('draft', $document->status);
         $this->assertSame(session('sign_document_id'), $document->id);
         $this->assertSame(session('sign_token'), $document->sign_token);
-        $this->assertArrayNotHasKey('signingMode', $document->editor_state);
-        $this->assertArrayNotHasKey('recipients', $document->editor_state);
-        $this->assertSame('', $document->editor_state['placedFields'][0]['value']);
+
+        $state = $document->editor_state;
+        $this->assertArrayHasKey('placedFields', $state);
+        $this->assertArrayHasKey('scale', $state);
+        $this->assertSame('self', $state['signingMode']);
+        $this->assertCount(1, $state['recipients']);
+        $this->assertSame($this->user->name, $state['recipients'][0]['name']);
+        $this->assertSame($this->user->email, $state['recipients'][0]['email']);
+        $this->assertArrayNotHasKey('savedSignature', $state);
+        $this->assertArrayNotHasKey('activePage', $state);
+
+        $this->assertSame(['sigType' => 'text', 'src' => 'Signature'], $state['placedFields'][0]['value']);
+        $this->assertSame('', $state['placedFields'][1]['value']);
+        $this->assertSame(1, $state['placedFields'][0]['signerId']);
+        $this->assertSame('self', $state['placedFields'][0]['signingMode']);
 
         $this->assertDatabaseCount('sign_sessions', 1);
         $this->assertTrue(Storage::disk('documents')->exists('sign/' . $document->sign_token . '.pdf'));
+    }
+
+    public function test_use_complex_template_omits_signing_defaults(): void
+    {
+        $template = $this->makeTemplate([
+            'editor_state' => [
+                'placedFields' => [
+                    [
+                        'id' => 1, 'type' => 'signature', 'pageNum' => 1,
+                        'x' => 10, 'y' => 20, 'w' => 180, 'h' => 60,
+                    ],
+                    [
+                        'id' => 2, 'type' => 'signature', 'pageNum' => 2,
+                        'x' => 10, 'y' => 20, 'w' => 180, 'h' => 60,
+                    ],
+                ],
+            ],
+        ]);
+
+        $response = $this->actingAs($this->user)->post(route('templates.use', $template));
+
+        $response->assertRedirect(route('sign.editor'));
+
+        $document = Document::where('user_id', $this->user->id)->latest()->first();
+        $state    = $document->editor_state;
+
+        $this->assertArrayNotHasKey('signingMode', $state);
+        $this->assertArrayNotHasKey('recipients', $state);
+        $this->assertArrayNotHasKey('signerId', $state['placedFields'][0]);
     }
 
     public function test_other_user_cannot_edit_template(): void

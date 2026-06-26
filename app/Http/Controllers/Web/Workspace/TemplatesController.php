@@ -227,6 +227,13 @@ class TemplatesController extends Controller
         return redirect()->route('templates.index');
     }
 
+    /**
+     * Create a fresh draft document from a template and open the Sign Editor.
+     *
+     * Copies PDF + field layout only. Simple templates also receive Just Me defaults
+     * (signing mode, owner recipient, field assignments). Complex templates open
+     * without signing defaults so the user chooses the mode in the editor.
+     */
     public function useTemplate(Template $template): RedirectResponse
     {
         $this->gate($template);
@@ -240,12 +247,11 @@ class TemplatesController extends Controller
 
         $diskPath = 'sign/' . $token . '.pdf';
 
-        // Ensure the sign directory exists (may be absent on a fresh install)
         Storage::disk('documents')->makeDirectory('sign');
         Storage::disk('documents')->copy($template->pdf_path, $diskPath);
 
-        $fileSize = Storage::disk('documents')->size($diskPath);
-        $cleanState = TemplateEditorState::forSignDocument($template->editor_state);
+        $fileSize   = Storage::disk('documents')->size($diskPath);
+        $cleanState = TemplateEditorState::forSignDocument($template->editor_state, $user);
 
         $document = DB::transaction(function () use ($user, $token, $diskPath, $fileSize, $template, $cleanState) {
             SignSession::create([
