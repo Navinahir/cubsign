@@ -66,7 +66,7 @@ export const journeySteps = [
     { title: 'Complete', description: 'Download the fully signed PDF.' },
 ];
 
-export const APP_VERSION = '0.11.3';
+export const APP_VERSION = '0.11.5';
 
 /** Social profiles — use # until official accounts are live */
 export const SOCIAL_LINKS = [
@@ -160,6 +160,7 @@ export const successStories = [
     { company: 'Summit Legal', quote: 'Client NDAs are signed before the meeting ends.', metric: '500+ docs/mo', initials: 'SL', bg: 'bg-emerald-500' },
 ];
 
+/** Reserved for a future dedicated Security / Trust Center page (SOC 2, ISO 27001, etc.) */
 export const securityPageFeatures = [
     { title: 'Bank-Grade Encryption', description: 'AES-256 encryption at rest and TLS 1.3 in transit for all documents.', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
     { title: 'Audit Trail', description: 'Complete event history with timestamps, IP addresses, and signer identity.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
@@ -268,34 +269,29 @@ export const featureGrid = [
 
 export const securityCards = [
     {
-        title: 'Encryption',
-        description: 'AES-256 encryption at rest and TLS 1.3 in transit protect every document.',
+        title: 'AES-256 Encryption',
+        description: 'Industry-standard encryption protects every document at rest.',
         icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+    },
+    {
+        title: 'TLS 1.3',
+        description: 'All data in transit is secured with modern TLS protocols.',
+        icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+    },
+    {
+        title: 'Audit Trail',
+        description: 'Complete event history with timestamps and signer identity.',
+        icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
+    },
+    {
+        title: 'Privacy First',
+        description: 'Your data is never sold. You control who sees your documents.',
+        icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
     },
     {
         title: 'Secure Cloud Storage',
         description: 'Documents stored on enterprise-grade infrastructure with access controls.',
         icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z',
-    },
-    {
-        title: 'Audit Trail',
-        description: 'Complete event history with timestamps, IP addresses, and signer identity.',
-        icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
-    },
-    {
-        title: 'Email Verification',
-        description: 'Verified email addresses ensure signers are who they claim to be.',
-        icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
-    },
-    {
-        title: 'Tamper Detection',
-        description: 'Signed PDFs are locked to prevent unauthorized modifications after signing.',
-        icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
-    },
-    {
-        title: 'Privacy',
-        description: 'Your data is never sold. You control who sees your documents.',
-        icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
     },
 ];
 
@@ -358,7 +354,6 @@ export const footerLinks = {
     product: [
         { label: 'Features', routeName: 'features' },
         { label: 'Pricing', routeName: 'pricing' },
-        { label: 'Security', routeName: 'security' },
         { label: 'FAQ', routeName: 'faq' },
     ],
     company: [

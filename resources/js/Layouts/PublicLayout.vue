@@ -10,7 +10,6 @@ const user = computed(() => page.props.auth?.user ?? null);
 
 const navLinks = [
     { label: 'Features', routeName: 'features' },
-    { label: 'Security', routeName: 'security' },
     { label: 'Pricing', routeName: 'pricing' },
     { label: 'Blog', routeName: 'blog' },
     { label: 'FAQ', routeName: 'faq' },

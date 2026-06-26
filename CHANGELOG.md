@@ -5,6 +5,58 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.11.5] 2026-06-26 — Compact “How It Works” Section
+
+### Changed
+- Homepage **Upload → Sign → Download** section height reduced ~35–45%.
+- **`ProductMockup`** — new `size="compact"` for dashboard, signature, and complete variants (smaller padding, fewer list items, shorter signature canvas).
+- **`ProductBrowserFrame`** — compact chrome (smaller traffic lights, URL bar, `rounded-xl`, lighter shadow).
+- **`SectionHeader`** — new `compact` prop (tighter title/description spacing, smaller heading).
+- Demo cards: `max-h-[360px]`, `p-3`, `rounded-xl`, hover lift; smaller step badges and CTA button.
+
+### Responsive
+- Desktop/tablet: 3-column grid, `gap-3`
+- Mobile: vertical stack with compact mockups
+
+### Regression Checklist
+- [x] Authentication, signing, dashboard, editor, APIs, routes — unchanged
+
+### Build
+- `npm run build` — pass
+
+---
+
+## [v0.11.4] 2026-06-26 — Remove Dedicated Security Page
+
+### Removed
+- **`/security` route** — replaced with redirect to `/` for old bookmarks.
+- **`Security.vue`** page component.
+- **`SecurityController.php`** controller.
+- **Security** from top navigation, mobile navigation, and footer Product links.
+- **`/security`** entry from `sitemap.xml`.
+- **“Learn more”** link from homepage `SecuritySection` (no Security page CTAs).
+
+### Preserved
+- Homepage **SecuritySection** with 5 cards: AES-256 Encryption, TLS 1.3, Audit Trail, Privacy First, Secure Cloud Storage.
+- **`securityPageFeatures`** constant (commented for future Trust Center reintroduction).
+- **`SecuritySection.vue`** shared component (used on homepage).
+- Security content in **Privacy Policy** (inline; links to Terms instead of removed page).
+
+### Changed
+- `PublicLayout.vue` — nav: Features, Pricing, Blog, FAQ.
+- `footerLinks.product` — Features, Pricing, FAQ only.
+- `Privacy.vue` — removed `/security` link.
+- `APP_VERSION` → `0.11.4`.
+
+### Regression Checklist
+- [x] Authentication, Editor, Dashboard, Signing flows — unchanged
+- [x] Business logic, APIs, database — unchanged
+
+### Build
+- `npm run build` — pass (1.82s)
+
+---
+
 ## [v0.11.3] 2026-06-26 — Marketing Website Final Production Cleanup
 
 ### Footer Cleanup

@@ -1,4 +1,5 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import LegalPageLayout from '@/Components/Marketing/LegalPageLayout.vue';
@@ -55,7 +56,7 @@ const sections = [
 
             <section id="security" class="mt-12 scroll-mt-28">
                 <h2 class="text-xl font-bold text-gray-900">Security</h2>
-                <p class="mt-4 text-base leading-relaxed text-gray-600">AES-256 encryption at rest, TLS 1.3 in transit, and access controls protect your documents. <a href="/security" class="text-blue-600 hover:text-blue-700">Learn more about our security</a>.</p>
+                <p class="mt-4 text-base leading-relaxed text-gray-600">AES-256 encryption at rest, TLS 1.3 in transit, and access controls protect your documents. See our <Link :href="route('terms')" class="text-blue-600 hover:text-blue-700">Terms of Service</Link> for full details.</p>
             </section>
 
             <section id="third-party" class="mt-12 scroll-mt-28">

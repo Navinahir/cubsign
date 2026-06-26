@@ -34,38 +34,45 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
             <MarketingHero :has-sign-session="hasSignSession" />
 
             <!-- Product demo: Upload → Sign → Download -->
-            <section class="marketing-section-alt">
+            <section class="marketing-section-alt !py-10 lg:!py-14">
                 <div class="mx-auto max-w-6xl">
-                    <ScrollReveal class="mb-6">
+                    <ScrollReveal class="mb-4">
                         <SectionHeader
+                            compact
                             eyebrow="How it works"
                             title="Upload, sign, download — in under a minute"
                             description="The same flow as the real app. No account required."
                         />
                     </ScrollReveal>
                     <ScrollReveal :delay="60">
-                        <div class="grid gap-4 md:grid-cols-3">
-                            <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-                                <p class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
-                                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</span>
+                        <div class="grid gap-3 sm:grid-cols-3">
+                            <div class="marketing-card-lift flex max-h-[360px] flex-col rounded-xl border border-gray-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
+                                <p class="mb-2 flex items-center gap-1.5 text-xs font-semibold text-gray-900">
+                                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">1</span>
                                     Upload
                                 </p>
-                                <ProductMockup variant="dashboard" />
+                                <div class="min-h-0 flex-1 overflow-hidden">
+                                    <ProductMockup variant="dashboard" size="compact" />
+                                </div>
                             </div>
-                            <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-                                <p class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
-                                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">2</span>
+                            <div class="marketing-card-lift flex max-h-[360px] flex-col rounded-xl border border-gray-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
+                                <p class="mb-2 flex items-center gap-1.5 text-xs font-semibold text-gray-900">
+                                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">2</span>
                                     Sign
                                 </p>
-                                <ProductMockup variant="signature" />
+                                <div class="min-h-0 flex-1 overflow-hidden">
+                                    <ProductMockup variant="signature" size="compact" />
+                                </div>
                             </div>
-                            <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-                                <p class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
-                                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">3</span>
+                            <div class="marketing-card-lift flex max-h-[360px] flex-col rounded-xl border border-gray-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md sm:max-h-none">
+                                <p class="mb-2 flex items-center gap-1.5 text-xs font-semibold text-gray-900">
+                                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">3</span>
                                     Download
                                 </p>
-                                <ProductMockup variant="complete" />
-                                <Link :href="route('sign.index')" class="mt-3 flex w-full items-center justify-center rounded-xl bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">
+                                <div class="min-h-0 flex-1 overflow-hidden">
+                                    <ProductMockup variant="complete" size="compact" />
+                                </div>
+                                <Link :href="route('sign.index')" class="mt-2 flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-700">
                                     {{ CTA_START_SIGNING }}
                                 </Link>
                             </div>

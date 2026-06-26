@@ -1,5 +1,4 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
 import { securityCards } from '@/constants/marketing';
 
 defineProps({
@@ -22,7 +21,6 @@ defineProps({
                     <path d="M75 115 L92 132 L130 90" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 <p class="mt-3 text-center text-sm font-semibold text-white">Enterprise-grade Security</p>
-                <Link v-if="compact" :href="route('security')" class="mt-2 block text-center text-xs text-blue-200 hover:text-white">Learn more &rarr;</Link>
             </div>
         </div>
 

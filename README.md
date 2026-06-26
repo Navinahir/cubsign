@@ -370,13 +370,17 @@ Logs rotate daily and are kept for 30 days. The token is partially masked (`…l
 
 Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLayout.vue`. Frontend-only — no backend API changes.
 
-**Current version:** v0.11.3 — Production cleanup: simplified footer, contact page, placeholder links, neutral copy.
+**Current version:** v0.11.5 — Compact “How It Works” product demo on homepage.
 
-### Footer (v0.11.3)
+### Homepage “How It Works” (v0.11.5)
+
+Three-column Upload → Sign → Download demo uses `ProductMockup` **`size="compact"`** (~320–360px card height): smaller browser chrome, tighter mockup content, compact `SectionHeader`, reduced section padding.
+
+### Footer (v0.11.4)
 
 | Section | Links |
 |---|---|
-| Product | Features, Pricing, Security, FAQ |
+| Product | Features, Pricing, FAQ |
 | Company | About, Blog, Contact |
 | Legal | Privacy Policy, Terms, Cookie Policy |
 | Resources | Documentation (coming soon), Help Center → `/faq` |
@@ -391,7 +395,7 @@ Removed: Developers column, Support column, duplicate bottom legal links, broken
 | Product demo | Upload → Sign → Download (3 interactive mockups) |
 | Features | 6 compact cards (full list on `/features`) |
 | Workflow | 6-step horizontal timeline |
-| Security | Shield illustration + 6 cards (details on `/security`) |
+| Security | Shield illustration + 5 cards (homepage only; no dedicated page) |
 | Social proof | Stats, customer logos, 3 testimonials |
 | Pricing | Early Access card + 3-row comparison |
 | FAQ | Top 5 questions + link to `/faq` |
@@ -410,7 +414,6 @@ Removed: Developers column, Support column, duplicate bottom legal links, broken
 | `/privacy` | Privacy Policy |
 | `/terms` | Terms of Service |
 | `/cookies` | Cookie Policy |
-| `/security` | Security — encryption, audit trail, GDPR, SOC 2 |
 | `/blog` | Blog homepage |
 | `/blog/{slug}` | Blog article detail |
 

@@ -4,6 +4,94 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
+## Compact “How It Works” Section (v0.11.5)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.11.5 |
+| **Date** | 2026-06-26 |
+
+### Summary
+Reduced homepage “Upload, sign, download” section vertical height by ~35–45% while preserving browser mockups, shadows, hover effects, and branding. Marketing UI only — no application logic modified.
+
+### Optimizations
+| Area | Change |
+|---|---|
+| Section padding | `!py-10 lg:!py-14` (tighter than `marketing-section`) |
+| Section header | `SectionHeader compact` — smaller title, `mb-4` gap to cards |
+| Cards | `p-3`, `rounded-xl`, `max-h-[360px]`, `gap-3` grid |
+| Browser mockups | `ProductMockup size="compact"` + `ProductBrowserFrame` compact chrome |
+| Dashboard mockup | 2 documents (was 3), tighter rows |
+| Signature mockup | `h-14` canvas (was `h-24`), hidden action buttons |
+| Complete mockup | Smaller success icon and download chip |
+| CTA button | `py-2 text-xs rounded-lg` (was `py-2.5 text-sm rounded-xl`) |
+
+### Files Modified
+`Home.vue`, `ProductMockup.vue`, `ProductBrowserFrame.vue`, `SectionHeader.vue`, `marketing.js`
+
+### Responsive Verification
+- [x] Desktop — 3 compact cards in one row
+- [x] Tablet — 3 columns, reduced spacing
+- [x] Mobile — vertical stack, compact screenshots
+
+### Build Status
+- `npm run build` — pass
+
+### Regression Checklist
+- [x] Signing workflow, auth, dashboard, editor, APIs, routes — unchanged
+
+---
+
+## Remove Dedicated Security Page (v0.11.4)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.11.4 |
+| **Date** | 2026-06-26 |
+
+### Summary
+Removed the dedicated Security page for Early Access simplicity. Security messaging remains on the homepage (`SecuritySection`) and legal pages. **No application logic, auth, signing, dashboard, editor, APIs, or database modified.**
+
+### Routes
+| Action | Detail |
+|---|---|
+| Removed | `GET /security` → `SecurityController` |
+| Added | `Route::redirect('/security', '/')` — graceful fallback for bookmarks |
+
+### Files Deleted
+- `resources/js/Pages/Security.vue`
+- `app/Http/Controllers/Web/SecurityController.php`
+
+### Navigation Updated
+| Location | Before | After |
+|---|---|---|
+| Top nav | Features, Security, Pricing, Blog, FAQ | Features, Pricing, Blog, FAQ |
+| Footer Product | Features, Pricing, Security, FAQ | Features, Pricing, FAQ |
+| Mobile nav | Same as top nav | Same as top nav |
+
+### Homepage Security (Preserved)
+- `SecuritySection` compact mode on homepage
+- 5 cards: AES-256 Encryption, TLS 1.3, Audit Trail, Privacy First, Secure Cloud Storage
+- No Security page CTA links
+
+### Future Readiness
+- `securityPageFeatures` retained in `marketing.js` with comment for future Trust Center (SOC 2, ISO 27001, HIPAA)
+- `SecuritySection.vue` reusable when page is reintroduced
+
+### Files Modified
+`routes/web.php`, `PublicLayout.vue`, `marketing.js`, `SecuritySection.vue`, `Privacy.vue`, `public/sitemap.xml`
+
+### Build Status
+- `npm run build` — pass (1.82s)
+
+### Regression Checklist
+- [x] Authentication, signing, dashboard, editor — unchanged
+- [x] Business logic and database — unchanged
+
+---
+
 ## Marketing Website Final Production Cleanup (v0.11.3)
 
 | Field | Value |
