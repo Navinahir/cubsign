@@ -3,9 +3,23 @@ import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { Link, router } from '@inertiajs/vue3';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url';
+import { FIELD_TYPES, FIELD_DEFAULTS } from '@/Components/Editor/editorConstants';
+import { RESIZE_HANDLES, ALIGN_TOOLS } from '@/Components/Editor/editorLayoutConstants';
+import { buildTemplateFieldValue, TEMPLATE_FIELD_COLOR, hydrateTemplateFields, serializeTemplateEditorState, sanitizeTemplateField, clampFieldToPage, minFieldSize } from '@/Components/Editor/templateFieldHelpers';
+import { fieldTypeLabel } from '@/Components/Editor/editorHelpers';
+import { createPdfRenderer } from '@/utils/pdfPageRenderer';
+import EditorFieldTypeGrid from '@/Components/Editor/EditorFieldTypeGrid.vue';
+import EditorPlacementHelper from '@/Components/Editor/EditorPlacementHelper.vue';
+import EditorEmptyState from '@/Components/Editor/EditorEmptyState.vue';
+import EditorDocumentInfo from '@/Components/Editor/EditorDocumentInfo.vue';
+import TemplateFieldPlaceholder from '@/Components/Editor/TemplateFieldPlaceholder.vue';
 
 const { getDocument, GlobalWorkerOptions } = pdfjsLib;
 GlobalWorkerOptions.workerSrc = workerUrl;
+
+const pdfRenderer = createPdfRenderer();
+const HANDLES = RESIZE_HANDLES;
+const FIELD_COLOR = TEMPLATE_FIELD_COLOR;
 
 const props = defineProps({
     template: { type: Object, required: true },
@@ -24,6 +38,8 @@ const loadError     = ref(null);
 const centerRef     = ref(null);
 const thumbStripRef = ref(null);
 let   intersectionObs = null;
+/** Tracks which pages are rendered at the current scale (lazy PDF rendering). */
+let   renderedPageKeys  = new Set();
 
 // ── Template state ────────────────────────────────────────────────────────────
 const templateName = ref(props.template.name);
@@ -34,8 +50,6 @@ const placedFields    = ref([]);
 const placementMode   = ref(null);
 const selectedFieldId = ref(null);
 const activeFieldType = ref('signature');
-const pendingText     = ref('');
-const pendingDate     = ref(new Date().toLocaleDateString());
 let   fieldSeq        = 0;
 const clipboardField  = ref(null);
 
@@ -48,6 +62,13 @@ let   resizeDidMove = false;
 // ── UI state ──────────────────────────────────────────────────────────────────
 const fieldsListOpen = ref(true);
 
+const placementHelperMessage = computed(() => {
+    const label = fieldTypeLabel(activeFieldType.value).toLowerCase();
+    return `Click anywhere on the document to place the ${label} field.`;
+});
+
+const emptyStateStep = computed(() => (placementMode.value === 'manual' ? 2 : 1));
+
 // ── Drag / Resize ─────────────────────────────────────────────────────────────
 let activeDrag   = null;
 let prevX = 0, prevY = 0;
@@ -56,65 +77,6 @@ let resizeHandle = null;
 let resizeSig    = null;
 let rsStartW = 0, rsStartH = 0, rsStartX = 0, rsStartY = 0;
 let rsClientX = 0, rsClientY = 0;
-
-// ── Constants ─────────────────────────────────────────────────────────────────
-const FIELD_TYPES = [
-    {
-        id: 'signature', label: 'Signature',
-        paths: ['M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'],
-    },
-    {
-        id: 'initials', label: 'Initials',
-        paths: ['M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],
-    },
-    {
-        id: 'date', label: 'Date',
-        paths: ['M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
-    },
-    {
-        id: 'name', label: 'Name',
-        paths: ['M16 7a4 4 0 11-8 0 4 4 0 018 0z', 'M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
-    },
-    {
-        id: 'text', label: 'Text',
-        paths: ['M4 6h16M4 12h16M4 18h7'],
-    },
-    {
-        id: 'checkbox', label: 'Checkbox',
-        paths: ['M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
-    },
-];
-
-const FIELD_DEFAULTS = {
-    signature: { w: 180, h: 60 },
-    initials:  { w: 90,  h: 40 },
-    date:      { w: 140, h: 32 },
-    name:      { w: 160, h: 32 },
-    text:      { w: 160, h: 32 },
-    checkbox:  { w: 28,  h: 28 },
-};
-
-const FIELD_COLOR = '#3B82F6';
-
-const HANDLES = [
-    { id: 'nw', pos: 'top-0 left-0 -translate-x-1/2 -translate-y-1/2',    cur: 'nwse-resize' },
-    { id: 'n',  pos: 'top-0 left-1/2 -translate-x-1/2 -translate-y-1/2',  cur: 'ns-resize'   },
-    { id: 'ne', pos: 'top-0 right-0 translate-x-1/2 -translate-y-1/2',     cur: 'nesw-resize' },
-    { id: 'e',  pos: 'top-1/2 right-0 translate-x-1/2 -translate-y-1/2',  cur: 'ew-resize'   },
-    { id: 'se', pos: 'bottom-0 right-0 translate-x-1/2 translate-y-1/2',   cur: 'nwse-resize' },
-    { id: 's',  pos: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2', cur: 'ns-resize'   },
-    { id: 'sw', pos: 'bottom-0 left-0 -translate-x-1/2 translate-y-1/2',   cur: 'nesw-resize' },
-    { id: 'w',  pos: 'top-1/2 left-0 -translate-x-1/2 -translate-y-1/2',  cur: 'ew-resize'   },
-];
-
-const ALIGN_TOOLS = [
-    { dir: 'left',   label: 'Left',   title: 'Align to left edge',   icon: 'M4 4v16M8 12h12' },
-    { dir: 'cx',     label: 'Center', title: 'Center horizontally',  icon: 'M12 4v16M7 12h4m2 0h4' },
-    { dir: 'right',  label: 'Right',  title: 'Align to right edge',  icon: 'M20 4v16M4 12h12' },
-    { dir: 'top',    label: 'Top',    title: 'Align to top edge',    icon: 'M4 4h16M12 8v12' },
-    { dir: 'cy',     label: 'Middle', title: 'Center vertically',    icon: 'M4 12h16M12 7v4m0 2v4' },
-    { dir: 'bottom', label: 'Bottom', title: 'Align to bottom edge', icon: 'M4 20h16M12 4v12' },
-];
 
 // ── Derived ───────────────────────────────────────────────────────────────────
 const selectedField = computed(() =>
@@ -136,7 +98,43 @@ const zoomSelect = computed({
 });
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
+function resetTemplateSession() {
+    placedFields.value    = [];
+    placementMode.value   = null;
+    selectedFieldId.value = null;
+    activeFieldType.value = 'signature';
+    clipboardField.value  = null;
+    undoStack.value       = [];
+    redoStack.value       = [];
+    fieldSeq              = 0;
+    renderedPageKeys      = new Set();
+}
+
+function syncFieldSeq() {
+    fieldSeq = placedFields.value.reduce(
+        (max, f) => Math.max(max, typeof f.id === 'number' ? f.id : 0),
+        0,
+    );
+}
+
+function pageRenderKey(pageNum) {
+    return `${pageNum}@${scale.value.toFixed(2)}`;
+}
+
+async function ensurePageRendered(pageNum) {
+    const key = pageRenderKey(pageNum);
+    if (renderedPageKeys.has(key) || !pdfDoc) return;
+    await renderPage(pageNum);
+    renderedPageKeys.add(key);
+}
+
+function isModKey(e) {
+    return e.ctrlKey || e.metaKey;
+}
+
 onMounted(async () => {
+    resetTemplateSession();
+
     window.addEventListener('mousemove', onGlobalMove);
     window.addEventListener('mouseup',   onGlobalUp);
     window.addEventListener('touchmove', onGlobalMove, { passive: false });
@@ -149,17 +147,17 @@ onMounted(async () => {
 
     await loadPdf(props.template.pdfUrl);
 
-    if (props.template.editorState?.placedFields?.length) {
-        placedFields.value = props.template.editorState.placedFields;
-        fieldSeq = Math.max(0, ...props.template.editorState.placedFields.map(f => (typeof f.id === 'number' ? f.id : 0)));
-        if (props.template.editorState.activePage) {
-            await nextTick();
-            scrollToPage(props.template.editorState.activePage);
-        }
+    if (props.template.editorState?.activePage) {
+        await nextTick();
+        scrollToPage(props.template.editorState.activePage);
     }
+
+    placementMode.value = 'manual';
 });
 
 onBeforeUnmount(() => {
+    resetTemplateSession();
+    pdfRenderer.cancelAll();
     window.removeEventListener('mousemove', onGlobalMove);
     window.removeEventListener('mouseup',   onGlobalUp);
     window.removeEventListener('touchmove', onGlobalMove);
@@ -181,6 +179,7 @@ async function loadPdf(url) {
     loadError.value = null;
     pageCanvases    = [];
     thumbCanvases   = [];
+    pageDims.value  = [];
 
     let arrayBuffer;
     try {
@@ -194,9 +193,9 @@ async function loadPdf(url) {
     }
 
     try {
-        const task = getDocument({ data: arrayBuffer });
-        pdfDoc         = await task.promise;
+        pdfDoc         = await getDocument({ data: arrayBuffer }).promise;
         numPages.value = pdfDoc.numPages;
+        pageDims.value = await pdfRenderer.computePageDimensions(pdfDoc, numPages.value, scale.value);
     } catch {
         loadError.value = 'Could not parse the document. Please re-upload.';
         isLoading.value = false;
@@ -204,11 +203,21 @@ async function loadPdf(url) {
     }
 
     isLoading.value = false;
+    await nextTick();
 
     for (let i = 1; i <= numPages.value; i++) {
-        await nextTick();
-        try { await renderPage(i); }  catch (e) { console.error(`[CubSign] Page ${i}:`, e); }
         try { await renderThumb(i); } catch (e) { console.error(`[CubSign] Thumb ${i}:`, e); }
+    }
+
+    placedFields.value = hydrateTemplateFields(
+        props.template.editorState?.placedFields ?? placedFields.value,
+        numPages.value,
+    );
+    syncFieldSeq();
+
+    await ensurePageRendered(1);
+    for (let i = 2; i <= Math.min(3, numPages.value); i++) {
+        try { await ensurePageRendered(i); } catch (e) { console.error(`[CubSign] Page ${i}:`, e); }
     }
 
     if (window.innerWidth < 768 && pageDims.value[0]) {
@@ -219,34 +228,40 @@ async function loadPdf(url) {
 }
 
 async function renderPage(pageNum) {
-    const page     = await pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: scale.value });
-    pageDims.value[pageNum - 1] = { w: viewport.width, h: viewport.height };
-    await nextTick();
-    const canvas = pageCanvases[pageNum - 1];
-    if (!canvas) return;
-    canvas.width  = viewport.width;
-    canvas.height = viewport.height;
-    const renderTask = page.render({ canvasContext: canvas.getContext('2d'), viewport });
-    await (renderTask.promise ?? renderTask);
+    const canvas = await pdfRenderer.waitForCanvas((i) => pageCanvases[i], pageNum - 1, { label: 'template-main' });
+    if (!canvas || !pdfDoc) return;
+    const result = await pdfRenderer.renderToCanvas(pdfDoc, pageNum, canvas, scale.value, `template-page-${pageNum}`);
+    if (result) {
+        pageDims.value[pageNum - 1] = { w: result.width, h: result.height };
+    }
 }
 
 async function renderThumb(pageNum) {
-    const page     = await pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 0.14 });
-    await nextTick();
-    const canvas = thumbCanvases[pageNum - 1];
-    if (!canvas) return;
-    canvas.width  = viewport.width;
-    canvas.height = viewport.height;
-    const renderTask = page.render({ canvasContext: canvas.getContext('2d'), viewport });
-    await (renderTask.promise ?? renderTask);
+    const canvas = await pdfRenderer.waitForCanvas((i) => thumbCanvases[i], pageNum - 1, { label: 'template-thumb' });
+    if (!canvas || !pdfDoc) return;
+    await pdfRenderer.renderToCanvas(pdfDoc, pageNum, canvas, 0.14, `template-thumb-${pageNum}`);
 }
 
 async function rerenderAll() {
-    for (let i = 1; i <= numPages.value; i++) {
-        try { await renderPage(i); } catch (e) { console.error(e); }
+    renderedPageKeys = new Set();
+    const visible = getVisiblePageNumbers();
+    for (const i of visible) {
+        try { await ensurePageRendered(i); } catch (e) { console.error(e); }
     }
+}
+
+function getVisiblePageNumbers() {
+    const pages = new Set([activePage.value]);
+    centerRef.value?.querySelectorAll('.page-wrapper').forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const root = centerRef.value.getBoundingClientRect();
+        if (rect.bottom > root.top && rect.top < root.bottom) {
+            const p = parseInt(el.dataset.pageNum, 10);
+            if (!isNaN(p)) pages.add(p);
+        }
+    });
+    if (!pages.size) pages.add(1);
+    return [...pages];
 }
 
 async function zoomIn() {
@@ -291,8 +306,11 @@ function setupScrollObserver() {
         (entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
-                    const p = parseInt(entry.target.dataset.pageNum);
-                    if (!isNaN(p)) activePage.value = p;
+                    const p = parseInt(entry.target.dataset.pageNum, 10);
+                    if (!isNaN(p)) {
+                        activePage.value = p;
+                        ensurePageRendered(p);
+                    }
                 }
             });
         },
@@ -316,6 +334,7 @@ function undo() {
     redoStack.value.push(JSON.stringify(placedFields.value));
     placedFields.value = JSON.parse(undoStack.value.pop());
     selectedFieldId.value = null;
+    syncFieldSeq();
 }
 
 function redo() {
@@ -323,6 +342,7 @@ function redo() {
     undoStack.value.push(JSON.stringify(placedFields.value));
     placedFields.value = JSON.parse(redoStack.value.pop());
     selectedFieldId.value = null;
+    syncFieldSeq();
 }
 
 // ── Alignment ─────────────────────────────────────────────────────────────────
@@ -343,10 +363,17 @@ function alignField(dir) {
 // ── Field placement ───────────────────────────────────────────────────────────
 function setFieldType(type) {
     activeFieldType.value = type;
-    if (type === 'date') {
-        pendingDate.value = new Date().toLocaleDateString();
-    } else {
-        pendingText.value = '';
+    placementMode.value   = 'manual';
+}
+
+function cancelPlacement() {
+    placementMode.value = null;
+}
+
+function onPageContextMenu(e) {
+    if (placementMode.value === 'manual') {
+        e.preventDefault();
+        placementMode.value = null;
     }
 }
 
@@ -358,30 +385,37 @@ function onPageClick(e, pageNum) {
     const rect = e.currentTarget.getBoundingClientRect();
     const type = activeFieldType.value;
     const def  = FIELD_DEFAULTS[type];
-    const x    = Math.max(0, e.clientX - rect.left - def.w / 2);
-    const y    = Math.max(0, e.clientY - rect.top  - def.h / 2);
+    const dim  = pageDims.value[pageNum - 1];
+    let x      = Math.max(0, e.clientX - rect.left - def.w / 2);
+    let y      = Math.max(0, e.clientY - rect.top - def.h / 2);
+    if (dim) {
+        ({ x, y } = clampFieldToPage({ type, x, y, w: def.w, h: def.h }, dim));
+    }
     placeField(pageNum, x, y);
-    placementMode.value = null;
+    if (type !== 'signature' && type !== 'initials') {
+        placementMode.value = null;
+    }
 }
 
 function placeField(pageNum, x, y, w, h) {
     pushUndo();
-    const type = activeFieldType.value;
-    const id   = ++fieldSeq;
-    const def  = FIELD_DEFAULTS[type];
-    let value;
-    if (type === 'signature') {
-        value = { sigType: 'text', src: 'Signature', font: 'font-sans italic text-lg tracking-wide' };
-    } else if (type === 'initials') {
-        value = { sigType: 'text', src: 'Initials', font: 'font-sans italic text-lg tracking-wide' };
-    } else if (type === 'date') {
-        value = pendingDate.value || new Date().toLocaleDateString();
-    } else if (type === 'checkbox') {
-        value = false;
-    } else {
-        value = pendingText.value;
-    }
-    placedFields.value.push({ id, type, pageNum, x, y, w: w ?? def.w, h: h ?? def.h, value });
+    const type  = activeFieldType.value;
+    const id    = ++fieldSeq;
+    const def   = FIELD_DEFAULTS[type];
+    const value = buildTemplateFieldValue(type);
+
+    placedFields.value.push(sanitizeTemplateField({
+        id,
+        type,
+        pageNum,
+        x,
+        y,
+        w: w ?? def.w,
+        h: h ?? def.h,
+        value,
+        label: '',
+        required: false,
+    }, pageDims.value[pageNum - 1]));
     selectedFieldId.value = id;
 }
 
@@ -391,26 +425,22 @@ function removeField(id) {
     if (selectedFieldId.value === id) selectedFieldId.value = null;
 }
 
-function toggleCheckbox(field) {
-    field.value = !field.value;
-}
-
 function placedFieldsOnPage(pageNum) {
     return placedFields.value.filter(f => f.pageNum === pageNum);
 }
 
 function duplicateField(sourceId) {
-    const f = placedFields.value.find(f => f.id === (sourceId ?? selectedFieldId.value));
+    const f = placedFields.value.find((fld) => fld.id === (sourceId ?? selectedFieldId.value));
     if (!f) return;
     pushUndo();
-    const id      = ++fieldSeq;
-    const valCopy = (typeof f.value === 'object' && f.value !== null) ? { ...f.value } : f.value;
-    placedFields.value.push({ ...f, id, x: f.x + 20, y: f.y + 20, value: valCopy });
+    const id = ++fieldSeq;
+    placedFields.value.push(sanitizeTemplateField({ ...f, id, x: f.x + 20, y: f.y + 20 }));
     selectedFieldId.value = id;
 }
 
-function iconPathsForType(type) {
-    return FIELD_TYPES.find(ft => ft.id === type)?.paths ?? [];
+function onFieldDoubleClick(field) {
+    selectedFieldId.value = field.id;
+    scrollToPage(field.pageNum);
 }
 
 // ── Drag / Resize ─────────────────────────────────────────────────────────────
@@ -439,6 +469,8 @@ function onGlobalMove(e) {
         if (!dragDidMove) { pushUndo(); dragDidMove = true; }
         activeDrag.x += clientX - prevX;
         activeDrag.y += clientY - prevY;
+        const dim = pageDims.value[activeDrag.pageNum - 1];
+        if (dim) clampFieldToPage(activeDrag, dim);
         prevX = clientX;
         prevY = clientY;
     }
@@ -446,22 +478,29 @@ function onGlobalMove(e) {
         if (!resizeDidMove) { pushUndo(); resizeDidMove = true; }
         const dx = clientX - rsClientX;
         const dy = clientY - rsClientY;
-        if (resizeHandle.includes('e')) resizeSig.w = Math.max(60, rsStartW + dx);
-        if (resizeHandle.includes('s')) resizeSig.h = Math.max(24, rsStartH + dy);
+        const min = minFieldSize(resizeSig.type);
+        if (resizeHandle.includes('e')) resizeSig.w = Math.max(min.w, rsStartW + dx);
+        if (resizeHandle.includes('s')) resizeSig.h = Math.max(min.h, rsStartH + dy);
         if (resizeHandle.includes('w')) {
-            const nw = Math.max(60, rsStartW - dx);
+            const nw = Math.max(min.w, rsStartW - dx);
             resizeSig.x = rsStartX + (rsStartW - nw);
             resizeSig.w = nw;
         }
         if (resizeHandle.includes('n')) {
-            const nh = Math.max(24, rsStartH - dy);
+            const nh = Math.max(min.h, rsStartH - dy);
             resizeSig.y = rsStartY + (rsStartH - nh);
             resizeSig.h = nh;
         }
+        const dim = pageDims.value[resizeSig.pageNum - 1];
+        if (dim) clampFieldToPage(resizeSig, dim);
     }
 }
 
 function onGlobalUp() {
+    if (activeDrag) {
+        const dim = pageDims.value[activeDrag.pageNum - 1];
+        if (dim) clampFieldToPage(activeDrag, dim);
+    }
     activeDrag   = null;
     isResizing   = false;
     resizeHandle = null;
@@ -503,37 +542,36 @@ function onKeyDown(e) {
         return;
     }
 
-    if (e.ctrlKey && (e.key === 'z' || e.key === 'Z')) {
+    if (isModKey(e) && (e.key === 'z' || e.key === 'Z')) {
         e.preventDefault();
         if (e.shiftKey) { redo(); } else { undo(); }
         return;
     }
 
-    if (e.ctrlKey && (e.key === 'y' || e.key === 'Y')) {
+    if (isModKey(e) && (e.key === 'y' || e.key === 'Y')) {
         e.preventDefault();
         redo();
         return;
     }
 
-    if (e.ctrlKey && e.key === 'c' && selectedFieldId.value !== null) {
+    if (isModKey(e) && e.key === 'c' && selectedFieldId.value !== null) {
         const f = placedFields.value.find(f => f.id === selectedFieldId.value);
-        if (f) clipboardField.value = { ...f, value: (typeof f.value === 'object' && f.value !== null) ? { ...f.value } : f.value };
+        if (f) clipboardField.value = sanitizeTemplateField(f);
         return;
     }
 
-    if (e.ctrlKey && e.key === 'v' && clipboardField.value) {
+    if (isModKey(e) && e.key === 'v' && clipboardField.value) {
         e.preventDefault();
-        const src     = clipboardField.value;
+        const src = clipboardField.value;
         pushUndo();
-        const id      = ++fieldSeq;
-        const valCopy = (typeof src.value === 'object' && src.value !== null) ? { ...src.value } : src.value;
-        placedFields.value.push({ ...src, id, x: src.x + 20, y: src.y + 20, value: valCopy });
+        const id = ++fieldSeq;
+        placedFields.value.push(sanitizeTemplateField({ ...src, id, x: src.x + 20, y: src.y + 20 }));
         selectedFieldId.value = id;
-        clipboardField.value  = { ...src, x: src.x + 20, y: src.y + 20 };
+        clipboardField.value = sanitizeTemplateField({ ...src, x: src.x + 20, y: src.y + 20 });
         return;
     }
 
-    if (e.ctrlKey && e.key === 'd') {
+    if (isModKey(e) && e.key === 'd') {
         e.preventDefault();
         duplicateField();
     }
@@ -543,15 +581,12 @@ function onKeyDown(e) {
 function saveTemplate() {
     if (isSaving.value) return;
     isSaving.value = true;
+    const editor_state = serializeTemplateEditorState(placedFields.value, scale.value, activePage.value);
     router.put(
         route('templates.update', props.template.id),
         {
             name:         templateName.value.trim() || props.template.name,
-            editor_state: {
-                placedFields: placedFields.value,
-                scale:        scale.value,
-                activePage:   activePage.value,
-            },
+            editor_state,
         },
         {
             onError:  () => { isSaving.value = false; },
@@ -560,8 +595,16 @@ function saveTemplate() {
     );
 }
 
-function fieldTypeLabel(type) {
-    return type.charAt(0).toUpperCase() + type.slice(1);
+function updateSelectedFieldLabel(value) {
+    if (!selectedField.value || selectedField.value.label === value) return;
+    pushUndo();
+    selectedField.value.label = value;
+}
+
+function updateSelectedFieldRequired(value) {
+    if (!selectedField.value || selectedField.value.required === value) return;
+    pushUndo();
+    selectedField.value.required = value;
 }
 </script>
 
@@ -650,7 +693,13 @@ function fieldTypeLabel(type) {
 
                     <!-- Viewer toolbar -->
                     <div class="flex h-10 shrink-0 items-center justify-between border-b border-gray-300 bg-white px-2 shadow-sm md:px-4">
-                        <p class="hidden min-w-0 truncate text-xs font-medium text-gray-600 md:block">{{ template.name }}</p>
+                        <div class="hidden min-w-0 items-center gap-2 text-xs text-gray-600 md:flex">
+                            <svg class="h-3.5 w-3.5 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9.5 8.5h-2v2H6v-5h1.5v1.5h2V8.5H11v5H9.5v-2zm4.5 2h-1.5v-5H15c.83 0 1.5.67 1.5 1.5v2c0 .83-.67 1.5-1.5 1.5zm4.5 0H17v-5h1.5v3.5H19V13.5z"/>
+                            </svg>
+                            <span class="truncate font-medium text-gray-700">{{ template.name }}</span>
+                            <span v-if="numPages" class="shrink-0 text-gray-400">· {{ numPages }}p</span>
+                        </div>
 
                         <div class="flex items-center gap-1">
                             <button class="flex h-6 w-6 items-center justify-center rounded text-gray-600 hover:bg-gray-100" title="Zoom out" @click="zoomOut">
@@ -700,25 +749,17 @@ function fieldTypeLabel(type) {
                         </div>
                     </div>
 
-                    <!-- Placement banner -->
-                    <div v-if="placementMode === 'manual'" class="flex shrink-0 items-center justify-between bg-blue-600 px-3 py-2 md:px-4">
-                        <div class="flex items-center gap-2">
-                            <svg class="h-4 w-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
-                            </svg>
-                            <span class="text-xs font-semibold text-white md:text-sm">Click anywhere on the document to place the {{ activeFieldType }} field</span>
-                        </div>
-                        <button class="rounded px-2 py-0.5 text-xs font-medium text-blue-200 hover:bg-blue-700 hover:text-white" @click="placementMode = null">
-                            Cancel
-                        </button>
-                    </div>
-
                     <!-- Scrollable pages -->
                     <div
                         ref="centerRef"
-                        class="flex-1 overflow-y-auto overflow-x-auto"
+                        class="relative flex-1 overflow-y-auto overflow-x-auto"
                         :class="placementMode === 'manual' ? 'cursor-crosshair' : 'cursor-default'"
                     >
+                        <EditorPlacementHelper
+                            :active="placementMode === 'manual'"
+                            :message="placementHelperMessage"
+                            @cancel="cancelPlacement"
+                        />
                         <div v-if="isLoading" class="flex h-full items-center justify-center">
                             <div class="flex flex-col items-center gap-4">
                                 <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"/>
@@ -741,71 +782,49 @@ function fieldTypeLabel(type) {
                                 :style="`width:${dim.w}px; height:${dim.h}px`"
                             >
                                 <canvas
-                                    :ref="el => { if (el) pageCanvases[i] = el }"
+                                    :ref="el => { pageCanvases[i] = el ?? undefined }"
                                     class="block"
-                                    :width="dim.w"
-                                    :height="dim.h"
                                 />
 
                                 <!-- Interaction overlay -->
-                                <div class="absolute inset-0 z-10" @click="onPageClick($event, i + 1)" @mousedown.stop>
+                                <div
+                                    class="absolute inset-0 z-10"
+                                    @click="onPageClick($event, i + 1)"
+                                    @contextmenu="onPageContextMenu"
+                                    @mousedown.stop
+                                >
 
                                     <!-- Placed fields -->
                                     <div
                                         v-for="field in placedFieldsOnPage(i + 1)"
                                         :key="field.id"
-                                        class="absolute select-none"
+                                        class="group/field absolute select-none transition-all duration-200"
+                                        :class="field.id === selectedFieldId ? 'z-20' : 'z-10'"
                                         :style="`left:${field.x}px; top:${field.y}px; width:${field.w}px; height:${field.h}px; cursor:move`"
                                         @mousedown.stop="startDrag($event, field)"
                                         @touchstart.stop="startDrag($event, field)"
+                                        @dblclick.stop="onFieldDoubleClick(field)"
                                         @click.stop
                                     >
                                         <div
-                                            class="relative h-full w-full overflow-hidden rounded"
-                                            :style="field.id === selectedFieldId
-                                                ? 'background:rgba(59,130,246,0.12); outline:3px solid #3B82F6; outline-offset:2px; box-shadow:0 0 0 5px rgba(59,130,246,0.15);'
-                                                : 'background:rgba(239,246,255,0.45); outline:1.5px solid #3B82F660; outline-offset:0;'"
-                                        >
-                                            <!-- Signature / Initials placeholder -->
-                                            <template v-if="field.type === 'signature' || field.type === 'initials'">
-                                                <div
-                                                    class="flex h-full w-full items-center justify-center px-2"
-                                                    :class="field.value?.font"
-                                                    style="color:#1e40af"
-                                                >{{ field.value?.src }}</div>
-                                            </template>
-
-                                            <!-- Checkbox -->
-                                            <template v-else-if="field.type === 'checkbox'">
-                                                <div
-                                                    class="flex h-full w-full items-center justify-center rounded bg-white"
-                                                    :style="`border:2px solid ${FIELD_COLOR}`"
-                                                    @click.stop="toggleCheckbox(field)"
-                                                >
-                                                    <svg v-if="field.value" class="h-3/4 w-3/4" fill="none" stroke="currentColor" viewBox="0 0 24 24" :style="`color:${FIELD_COLOR}`">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                                    </svg>
-                                                </div>
-                                            </template>
-
-                                            <!-- Date / Name / Text -->
-                                            <template v-else>
-                                                <div
-                                                    class="flex h-full w-full items-center overflow-hidden px-2"
-                                                    :style="`border:1px solid ${FIELD_COLOR}40; background:${FIELD_COLOR}0d`"
-                                                >
-                                                    <span class="truncate text-xs text-gray-800">{{ field.value || '…' }}</span>
-                                                </div>
-                                            </template>
-                                        </div>
-
-                                        <!-- Type badge -->
-                                        <span
-                                            class="absolute -left-px -top-4 truncate rounded-t px-1.5 py-px text-[8px] font-bold uppercase tracking-wide text-white"
+                                            class="absolute -left-px -top-5 flex items-center gap-1 rounded-t px-1.5 py-0.5 text-[8px] font-bold text-white shadow-sm"
                                             :style="`background:${FIELD_COLOR}`"
-                                        >{{ field.type }}</span>
+                                        >
+                                            <span class="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white/25 text-[7px]">?</span>
+                                            <span class="truncate capitalize">{{ field.label || field.type }}</span>
+                                        </div>
+                                        <TemplateFieldPlaceholder :field="field" :selected="field.id === selectedFieldId" />
 
-                                        <!-- Resize handles (when selected) -->
+                                        <button
+                                            type="button"
+                                            class="absolute -right-2 -top-2 z-30 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow transition-opacity duration-150 hover:bg-red-600 group-hover/field:opacity-100"
+                                            style="font-size:9px"
+                                            title="Delete field"
+                                            @mousedown.stop
+                                            @touchstart.stop
+                                            @click.stop="removeField(field.id)"
+                                        >✕</button>
+
                                         <template v-if="field.id === selectedFieldId">
                                             <div
                                                 v-for="h in HANDLES"
@@ -816,16 +835,8 @@ function fieldTypeLabel(type) {
                                                 @mousedown.stop="startResize($event, field, h.id)"
                                                 @touchstart.stop="startResize($event, field, h.id)"
                                             />
-                                            <button
-                                                class="absolute -right-3 -top-3 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600"
-                                                style="font-size:9px;line-height:1"
-                                                @mousedown.stop
-                                                @touchstart.stop
-                                                @click.stop="removeField(field.id)"
-                                            >✕</button>
                                         </template>
                                     </div>
-
                                 </div>
 
                                 <div class="absolute -bottom-5 left-0 right-0 text-center text-[10px] text-gray-400">
@@ -837,101 +848,49 @@ function fieldTypeLabel(type) {
                 </div>
 
                 <!-- ── RIGHT PANEL ─────────────────────────────────────────── -->
-                <aside class="flex max-h-[320px] w-full flex-col overflow-y-auto border-t border-gray-200 bg-white sm:max-h-[360px] md:max-h-none md:w-[268px] md:shrink-0 md:border-t-0 md:border-l">
+                <aside class="flex max-h-[240px] w-full flex-col overflow-y-auto border-t border-gray-200 bg-white sm:max-h-[320px] md:max-h-none md:w-[252px] md:shrink-0 md:border-t-0 md:border-l">
 
-                    <!-- Section: Field Type -->
-                    <div class="border-b border-gray-100 px-4 py-3">
-                        <p class="mb-2.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">Field Type</p>
-                        <div class="grid grid-cols-3 gap-1.5">
-                            <button
-                                v-for="ft in FIELD_TYPES"
-                                :key="ft.id"
-                                :class="[
-                                    'flex flex-col items-center gap-1 rounded-lg py-2 px-1 text-[10px] font-semibold transition',
-                                    activeFieldType === ft.id
-                                        ? 'bg-blue-600 text-white shadow-sm'
-                                        : 'border border-gray-200 text-gray-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700',
-                                ]"
-                                @click="setFieldType(ft.id)"
-                            >
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        v-for="p in ft.paths"
-                                        :key="p"
-                                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        :d="p"
-                                    />
-                                </svg>
-                                {{ ft.label }}
-                            </button>
-                        </div>
+                    <EditorDocumentInfo
+                        :filename="template.name"
+                        :num-pages="numPages"
+                        :file-size="template.fileSize ?? 0"
+                    />
+
+                    <EditorEmptyState
+                        v-if="placedFields.length === 0"
+                        :step="emptyStateStep"
+                    />
+
+                    <EditorFieldTypeGrid
+                        :field-types="FIELD_TYPES"
+                        :active-field-type="activeFieldType"
+                        @select="setFieldType"
+                    />
+
+                    <div class="border-t border-gray-100 px-3 py-2.5">
+                        <p class="text-[11px] text-gray-500">
+                            Choose a field type, then click the PDF to place a placeholder. Recipients fill these in when signing.
+                        </p>
                     </div>
 
-                    <!-- Section: Configure -->
-                    <div class="border-b border-gray-100 px-4 py-3">
-                        <p class="mb-2.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">Configure</p>
-
-                        <template v-if="activeFieldType === 'signature' || activeFieldType === 'initials'">
-                            <p class="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-500">
-                                Places a labeled
-                                <span class="font-medium capitalize text-gray-700">{{ activeFieldType }}</span>
-                                box. Recipients fill it in when signing.
-                            </p>
-                        </template>
-
-                        <template v-else-if="activeFieldType === 'date'">
-                            <p class="mb-2 text-xs text-gray-500">Default date shown on the template.</p>
+                    <div v-if="selectedField" class="border-b border-gray-100 px-3 py-2.5">
+                        <p class="text-xs font-semibold text-gray-900">Field label</p>
+                        <input
+                            :value="selectedField.label"
+                            type="text"
+                            placeholder="Optional custom label"
+                            class="mt-2 w-full rounded-lg border border-gray-200 px-2.5 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            @input="updateSelectedFieldLabel($event.target.value)"
+                        />
+                        <label class="mt-2 flex items-center gap-2 text-xs text-gray-600">
                             <input
-                                v-model="pendingDate"
-                                type="text"
-                                placeholder="e.g. 6/23/2026"
-                                class="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                type="checkbox"
+                                :checked="selectedField.required"
+                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                @change="updateSelectedFieldRequired($event.target.checked)"
                             />
-                        </template>
-
-                        <template v-else-if="activeFieldType === 'name' || activeFieldType === 'text'">
-                            <p class="mb-2 text-xs text-gray-500">
-                                {{ activeFieldType === 'name' ? 'Pre-fill a name, or leave empty.' : 'Enter default text, or leave empty.' }}
-                            </p>
-                            <input
-                                v-model="pendingText"
-                                type="text"
-                                :placeholder="activeFieldType === 'name' ? 'Full name…' : 'Enter text…'"
-                                class="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                        </template>
-
-                        <template v-else>
-                            <p class="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-500">
-                                Places an unchecked checkbox. Click a placed checkbox to toggle its default state.
-                            </p>
-                        </template>
-                    </div>
-
-                    <!-- Section: Place Field -->
-                    <div class="border-b border-gray-100 px-4 py-3">
-                        <p class="mb-2.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">Place Field</p>
-
-                        <div v-if="placementMode === 'manual'" class="mb-2 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700">
-                            <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-blue-500"/>
-                            Click on the PDF to place
-                            <button class="ml-auto text-blue-400 hover:text-blue-700" @click="placementMode = null">✕</button>
-                        </div>
-
-                        <button
-                            :class="[
-                                'flex w-full items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition active:scale-[0.98]',
-                                placementMode === 'manual'
-                                    ? 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-400'
-                                    : 'border-transparent bg-blue-600 text-white hover:bg-blue-700',
-                            ]"
-                            @click="placementMode = 'manual'"
-                        >
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
-                            </svg>
-                            Place {{ fieldTypeLabel(activeFieldType) }}
-                        </button>
+                            Required field
+                        </label>
                     </div>
 
                     <!-- Section: Align (visible when a field is selected) -->
@@ -980,17 +939,8 @@ function fieldTypeLabel(type) {
                             </svg>
                         </div>
 
-                        <!-- Empty state -->
-                        <div v-if="placedFields.length === 0" class="px-4 pb-5 pt-1 text-center">
-                            <svg class="mx-auto mb-2 h-8 w-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zm0 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>
-                            </svg>
-                            <p class="text-xs text-gray-400">No fields placed yet</p>
-                            <p class="mt-0.5 text-[10px] text-gray-300">Select a type above, then click Place.</p>
-                        </div>
-
                         <!-- Collapsible list -->
-                        <div v-else-if="fieldsListOpen" class="px-3 pb-3">
+                        <div v-if="placedFields.length > 0 && fieldsListOpen" class="px-3 pb-3">
                             <div class="space-y-1">
                                 <div
                                     v-for="field in placedFields"
@@ -1003,28 +953,20 @@ function fieldTypeLabel(type) {
                                     ]"
                                     @click="selectedFieldId = field.id; scrollToPage(field.pageNum)"
                                 >
-                                    <!-- Type icon -->
                                     <div
-                                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded border"
+                                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded border text-[10px] font-bold uppercase"
                                         :class="field.id === selectedFieldId
-                                            ? 'border-blue-300 bg-blue-100 text-blue-600'
+                                            ? 'border-amber-300 bg-amber-100 text-amber-700'
                                             : 'border-gray-200 bg-gray-50 text-gray-400'"
                                     >
-                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path
-                                                v-for="p in iconPathsForType(field.type)"
-                                                :key="p"
-                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                :d="p"
-                                            />
-                                        </svg>
+                                        {{ (field.label || field.type).charAt(0) }}
                                     </div>
 
                                     <div class="min-w-0 flex-1">
                                         <p
                                             class="text-[11px] font-semibold capitalize"
                                             :class="field.id === selectedFieldId ? 'text-blue-700' : 'text-gray-700'"
-                                        >{{ field.type }}</p>
+                                        >{{ field.label || field.type }}</p>
                                         <p
                                             class="text-[10px]"
                                             :class="field.id === selectedFieldId ? 'text-blue-400' : 'text-gray-400'"

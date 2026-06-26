@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import WorkspaceLayout from '@/Layouts/WorkspaceLayout.vue';
 
@@ -10,12 +10,9 @@ const props = defineProps({
 const page = usePage();
 
 const searchQuery = ref('');
-
-const filteredTemplates = computed(() => {
-    const q = searchQuery.value.trim().toLowerCase();
-    if (!q) return props.templates;
-    return props.templates.filter(t => t.name.toLowerCase().includes(q));
-});
+const sortBy = ref('updated');
+const currentPage = ref(1);
+const perPage = 9;
 
 const modal = ref({
     show: false, title: '', message: '',
@@ -23,6 +20,34 @@ const modal = ref({
 });
 
 function closeModal() { modal.value.show = false; }
+
+const sortedTemplates = computed(() => {
+    const list = [...props.templates];
+    list.sort((a, b) => {
+        if (sortBy.value === 'name') return a.name.localeCompare(b.name);
+        if (sortBy.value === 'created') return new Date(b.created_at) - new Date(a.created_at);
+        if (sortBy.value === 'fields') return (b.field_count ?? 0) - (a.field_count ?? 0);
+        return new Date(b.updated_at) - new Date(a.updated_at);
+    });
+    return list;
+});
+
+const filteredTemplates = computed(() => {
+    const q = searchQuery.value.trim().toLowerCase();
+    if (!q) return sortedTemplates.value;
+    return sortedTemplates.value.filter((t) => t.name.toLowerCase().includes(q));
+});
+
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredTemplates.value.length / perPage)));
+
+const paginatedTemplates = computed(() => {
+    const start = (currentPage.value - 1) * perPage;
+    return filteredTemplates.value.slice(start, start + perPage);
+});
+
+watch([searchQuery, sortBy], () => {
+    currentPage.value = 1;
+});
 
 function confirmDelete(tpl) {
     modal.value = {
@@ -84,9 +109,9 @@ function formatDate(value) {
             <p class="text-sm text-red-700">{{ page.props.errors.pdf }}</p>
         </div>
 
-        <!-- Search -->
-        <div v-if="templates.length > 0" class="mb-5">
-            <div class="relative max-w-sm">
+        <!-- Search & sort -->
+        <div v-if="templates.length > 0" class="mb-5 flex flex-wrap items-center gap-3">
+            <div class="relative max-w-sm flex-1">
                 <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -106,18 +131,30 @@ function formatDate(value) {
                     </svg>
                 </button>
             </div>
+            <select
+                v-model="sortBy"
+                class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                aria-label="Sort templates"
+            >
+                <option value="updated">Recently updated</option>
+                <option value="created">Recently created</option>
+                <option value="name">Name A–Z</option>
+                <option value="fields">Most fields</option>
+            </select>
         </div>
 
-        <!-- Empty state (no templates at all) -->
+        <!-- Empty state -->
         <div
             v-if="templates.length === 0"
-            class="flex flex-col items-center rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center"
+            class="flex flex-col items-center rounded-2xl border border-dashed border-blue-200 bg-gradient-to-b from-blue-50/50 to-white py-16 text-center shadow-sm"
         >
-            <svg class="mb-4 h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
-            </svg>
-            <p class="text-base font-semibold text-gray-700">No templates yet</p>
-            <p class="mt-1 text-sm text-gray-400">Upload a PDF and define reusable field positions.</p>
+            <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100">
+                <svg class="h-7 w-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+                </svg>
+            </div>
+            <p class="text-lg font-semibold text-gray-900">No templates yet</p>
+            <p class="mt-2 max-w-sm text-sm text-gray-500">Upload a PDF once, place your fields, and reuse it every time you need the same document signed.</p>
             <Link
                 :href="route('templates.create')"
                 class="mt-5 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
@@ -141,7 +178,7 @@ function formatDate(value) {
         <!-- Template grid -->
         <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div
-                v-for="tpl in filteredTemplates"
+                v-for="tpl in paginatedTemplates"
                 :key="tpl.id"
                 :class="[
                     'flex flex-col rounded-xl border bg-white shadow-sm transition',
@@ -171,6 +208,8 @@ function formatDate(value) {
                             class="block truncate text-sm font-semibold text-gray-900 transition hover:text-blue-600"
                         >{{ tpl.name }}</Link>
                         <div class="mt-1 flex flex-wrap items-center gap-2">
+                            <p class="text-xs text-gray-400">Created {{ formatDate(tpl.created_at) }}</p>
+                            <p class="text-xs text-gray-300">·</p>
                             <p class="text-xs text-gray-400">Updated {{ formatDate(tpl.updated_at) }}</p>
                             <!-- PDF missing badge -->
                             <span
@@ -235,6 +274,13 @@ function formatDate(value) {
 
                     <template v-else>
                         <Link
+                            :href="route('templates.preview', tpl.id)"
+                            class="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 transition hover:border-gray-300 hover:bg-gray-50"
+                            title="Preview template"
+                        >
+                            Preview
+                        </Link>
+                        <Link
                             :href="route('templates.edit', tpl.id)"
                             class="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 transition hover:border-gray-300 hover:bg-gray-50"
                         >
@@ -265,6 +311,28 @@ function formatDate(value) {
                     </button>
                 </div>
             </div>
+        </div>
+
+        <!-- Pagination -->
+        <div
+            v-if="filteredTemplates.length > perPage"
+            class="mt-6 flex items-center justify-center gap-2"
+        >
+            <button
+                :disabled="currentPage <= 1"
+                class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                @click="currentPage--"
+            >
+                Previous
+            </button>
+            <span class="text-xs text-gray-500">Page {{ currentPage }} of {{ totalPages }}</span>
+            <button
+                :disabled="currentPage >= totalPages"
+                class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                @click="currentPage++"
+            >
+                Next
+            </button>
         </div>
 
         <!-- Confirmation modal -->

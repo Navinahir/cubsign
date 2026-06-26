@@ -372,7 +372,19 @@ Logs rotate daily and are kept for 30 days. The token is partially masked (`…l
 
 Public marketing pages are built with Vue 3 + Inertia + Tailwind under `PublicLayout.vue`. Frontend-only — no backend API changes.
 
-**Current version:** v0.12.3 — Features page compact UX redesign (dedicated product overview, no homepage duplicates).
+**Current version:** v0.13.2 — Template module production audit: hardened save/load, lazy PDF rendering, mobile preview parity, feature tests. Sign Editor unchanged.
+
+### Template Module (v0.13.2)
+
+Production audit fixes: field type validation, bounds clamping, shared `TemplateFieldPlaceholder`, lazy page rendering for large PDFs, mobile preview toolbar, feature tests for save/use/duplicate/session isolation. Sign Editor was not modified.
+
+### Template Module (v0.13.1)
+
+Template editor defines reusable field layouts only: select field type → click PDF → placeholder created. No detect/auto-place, no signing mode, no recipients. Saved state is layout metadata only. Creating a document from a template opens the normal Sign Editor with a fresh session. Preview shows structural placeholders. Sign Editor was not modified.
+
+### Template Module (v0.13.0)
+
+Template editor reuses Sign Editor components (`EditorFieldTypeGrid`, `EditorPlacementHelper`, etc.), shared `editorConstants`, and `pdfPageRenderer`. Manual click-to-place workflow, placeholder-only fields, read-only preview at `/templates/{id}/preview`. Sign Editor was not modified.
 
 ### Features Page (v0.12.3)
 

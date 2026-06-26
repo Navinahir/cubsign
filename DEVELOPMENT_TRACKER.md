@@ -4,6 +4,98 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
+## Template Module Production Audit (v0.13.2)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.13.2 |
+| **Date** | 2026-06-26 |
+| **Scope** | Template module only — Sign Editor not modified |
+
+### Hardening
+- `TemplateEditorState` — type whitelist, geometry bounds, max 500 fields, model `saving` observer
+- Nested Laravel validation on `editor_state` save
+- `useTemplate()` wrapped in DB transaction
+
+### Frontend
+- `TemplateFieldPlaceholder.vue` — shared placeholder rendering (edit + preview)
+- `templateFieldHelpers.js` — `clampFieldToPage`, `minFieldSize`, page filter on hydrate
+- `TemplateEdit` — bounds clamping, lazy PDF render, undo for label/required, macOS shortcuts
+- `TemplatePreview` — mobile thumbs, zoom toolbar, lazy render, per-type placeholders
+- Removed dead `signatureFieldDetection.js` (unused; templates are manual-only)
+
+### Tests
+- `tests/Feature/TemplatesControllerTest.php` — save, use, duplicate, auth, session
+- Extended `TemplateEditorStateTest`
+
+### Regression
+- [x] Sign Editor unchanged
+- [x] All 6 field types save/reload (signature, initials, name, date, text, checkbox)
+- [x] `npm run build` pass
+- [x] 9 Template tests pass
+
+---
+
+## Template Workflow & Session Isolation (v0.13.1)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.13.1 |
+| **Date** | 2026-06-26 |
+| **Scope** | Template module + integration — Sign Editor not modified |
+
+### Template Editor
+- Manual placeholder placement only (no detect / auto-place)
+- Resets session on mount; placeholders never store real signature data
+- Save/load via `serializeTemplateEditorState` / `hydrateTemplateFields`
+
+### Backend
+- `TemplateEditorState::sanitize()` / `forSignDocument()`
+- Template routes forget `sign_document_id`
+- `useTemplate()` sets clean `editor_state` + fresh sign session keys
+
+### Regression
+- [x] Sign Editor unchanged
+- [x] Just Me / Request Signatures from template document
+- [x] No cross-leak between template and sign editors
+- [x] `npm run build` pass
+- [x] `TemplateEditorStateTest` pass
+
+---
+
+## Template Module UX Alignment (v0.13.0)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.13.0 |
+| **Date** | 2026-06-26 |
+| **Scope** | Template module only — Sign Editor not modified |
+
+### Template Editor
+- Reuses Sign Editor components and shared constants
+- Click-to-place on field type select (no Place Field button)
+- Shared signature detection engine (Detect / Auto Place)
+- Amber placeholder fields with label + required metadata
+- `createPdfRenderer` for PDF lifecycle
+
+### Templates Dashboard
+- Sort, search, pagination, preview link
+- Branded empty state
+
+### New Route
+- `GET /templates/{template}/preview` → read-only preview
+
+### Regression
+- [x] Sign Editor unchanged
+- [x] Guest / self-sign / request signatures unchanged
+- [x] Create document from template unchanged (`useTemplate` copies `editor_state`)
+- [x] `npm run build` pass
+
+---
+
 ## Features Page UX Redesign (v0.12.3)
 
 | Field | Value |

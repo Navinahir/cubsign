@@ -5,6 +5,68 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.13.2] 2026-06-26 — Template Module Production Audit
+
+### Fixed
+- **TemplateEditorState** — field type whitelist, geometry bounds, max 500 fields, label length cap; model `saving` observer enforces sanitization.
+- **Template save validation** — nested Laravel rules for all field types and layout metadata.
+- **TemplateEdit** — field bounds clamping, checkbox-aware resize mins, undo/redo for labels/required, macOS meta shortcuts, lazy PDF page rendering, removed global `__cubsignSession` wipe.
+- **TemplatePreview** — mobile thumb strip, zoom toolbar, per-type placeholder overlays, lazy rendering, active page restore.
+- **useTemplate** — DB transaction; fresh session keys verified by feature tests.
+- **Dead code** — removed unused `signatureFieldDetection.js` (Sign Editor uses inline detection; templates are manual-only).
+
+### Added
+- `TemplateFieldPlaceholder.vue` — shared structural placeholder rendering.
+- `tests/Feature/TemplatesControllerTest.php`
+
+### Unchanged
+- Sign Editor (`Editor.vue`) — no modifications.
+
+---
+
+## [v0.13.1] 2026-06-26 — Template Workflow & Session Isolation
+
+### Fixed (Template module only — Sign Editor untouched)
+- **Template Editor scope** — removed Detect Signature Fields and Auto Place; templates are manual placeholder layout only.
+- **Placeholder-only storage** — `TemplateEditorState` (PHP) and `templateFieldHelpers.js` strip signing metadata, real signatures, dates, names, and session values on save/load/duplicate.
+- **Template preview** — structural dashed placeholder boxes only via `hydrateTemplateFields()`.
+- **Template → Sign flow** — `useTemplate()` passes sanitized field layout only and sets both `sign_token` and `sign_document_id` so the Sign Editor starts a fresh session with Just Me / Request Signatures unchanged.
+- **Session isolation** — template routes clear `sign_document_id`; Template Editor resets local state and `window.__cubsignSession` on mount.
+
+### Added
+- `app/Support/TemplateEditorState.php`
+- `tests/Unit/TemplateEditorStateTest.php`
+
+### Unchanged
+- Sign Editor (`Editor.vue`) — manual placement, detection, Just Me, Request Signatures, draw/upload/type, review, complete, download.
+
+---
+
+## [v0.13.0] 2026-06-26 — Template Module UX Alignment
+
+### Changed (Template module only — Sign Editor untouched)
+- **TemplateEdit** aligned with Sign Editor UI: shared `EditorFieldTypeGrid`, `EditorPlacementHelper`, `EditorFieldSettings`, `EditorEmptyState`, `EditorDocumentInfo`, `editorConstants`, `pdfPageRenderer`.
+- **Placement flow** — selecting a field type immediately enables click-to-place; removed legacy "Place Field" button.
+- **Auto detection** — shared `signatureFieldDetection.js` engine with Detect / Auto Place buttons (user-initiated, same as Sign Editor).
+- **Placeholders** — amber template field styling; signature/initials use placeholder values, not real signatures.
+- **Field metadata** — optional custom label and required flag saved in `editor_state`.
+- **Templates list** — branded empty state, sort (updated/created/name/fields), pagination, preview action, created + updated dates.
+- **Template preview** — new read-only page at `/templates/{id}/preview`.
+
+### Added
+- `Components/Editor/signatureFieldDetection.js`
+- `Components/Editor/templateFieldHelpers.js`
+- `Components/Editor/editorLayoutConstants.js`
+- `Pages/Workspace/TemplatePreview.vue`
+
+### Unchanged
+- Sign Editor, guest signing, request signatures, review/complete flows, auth, dashboard.
+
+### Build
+- `npm run build` — pass (1.53s)
+
+---
+
 ## [v0.12.3] 2026-06-26 — Features Page UX Redesign (Compact)
 
 ### Changed (Features page only)

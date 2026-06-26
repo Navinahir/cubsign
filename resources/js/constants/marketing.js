@@ -66,7 +66,7 @@ export const journeySteps = [
     { title: 'Complete', description: 'Download the fully signed PDF.' },
 ];
 
-export const APP_VERSION = '0.12.3';
+export const APP_VERSION = '0.13.2';
 
 /** Social profiles — use # until official accounts are live */
 export const SOCIAL_LINKS = [

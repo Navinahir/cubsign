@@ -62,6 +62,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/templates',                            [TemplatesController::class, 'store'])->name('templates.store');
     Route::get('/templates/{template}',                  [TemplatesController::class, 'show'])->name('templates.show');
     Route::get('/templates/{template}/edit',             [TemplatesController::class, 'edit'])->name('templates.edit');
+    Route::get('/templates/{template}/preview',          [TemplatesController::class, 'preview'])->name('templates.preview');
     Route::get('/templates/{template}/pdf',              [TemplatesController::class, 'pdf'])->name('templates.pdf');
     Route::put('/templates/{template}',                  [TemplatesController::class, 'update'])->name('templates.update');
     Route::delete('/templates/{template}',               [TemplatesController::class, 'destroy'])->name('templates.destroy');
