@@ -5,6 +5,27 @@ Format: `[vX.Y.Z] YYYY-MM-DD — Title`
 
 ---
 
+## [v0.12.1] 2026-06-26 — Guest Self-Sign Review Flow Fix
+
+### Fixed
+- **Guest Review page** showed conflicting messages: green "Your signed PDF is ready" banner alongside "Document must be saved before continuing." on Finish Signing.
+- **Root cause:** `validateRequestSigning()` required `documentId` and server `documentSaved` for all users, but guest self-sign stores the signed PDF only in `window.__cubsignSession` (no authenticated `/sign/save`).
+
+### Changed
+- `editorHelpers.js` — guest validation uses `signedPdfReady` (browser session bytes); authenticated users still require `documentId` + `documentSaved`.
+- `Review.vue` — single `signedPdfReady` source of truth; success banner only when PDF is ready; guest `ensureDocumentSaved()` skips server persist; user-friendly error message on real failures.
+- `Editor.vue` — marks `documentSaved: true` for guests after PDF generation (bytes held in session until Complete download).
+
+### Regression Checklist
+- [x] Logged-in self-sign — unchanged (still uses `/sign/save`)
+- [x] Request signatures — unchanged
+- [x] Authentication, dashboard, editor autosave — unchanged
+
+### Build
+- `npm run build` — pass (1.55s)
+
+---
+
 ## [v0.12.0] 2026-06-26 — Marketing Website Final Cleanup
 
 ### Removed (Homepage)

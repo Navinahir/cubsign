@@ -265,6 +265,8 @@ Mandatory email verification is enforced for all email/password accounts. Users 
 
 Guest signing (`/sign`), public signing, and recipient signing (`/r/{token}`) do **not** require authentication or email verification.
 
+**Guest self-sign flow (v0.12.1):** Upload → Editor → Review → Finish Signing → Complete → Download. The signed PDF is held in `window.__cubsignSession` until download; no server save or login is required.
+
 ### User flow
 
 1. User registers → account created with `email_verified_at = null`, `status = pending_verification`
@@ -439,7 +441,7 @@ Reusable components live in `resources/js/Components/Marketing/`:
 - [x] Authentication — unchanged
 - [x] Signing Editor — unchanged
 - [x] Dashboard / Workspace — unchanged
-- [x] Upload / Review / Complete flows — unchanged
+- [x] Upload / Review / Complete flows — unchanged (v0.12.1: guest Review finish fix)
 - [x] Email Verification — unchanged
 - [x] Request Signatures — unchanged
 - [x] Auto Detection — unchanged

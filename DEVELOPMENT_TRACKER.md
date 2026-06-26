@@ -4,6 +4,40 @@ Running log of feature implementation status. Update this file when a feature is
 
 ---
 
+## Guest Self-Sign Review Flow Fix (v0.12.1)
+
+| Field | Value |
+|---|---|
+| **Status** | Completed |
+| **Version** | v0.12.1 |
+| **Date** | 2026-06-26 |
+
+### Problem
+Guest users (Sign Without Account) saw both "Your signed PDF is ready to download" and "Document must be saved before continuing" on the Review page, blocking Finish Signing.
+
+### Root Cause
+`validateRequestSigning()` always required `documentId` and server-side `documentSaved`. Guests never call authenticated `/sign/save`; the signed PDF lives in `window.__cubsignSession.signedPdf` only.
+
+### Fix
+| File | Change |
+|---|---|
+| `editorHelpers.js` | `isGuest` + `signedPdfReady` validation path |
+| `Review.vue` | `signedPdfReady` computed; conditional success banner; guest `ensureDocumentSaved()` |
+| `Editor.vue` | Set `documentSaved: true` for guests after PDF generation |
+
+### Guest Flow (verified)
+Upload → Editor → Review → Finish Signing → Complete → Download
+
+### Regression Checklist
+- [x] Logged-in self-sign — unchanged
+- [x] Request signatures — unchanged
+- [x] Dashboard, auth, email verification, autosave — unchanged
+
+### Build Status
+- `npm run build` — pass (1.55s)
+
+---
+
 ## Marketing Website Final Cleanup (v0.12.0)
 
 | Field | Value |

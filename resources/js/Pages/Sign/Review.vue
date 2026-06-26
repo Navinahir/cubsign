@@ -59,6 +59,17 @@ const isRequestMode   = computed(() => signingMode.value === 'request');
 const isSending       = computed(() => sendStep.value !== 'idle' && sendStep.value !== 'error');
 const buttonsDisabled = computed(() => isBusy.value || isSending.value);
 
+function clientSession() {
+    const cs = typeof window !== 'undefined' ? window.__cubsignSession : null;
+    return cs?.token === props.session.token ? cs : null;
+}
+
+/** Single source of truth: signed PDF bytes exist or document was persisted server-side. */
+const signedPdfReady = computed(() => {
+    if (isFinalized.value) return true;
+    return !!clientSession()?.signedPdf;
+});
+
 function stepStatus(stepId) {
     const order = ['saving', 'preparing', 'sending', 'done'];
     const current = sendStep.value === 'error' ? -1 : order.indexOf(sendStep.value);
@@ -110,7 +121,7 @@ function resolveReviewHydration() {
 
     if (sessionReview) {
         hydrateFromReviewData(sessionReview, cs.documentId ?? props.documentId ?? null);
-        if (cs.documentSaved) {
+        if (cs.documentSaved || cs.signedPdf) {
             isFinalized.value = true;
         }
         return true;
@@ -141,11 +152,13 @@ function backToEditor() {
 
 function runValidation() {
     return validateRequestSigning({
-        signingMode:   signingMode.value,
-        recipients:    reviewRecipients.value,
-        placedFields:  placedFields.value,
-        documentId:    documentId.value,
-        documentSaved: isFinalized.value,
+        signingMode:     signingMode.value,
+        recipients:      reviewRecipients.value,
+        placedFields:    placedFields.value,
+        documentId:      documentId.value,
+        documentSaved:   isAuthenticated.value ? isFinalized.value : signedPdfReady.value,
+        isGuest:         !isAuthenticated.value,
+        signedPdfReady:  signedPdfReady.value,
     });
 }
 
@@ -170,11 +183,25 @@ async function persistEditorStateFromReview() {
 }
 
 async function ensureDocumentSaved() {
-    if (isFinalized.value) return true;
+    if (isFinalized.value || signedPdfReady.value) {
+        if (!isAuthenticated.value && clientSession()?.signedPdf) {
+            isFinalized.value = true;
+            if (window.__cubsignSession?.token === props.session.token) {
+                window.__cubsignSession.documentSaved = true;
+            }
+        }
+        return true;
+    }
 
-    const cs = typeof window !== 'undefined' ? window.__cubsignSession : null;
-    if (!cs?.signedPdf || cs.token !== props.session.token) {
+    const cs = clientSession();
+    if (!cs?.signedPdf) {
         return false;
+    }
+
+    if (!isAuthenticated.value) {
+        isFinalized.value = true;
+        window.__cubsignSession.documentSaved = true;
+        return true;
     }
 
     const response = await persistSignedPdf(cs.signedPdf, cs.filename ?? props.session.filename);
@@ -199,10 +226,10 @@ async function finishSigning() {
 
     isBusy.value = true;
     try {
-        if (!isFinalized.value) {
+        if (!isFinalized.value && !signedPdfReady.value) {
             const saved = await ensureDocumentSaved();
             if (!saved) {
-                finishError.value = 'Could not save your document. Please return to the editor and try again.';
+                finishError.value = 'Unable to prepare your signed document. Please try again.';
                 return;
             }
         }
@@ -444,7 +471,7 @@ async function sendForSignature() {
                 </div>
 
                 <div
-                    v-if="!isRequestMode"
+                    v-if="!isRequestMode && signedPdfReady"
                     class="mb-6 flex items-center gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3"
                 >
                     <svg class="h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -168,6 +168,9 @@ export function validateSigningModeConsistency({ signingMode, placedFields, reci
 /**
  * Validate request-signing workflow before finish / prepare.
  *
+ * Authenticated users require a persisted document (documentId + documentSaved).
+ * Guests only need signed PDF bytes in the browser session (signedPdfReady).
+ *
  * @returns {string[]} error messages (empty = valid)
  */
 export function validateRequestSigning({
@@ -176,17 +179,25 @@ export function validateRequestSigning({
     placedFields,
     documentId,
     documentSaved,
+    isGuest = false,
+    signedPdfReady = false,
 }) {
     const errors = [];
 
     errors.push(...validateSigningModeConsistency({ signingMode, placedFields, recipients }));
 
-    if (!documentId) {
-        errors.push('Document must be saved before continuing.');
-    }
+    if (isGuest) {
+        if (!signedPdfReady) {
+            errors.push('Unable to prepare your signed document. Please try again.');
+        }
+    } else {
+        if (!documentId) {
+            errors.push('Document must be saved before continuing.');
+        }
 
-    if (!documentSaved) {
-        errors.push('Please save the document PDF before finishing.');
+        if (!documentSaved) {
+            errors.push('Please save the document PDF before finishing.');
+        }
     }
 
     if (signingMode !== 'request' && signingMode !== 'self') {

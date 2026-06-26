@@ -1541,7 +1541,9 @@ async function goToReview() {
                 console.warn('[CubSign] persistSignedPdf failed before Review', response);
             }
         } else {
-            console.log('PERSIST_SKIPPED', { isAuthenticated, documentId: props.documentId });
+            // Guest self-sign: signed PDF bytes in browser session are sufficient until Complete.
+            documentSaved = true;
+            console.log('PERSIST_SKIPPED_GUEST', { byteLength: bytes?.byteLength ?? bytes?.length ?? 0 });
         }
 
         const namedRecipients = recipientFieldSummaries(placedFields.value, recipients.value);
