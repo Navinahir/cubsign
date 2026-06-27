@@ -4,6 +4,7 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 import { persistSignedPdf } from '@/utils/persistSignedPdf';
 import { FIELD_TYPES, FIELD_DEFAULTS, RECIPIENT_COLORS, TYPE_FONTS } from '@/Components/Editor/editorConstants';
+import { RESIZE_HANDLES } from '@/Components/Editor/editorLayoutConstants';
 import {
     recipientInitials,
     recipientDisplayName as displayRecipientName,
@@ -12,9 +13,7 @@ import {
     fieldsForRecipient,
     fieldTypesForRecipient,
     recipientFieldSummaries,
-    buildFieldsLogPayload,
     configuredRecipients,
-    validateRequestSigning,
     validateSigningModeConsistency,
     resolveFieldSigningMode,
     fieldsForSigningMode,
@@ -1226,18 +1225,6 @@ function startResize(e, sig, handle) {
     selectedSigId.value = sig.id;
 }
 
-// ── Resize handle config ──────────────────────────────────────────────────
-const HANDLES = [
-    { id: 'nw', pos: 'top-0 left-0 -translate-x-1/2 -translate-y-1/2',    cur: 'nwse-resize' },
-    { id: 'n',  pos: 'top-0 left-1/2 -translate-x-1/2 -translate-y-1/2',  cur: 'ns-resize'   },
-    { id: 'ne', pos: 'top-0 right-0 translate-x-1/2 -translate-y-1/2',     cur: 'nesw-resize' },
-    { id: 'e',  pos: 'top-1/2 right-0 translate-x-1/2 -translate-y-1/2',  cur: 'ew-resize'   },
-    { id: 'se', pos: 'bottom-0 right-0 translate-x-1/2 translate-y-1/2',   cur: 'nwse-resize' },
-    { id: 's',  pos: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2', cur: 'ns-resize'   },
-    { id: 'sw', pos: 'bottom-0 left-0 -translate-x-1/2 translate-y-1/2',   cur: 'nesw-resize' },
-    { id: 'w',  pos: 'top-1/2 left-0 -translate-x-1/2 -translate-y-1/2',  cur: 'ew-resize'   },
-];
-
 // ── Duplicate selected field ──────────────────────────────────────────────
 function duplicateField(sourceId) {
     const f = placedFields.value.find(f => f.id === (sourceId ?? selectedSigId.value));
@@ -1463,22 +1450,6 @@ async function persistEditorState() {
             activeRecipientId:    activeRecipientId.value,
         };
 
-        console.log('[CubSign] Placed fields before save:', placedFields.value.length);
-        console.log('[CubSign] Recipient assignment:', recipientFieldSummaries(placedFields.value, recipients.value).map(r => ({
-            id: r.id,
-            name: r.name,
-            assigned_fields_count: r.assigned_fields_count,
-            assigned_field_types: r.assigned_field_types,
-        })));
-        console.log('[CubSign] Field types:', placedFields.value.reduce((acc, f) => {
-            acc[f.type] = (acc[f.type] ?? 0) + 1;
-            return acc;
-        }, {}));
-
-        for (const r of recipients.value) {
-            console.log('[CubSign] EDITOR_FIELDS', buildFieldsLogPayload(props.documentId, r.id, placedFields.value, r.id));
-        }
-
         const xsrf = decodeURIComponent(
             document.cookie.split('; ').find(r => r.startsWith('XSRF-TOKEN='))?.split('=')[1] ?? '',
         );
@@ -1496,17 +1467,7 @@ async function persistEditorState() {
 }
 
 async function goToReview() {
-    console.log('REVIEW_BUTTON_CLICKED');
-    console.log('GO_TO_REVIEW_ENTER', {
-        placedFields: placedFields.value.length,
-        isFinishing: isFinishing.value,
-        documentId: props.documentId,
-        authenticated: !!usePage().props.auth?.user,
-    });
     if (placedFields.value.length === 0 || isFinishing.value) {
-        console.log('GO_TO_REVIEW_EARLY_EXIT', {
-            reason: placedFields.value.length === 0 ? 'no_fields' : 'already_finishing',
-        });
         return;
     }
 
@@ -1524,7 +1485,6 @@ async function goToReview() {
     try {
         await persistEditorState();
         const bytes = await generateSignedPdf();
-        console.log('AFTER_GENERATE_PDF', { byteLength: bytes?.byteLength ?? bytes?.length ?? 0 });
 
         const isAuthenticated = !!usePage().props.auth?.user;
         let documentSaved = window.__cubsignSession?.token === props.session.token
@@ -1532,9 +1492,7 @@ async function goToReview() {
             : false;
 
         if (isAuthenticated) {
-            console.log('BEFORE_PERSIST', { route: route('sign.save'), documentId: props.documentId });
             const response = await persistSignedPdf(bytes, props.session.filename);
-            console.log('AFTER_PERSIST', response);
             if (response.ok) {
                 documentSaved = true;
             } else {
@@ -1543,7 +1501,6 @@ async function goToReview() {
         } else {
             // Guest self-sign: signed PDF bytes in browser session are sufficient until Complete.
             documentSaved = true;
-            console.log('PERSIST_SKIPPED_GUEST', { byteLength: bytes?.byteLength ?? bytes?.length ?? 0 });
         }
 
         const namedRecipients = recipientFieldSummaries(placedFields.value, recipients.value);
@@ -1580,7 +1537,6 @@ async function goToReview() {
             console.warn('[CubSign] review snapshot save failed:', e);
         }
 
-        console.log('BEFORE_REVIEW_NAVIGATION', { documentSaved });
         router.visit(route('sign.review'));
     } catch (err) {
         console.error('[CubSign] GO_TO_REVIEW_EXCEPTION', err);
@@ -1916,7 +1872,7 @@ async function finishSigning() {
                                     <!-- Resize handles (when selected) -->
                                     <template v-if="field.id === selectedSigId">
                                         <div
-                                            v-for="h in HANDLES"
+                                            v-for="h in RESIZE_HANDLES"
                                             :key="h.id"
                                             class="absolute z-20 h-2.5 w-2.5 rounded-full border-2 border-white shadow-md"
                                             :class="h.pos"

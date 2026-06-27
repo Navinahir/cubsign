@@ -97,8 +97,7 @@ class RecipientSignController extends Controller
             ->where('sign_token', $token)
             ->firstOrFail();
 
-        // LOG A
-        Log::channel('cubsign')->info('LOG A: RecipientSignController complete started', [
+        Log::channel('cubsign')->info('RecipientSignController::complete started', [
             'recipient_id'     => $recipient->id,
             'recipient_status' => $recipient->status,
             'document_id'      => $recipient->document_id,
@@ -106,7 +105,7 @@ class RecipientSignController extends Controller
         ]);
 
         if ($recipient->status === 'signed') {
-            Log::channel('cubsign')->warning('LOG A: complete aborted — recipient already signed', [
+            Log::channel('cubsign')->warning('RecipientSignController::complete aborted — recipient already signed', [
                 'recipient_id' => $recipient->id,
             ]);
 
@@ -114,7 +113,7 @@ class RecipientSignController extends Controller
         }
 
         if ($recipient->status === 'pending') {
-            Log::channel('cubsign')->warning('LOG A: complete aborted — not recipient turn', [
+            Log::channel('cubsign')->warning('RecipientSignController::complete aborted — not recipient turn', [
                 'recipient_id' => $recipient->id,
             ]);
 
@@ -124,7 +123,7 @@ class RecipientSignController extends Controller
         $document = $recipient->document;
 
         if (! $document) {
-            Log::channel('cubsign')->error('LOG A: complete aborted — document not found', [
+            Log::channel('cubsign')->error('RecipientSignController::complete aborted — document not found', [
                 'recipient_id' => $recipient->id,
             ]);
 
@@ -138,8 +137,7 @@ class RecipientSignController extends Controller
             'signed_fields.*.value' => ['sometimes', 'nullable'],
         ]);
 
-        // LOG B
-        Log::channel('cubsign')->info('LOG B: signed_fields count', [
+        Log::channel('cubsign')->info('RecipientSignController::complete signed_fields received', [
             'document_id'        => $document->id,
             'recipient_id'       => $recipient->id,
             'signed_fields_count'=> count($validated['signed_fields'] ?? []),
@@ -235,8 +233,7 @@ class RecipientSignController extends Controller
             $document->refresh();
             $document->load('recipients');
 
-            // LOG E (before PDF generation / document update)
-            Log::channel('cubsign')->info('LOG E: document status before update', [
+            Log::channel('cubsign')->info('RecipientSignController::complete — document status before PDF generation', [
                 'document_id'     => $document->id,
                 'status'          => $document->status,
                 'pdf_path'        => $document->pdf_path,
@@ -247,8 +244,7 @@ class RecipientSignController extends Controller
 
             $signedPath = null;
 
-            // LOG C
-            Log::channel('cubsign')->info('LOG C: calling SignedPdfService', [
+            Log::channel('cubsign')->info('RecipientSignController::complete — calling SignedPdfService', [
                 'document_id' => $document->id,
             ]);
 
@@ -265,8 +261,7 @@ class RecipientSignController extends Controller
                 ]);
             }
 
-            // LOG D
-            Log::channel('cubsign')->info('LOG D: SignedPdfService returned', [
+            Log::channel('cubsign')->info('RecipientSignController::complete — SignedPdfService returned', [
                 'document_id' => $document->id,
                 'signedPath'  => $signedPath,
                 'is_null'     => $signedPath === null,
@@ -280,12 +275,11 @@ class RecipientSignController extends Controller
 
                 $document->refresh();
 
-                // LOG F + LOG G
-                Log::channel('cubsign')->info('LOG F: document status after update', [
+                Log::channel('cubsign')->info('RecipientSignController::complete — document status after update', [
                     'document_id' => $document->id,
                     'status'      => $document->status,
                 ]);
-                Log::channel('cubsign')->info('LOG G: signed_pdf_path after update', [
+                Log::channel('cubsign')->info('RecipientSignController::complete — signed_pdf_path after update', [
                     'document_id'     => $document->id,
                     'signed_pdf_path'=> $document->signed_pdf_path,
                     'file_exists'   => Storage::disk('documents')->exists($document->signed_pdf_path ?? ''),
@@ -303,18 +297,18 @@ class RecipientSignController extends Controller
             } else {
                 $document->refresh();
 
-                Log::channel('cubsign')->error('LOG D: signedPath is null — document NOT marked completed', [
+                Log::channel('cubsign')->error('RecipientSignController::complete — signedPath is null, document NOT marked completed', [
                     'document_id'     => $document->id,
                     'status'          => $document->status,
                     'pdf_path'        => $document->pdf_path,
                     'signed_pdf_path' => $document->signed_pdf_path,
                 ]);
 
-                Log::channel('cubsign')->info('LOG F: document status after update (unchanged)', [
+                Log::channel('cubsign')->info('RecipientSignController::complete — document status unchanged', [
                     'document_id' => $document->id,
                     'status'      => $document->status,
                 ]);
-                Log::channel('cubsign')->info('LOG G: signed_pdf_path after update (unchanged)', [
+                Log::channel('cubsign')->info('RecipientSignController::complete — signed_pdf_path unchanged', [
                     'document_id'      => $document->id,
                     'signed_pdf_path'  => $document->signed_pdf_path,
                     'signed_dir_exists'=> Storage::disk('documents')->exists("signed/user_{$document->user_id}"),

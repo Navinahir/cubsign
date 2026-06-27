@@ -239,23 +239,6 @@ export function validateRequestSigning({
     return errors;
 }
 
-export function buildFieldsLogPayload(documentId, recipientId, placedFields, signerId = null) {
-    const fields = signerId !== null
-        ? fieldsForRecipient(placedFields, signerId)
-        : placedFields;
-    const fieldTypes = {};
-    for (const f of fields) {
-        fieldTypes[f.type] = (fieldTypes[f.type] ?? 0) + 1;
-    }
-    return {
-        document_id: documentId ?? null,
-        recipient_id: recipientId ?? null,
-        field_count: fields.length,
-        field_types: fieldTypes,
-        field_ids: fields.map(f => f.id),
-    };
-}
-
 export function recipientInitials(recipient) {
     const name = (recipient?.name ?? '').trim();
     if (!name) return `#${recipient?.signingOrder ?? '?'}`;
