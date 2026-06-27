@@ -5,6 +5,7 @@ export const EARLY_ACCESS_SUBHEADLINE =
     'Use CubSign completely free while we improve the platform based on user feedback.';
 
 export const CTA_START_SIGNING = 'Start Signing Free';
+export const CTA_SIGN_PDF_NOW = 'Sign PDF Now';
 export const CTA_CREATE_ACCOUNT = 'Create Free Account';
 export const CTA_NAV_REGISTER = 'Get Started Free';
 
@@ -133,10 +134,35 @@ export const customerLogos = [
 ];
 
 export const heroTrustBadges = [
-    'Encrypted storage',
-    'Valid e-signatures',
+    'No Account Required',
+    'Secure PDF Signing',
+    'Legally Valid E-Signatures',
+    'Free During Early Access',
+];
+
+export const homeComparisonCubsign = [
     'No account required',
-    'Free during Early Access',
+    'Unlimited signatures',
+    'Unlimited documents',
+    'Multiple recipients',
+    'Secure cloud storage',
+    'Audit trail',
+    'Early Access Free',
+];
+
+export const homeComparisonOthers = [
+    'Monthly subscription',
+    'Signature limits',
+    'Account required',
+    'Hidden pricing',
+    'Feature restrictions',
+];
+
+export const pricingTrustBadges = [
+    'Unlimited Signatures',
+    'Unlimited Documents',
+    'No Credit Card',
+    'Free Early Access',
 ];
 
 export const testimonials = [

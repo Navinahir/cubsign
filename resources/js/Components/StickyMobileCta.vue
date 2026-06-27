@@ -1,6 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
-import { CTA_START_SIGNING, btnPrimary } from '@/constants/marketing';
+import { CTA_SIGN_PDF_NOW, btnPrimary } from '@/constants/marketing';
 
 defineProps({
     href: {
@@ -17,10 +17,10 @@ defineProps({
         aria-label="Quick action"
     >
         <Link
-            :href="href ?? route('register')"
-            :class="[btnPrimary, 'w-full']"
+            :href="href ?? route('sign.index')"
+            :class="[btnPrimary, 'w-full py-3.5 text-base']"
         >
-            {{ CTA_START_SIGNING }}
+            {{ CTA_SIGN_PDF_NOW }}
         </Link>
     </div>
 </template>

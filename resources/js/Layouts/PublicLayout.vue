@@ -2,18 +2,24 @@
 import { computed, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import DevNav from '@/Components/DevNav.vue';
-import { CTA_NAV_REGISTER, EARLY_ACCESS_HEADLINE, footerLinks, APP_VERSION, SOCIAL_LINKS } from '@/constants/marketing';
+import { EARLY_ACCESS_HEADLINE, footerLinks, APP_VERSION, SOCIAL_LINKS } from '@/constants/marketing';
 
 const mobileOpen = ref(false);
 const page = usePage();
 const user = computed(() => page.props.auth?.user ?? null);
 
-const navLinks = [
-    { label: 'Features', routeName: 'features' },
-    { label: 'Pricing', routeName: 'pricing' },
-    { label: 'Blog', routeName: 'blog' },
-    { label: 'FAQ', routeName: 'faq' },
-];
+const navLinks = computed(() => {
+    const links = [
+        { label: 'Features', routeName: 'features' },
+        { label: 'Pricing', routeName: 'pricing' },
+        { label: 'Sign PDF', routeName: 'sign.index' },
+        { label: 'Blog', routeName: 'blog' },
+    ];
+    if (user.value) {
+        links.push({ label: 'Dashboard', routeName: 'overview' });
+    }
+    return links;
+});
 
 const footerGroups = [
     { key: 'product', label: 'Product' },
@@ -66,13 +72,8 @@ function navLinkClass(routeName, mobile = false) {
                     </nav>
 
                     <div class="hidden items-center gap-3 md:flex">
-                        <template v-if="user">
-                            <Link :href="route('overview')" class="text-sm font-medium text-gray-500 transition-colors hover:text-gray-900">Dashboard</Link>
-                            <Link :href="route('sign.index')" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-600/20 transition-all hover:bg-blue-700 hover:shadow-md">Sign a PDF</Link>
-                        </template>
-                        <template v-else>
-                            <Link :href="route('login')" class="text-sm font-medium text-gray-500 transition-colors hover:text-gray-900">Login</Link>
-                            <Link :href="route('register')" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-600/20 transition-all hover:bg-blue-700 hover:shadow-md">{{ CTA_NAV_REGISTER }}</Link>
+                        <template v-if="!user">
+                            <Link :href="route('login')" class="text-sm font-medium text-gray-500 transition-colors hover:text-gray-900">Log in</Link>
                         </template>
                     </div>
 
@@ -88,15 +89,8 @@ function navLinkClass(routeName, mobile = false) {
                     <div class="space-y-1 px-4 py-3">
                         <Link v-for="link in navLinks" :key="link.routeName" :href="route(link.routeName)" :class="navLinkClass(link.routeName, true)" :aria-current="isActive(link.routeName) ? 'page' : undefined" @click="mobileOpen = false">{{ link.label }}</Link>
                     </div>
-                    <div class="flex flex-col gap-2 border-t border-gray-100 px-4 py-4">
-                        <template v-if="user">
-                            <Link :href="route('overview')" class="block rounded-lg px-3 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50" @click="mobileOpen = false">Dashboard</Link>
-                            <Link :href="route('sign.index')" class="block rounded-lg bg-blue-600 px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-blue-700" @click="mobileOpen = false">Sign a PDF</Link>
-                        </template>
-                        <template v-else>
-                            <Link :href="route('login')" class="block rounded-lg px-3 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50" @click="mobileOpen = false">Login</Link>
-                            <Link :href="route('register')" class="block rounded-lg bg-blue-600 px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-blue-700" @click="mobileOpen = false">{{ CTA_NAV_REGISTER }}</Link>
-                        </template>
+                    <div v-if="!user" class="border-t border-gray-100 px-4 py-4">
+                        <Link :href="route('login')" class="block rounded-lg px-3 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50" @click="mobileOpen = false">Log in</Link>
                     </div>
                 </div>
             </Transition>
@@ -107,7 +101,7 @@ function navLinkClass(routeName, mobile = false) {
         </main>
 
         <footer class="border-t border-gray-200 bg-gray-900 text-gray-300">
-            <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 lg:gap-10">
                     <div class="col-span-2 sm:col-span-3 lg:col-span-2">
                         <Link :href="route('home')" class="flex items-center gap-2">
@@ -131,14 +125,6 @@ function navLinkClass(routeName, mobile = false) {
                                 <svg v-else class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                             </a>
                         </div>
-                        <div class="mt-6">
-                            <p class="text-xs font-semibold uppercase tracking-widest text-gray-400">Newsletter</p>
-                            <p class="mt-2 text-sm text-gray-500">Product updates and signing tips are coming soon.</p>
-                            <div class="mt-2 flex gap-2 opacity-60" aria-hidden="true">
-                                <input type="email" disabled placeholder="you@email.com" class="min-w-0 flex-1 rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-500" tabindex="-1" />
-                                <span class="shrink-0 rounded-lg border border-gray-600 px-3 py-2 text-xs font-semibold text-gray-400">Soon</span>
-                            </div>
-                        </div>
                     </div>
 
                     <div v-for="group in footerGroups" :key="group.key">
@@ -160,9 +146,8 @@ function navLinkClass(routeName, mobile = false) {
                     </div>
                 </div>
 
-                <div class="mt-10 flex flex-col items-start justify-between gap-3 border-t border-gray-800 pt-5 sm:flex-row sm:items-center">
+                <div class="mt-10 border-t border-gray-800 pt-5">
                     <p class="text-xs text-gray-500">&copy; {{ new Date().getFullYear() }} CubSign · v{{ APP_VERSION }} · Built by Cubiz Infotech</p>
-                    <a href="/sitemap.xml" class="text-xs text-gray-500 hover:text-gray-300">Sitemap</a>
                 </div>
             </div>
         </footer>

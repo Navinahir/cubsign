@@ -40,6 +40,7 @@ Route::get('/terms', TermsController::class)->name('terms');
 Route::get('/cookies', CookiePolicyController::class)->name('cookies');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::get('/sitemap.xml', fn () => abort(404));
 
 // Google OAuth
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');

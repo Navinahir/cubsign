@@ -92,7 +92,7 @@
     }
 
     .marketing-section {
-        @apply px-4 py-14 sm:px-6 lg:px-20 lg:py-20;
+        @apply px-4 py-16 sm:px-6 lg:px-20 lg:py-24;
     }
 
     .marketing-section-alt {
@@ -100,6 +100,6 @@
     }
 
     .marketing-section-tight {
-        @apply px-4 py-10 sm:px-6 lg:px-8 lg:py-14;
+        @apply px-4 py-12 sm:px-6 lg:px-8 lg:py-16;
     }
 }
