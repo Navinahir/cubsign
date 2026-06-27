@@ -2,10 +2,9 @@
 import { Link } from '@inertiajs/vue3';
 import {
     EARLY_ACCESS_HEADLINE,
-    CTA_SIGN_PDF_NOW,
+    CTA_UPLOAD_PDF,
     btnPrimary,
     pricingComparison,
-    pricingTrustBadges,
 } from '@/constants/marketing';
 
 defineProps({
@@ -26,7 +25,7 @@ const fullBenefits = [
 
 <template>
     <div v-if="compact" class="mx-auto max-w-lg">
-        <div class="overflow-hidden rounded-2xl border-2 border-blue-200 bg-white p-8 shadow-lg shadow-blue-100/50">
+        <div class="marketing-card-lift overflow-hidden rounded-2xl border border-blue-100 bg-white p-8 shadow-lg shadow-blue-100/40">
             <p class="text-center text-xs font-semibold uppercase tracking-widest text-blue-600">Pricing</p>
             <h3 class="mt-2 text-center text-2xl font-bold tracking-tight text-gray-900">{{ EARLY_ACCESS_HEADLINE }}</h3>
             <div class="mt-4 flex items-baseline justify-center gap-2">
@@ -42,20 +41,8 @@ const fullBenefits = [
                 </li>
             </ul>
             <Link :href="route('sign.index')" :class="[btnPrimary, 'marketing-btn-ripple mt-8 w-full py-3.5']">
-                {{ CTA_SIGN_PDF_NOW }}
+                {{ CTA_UPLOAD_PDF }}
             </Link>
-        </div>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <span
-                v-for="badge in pricingTrustBadges"
-                :key="badge"
-                class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-600 shadow-sm"
-            >
-                <svg class="h-3.5 w-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                </svg>
-                {{ badge }}
-            </span>
         </div>
     </div>
 
@@ -65,7 +52,7 @@ const fullBenefits = [
                 <div class="absolute -top-3 left-1/2 z-10 -translate-x-1/2">
                     <span class="inline-flex rounded-full bg-blue-600 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">Most Popular</span>
                 </div>
-                <div class="overflow-hidden rounded-3xl border-2 border-blue-200 bg-white p-8 shadow-xl sm:p-10">
+                <div class="marketing-card-lift overflow-hidden rounded-3xl border-2 border-blue-200 bg-white p-8 shadow-xl sm:p-10">
                     <p class="text-xs font-semibold uppercase tracking-widest text-blue-600">Early Access</p>
                     <div class="mt-3 flex items-baseline gap-2">
                         <span class="text-5xl font-bold tracking-tight text-gray-900">$0</span>
@@ -77,12 +64,12 @@ const fullBenefits = [
                             {{ benefit }}
                         </li>
                     </ul>
-                    <Link :href="route('sign.index')" :class="[btnPrimary, 'marketing-btn-ripple mt-10 w-full']">{{ CTA_SIGN_PDF_NOW }}</Link>
+                    <Link :href="route('sign.index')" :class="[btnPrimary, 'marketing-btn-ripple mt-10 w-full']">{{ CTA_UPLOAD_PDF }}</Link>
                 </div>
             </div>
         </div>
 
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+        <div class="marketing-card-lift rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
             <h3 class="text-lg font-semibold text-gray-900">How CubSign compares</h3>
             <div class="mt-6 overflow-x-auto">
                 <table class="w-full min-w-[280px] text-sm">
@@ -107,7 +94,7 @@ const fullBenefits = [
                     </tbody>
                 </table>
             </div>
-            <Link :href="route('pricing')" class="mt-6 inline-flex text-sm font-medium text-blue-600 hover:text-blue-700">Full pricing details &rarr;</Link>
+            <Link :href="route('pricing')" class="mt-6 inline-flex text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">Full pricing details &rarr;</Link>
         </div>
     </div>
 </template>

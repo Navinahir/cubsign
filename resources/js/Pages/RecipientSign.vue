@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import SignatureField from '@/Components/SignatureField.vue';
+import BrandLogo from '@/Components/BrandLogo.vue';
 
 const props = defineProps({
     token:         { type: String,  required: true },
@@ -103,15 +104,7 @@ async function finishSigning() {
         <header class="shrink-0 border-b border-gray-200 bg-white">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-14 items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600">
-                            <svg class="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                        </div>
-                        <span class="font-bold text-gray-900">CubSign</span>
-                    </div>
+                    <BrandLogo variant="navbar" />
                     <div class="flex items-center gap-1.5 text-xs text-gray-500">
                         <svg class="h-3.5 w-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

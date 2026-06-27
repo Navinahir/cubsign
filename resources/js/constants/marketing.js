@@ -5,13 +5,15 @@ export const EARLY_ACCESS_SUBHEADLINE =
     'Use CubSign completely free while we improve the platform based on user feedback.';
 
 export const CTA_START_SIGNING = 'Start Signing Free';
-export const CTA_SIGN_PDF_NOW = 'Sign PDF Now';
+export const CTA_UPLOAD_PDF = 'SIGN PDF';
+/** @deprecated Use CTA_UPLOAD_PDF */
+export const CTA_SIGN_PDF_NOW = 'SIGN PDF';
 export const CTA_CREATE_ACCOUNT = 'Create Free Account';
 export const CTA_NAV_REGISTER = 'Get Started Free';
 
 /** Reusable Tailwind class strings for marketing CTAs */
 export const btnPrimary =
-    'inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md';
+    'inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/30';
 
 export const btnSecondary =
     'inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-6 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow-md';
@@ -136,7 +138,7 @@ export const customerLogos = [
 export const heroTrustBadges = [
     'No Account Required',
     'Secure PDF Signing',
-    'Legally Valid E-Signatures',
+    'Legally Valid',
     'Free During Early Access',
 ];
 
@@ -229,7 +231,7 @@ export const pricingComparison = [
 export const footerLinks = {
     product: [
         { label: 'Features', routeName: 'features' },
-        { label: 'Pricing', routeName: 'pricing' },
+        { label: 'Upload PDF', routeName: 'sign.index' },
         { label: 'FAQ', routeName: 'faq' },
     ],
     company: [

@@ -14,7 +14,7 @@ createInertiaApp({
             return appName;
         }
 
-        if (title.includes('CubSign')) {
+        if (title.includes('CubArrow Sign') || title.includes('CubSign')) {
             return title;
         }
 
@@ -32,6 +32,6 @@ createInertiaApp({
             .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#2563EB',
     },
 });

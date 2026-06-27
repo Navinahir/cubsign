@@ -69,7 +69,11 @@
     }
 
     .marketing-card-lift:hover {
-        @apply -translate-y-1 shadow-lg motion-reduce:translate-y-0;
+        @apply -translate-y-1 shadow-xl motion-reduce:translate-y-0;
+    }
+
+    .marketing-nav-link {
+        @apply transition-colors duration-200;
     }
 
     .marketing-gradient-shift {
@@ -92,7 +96,7 @@
     }
 
     .marketing-section {
-        @apply px-4 py-16 sm:px-6 lg:px-20 lg:py-24;
+        @apply px-4 py-20 sm:px-6 lg:px-20 lg:py-28;
     }
 
     .marketing-section-alt {
@@ -100,6 +104,14 @@
     }
 
     .marketing-section-tight {
-        @apply px-4 py-12 sm:px-6 lg:px-8 lg:py-16;
+        @apply px-4 py-16 sm:px-6 lg:px-8 lg:py-20;
+    }
+
+    .marketing-upload-card {
+        @apply cursor-pointer;
+    }
+
+    .marketing-upload-card:focus-visible {
+        @apply outline-none ring-2 ring-blue-500 ring-offset-2;
     }
 }

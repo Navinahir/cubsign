@@ -8,9 +8,7 @@
         body { margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         .wrapper { max-width: 560px; margin: 40px auto; }
         .card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        .header { background: #1e40af; padding: 28px 36px; }
-        .logo { color: #ffffff; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; text-decoration: none; }
-        .logo span { color: #93c5fd; }
+        .header { background: #ffffff; padding: 28px 36px; border-bottom: 1px solid #f3f4f6; }
         .body { padding: 36px; }
         .title { font-size: 20px; font-weight: 700; color: #111827; margin: 0 0 8px; }
         .subtitle { font-size: 15px; color: #6b7280; margin: 0 0 28px; line-height: 1.5; }
@@ -30,7 +28,7 @@
         <div class="card">
 
             <div class="header">
-                <a href="{{ config('app.url') }}" class="logo">Cub<span>Sign</span></a>
+                @include('emails.partials.logo')
             </div>
 
             <div class="body">
@@ -54,7 +52,7 @@
 
             <div class="footer">
                 <p class="footer-text">
-                    You received this email because {{ $ownerName }} sent you a signing request via CubSign.
+                    You received this email because {{ $ownerName }} sent you a signing request via CubArrow Sign.
                     If you did not expect this, you can safely ignore it.
                 </p>
             </div>

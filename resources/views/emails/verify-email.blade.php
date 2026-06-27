@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify your CubSign account</title>
+    <title>Verify your CubArrow Sign account</title>
     <style>
         body { margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         .wrapper { max-width: 560px; margin: 40px auto; }
         .card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        .header { background: #1e40af; padding: 28px 36px; }
-        .logo { color: #ffffff; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; text-decoration: none; }
-        .logo span { color: #93c5fd; }
+        .header { background: #ffffff; padding: 28px 36px; border-bottom: 1px solid #f3f4f6; }
         .body { padding: 36px; }
         .title { font-size: 20px; font-weight: 700; color: #111827; margin: 0 0 8px; }
         .subtitle { font-size: 15px; color: #6b7280; margin: 0 0 28px; line-height: 1.6; }
@@ -28,11 +26,11 @@
         <div class="card">
 
             <div class="header">
-                <a href="{{ config('app.url') }}" class="logo">Cub<span>Sign</span></a>
+                @include('emails.partials.logo')
             </div>
 
             <div class="body">
-                <p class="title">Welcome to CubSign</p>
+                <p class="title">Welcome to CubArrow Sign</p>
                 <p class="subtitle">
                     Hi {{ $user->name }},<br><br>
                     Please verify your email to activate your account and securely sign documents.
@@ -50,7 +48,7 @@
 
             <div class="footer">
                 <p class="footer-text">
-                    You received this email because someone created a CubSign account with this address.
+                    You received this email because someone created a CubArrow Sign account with this address.
                     If you did not create an account, you can safely ignore this email.
                 </p>
             </div>

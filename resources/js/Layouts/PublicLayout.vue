@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import DevNav from '@/Components/DevNav.vue';
+import BrandLogo from '@/Components/BrandLogo.vue';
 import { EARLY_ACCESS_HEADLINE, footerLinks, APP_VERSION, SOCIAL_LINKS } from '@/constants/marketing';
 
 const mobileOpen = ref(false);
@@ -11,8 +12,7 @@ const user = computed(() => page.props.auth?.user ?? null);
 const navLinks = computed(() => {
     const links = [
         { label: 'Features', routeName: 'features' },
-        { label: 'Pricing', routeName: 'pricing' },
-        { label: 'Sign PDF', routeName: 'sign.index' },
+        { label: 'Upload PDF', routeName: 'sign.index', highlight: true },
         { label: 'Blog', routeName: 'blog' },
     ];
     if (user.value) {
@@ -32,39 +32,45 @@ function isActive(routeName) {
     return route().current(routeName);
 }
 
-function navLinkClass(routeName, mobile = false) {
-    const active = isActive(routeName);
+function navLinkClass(link, mobile = false) {
+    const active = isActive(link.routeName);
+    const highlighted = link.highlight && !active;
+
     if (mobile) {
-        return active
-            ? 'block rounded-lg bg-blue-50 px-3 py-2.5 text-sm font-medium text-blue-600'
-            : 'block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50';
+        if (active) {
+            return 'block rounded-lg bg-blue-50 px-3 py-2.5 text-sm font-semibold text-blue-600';
+        }
+        if (highlighted) {
+            return 'block rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white';
+        }
+        return 'block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50';
     }
-    return active
-        ? 'text-sm font-semibold text-blue-600'
-        : 'text-sm font-medium text-gray-500 transition-colors duration-150 hover:text-gray-900';
+
+    if (active) {
+        return 'text-sm font-semibold text-blue-600';
+    }
+    if (highlighted) {
+        return 'rounded-lg bg-blue-50 px-3.5 py-2 text-sm font-semibold text-blue-600 transition-colors duration-200 hover:bg-blue-100';
+    }
+    return 'text-sm font-medium text-gray-500 transition-colors duration-200 hover:text-gray-900';
 }
 </script>
 
 <template>
     <div class="flex min-h-screen flex-col bg-white">
-        <header class="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
+        <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 items-center justify-between">
-                    <Link :href="route('home')" class="flex shrink-0 items-center gap-2.5" aria-label="CubSign home">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 shadow-sm shadow-blue-600/20">
-                            <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                        <span class="text-lg font-bold tracking-tight text-gray-900">CubSign</span>
+                    <Link :href="route('home')" class="flex shrink-0 items-center transition-opacity hover:opacity-90" aria-label="CubArrow Sign home">
+                        <BrandLogo variant="navbar" />
                     </Link>
 
-                    <nav class="hidden items-center gap-7 md:flex" aria-label="Main navigation">
+                    <nav class="hidden items-center gap-6 md:flex" aria-label="Main navigation">
                         <Link
                             v-for="link in navLinks"
                             :key="link.routeName"
                             :href="route(link.routeName)"
-                            :class="navLinkClass(link.routeName)"
+                            :class="navLinkClass(link)"
                             :aria-current="isActive(link.routeName) ? 'page' : undefined"
                         >
                             {{ link.label }}
@@ -87,7 +93,7 @@ function navLinkClass(routeName, mobile = false) {
             <Transition enter-active-class="transition-all duration-200 ease-out" enter-from-class="opacity-0 -translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition-all duration-150 ease-in" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 -translate-y-1">
                 <div v-if="mobileOpen" class="border-t border-gray-100 bg-white md:hidden">
                     <div class="space-y-1 px-4 py-3">
-                        <Link v-for="link in navLinks" :key="link.routeName" :href="route(link.routeName)" :class="navLinkClass(link.routeName, true)" :aria-current="isActive(link.routeName) ? 'page' : undefined" @click="mobileOpen = false">{{ link.label }}</Link>
+                        <Link v-for="link in navLinks" :key="link.routeName" :href="route(link.routeName)" :class="navLinkClass(link, true)" :aria-current="isActive(link.routeName) ? 'page' : undefined" @click="mobileOpen = false">{{ link.label }}</Link>
                     </div>
                     <div v-if="!user" class="border-t border-gray-100 px-4 py-4">
                         <Link :href="route('login')" class="block rounded-lg px-3 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50" @click="mobileOpen = false">Log in</Link>
@@ -104,13 +110,10 @@ function navLinkClass(routeName, mobile = false) {
             <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 lg:gap-10">
                     <div class="col-span-2 sm:col-span-3 lg:col-span-2">
-                        <Link :href="route('home')" class="flex items-center gap-2">
-                            <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600">
-                                <svg class="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                            </div>
-                            <span class="font-bold text-white">CubSign</span>
+                        <Link :href="route('home')" class="inline-flex transition-opacity hover:opacity-90">
+                            <BrandLogo variant="footer" />
                         </Link>
-                        <p class="mt-3 max-w-xs text-sm leading-relaxed text-gray-400">{{ EARLY_ACCESS_HEADLINE }}. Simple PDF signing.</p>
+                        <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">{{ EARLY_ACCESS_HEADLINE }}. Simple PDF signing.</p>
                         <div class="mt-5 flex gap-3">
                             <a
                                 v-for="social in SOCIAL_LINKS"
@@ -147,7 +150,7 @@ function navLinkClass(routeName, mobile = false) {
                 </div>
 
                 <div class="mt-10 border-t border-gray-800 pt-5">
-                    <p class="text-xs text-gray-500">&copy; {{ new Date().getFullYear() }} CubSign · v{{ APP_VERSION }} · Built by Cubiz Infotech</p>
+                    <p class="text-xs text-gray-500">&copy; {{ new Date().getFullYear() }} CubArrow Sign · v{{ APP_VERSION }} · Built by Cubiz Infotech</p>
                 </div>
             </div>
         </footer>
