@@ -18,7 +18,7 @@ const categories = [
         items: [
             {
                 question: 'What is CubSign?',
-                answer: 'CubSign is a web-based PDF signing platform that lets you sign documents yourself or send them to others for signature. It\'s designed to be fast, secure, and simple — no software installation required.',
+                answer: 'CubSign is a web-based PDF signing platform that lets you sign documents yourself or send them to others for signature. It\'s designed to be fast, secure, and simple, with no software installation required.',
             },
             {
                 question: 'Do I need to create an account?',
@@ -72,7 +72,7 @@ const categories = [
             },
             {
                 question: 'What is the audit trail?',
-                answer: 'Every action on a document is logged — who viewed it, who signed it, and when. The audit trail includes timestamps and IP addresses, making your documents verifiable and legally defensible.',
+                answer: 'Every action on a document is logged, including who viewed it, who signed it, and when. The audit trail includes timestamps and IP addresses, making your documents verifiable and legally defensible.',
             },
             {
                 question: 'Can I delete my documents?',
@@ -85,7 +85,7 @@ const categories = [
         items: [
             {
                 question: 'What\'s included during early access?',
-                answer: 'Early access includes unlimited signatures, unlimited recipients, unlimited downloads, secure cloud storage, audit history, and full PDF signing — all at no cost.',
+                answer: 'Early access includes unlimited signatures, unlimited recipients, unlimited downloads, secure cloud storage, audit history, and full PDF signing, all at no cost.',
             },
             {
                 question: 'Will CubSign always be free?',
@@ -135,7 +135,7 @@ function isOpen(categoryIndex, itemIndex) {
 <template>
     <MarketingSeo
         title="FAQ — CubSign | Free PDF Signing Help"
-        description="Answers to common questions about CubSign — free early access, PDF signing, security, sending for signature, and more."
+        description="Answers to common questions about CubSign, including free early access, PDF signing, security, sending for signature, and more."
         path="/faq"
         :faq-schema="faqSchema"
     />
@@ -214,7 +214,7 @@ function isOpen(categoryIndex, itemIndex) {
             <div class="mx-auto max-w-xl">
                 <h2 class="text-2xl font-bold text-gray-900">Still have questions?</h2>
                 <p class="mt-3 text-gray-500">
-                    Reach out to our support team — we're happy to help.
+                    Reach out to our support team. We are happy to help.
                 </p>
                 <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                     <Link :href="route('register')" :class="[btnPrimary, 'w-full sm:w-auto']">

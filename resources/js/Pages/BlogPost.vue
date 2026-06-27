@@ -4,8 +4,11 @@ import { Link, router } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import BlogCover from '@/Components/Marketing/BlogCover.vue';
+import BlogContent from '@/Components/Marketing/BlogContent.vue';
 import CtaBanner from '@/Components/Marketing/CtaBanner.vue';
+import MetaItems from '@/Components/Marketing/MetaItems.vue';
 import { getPostBySlug, getRelatedPosts, formatDate, blogPosts } from '@/constants/blog';
+import { normalizeBlogBlocks } from '@/utils/marketingContent';
 
 const props = defineProps({ slug: { type: String, required: true } });
 
@@ -17,9 +20,21 @@ const postIndex = computed(() => blogPosts.findIndex((p) => p.slug === props.slu
 const prevPost = computed(() => postIndex.value > 0 ? blogPosts[postIndex.value - 1] : null);
 const nextPost = computed(() => postIndex.value < blogPosts.length - 1 ? blogPosts[postIndex.value + 1] : null);
 
+const contentBlocks = computed(() => normalizeBlogBlocks(post.value?.content ?? []));
+
 const headings = computed(() =>
-    (post.value?.content ?? []).filter((b) => b.type === 'h2').map((b, i) => ({ id: `heading-${i}`, title: b.text })),
+    contentBlocks.value
+        .filter((b) => b.type === 'h2')
+        .map((b, i) => ({ id: `heading-${i}`, title: b.text })),
 );
+
+const articleMeta = computed(() => {
+    if (!post.value) return [];
+    return [
+        post.value.publishedAt ? formatDate(post.value.publishedAt) : null,
+        post.value.readingTime ? `${post.value.readingTime} min read` : null,
+    ].filter(Boolean);
+});
 
 function scrollToHeading(id) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -62,8 +77,7 @@ onUnmounted(() => observer?.disconnect());
                                 <p class="text-xs text-gray-400">{{ post.author.role }}</p>
                             </div>
                         </div>
-                        <span>{{ formatDate(post.publishedAt) }}</span>
-                        <span>{{ post.readingTime }} min read</span>
+                        <MetaItems class="text-sm text-gray-500" :items="articleMeta" />
                     </div>
                 </div>
             </section>
@@ -95,13 +109,7 @@ onUnmounted(() => observer?.disconnect());
                     </aside>
 
                     <article class="lg:col-span-2">
-                        <template v-for="(block, index) in post.content" :key="index">
-                            <p v-if="block.type === 'p'" class="mb-5 text-base leading-relaxed text-gray-600">{{ block.text }}</p>
-                            <h2 v-else-if="block.type === 'h2'" :id="`heading-${headings.findIndex((h) => h.title === block.text)}`" class="mb-4 mt-10 scroll-mt-24 text-xl font-bold text-gray-900">{{ block.text }}</h2>
-                            <ul v-else-if="block.type === 'ul'" class="mb-5 list-disc space-y-2 pl-5 text-base text-gray-600">
-                                <li v-for="item in block.items" :key="item">{{ item }}</li>
-                            </ul>
-                        </template>
+                        <BlogContent :blocks="post.content" />
                         <div class="mt-8 flex flex-wrap gap-2">
                             <span v-for="tag in post.tags" :key="tag" class="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">{{ tag }}</span>
                         </div>
@@ -121,7 +129,7 @@ onUnmounted(() => observer?.disconnect());
                                 <li v-for="related in relatedPosts" :key="related.slug">
                                     <Link :href="route('blog.show', related.slug)" class="group block">
                                         <p class="text-sm font-medium text-gray-900 group-hover:text-blue-600">{{ related.title }}</p>
-                                        <p class="mt-0.5 text-xs text-gray-400">{{ related.readingTime }} min read</p>
+                                        <p v-if="related.readingTime" class="mt-0.5 text-xs text-gray-400">{{ related.readingTime }} min read</p>
                                     </Link>
                                 </li>
                             </ul>

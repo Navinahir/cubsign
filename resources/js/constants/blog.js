@@ -13,13 +13,13 @@ export const blogPosts = [
         featured: true,
         heroGradient: 'from-blue-600 to-indigo-700',
         content: [
-            { type: 'p', text: 'Today we are thrilled to announce CubSign Early Access — a modern, free way to sign PDFs online without the friction of traditional e-signature tools.' },
+            { type: 'p', text: 'Today we are thrilled to announce CubSign Early Access. It is a modern, free way to sign PDFs online without the friction of traditional e-signature tools.' },
             { type: 'h2', text: 'Why we built CubSign' },
             { type: 'p', text: 'Signing documents should not require printing, scanning, or expensive subscriptions. CubSign was built to make PDF signing fast, secure, and accessible to everyone.' },
             { type: 'h2', text: 'What you can do today' },
             { type: 'ul', items: ['Upload and sign PDFs in seconds', 'Request signatures from multiple recipients', 'Track document status with audit trails', 'Download signed PDFs instantly'] },
             { type: 'h2', text: 'Join Early Access' },
-            { type: 'p', text: 'CubSign is completely free during Early Access. Create an account or sign without one — the choice is yours.' },
+            { type: 'p', text: 'CubSign is completely free during Early Access. Create an account or sign without one. The choice is yours.' },
         ],
     },
     {
@@ -84,7 +84,7 @@ export const blogPosts = [
     {
         slug: 'request-signatures-workflow',
         title: 'Request Signatures from Multiple Recipients',
-        excerpt: 'Send documents for signature, assign fields, and track progress — all without recipients needing an account.',
+        excerpt: 'Send documents for signature, assign fields, and track progress. Recipients do not need an account.',
         category: 'Product',
         author: { name: 'CubSign Team', role: 'Product', initials: 'CT', avatarBg: 'bg-blue-600' },
         publishedAt: '2026-03-05',

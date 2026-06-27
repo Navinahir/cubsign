@@ -133,7 +133,7 @@ function navLinkClass(routeName, mobile = false) {
                         </div>
                         <div class="mt-6">
                             <p class="text-xs font-semibold uppercase tracking-widest text-gray-400">Newsletter</p>
-                            <p class="mt-2 text-sm text-gray-500">Coming soon — product updates and signing tips.</p>
+                            <p class="mt-2 text-sm text-gray-500">Product updates and signing tips are coming soon.</p>
                             <div class="mt-2 flex gap-2 opacity-60" aria-hidden="true">
                                 <input type="email" disabled placeholder="you@email.com" class="min-w-0 flex-1 rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-500" tabindex="-1" />
                                 <span class="shrink-0 rounded-lg border border-gray-600 px-3 py-2 text-xs font-semibold text-gray-400">Soon</span>

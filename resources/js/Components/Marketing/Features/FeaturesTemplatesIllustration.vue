@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="rounded-xl border border-gray-200 bg-gray-50 p-3 sm:col-span-3">
-                <p class="mb-2 text-[10px] font-semibold text-gray-900">Preview — NDA Template</p>
+                <p class="mb-2 text-[10px] font-semibold text-gray-900">Preview: NDA Template</p>
                 <div class="rounded-lg bg-white p-3 shadow-sm">
                     <div class="space-y-1.5">
                         <div v-for="w in ['w-full', 'w-11/12', 'w-full', 'w-3/4']" :key="w" :class="['h-1.5 rounded-full bg-gray-100', w]" />

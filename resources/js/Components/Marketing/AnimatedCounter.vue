@@ -6,7 +6,7 @@ const props = defineProps({
     duration: { type: Number, default: 2000 },
 });
 
-const display = ref('0');
+const display = ref('');
 const elementRef = ref(null);
 let observer = null;
 let animated = false;
@@ -17,6 +17,10 @@ const numericPart = computed(() => {
 });
 
 const suffix = computed(() => props.value.replace(/^[\d,.]+/, ''));
+
+function initialDisplay() {
+    return numericPart.value === null ? props.value : '0';
+}
 
 function animate() {
     if (animated) return;
@@ -48,6 +52,8 @@ function animate() {
 }
 
 onMounted(() => {
+    display.value = initialDisplay();
+
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) {
         display.value = props.value;
@@ -63,7 +69,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => observer?.disconnect());
-watch(() => props.value, () => { animated = false; display.value = '0'; });
+watch(() => props.value, () => { animated = false; display.value = initialDisplay(); });
 </script>
 
 <template>

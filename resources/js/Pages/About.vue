@@ -24,7 +24,7 @@ import {
                     <span class="text-xs font-semibold uppercase tracking-widest text-blue-600">About CubSign</span>
                     <h1 class="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Making paperless signing accessible to everyone</h1>
                     <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-gray-600">
-                        CubSign was built to eliminate the print-sign-scan cycle. We believe signing documents should be fast, secure, and free of friction — for freelancers, businesses, and enterprises alike.
+                        CubSign was built to eliminate the print-sign-scan cycle. We believe signing documents should be fast, secure, and free of friction for freelancers, businesses, and enterprises alike.
                     </p>
                 </ScrollReveal>
             </div>
@@ -35,12 +35,12 @@ import {
             <div class="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
                 <ScrollReveal class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
                     <h2 class="text-xl font-bold text-gray-900">Our Mission</h2>
-                    <p class="mt-4 text-sm leading-relaxed text-gray-600">To democratize document signing by providing a modern, accessible platform that anyone can use — from freelancers signing contracts to HR teams onboarding new hires.</p>
+                    <p class="mt-4 text-sm leading-relaxed text-gray-600">To democratize document signing by providing a modern, accessible platform that anyone can use, from freelancers signing contracts to HR teams onboarding new hires.</p>
                     <Link :href="route('register')" :class="[btnPrimary, 'mt-6']">{{ CTA_START_SIGNING }}</Link>
                 </ScrollReveal>
                 <ScrollReveal :delay="80" class="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50/50 p-8 shadow-sm">
                     <h2 class="text-xl font-bold text-gray-900">Our Vision</h2>
-                    <p class="mt-4 text-sm leading-relaxed text-gray-600">A world where every document can be signed digitally in seconds, with the same legal validity and security as traditional methods — but without the hassle, cost, or environmental waste.</p>
+                    <p class="mt-4 text-sm leading-relaxed text-gray-600">A world where every document can be signed digitally in seconds, with the same legal validity and security as traditional methods, but without the hassle, cost, or environmental waste.</p>
                 </ScrollReveal>
             </div>
         </section>
@@ -52,8 +52,8 @@ import {
                     <h2 class="text-2xl font-bold text-gray-900">Our Story</h2>
                     <div class="mt-6 space-y-4 text-sm leading-relaxed text-gray-600">
                         <p><strong class="text-gray-900">Why CubSign was built:</strong> We watched teams waste hours printing, signing, scanning, and emailing documents. Existing e-signature tools were expensive, bloated, or required enterprise contracts.</p>
-                        <p><strong class="text-gray-900">The problem we solve:</strong> CubSign removes every friction point — upload a PDF, add your signature, send to recipients, and download the signed document. No printing. No scanning. No waiting.</p>
-                        <p><strong class="text-gray-900">Our vision for paperless signing:</strong> We are building the signing platform we wished existed — simple enough for anyone, secure enough for legal teams, and free during Early Access while we perfect the experience.</p>
+                        <p><strong class="text-gray-900">The problem we solve:</strong> CubSign removes every friction point. Upload a PDF, add your signature, send to recipients, and download the signed document. No printing. No scanning. No waiting.</p>
+                        <p><strong class="text-gray-900">Our vision for paperless signing:</strong> We are building the signing platform we wished existed. It is simple enough for anyone, secure enough for legal teams, and free during Early Access while we perfect the experience.</p>
                     </div>
                 </ScrollReveal>
             </div>
@@ -108,14 +108,14 @@ import {
             <div class="mx-auto max-w-2xl text-center">
                 <h2 class="text-2xl font-bold text-gray-900">Who We Are</h2>
                 <p class="mt-4 text-sm leading-relaxed text-gray-600">
-                    CubSign is built by Cubiz Infotech — a small team focused on making document signing simple, secure, and accessible. We're in Early Access and improving the product based on real user feedback.
+                    CubSign is built by Cubiz Infotech, a small team focused on making document signing simple, secure, and accessible. We're in Early Access and improving the product based on real user feedback.
                 </p>
             </div>
         </section>
 
         <!-- CTA -->
         <section class="marketing-section">
-            <div class="mx-auto max-w-5xl"><CtaBanner title="Start Signing Today" description="Join CubSign Early Access — completely free." /></div>
+            <div class="mx-auto max-w-5xl"><CtaBanner title="Start Signing Today" description="Join CubSign Early Access. It is completely free." /></div>
         </section>
     </PublicLayout>
 </template>
