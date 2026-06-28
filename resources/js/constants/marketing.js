@@ -169,23 +169,23 @@ export const pricingTrustBadges = [
 
 export const testimonials = [
     {
-        initials: 'SM',
-        name: 'Sarah Mitchell',
-        role: 'Freelance Designer',
+        initials: 'IJ',
+        name: 'Igor Jacon',
+        role: 'Founder',
         avatarBg: 'bg-blue-500',
         quote: 'CubSign saves me hours every week. I sign client contracts in seconds without printing a single page.',
     },
     {
-        initials: 'JT',
-        name: 'James Torres',
-        role: 'Real Estate Agent',
+        initials: 'MG',
+        name: 'Mikkel Gerdes',
+        role: 'CEO',
         avatarBg: 'bg-emerald-500',
         quote: 'My clients sign lease agreements in minutes. It is the simplest signing tool I have used.',
     },
     {
-        initials: 'PK',
-        name: 'Priya Kumar',
-        role: 'HR Manager',
+        initials: 'L',
+        name: 'Laurent',
+        role: 'Managing Director',
         avatarBg: 'bg-violet-500',
         quote: 'Onboarding paperwork used to take days. Now new hires sign everything digitally before their first day.',
     },

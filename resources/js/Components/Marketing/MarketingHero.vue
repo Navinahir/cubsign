@@ -27,8 +27,8 @@ defineProps({
                     </div>
 
                     <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
-                        Upload your PDF and
-                        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent"> sign it online</span>
+                        Securely upload and
+                        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent"> sign</span> your PDF online
                     </h1>
 
                     <p class="mt-5 max-w-lg text-lg leading-relaxed text-gray-600">
@@ -39,14 +39,7 @@ defineProps({
                         <MarketingUploadZone />
                     </div>
 
-                    <p class="mt-6 text-center text-sm text-gray-600 sm:text-left">
-                        Already have an account?
-                        <Link :href="route('login')" class="font-medium text-blue-600 transition-colors hover:text-blue-700 hover:underline">
-                            Log in &rarr;
-                        </Link>
-                    </p>
-
-                    <div v-if="hasSignSession" class="mt-3 text-center sm:text-left">
+                    <div v-if="hasSignSession" class="mt-6 text-center sm:text-left">
                         <Link :href="route('sign.editor')" class="text-sm font-medium text-blue-600 hover:underline">
                             Continue signing &rarr;
                         </Link>
