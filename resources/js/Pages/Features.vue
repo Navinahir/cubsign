@@ -3,24 +3,20 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import ScrollReveal from '@/Components/Marketing/ScrollReveal.vue';
 import ProductMockup from '@/Components/Marketing/ProductMockup.vue';
-import DecorativeBg from '@/Components/Marketing/DecorativeBg.vue';
-import FeaturesHeroIllustration from '@/Components/Marketing/Features/FeaturesHeroIllustration.vue';
 import FeaturesTemplatesIllustration from '@/Components/Marketing/Features/FeaturesTemplatesIllustration.vue';
 import FeaturesAuditIllustration from '@/Components/Marketing/Features/FeaturesAuditIllustration.vue';
 import FeaturesSecureStorageIllustration from '@/Components/Marketing/Features/FeaturesSecureStorageIllustration.vue';
 import FeaturesTrackingIllustration from '@/Components/Marketing/Features/FeaturesTrackingIllustration.vue';
 import { Link } from '@inertiajs/vue3';
 import {
-    EARLY_ACCESS_HEADLINE,
-    CTA_START_SIGNING,
-    btnPrimary,
-    btnSecondary,
-} from '@/constants/marketing';
-import {
-    featuresShowcases,
-    featuresAudience,
-    featuresIncluded,
-} from '@/constants/featuresPage';
+    PenSquare,
+    Building2,
+    Scale,
+    Users,
+    TrendingUp,
+    Briefcase,
+} from '@lucide/vue';
+import { featuresShowcases } from '@/constants/featuresPage';
 </script>
 
 <template>
@@ -31,52 +27,13 @@ import {
     />
 
     <PublicLayout>
-        <!-- Hero -->
-        <section class="marketing-gradient-hero relative overflow-hidden px-4 pb-10 pt-10 sm:px-6 lg:pb-12 lg:pt-12">
-            <DecorativeBg pattern="grid" />
-            <div class="pointer-events-none absolute -right-24 top-16 h-56 w-56 rounded-full bg-blue-200/20 blur-3xl" aria-hidden="true" />
-
-            <div class="relative mx-auto max-w-6xl">
-                <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-10">
-                    <ScrollReveal>
-                        <span class="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-xs font-semibold text-blue-700">
-                            Features
-                        </span>
-
-                        <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
-                            Everything CubSign offers,
-                            <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">in one place</span>
-                        </h1>
-
-                        <p class="mt-3 max-w-md text-sm leading-relaxed text-gray-600 sm:text-base">
-                            Sign PDFs yourself, collect signatures from others, reuse templates, and see exactly where each document stands.
-                        </p>
-
-                        <p class="mt-2 text-xs font-medium text-blue-600">{{ EARLY_ACCESS_HEADLINE }}</p>
-
-                        <div class="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center">
-                            <Link :href="route('register')" :class="[btnPrimary, 'marketing-btn-ripple']">
-                                {{ CTA_START_SIGNING }}
-                            </Link>
-                            <Link :href="route('sign.index')" :class="btnSecondary">
-                                Try Without Account
-                            </Link>
-                        </div>
-                    </ScrollReveal>
-
-                    <ScrollReveal direction="right" :delay="100">
-                        <FeaturesHeroIllustration />
-                    </ScrollReveal>
-                </div>
-            </div>
-        </section>
-
         <!-- Core features -->
         <section
             v-for="(feature, index) in featuresShowcases"
             :key="feature.id"
             :class="[
-                'px-4 py-10 sm:px-6 lg:px-8 lg:py-12',
+                'px-4 pb-10 sm:px-6 lg:px-8 lg:pb-12',
+                index === 0 ? 'pt-16 lg:pt-20' : 'pt-10 lg:pt-12',
                 index % 2 === 1 ? 'bg-gray-50/70' : 'bg-white',
             ]"
             :aria-labelledby="`feature-${feature.id}`"
@@ -155,85 +112,66 @@ import {
                 </ScrollReveal>
 
                 <div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    <ScrollReveal
-                        v-for="(card, i) in featuresAudience"
-                        :key="card.title"
-                        :delay="i * 40"
-                    >
+                    <ScrollReveal :delay="0">
                         <div class="marketing-card-lift group h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                            <div
-                                :class="[
-                                    'mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none',
-                                    card.gradient,
-                                ]"
-                            >
-                                <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" :d="card.icon" />
-                                </svg>
+                            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none">
+                                <PenSquare :size="18" :stroke-width="2" color="white" aria-hidden="true" />
                             </div>
-                            <h3 class="text-sm font-bold text-gray-900">{{ card.title }}</h3>
-                            <p class="mt-1 text-xs leading-relaxed text-gray-500">{{ card.description }}</p>
+                            <h3 class="text-sm font-bold text-gray-900">Freelancers</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Sign client contracts and send proposals without the back-and-forth.</p>
+                        </div>
+                    </ScrollReveal>
+
+                    <ScrollReveal :delay="40">
+                        <div class="marketing-card-lift group h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none">
+                                <Building2 :size="18" :stroke-width="2" color="white" aria-hidden="true" />
+                            </div>
+                            <h3 class="text-sm font-bold text-gray-900">Small Business</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Handle agreements, invoices, and vendor forms in one place.</p>
+                        </div>
+                    </ScrollReveal>
+
+                    <ScrollReveal :delay="80">
+                        <div class="marketing-card-lift group h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-slate-600 to-gray-800 shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none">
+                                <Scale :size="18" :stroke-width="2" color="white" aria-hidden="true" />
+                            </div>
+                            <h3 class="text-sm font-bold text-gray-900">Legal Teams</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Send NDAs and agreements with a clear record of who signed.</p>
+                        </div>
+                    </ScrollReveal>
+
+                    <ScrollReveal :delay="120">
+                        <div class="marketing-card-lift group h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none">
+                                <Users :size="18" :stroke-width="2" color="white" aria-hidden="true" />
+                            </div>
+                            <h3 class="text-sm font-bold text-gray-900">HR</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Get offer letters and onboarding paperwork signed before day one.</p>
+                        </div>
+                    </ScrollReveal>
+
+                    <ScrollReveal :delay="160">
+                        <div class="marketing-card-lift group h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none">
+                                <TrendingUp :size="18" :stroke-width="2" color="white" aria-hidden="true" />
+                            </div>
+                            <h3 class="text-sm font-bold text-gray-900">Sales</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Close deals faster with quotes and contracts signed online.</p>
+                        </div>
+                    </ScrollReveal>
+
+                    <ScrollReveal :delay="200">
+                        <div class="marketing-card-lift group h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none">
+                                <Briefcase :size="18" :stroke-width="2" color="white" aria-hidden="true" />
+                            </div>
+                            <h3 class="text-sm font-bold text-gray-900">Operations</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Keep vendor agreements and internal forms organized and tracked.</p>
                         </div>
                     </ScrollReveal>
                 </div>
-            </div>
-        </section>
-
-        <!-- Everything included -->
-        <section class="bg-gray-50/70 px-4 py-10 sm:px-6 lg:px-8 lg:py-12" aria-labelledby="included-heading">
-            <div class="mx-auto max-w-4xl">
-                <ScrollReveal>
-                    <h2 id="included-heading" class="text-center text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                        Everything included
-                    </h2>
-                    <p class="mx-auto mt-2 max-w-md text-center text-sm text-gray-500">
-                        All of this is available free during early access.
-                    </p>
-                </ScrollReveal>
-
-                <ScrollReveal :delay="60">
-                    <ul class="mt-8 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3" role="list">
-                        <li
-                            v-for="item in featuresIncluded"
-                            :key="item"
-                            class="flex items-center gap-2.5 rounded-xl border border-gray-200/80 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition-shadow hover:shadow-md motion-reduce:transition-none"
-                        >
-                            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600" aria-hidden="true">✓</span>
-                            {{ item }}
-                        </li>
-                    </ul>
-                </ScrollReveal>
-            </div>
-        </section>
-
-        <!-- Final CTA -->
-        <section class="px-4 py-10 sm:px-6 lg:px-8 lg:py-14" aria-labelledby="features-cta">
-            <div class="mx-auto max-w-3xl">
-                <ScrollReveal>
-                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 px-6 py-10 text-center shadow-xl sm:px-10 sm:py-12">
-                        <div class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
-                        <h2 id="features-cta" class="relative text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                            Ready to simplify document signing?
-                        </h2>
-                        <p class="relative mt-2 text-sm text-blue-100">
-                            Create a free account or sign a PDF right now. No credit card needed.
-                        </p>
-                        <div class="relative mt-6 flex flex-col items-center justify-center gap-2.5 sm:flex-row">
-                            <Link
-                                :href="route('register')"
-                                class="marketing-btn-ripple w-full rounded-xl bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-sm transition-all hover:bg-gray-50 sm:w-auto"
-                            >
-                                {{ CTA_START_SIGNING }}
-                            </Link>
-                            <Link
-                                :href="route('sign.index')"
-                                class="w-full rounded-xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:w-auto"
-                            >
-                                Try Without Account
-                            </Link>
-                        </div>
-                    </div>
-                </ScrollReveal>
             </div>
         </section>
     </PublicLayout>

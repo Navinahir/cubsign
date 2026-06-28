@@ -20,6 +20,7 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@lucide/vue": "^1.21.0",
         "axios": "^1.18.0",
         "pdf-lib": "^1.17.1",
         "pdfjs-dist": "^3.11.174",
