@@ -1,20 +1,26 @@
 <script setup>
-import PublicLayout from '@/Layouts/PublicLayout.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
 import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <PublicLayout>
-        <section class="flex items-center justify-center bg-gradient-to-b from-gray-50 to-white px-4 py-12 sm:py-16">
-            <div class="w-full max-w-md">
-                <Link :href="route('home')" class="mb-8 flex justify-center transition-opacity hover:opacity-80" aria-label="CubArrow Sign home">
-                    <BrandLogo variant="auth" />
-                </Link>
-                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-6 py-8 shadow-lg shadow-gray-200/50 sm:px-8">
-                    <slot />
-                </div>
+    <div class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-slate-50 via-gray-50 to-slate-100 px-4 py-10 sm:py-14">
+        <div class="w-full max-w-[480px]">
+            <Link
+                :href="route('home')"
+                class="mb-8 flex justify-center transition-opacity hover:opacity-90"
+                aria-label="CubArrow Sign home"
+            >
+                <BrandLogo variant="auth" />
+            </Link>
+
+            <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white px-6 py-8 shadow-xl shadow-gray-200/60 sm:px-10 sm:py-10">
+                <slot />
             </div>
-        </section>
-    </PublicLayout>
+
+            <div v-if="$slots.footer" class="mt-8 text-center">
+                <slot name="footer" />
+            </div>
+        </div>
+    </div>
 </template>

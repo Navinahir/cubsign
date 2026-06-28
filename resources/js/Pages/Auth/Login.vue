@@ -33,16 +33,25 @@ const submit = () => {
     <GuestLayout>
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
+        <div class="text-center">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-[1.75rem]">
+                Welcome Back
+            </h1>
+            <p class="mt-2 text-sm leading-relaxed text-gray-500 sm:text-base">
+                Sign in to your CubArrow Sign account
+            </p>
+        </div>
+
+        <div v-if="status" class="mt-6 rounded-lg bg-green-50 px-4 py-3 text-center text-sm font-medium text-green-700">
             {{ status }}
         </div>
 
         <!-- Google OAuth -->
         <a
             :href="route('auth.google')"
-            class="mb-5 flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50"
+            class="mt-8 flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-300 hover:bg-gray-50"
         >
-            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24">
+            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -52,22 +61,22 @@ const submit = () => {
         </a>
 
         <!-- Divider -->
-        <div class="relative mb-5">
+        <div class="relative my-6">
             <div class="absolute inset-0 flex items-center">
                 <div class="w-full border-t border-gray-200"></div>
             </div>
-            <div class="relative flex justify-center text-xs">
-                <span class="bg-white px-3 text-gray-400">or sign in with email</span>
+            <div class="relative flex justify-center text-xs uppercase tracking-wider">
+                <span class="bg-white px-3 font-medium text-gray-400">or</span>
             </div>
         </div>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit" class="space-y-5">
             <div>
                 <InputLabel for="email" value="Email" />
                 <TextInput
                     id="email"
                     type="email"
-                    class="mt-1 block w-full"
+                    class="mt-1.5 block w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     v-model="form.email"
                     required
                     autofocus
@@ -76,12 +85,12 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
+            <div>
                 <InputLabel for="password" value="Password" />
                 <TextInput
                     id="password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="mt-1.5 block w-full rounded-xl border-gray-200 px-4 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     v-model="form.password"
                     required
                     autocomplete="current-password"
@@ -89,30 +98,40 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4 block">
+            <div class="flex items-center justify-between gap-4 pt-1">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
-            </div>
 
-            <div class="mt-4 flex items-center justify-end">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="shrink-0 text-sm font-medium text-gray-600 transition hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
-                    Forgot your password?
+                    Forgot password
                 </Link>
-
-                <PrimaryButton
-                    class="ms-4 !rounded-xl !border-blue-600 !bg-blue-600 !px-6 !py-2.5 !text-sm !font-semibold !normal-case !tracking-normal hover:!bg-blue-700 focus:!ring-blue-500"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Log in
-                </PrimaryButton>
             </div>
+
+            <PrimaryButton
+                class="!mt-2 w-full justify-center !rounded-xl !border-blue-600 !bg-blue-600 !px-6 !py-3 !text-sm !font-semibold !normal-case !tracking-normal hover:!bg-blue-700 focus:!ring-blue-500"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+            >
+                Log in
+            </PrimaryButton>
         </form>
+
+        <template #footer>
+            <p class="text-sm text-gray-600">
+                Don't have an account?
+                <Link
+                    :href="route('register')"
+                    class="ms-1 font-semibold text-blue-600 transition hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    Create an account →
+                </Link>
+            </p>
+        </template>
     </GuestLayout>
 </template>

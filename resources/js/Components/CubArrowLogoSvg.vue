@@ -8,11 +8,11 @@ defineProps({
 });
 
 const heightClasses = {
-    navbar: 'h-9 w-auto sm:h-10',
-    footer: 'h-8 w-auto brightness-0 invert sm:h-9',
-    auth: 'mx-auto h-10 w-auto sm:h-11',
-    loader: 'mx-auto h-10 w-auto sm:h-11',
-    workspace: 'h-8 w-auto brightness-0 invert sm:h-9',
+    navbar: 'h-11 w-auto shrink-0 sm:h-12',
+    footer: 'h-11 w-auto shrink-0 brightness-0 invert sm:h-12',
+    auth: 'mx-auto w-[min(100%,22rem)] h-auto shrink-0 sm:w-[24rem]',
+    loader: 'mx-auto h-11 w-auto shrink-0 sm:h-12',
+    workspace: 'h-9 w-auto shrink-0 brightness-0 invert sm:h-10',
 };
 </script>
 
@@ -24,6 +24,8 @@ const heightClasses = {
         xmlns="http://www.w3.org/2000/svg"
         role="img"
         aria-label="CubArrow Sign"
+        shape-rendering="geometricPrecision"
+        text-rendering="geometricPrecision"
     >
         <path d="M8 18L22 10V28L8 36V18Z" fill="#0A1628" />
         <path d="M22 10L36 18V36L22 28V10Z" fill="#0A1628" />
