@@ -4,11 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'CubArrow Sign') }}</title>
+        <title inertia>{{ config('app.name', 'CubSign') }}</title>
 
         <meta name="description" content="Upload your PDF and sign it online in seconds. Add your signature and download the finished document. No account required.">
         <meta name="robots" content="index, follow">
-        <meta property="og:site_name" content="CubArrow Sign">
+        <meta property="og:site_name" content="CubSign">
         <meta name="twitter:card" content="summary_large_image">
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">
         <link rel="apple-touch-icon" href="/favicon.svg">

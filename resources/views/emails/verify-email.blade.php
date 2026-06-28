@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify your CubArrow Sign account</title>
+    <title>Verify your CubSign account</title>
     <style>
         body { margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         .wrapper { max-width: 560px; margin: 40px auto; }
@@ -30,7 +30,7 @@
             </div>
 
             <div class="body">
-                <p class="title">Welcome to CubArrow Sign</p>
+                <p class="title">Welcome to CubSign</p>
                 <p class="subtitle">
                     Hi {{ $user->name }},<br><br>
                     Please verify your email to activate your account and securely sign documents.
@@ -48,7 +48,7 @@
 
             <div class="footer">
                 <p class="footer-text">
-                    You received this email because someone created a CubArrow Sign account with this address.
+                    You received this email because someone created a CubSign account with this address.
                     If you did not create an account, you can safely ignore this email.
                 </p>
             </div>

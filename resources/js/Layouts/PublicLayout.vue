@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import DevNav from '@/Components/DevNav.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
-import { EARLY_ACCESS_HEADLINE, footerLinks, APP_VERSION, SOCIAL_LINKS } from '@/constants/marketing';
+import { footerLinks, APP_VERSION, SOCIAL_LINKS } from '@/constants/marketing';
 
 const mobileOpen = ref(false);
 const page = usePage();
@@ -61,7 +61,7 @@ function navLinkClass(link, mobile = false) {
         <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 items-center justify-between">
-                    <Link :href="route('home')" class="flex shrink-0 items-center transition-opacity hover:opacity-90" aria-label="CubArrow Sign home">
+                    <Link :href="route('home')" class="flex shrink-0 items-center transition-opacity hover:opacity-90" aria-label="CubSign home">
                         <BrandLogo variant="navbar" />
                     </Link>
 
@@ -113,7 +113,7 @@ function navLinkClass(link, mobile = false) {
                         <Link :href="route('home')" class="inline-flex transition-opacity hover:opacity-90">
                             <BrandLogo variant="footer" />
                         </Link>
-                        <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">{{ EARLY_ACCESS_HEADLINE }}. Simple PDF signing.</p>
+                        <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">Simple PDF signing.</p>
                         <div class="mt-5 flex gap-3">
                             <a
                                 v-for="social in SOCIAL_LINKS"
@@ -149,8 +149,9 @@ function navLinkClass(link, mobile = false) {
                     </div>
                 </div>
 
-                <div class="mt-10 border-t border-gray-800 pt-5">
-                    <p class="text-xs text-gray-500">&copy; {{ new Date().getFullYear() }} CubArrow Sign · v{{ APP_VERSION }} · Built by Cubiz Infotech</p>
+                <div class="mt-10 border-t border-gray-800 pt-5 space-y-2">
+                    <p class="text-xs text-gray-500">&copy; {{ new Date().getFullYear() }} CubSign · v{{ APP_VERSION }}</p>
+                    <p class="text-[11px] text-gray-600">A partner product by AppArrow Technologies</p>
                 </div>
             </div>
         </footer>

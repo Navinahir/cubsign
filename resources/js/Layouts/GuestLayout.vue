@@ -9,7 +9,7 @@ import { Link } from '@inertiajs/vue3';
             <Link
                 :href="route('home')"
                 class="mb-8 flex justify-center transition-opacity hover:opacity-90"
-                aria-label="CubArrow Sign home"
+                aria-label="CubSign home"
             >
                 <BrandLogo variant="auth" />
             </Link>

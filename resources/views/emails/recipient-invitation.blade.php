@@ -52,7 +52,7 @@
 
             <div class="footer">
                 <p class="footer-text">
-                    You received this email because {{ $ownerName }} sent you a signing request via CubArrow Sign.
+                    You received this email because {{ $ownerName }} sent you a signing request via CubSign.
                     If you did not expect this, you can safely ignore it.
                 </p>
             </div>

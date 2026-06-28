@@ -32,7 +32,7 @@ const faqJsonLd = computed(() => {
 const orgJsonLd = computed(() => JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'CubArrow Sign',
+    name: 'CubSign',
     url: appUrl.value,
     logo: `${appUrl.value}/favicon.svg`,
 }));
@@ -46,7 +46,7 @@ const articleJsonLd = computed(() => {
         description: props.article.excerpt,
         author: { '@type': 'Person', name: props.article.author.name },
         datePublished: props.article.publishedAt,
-        publisher: { '@type': 'Organization', name: 'CubArrow Sign', logo: { '@type': 'ImageObject', url: ogImage.value } },
+        publisher: { '@type': 'Organization', name: 'CubSign', logo: { '@type': 'ImageObject', url: ogImage.value } },
         mainEntityOfPage: canonicalUrl.value,
     });
 });
@@ -54,7 +54,7 @@ const articleJsonLd = computed(() => {
 const websiteJsonLd = computed(() => JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'CubArrow Sign',
+    name: 'CubSign',
     url: appUrl.value,
     description: 'Free online PDF signing platform',
     potentialAction: {
@@ -71,7 +71,7 @@ const websiteJsonLd = computed(() => JSON.stringify({
         <link head-key="canonical" rel="canonical" :href="canonicalUrl" />
 
         <meta head-key="og:type" property="og:type" :content="type === 'article' ? 'article' : 'website'" />
-        <meta head-key="og:site_name" property="og:site_name" content="CubArrow Sign" />
+        <meta head-key="og:site_name" property="og:site_name" content="CubSign" />
         <meta head-key="og:title" property="og:title" :content="title" />
         <meta head-key="og:description" property="og:description" :content="description" />
         <meta head-key="og:url" property="og:url" :content="canonicalUrl" />

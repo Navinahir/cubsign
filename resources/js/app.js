@@ -14,7 +14,7 @@ createInertiaApp({
             return appName;
         }
 
-        if (title.includes('CubArrow Sign') || title.includes('CubSign')) {
+        if (title.includes('CubSign')) {
             return title;
         }
 

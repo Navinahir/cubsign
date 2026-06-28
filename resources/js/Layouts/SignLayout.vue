@@ -26,7 +26,7 @@ const steps = [
             <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-14 items-center justify-between">
 
-                    <Link :href="route('home')" class="transition-opacity hover:opacity-90" aria-label="CubArrow Sign home">
+                    <Link :href="route('home')" class="transition-opacity hover:opacity-90" aria-label="CubSign home">
                         <BrandLogo variant="navbar" />
                     </Link>
 

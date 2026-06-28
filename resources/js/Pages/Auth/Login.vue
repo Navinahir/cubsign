@@ -38,7 +38,7 @@ const submit = () => {
                 Welcome Back
             </h1>
             <p class="mt-2 text-sm leading-relaxed text-gray-500 sm:text-base">
-                Sign in to your CubArrow Sign account
+                Sign in to your CubSign account
             </p>
         </div>
 

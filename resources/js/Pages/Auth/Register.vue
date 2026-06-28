@@ -29,7 +29,7 @@ const submit = () => {
                 Create your account
             </h1>
             <p class="mt-2 text-sm leading-relaxed text-gray-500 sm:text-base">
-                Get started with CubArrow Sign in seconds
+                Get started with CubSign in seconds
             </p>
         </div>
 

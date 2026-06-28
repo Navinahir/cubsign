@@ -13,7 +13,7 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
 
 <template>
     <MarketingSeo
-        title="CubArrow Sign – Upload & Sign PDFs Online Free"
+        title="CubSign – Upload & Sign PDFs Online Free"
         description="Upload your PDF and sign it online in seconds. Add your signature and download the finished document. No account required."
         path="/"
         type="website"
@@ -28,7 +28,7 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
                     <ScrollReveal class="mb-12">
                         <SectionHeader
                             eyebrow="Compare"
-                            title="Why choose CubArrow Sign?"
+                            title="Why choose CubSign?"
                             description="Simple, free PDF signing without the usual limits and subscriptions."
                         />
                     </ScrollReveal>

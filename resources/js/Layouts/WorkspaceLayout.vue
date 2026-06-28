@@ -79,7 +79,7 @@ const initials = computed(() => {
         >
             <!-- Logo -->
             <div class="flex h-16 shrink-0 items-center border-b border-slate-800 px-6">
-                <Link :href="route('overview')" class="transition-opacity hover:opacity-90" aria-label="CubArrow Sign dashboard">
+                <Link :href="route('overview')" class="transition-opacity hover:opacity-90" aria-label="CubSign dashboard">
                     <BrandLogo variant="workspace" />
                 </Link>
             </div>
