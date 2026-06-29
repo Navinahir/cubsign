@@ -19,6 +19,17 @@
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
+        @unless(request()->routeIs(
+            'overview',
+            'documents.*',
+            'templates.*',
+            'profile.*',
+            'recipient.*',
+            'sign.sent',
+            'sign.save',
+        ))
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=pub-8864815130887951" crossorigin="anonymous"></script>
+        @endunless
     </head>
     <body class="font-sans antialiased">
         @inertia
