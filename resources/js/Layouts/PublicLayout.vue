@@ -143,6 +143,7 @@ function navLinkClass(link, mobile = false) {
                                     title="Coming soon"
                                     @click.prevent
                                 >{{ link.label }}</a>
+                                <a v-else-if="link.sameTab" :href="link.href" class="text-sm text-gray-400 transition-colors hover:text-white">{{ link.label }}</a>
                                 <a v-else :href="link.href" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-400 transition-colors hover:text-white">{{ link.label }}</a>
                             </li>
                         </ul>

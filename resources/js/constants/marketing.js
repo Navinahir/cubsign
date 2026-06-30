@@ -247,5 +247,6 @@ export const footerLinks = {
     resources: [
         { label: 'Documentation', href: '#', unavailable: true },
         { label: 'Help Center', routeName: 'faq' },
+        { label: 'Sitemap', href: '/sitemap.xml', sameTab: true },
     ],
 };

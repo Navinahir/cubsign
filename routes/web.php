@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\OverviewController;
 use App\Http\Controllers\Web\PricingController;
 use App\Http\Controllers\Web\PrivacyController;
+use App\Http\Controllers\Web\SitemapController;
 use App\Http\Controllers\Web\TermsController;
 use App\Http\Controllers\Web\Sign\CompleteController as SignCompleteController;
 use App\Http\Controllers\Web\Sign\SentController as SignSentController;
@@ -40,7 +41,7 @@ Route::get('/terms', TermsController::class)->name('terms');
 Route::get('/cookies', CookiePolicyController::class)->name('cookies');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
-Route::get('/sitemap.xml', fn () => abort(404));
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 // Google OAuth
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');

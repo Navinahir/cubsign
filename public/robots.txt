@@ -1,8 +1,12 @@
 User-agent: *
+
+Allow: /
+
 Disallow: /overview
 Disallow: /documents
 Disallow: /templates
 Disallow: /profile
+Disallow: /settings
 Disallow: /sign/
 Disallow: /r/
 
