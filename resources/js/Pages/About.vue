@@ -66,7 +66,7 @@ import {
                 <div class="relative">
                     <div class="absolute left-5 top-0 hidden h-full w-0.5 bg-gradient-to-b from-blue-400 to-indigo-300 sm:block" aria-hidden="true" />
                     <ScrollReveal v-for="(item, i) in aboutTimeline" :key="item.title" :delay="i * 60" class="relative flex gap-6 pb-10 last:pb-0">
-                        <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white shadow-md">{{ item.year === 'Future' ? '→' : item.year.slice(2) }}</div>
+                        <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white shadow-md">{{ item.year.slice(2) }}</div>
                         <div>
                             <p class="text-xs font-semibold text-blue-600">{{ item.year }}</p>
                             <h3 class="mt-0.5 font-semibold text-gray-900">{{ item.title }}</h3>

@@ -34,6 +34,8 @@ class SitemapTest extends TestCase
         $this->assertStringContainsString('<loc>https://cubsign.com/features</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/sign</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/blog</loc>', $content);
+        $this->assertStringContainsString('<loc>https://cubsign.com/about</loc>', $content);
+        $this->assertStringContainsString('<loc>https://cubsign.com/pricing</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/faq</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/privacy</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/terms</loc>', $content);

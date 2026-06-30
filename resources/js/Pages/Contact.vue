@@ -8,7 +8,6 @@ import DecorativeBg from '@/Components/Marketing/DecorativeBg.vue';
 import { SUPPORT_EMAIL } from '@/constants/marketing';
 
 const form = ref({ name: '', email: '', subject: '', message: '' });
-const submitted = ref(false);
 const errors = ref({});
 
 function validate() {
@@ -22,7 +21,13 @@ function validate() {
 
 function handleSubmit() {
     if (!validate()) return;
-    submitted.value = true;
+
+    const subject = encodeURIComponent(form.value.subject.trim() || 'CubSign contact');
+    const body = encodeURIComponent(
+        `Name: ${form.value.name.trim()}\nEmail: ${form.value.email.trim()}\n\n${form.value.message.trim()}`,
+    );
+
+    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
 }
 </script>
 
@@ -41,15 +46,7 @@ function handleSubmit() {
         <section class="marketing-section">
             <div class="mx-auto grid max-w-4xl gap-8 lg:grid-cols-5">
                 <ScrollReveal class="lg:col-span-3">
-                    <div v-if="submitted" class="rounded-2xl border border-emerald-200 bg-emerald-50 p-10 text-center" role="status">
-                        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
-                            <svg class="h-7 w-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        </div>
-                        <h2 class="mt-5 text-xl font-bold text-gray-900">Message Sent!</h2>
-                        <p class="mt-2 text-sm text-gray-600">We'll get back to you as soon as we can.</p>
-                        <button type="button" class="mt-6 text-sm font-medium text-blue-600 hover:text-blue-700" @click="submitted=false; form={name:'',email:'',subject:'',message:''}">Send another message</button>
-                    </div>
-                    <form v-else class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm" @submit.prevent="handleSubmit" novalidate>
+                    <form class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm" @submit.prevent="handleSubmit" novalidate>
                         <h2 class="mb-6 text-lg font-semibold text-gray-900">Send us a message</h2>
                         <div class="grid gap-5 sm:grid-cols-2">
                             <div>

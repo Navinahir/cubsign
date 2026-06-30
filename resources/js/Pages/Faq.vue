@@ -34,7 +34,7 @@ const categories = [
             },
             {
                 question: 'What file formats are supported?',
-                answer: 'CubSign currently supports PDF files. Support for additional file formats is planned for a future release.',
+                answer: 'CubSign supports PDF files. Upload standard PDF documents up to 25 MB.',
             },
         ],
     },

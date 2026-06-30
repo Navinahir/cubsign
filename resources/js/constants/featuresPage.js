@@ -48,7 +48,7 @@ export const featuresShowcases = [
             'Full activity log per document',
             'Timestamps on every event',
             'Signer name and email captured',
-            'Download an audit certificate',
+            'View activity history in your workspace',
             'Helpful for contracts and compliance',
         ],
         mockup: 'audit',

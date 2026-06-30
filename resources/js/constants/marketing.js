@@ -71,13 +71,6 @@ export const journeySteps = [
 
 export const APP_VERSION = '0.13.2';
 
-/** Social profiles — use # until official accounts are live */
-export const SOCIAL_LINKS = [
-    { label: 'LinkedIn', href: '#', icon: 'linkedin' },
-    { label: 'Twitter', href: '#', icon: 'twitter' },
-    { label: 'GitHub', href: '#', icon: 'github' },
-];
-
 export const SUPPORT_EMAIL = 'support@cubsign.com';
 
 export const companyStats = [
@@ -101,23 +94,7 @@ export const aboutTimeline = [
     { year: '2025', title: 'CubSign Founded', description: 'Born from frustration with print-sign-scan workflows.' },
     { year: '2025', title: 'MVP Launch', description: 'Core signing engine and PDF editor built from scratch.' },
     { year: '2025', title: 'Early Access', description: 'Opened to early users. Completely free.' },
-    { year: '2026', title: 'Public Beta', description: 'Multi-recipient workflows, audit trails, and templates.' },
-    { year: 'Future', title: 'Enterprise', description: 'Team workspaces, API access, and SOC 2 readiness.' },
-];
-
-export const successStories = [
-    { company: 'Brightpath Agency', quote: 'We cut contract turnaround from 3 days to 20 minutes.', metric: '90% faster', initials: 'BP', bg: 'bg-blue-500' },
-    { company: 'Summit Legal', quote: 'Client NDAs are signed before the meeting ends.', metric: '500+ docs/mo', initials: 'SL', bg: 'bg-emerald-500' },
-];
-
-/** Reserved for a future dedicated Security / Trust Center page (SOC 2, ISO 27001, etc.) */
-export const securityPageFeatures = [
-    { title: 'Bank-Grade Encryption', description: 'AES-256 encryption at rest and TLS 1.3 in transit for all documents.', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
-    { title: 'Audit Trail', description: 'Complete event history with timestamps, IP addresses, and signer identity.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
-    { title: 'Data Privacy', description: 'GDPR-aligned practices. Your data is never sold to third parties.', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
-    { title: 'Secure Infrastructure', description: 'Enterprise cloud hosting with access controls and monitoring.', icon: 'M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2' },
-    { title: 'Secure Storage & Backups', description: 'Redundant storage with automated backups and disaster recovery.', icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z' },
-    { title: 'SOC 2 Readiness', description: 'Building toward SOC 2 Type II certification for enterprise customers.', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
+    { year: '2026', title: 'Templates & Tracking', description: 'Reusable templates, multi-recipient workflows, and document status tracking.' },
 ];
 
 export const socialStats = [
@@ -245,7 +222,6 @@ export const footerLinks = {
         { label: 'Cookie Policy', routeName: 'cookies' },
     ],
     resources: [
-        { label: 'Documentation', href: '#', unavailable: true },
         { label: 'Help Center', routeName: 'faq' },
         { label: 'Sitemap', href: '/sitemap.xml', sameTab: true },
     ],
