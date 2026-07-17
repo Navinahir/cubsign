@@ -9,6 +9,7 @@ import HelpContent from '@/Components/Help/HelpContent.vue';
 import HelpArticleMeta from '@/Components/Help/HelpArticleMeta.vue';
 import HelpCopyLink from '@/Components/Help/HelpCopyLink.vue';
 import HelpFeedback from '@/Components/Help/HelpFeedback.vue';
+import BlogFaq from '@/Components/Blog/BlogFaq.vue';
 import {
     getArticleBySlug,
     getRelatedArticles,
@@ -43,12 +44,27 @@ const headings = computed(() =>
         .map((block, index) => ({ id: `heading-${index}`, title: block.text })),
 );
 
+const seoTitle = computed(() => article.value?.metaTitle ?? `${article.value?.title} — CubSign Help Center`);
+const seoDescription = computed(() => article.value?.metaDescription ?? article.value?.excerpt ?? '');
+
+const breadcrumbSchema = computed(() => {
+    if (!article.value) return [];
+    return [
+        { name: 'Home', url: '/' },
+        { name: 'Help Center', url: '/help-center' },
+        { name: article.value.category, url: `/help-center#category-${article.value.categorySlug}` },
+        { name: article.value.title, url: `/help-center/${article.value.slug}` },
+    ];
+});
+
 const seoArticle = computed(() => {
     if (!article.value) return null;
     return {
         title: article.value.title,
         excerpt: article.value.excerpt,
         publishedAt: article.value.updatedAt,
+        updatedAt: article.value.updatedAt,
+        keywords: article.value.keywords,
         author: { name: 'CubSign Support' },
     };
 });
@@ -100,11 +116,13 @@ onUnmounted(() => observer?.disconnect());
 <template>
     <template v-if="article">
         <MarketingSeo
-            :title="`${article.title} — CubSign Help Center`"
-            :description="article.excerpt"
+            :title="seoTitle"
+            :description="seoDescription"
             :path="`/help-center/${article.slug}`"
             type="article"
             :article="seoArticle"
+            :faq-schema="article.faq ?? []"
+            :breadcrumb-schema="breadcrumbSchema"
         />
 
         <PublicLayout>
@@ -197,6 +215,7 @@ onUnmounted(() => observer?.disconnect());
                             <div class="mt-5 flex flex-wrap items-center gap-3">
                                 <HelpArticleMeta
                                     :updated-at="article.updatedAt"
+                                    :last-reviewed="article.lastReviewed || article.updatedAt"
                                     :reading-time="article.readingTime"
                                 />
                                 <HelpCopyLink />
@@ -215,6 +234,8 @@ onUnmounted(() => observer?.disconnect());
                                     {{ tag }}
                                 </span>
                             </div>
+
+                            <BlogFaq :items="article.faq ?? []" />
 
                             <div class="mt-10">
                                 <HelpFeedback :article-slug="article.slug" />

@@ -27,13 +27,25 @@ import { featuresShowcases } from '@/constants/featuresPage';
     />
 
     <PublicLayout>
-        <!-- Core features -->
-        <section
+    <section class="border-b border-gray-100 bg-white px-4 pt-16 pb-10 sm:px-6 lg:px-8 lg:pt-20 lg:pb-12">
+        <div class="mx-auto max-w-6xl">
+            <p class="text-sm font-semibold uppercase tracking-wide text-blue-600">Product</p>
+            <h1 class="mt-3 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                CubSign features
+            </h1>
+            <p class="mt-4 max-w-2xl text-base leading-relaxed text-gray-600 sm:text-lg">
+                Sign PDFs yourself, request signatures from others, reuse templates, and keep a clear record of what happened—free during Early Access.
+            </p>
+        </div>
+    </section>
+
+    <!-- Core features -->
+    <section
             v-for="(feature, index) in featuresShowcases"
             :key="feature.id"
             :class="[
                 'px-4 pb-10 sm:px-6 lg:px-8 lg:pb-12',
-                index === 0 ? 'pt-16 lg:pt-20' : 'pt-10 lg:pt-12',
+                index === 0 ? 'pt-10 lg:pt-12' : 'pt-10 lg:pt-12',
                 index % 2 === 1 ? 'bg-gray-50/70' : 'bg-white',
             ]"
             :aria-labelledby="`feature-${feature.id}`"

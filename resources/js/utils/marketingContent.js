@@ -21,7 +21,7 @@ export function normalizeBlogBlocks(blocks) {
     for (const block of blocks) {
         if (!block || typeof block !== 'object' || !block.type) continue;
 
-        if (block.type === 'p' || block.type === 'h2') {
+        if (block.type === 'p' || block.type === 'h2' || block.type === 'tip' || block.type === 'note') {
             if (!hasMarketingText(block.text)) continue;
             normalized.push({ ...block });
             continue;

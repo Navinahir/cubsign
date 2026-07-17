@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
+import MarketingSeo from '@/Components/MarketingSeo.vue';
 
 const props = defineProps({
     guestCompleted: { type: Boolean, default: false },
@@ -77,7 +78,13 @@ function formatSize(bytes) {
 </script>
 
 <template>
+    <MarketingSeo
+        title="Sign PDF Online Free — CubSign"
+        description="Upload a PDF and sign it in your browser. Draw, type, or upload your signature—no install required. Free during CubSign Early Access."
+        path="/sign"
+    />
     <SignLayout :step="1">
+        <h1 class="sr-only">Sign a PDF online</h1>
         <div class="flex h-full flex-col overflow-hidden">
 
             <!-- ─── Workspace row ─────────────────────────────── -->

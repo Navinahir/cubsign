@@ -28,6 +28,13 @@ function segments(text) {
                     >
                         {{ seg.value }}
                     </Link>
+                    <Link
+                        v-else-if="seg.type === 'route'"
+                        :href="route(seg.routeName)"
+                        class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
+                    >
+                        {{ seg.value }}
+                    </Link>
                     <template v-else>{{ seg.value }}</template>
                 </template>
             </p>
@@ -48,6 +55,13 @@ function segments(text) {
                         >
                             {{ seg.value }}
                         </Link>
+                        <Link
+                            v-else-if="seg.type === 'route'"
+                            :href="route(seg.routeName)"
+                            class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
+                        >
+                            {{ seg.value }}
+                        </Link>
                         <template v-else>{{ seg.value }}</template>
                     </template>
                 </li>
@@ -62,10 +76,67 @@ function segments(text) {
                         >
                             {{ seg.value }}
                         </Link>
+                        <Link
+                            v-else-if="seg.type === 'route'"
+                            :href="route(seg.routeName)"
+                            class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
+                        >
+                            {{ seg.value }}
+                        </Link>
                         <template v-else>{{ seg.value }}</template>
                     </template>
                 </li>
             </ol>
+            <aside
+                v-else-if="block.type === 'tip'"
+                class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-sm leading-relaxed text-emerald-900"
+            >
+                <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">Tip</p>
+                <p>
+                    <template v-for="(seg, segIndex) in segments(block.text)" :key="segIndex">
+                        <Link
+                            v-if="seg.type === 'link'"
+                            :href="route('help-center.show', seg.slug)"
+                            class="font-medium text-emerald-800 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-950"
+                        >
+                            {{ seg.value }}
+                        </Link>
+                        <Link
+                            v-else-if="seg.type === 'route'"
+                            :href="route(seg.routeName)"
+                            class="font-medium text-emerald-800 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-950"
+                        >
+                            {{ seg.value }}
+                        </Link>
+                        <template v-else>{{ seg.value }}</template>
+                    </template>
+                </p>
+            </aside>
+            <aside
+                v-else-if="block.type === 'note'"
+                class="mb-5 rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3 text-sm leading-relaxed text-blue-950"
+            >
+                <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-700">Note</p>
+                <p>
+                    <template v-for="(seg, segIndex) in segments(block.text)" :key="segIndex">
+                        <Link
+                            v-if="seg.type === 'link'"
+                            :href="route('help-center.show', seg.slug)"
+                            class="font-medium text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-950"
+                        >
+                            {{ seg.value }}
+                        </Link>
+                        <Link
+                            v-else-if="seg.type === 'route'"
+                            :href="route(seg.routeName)"
+                            class="font-medium text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-950"
+                        >
+                            {{ seg.value }}
+                        </Link>
+                        <template v-else>{{ seg.value }}</template>
+                    </template>
+                </p>
+            </aside>
         </template>
     </div>
 </template>
