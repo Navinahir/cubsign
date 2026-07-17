@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\AboutController;
 use App\Http\Controllers\Web\BlogController;
+use App\Http\Controllers\Web\BlogRssController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\CookiePolicyController;
 use App\Http\Controllers\Web\FaqController;
@@ -44,6 +45,7 @@ Route::get('/terms', TermsController::class)->name('terms');
 Route::get('/cookies', CookiePolicyController::class)->name('cookies');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::get('/rss.xml', BlogRssController::class)->name('blog.rss');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 // Google OAuth

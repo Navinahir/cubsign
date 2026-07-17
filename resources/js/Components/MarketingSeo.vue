@@ -7,14 +7,16 @@ const props = defineProps({
     description: { type: String, required: true },
     path: { type: String, default: '/' },
     faqSchema: { type: Array, default: () => [] },
+    breadcrumbSchema: { type: Array, default: () => [] },
     type: { type: String, default: 'website' },
     article: { type: Object, default: null },
+    searchTarget: { type: String, default: '' },
 });
 
 const page = usePage();
 const appUrl = computed(() => page.props.app?.url ?? '');
 const canonicalUrl = computed(() => `${appUrl.value}${props.path}`);
-const ogImage = computed(() => `${appUrl.value}/favicon.svg`);
+const ogImage = computed(() => props.article?.coverImage ?? `${appUrl.value}/favicon.svg`);
 
 const faqJsonLd = computed(() => {
     if (!props.faqSchema.length) return null;
@@ -29,6 +31,20 @@ const faqJsonLd = computed(() => {
     });
 });
 
+const breadcrumbJsonLd = computed(() => {
+    if (!props.breadcrumbSchema.length) return null;
+    return JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: props.breadcrumbSchema.map((item, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: item.name,
+            item: item.url ? `${appUrl.value}${item.url}` : undefined,
+        })),
+    });
+});
+
 const orgJsonLd = computed(() => JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -39,7 +55,7 @@ const orgJsonLd = computed(() => JSON.stringify({
 
 const articleJsonLd = computed(() => {
     if (!props.article) return null;
-    return JSON.stringify({
+    const payload = {
         '@context': 'https://schema.org',
         '@type': 'Article',
         headline: props.article.title,
@@ -48,7 +64,14 @@ const articleJsonLd = computed(() => {
         datePublished: props.article.publishedAt,
         publisher: { '@type': 'Organization', name: 'CubSign', logo: { '@type': 'ImageObject', url: ogImage.value } },
         mainEntityOfPage: canonicalUrl.value,
-    });
+    };
+    if (props.article.updatedAt) {
+        payload.dateModified = props.article.updatedAt;
+    }
+    if (props.article.keywords?.length) {
+        payload.keywords = props.article.keywords.join(', ');
+    }
+    return JSON.stringify(payload);
 });
 
 const websiteJsonLd = computed(() => JSON.stringify({
@@ -59,7 +82,7 @@ const websiteJsonLd = computed(() => JSON.stringify({
     description: 'Free online PDF signing platform',
     potentialAction: {
         '@type': 'SearchAction',
-        target: `${appUrl.value}/help-center?q={search_term_string}`,
+        target: `${appUrl.value}${props.searchTarget || '/help-center?q={search_term_string}'}`,
         'query-input': 'required name=search_term_string',
     },
 }));
@@ -76,8 +99,9 @@ const websiteJsonLd = computed(() => JSON.stringify({
         <meta head-key="og:description" property="og:description" :content="description" />
         <meta head-key="og:url" property="og:url" :content="canonicalUrl" />
         <meta head-key="og:image" property="og:image" :content="ogImage" />
-        <meta v-if="article" head-key="article:published_time" property="article:published_time" :content="article.publishedAt" />
-        <meta v-if="article" head-key="article:author" property="article:author" :content="article.author.name" />
+        <meta v-if="article?.publishedAt" head-key="article:published_time" property="article:published_time" :content="article.publishedAt" />
+        <meta v-if="article?.updatedAt" head-key="article:modified_time" property="article:modified_time" :content="article.updatedAt" />
+        <meta v-if="article?.author?.name" head-key="article:author" property="article:author" :content="article.author.name" />
 
         <meta head-key="twitter:card" name="twitter:card" content="summary_large_image" />
         <meta head-key="twitter:title" name="twitter:title" :content="title" />
@@ -87,6 +111,7 @@ const websiteJsonLd = computed(() => JSON.stringify({
         <script head-key="org-schema" type="application/ld+json" v-html="orgJsonLd" />
         <script v-if="path === '/'" head-key="website-schema" type="application/ld+json" v-html="websiteJsonLd" />
         <script v-if="faqJsonLd" head-key="faq-schema" type="application/ld+json" v-html="faqJsonLd" />
+        <script v-if="breadcrumbJsonLd" head-key="breadcrumb-schema" type="application/ld+json" v-html="breadcrumbJsonLd" />
         <script v-if="articleJsonLd" head-key="article-schema" type="application/ld+json" v-html="articleJsonLd" />
     </Head>
 </template>

@@ -55,7 +55,7 @@ class SitemapTest extends TestCase
             '<loc>https://cubsign.com/blog/introducing-cubsign-early-access</loc>',
             $content,
         );
-        $this->assertStringContainsString('<lastmod>2025-11-15</lastmod>', $content);
+        $this->assertStringContainsString('<lastmod>2026-06-01</lastmod>', $content);
     }
 
     public function test_sitemap_includes_help_center_articles(): void

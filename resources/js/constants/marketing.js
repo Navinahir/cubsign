@@ -222,7 +222,10 @@ export const footerLinks = {
         { label: 'Cookie Policy', routeName: 'cookies' },
     ],
     resources: [
+        { label: 'Documentation', routeName: 'help-center' },
         { label: 'Help Center', routeName: 'help-center' },
+        { label: 'Blog', routeName: 'blog' },
+        { label: 'RSS Feed', href: '/rss.xml', sameTab: true },
         { label: 'Sitemap', href: '/sitemap.xml', sameTab: true },
     ],
 };

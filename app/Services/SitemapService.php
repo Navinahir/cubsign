@@ -113,7 +113,9 @@ class SitemapService
                 'changefreq' => $defaults['changefreq'] ?? null,
             ];
 
-            if (! empty($post['published_at'])) {
+            if (! empty($post['updated_at'])) {
+                $entry['lastmod'] = $post['updated_at'];
+            } elseif (! empty($post['published_at'])) {
                 $entry['lastmod'] = $post['published_at'];
             }
 
