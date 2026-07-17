@@ -705,6 +705,20 @@ export function getArticlesByCategory(categorySlug) {
     return helpArticles.filter((a) => a.categorySlug === categorySlug);
 }
 
+/** Common search chips shown under the Help Center search field. */
+export const popularSearches = [
+    'upload PDF',
+    'sign online',
+    'draw signature',
+    'reset password',
+    'Google login',
+    '25 MB',
+    'audit trail',
+    'mobile',
+    'upload error',
+    'contact support',
+];
+
 export function getRelatedArticles(slug, limit = 4) {
     const current = getArticleBySlug(slug);
     if (!current) return helpArticles.slice(0, limit);
@@ -720,6 +734,43 @@ export function getRelatedArticles(slug, limit = 4) {
     );
 
     return [...fromRelated, ...extras].slice(0, limit);
+}
+
+/** Articles ordered by category, then title — used for prev/next navigation. */
+export function getOrderedArticles() {
+    const categoryOrder = helpCategories.map((c) => c.slug);
+
+    return [...helpArticles].sort((a, b) => {
+        const catDiff = categoryOrder.indexOf(a.categorySlug) - categoryOrder.indexOf(b.categorySlug);
+        if (catDiff !== 0) return catDiff;
+        return a.title.localeCompare(b.title);
+    });
+}
+
+export function getAdjacentArticles(slug) {
+    const ordered = getOrderedArticles();
+    const index = ordered.findIndex((a) => a.slug === slug);
+
+    if (index === -1) {
+        return { previous: null, next: null };
+    }
+
+    return {
+        previous: index > 0 ? ordered[index - 1] : null,
+        next: index < ordered.length - 1 ? ordered[index + 1] : null,
+    };
+}
+
+export function getRecentlyUpdatedArticles(limit = 5) {
+    return [...helpArticles]
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt) || a.title.localeCompare(b.title))
+        .slice(0, limit);
+}
+
+export function getPopularArticles(limit = 6) {
+    return [...helpArticles]
+        .sort((a, b) => b.readingTime - a.readingTime || a.title.localeCompare(b.title))
+        .slice(0, limit);
 }
 
 export function searchHelpArticles(query) {
@@ -751,4 +802,33 @@ export function formatHelpDate(dateStr) {
         month: 'long',
         day: 'numeric',
     });
+}
+
+/**
+ * Split plain text into segments, auto-linking known article titles
+ * (longest titles first). Does not mutate source content.
+ */
+export function linkifyHelpText(text, currentSlug = null) {
+    if (!text) return [{ type: 'text', value: '' }];
+
+    const titles = helpArticles
+        .filter((a) => a.slug !== currentSlug)
+        .map((a) => ({ title: a.title, slug: a.slug }))
+        .sort((a, b) => b.title.length - a.title.length);
+
+    if (!titles.length) return [{ type: 'text', value: text }];
+
+    const escaped = titles.map((t) => t.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const pattern = new RegExp(`(${escaped.join('|')})`, 'g');
+    const parts = text.split(pattern);
+    const titleToSlug = Object.fromEntries(titles.map((t) => [t.title, t.slug]));
+
+    return parts
+        .filter((part) => part !== '')
+        .map((part) => {
+            if (titleToSlug[part]) {
+                return { type: 'link', value: part, slug: titleToSlug[part] };
+            }
+            return { type: 'text', value: part };
+        });
 }

@@ -1,21 +1,24 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
-import BlogContent from '@/Components/Marketing/BlogContent.vue';
-import MetaItems from '@/Components/Marketing/MetaItems.vue';
+import HelpCategoryNav from '@/Components/Help/HelpCategoryNav.vue';
+import HelpToc from '@/Components/Help/HelpToc.vue';
+import HelpContent from '@/Components/Help/HelpContent.vue';
+import HelpArticleMeta from '@/Components/Help/HelpArticleMeta.vue';
+import HelpCopyLink from '@/Components/Help/HelpCopyLink.vue';
+import HelpFeedback from '@/Components/Help/HelpFeedback.vue';
 import {
     getArticleBySlug,
     getRelatedArticles,
-    formatHelpDate,
+    getAdjacentArticles,
+    getArticlesByCategory,
 } from '@/constants/help';
 import { normalizeBlogBlocks } from '@/utils/marketingContent';
 import {
-    SUPPORT_EMAIL,
     CTA_START_SIGNING,
     btnPrimary,
-    btnSecondary,
 } from '@/constants/marketing';
 
 const props = defineProps({
@@ -24,7 +27,13 @@ const props = defineProps({
 
 const article = computed(() => getArticleBySlug(props.slug));
 const relatedArticles = computed(() => getRelatedArticles(props.slug));
+const adjacent = computed(() => getAdjacentArticles(props.slug));
+const categoryArticles = computed(() =>
+    article.value ? getArticlesByCategory(article.value.categorySlug) : [],
+);
 const activeHeading = ref('');
+const mobileTocOpen = ref(false);
+const mobileNavOpen = ref(false);
 
 const contentBlocks = computed(() => normalizeBlogBlocks(article.value?.content ?? []));
 
@@ -33,14 +42,6 @@ const headings = computed(() =>
         .filter((block) => block.type === 'h2')
         .map((block, index) => ({ id: `heading-${index}`, title: block.text })),
 );
-
-const articleMeta = computed(() => {
-    if (!article.value) return [];
-    return [
-        { text: `Updated ${formatHelpDate(article.value.updatedAt)}`, class: 'text-gray-500' },
-        `${article.value.readingTime} min read`,
-    ];
-});
 
 const seoArticle = computed(() => {
     if (!article.value) return null;
@@ -54,15 +55,12 @@ const seoArticle = computed(() => {
 
 function scrollToHeading(id) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    mobileTocOpen.value = false;
 }
 
 let observer;
-onMounted(() => {
-    if (!article.value) {
-        router.visit(route('help-center'));
-        return;
-    }
-
+function setupHeadingObserver() {
+    observer?.disconnect();
     observer = new IntersectionObserver(
         (entries) => {
             for (const entry of entries) {
@@ -76,6 +74,24 @@ onMounted(() => {
         const el = document.getElementById(heading.id);
         if (el) observer.observe(el);
     });
+}
+
+onMounted(async () => {
+    if (!article.value) {
+        router.visit(route('help-center'));
+        return;
+    }
+    await nextTick();
+    setupHeadingObserver();
+});
+
+watch(() => props.slug, async () => {
+    activeHeading.value = '';
+    mobileTocOpen.value = false;
+    mobileNavOpen.value = false;
+    await nextTick();
+    setupHeadingObserver();
+    window.scrollTo({ top: 0 });
 });
 
 onUnmounted(() => observer?.disconnect());
@@ -92,150 +108,207 @@ onUnmounted(() => observer?.disconnect());
         />
 
         <PublicLayout>
-            <section class="border-b border-gray-100 bg-gradient-to-b from-white to-gray-50 px-4 py-8 sm:px-6 lg:px-8">
-                <div class="mx-auto max-w-4xl">
-                    <nav aria-label="Breadcrumb" class="text-sm text-gray-500">
-                        <ol class="flex flex-wrap items-center gap-2">
-                            <li>
-                                <Link :href="route('help-center')" class="font-medium text-blue-600 hover:text-blue-700">
-                                    Help Center
-                                </Link>
-                            </li>
-                            <li aria-hidden="true" class="text-gray-300">/</li>
-                            <li>
-                                <Link
-                                    :href="`${route('help-center')}#${article.categorySlug}`"
-                                    class="hover:text-gray-800"
-                                >
-                                    {{ article.category }}
-                                </Link>
-                            </li>
-                            <li aria-hidden="true" class="text-gray-300">/</li>
-                            <li class="font-medium text-gray-700" aria-current="page">
-                                {{ article.title }}
-                            </li>
-                        </ol>
-                    </nav>
-
-                    <p class="mt-6 text-xs font-semibold uppercase tracking-wide text-blue-600">
-                        {{ article.category }}
-                    </p>
-                    <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                        {{ article.title }}
-                    </h1>
-                    <p class="mt-4 max-w-2xl text-base leading-relaxed text-gray-600">
-                        {{ article.excerpt }}
-                    </p>
-                    <MetaItems class="mt-5 text-sm text-gray-500" :items="articleMeta" />
+            <div class="border-b border-gray-100 bg-white lg:hidden">
+                <div class="flex gap-2 px-4 py-3 sm:px-6">
+                    <button
+                        type="button"
+                        class="flex flex-1 items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-xs font-medium text-gray-700"
+                        :aria-expanded="mobileNavOpen"
+                        @click="mobileNavOpen = !mobileNavOpen; mobileTocOpen = false"
+                    >
+                        <span class="truncate">{{ article.category }}</span>
+                        <svg :class="['h-4 w-4 shrink-0 text-gray-400 transition-transform', mobileNavOpen ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <button
+                        v-if="headings.length"
+                        type="button"
+                        class="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-xs font-medium text-gray-700"
+                        :aria-expanded="mobileTocOpen"
+                        @click="mobileTocOpen = !mobileTocOpen; mobileNavOpen = false"
+                    >
+                        Contents
+                        <svg :class="['h-4 w-4 text-gray-400 transition-transform', mobileTocOpen ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
                 </div>
-            </section>
+                <div v-show="mobileNavOpen" class="border-t border-gray-100 px-4 py-3 sm:px-6">
+                    <HelpCategoryNav
+                        mode="browse"
+                        :active-category-slug="article.categorySlug"
+                        :active-article-slug="article.slug"
+                    />
+                </div>
+                <div v-show="mobileTocOpen" class="border-t border-gray-100 px-4 py-3 sm:px-6">
+                    <HelpToc :headings="headings" :active-heading="activeHeading" @navigate="scrollToHeading" />
+                </div>
+            </div>
 
-            <section class="marketing-section bg-white">
-                <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-4 lg:px-8">
-                    <aside class="hidden lg:block">
-                        <div class="sticky top-24 space-y-6">
-                            <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                                <h2 class="text-sm font-semibold text-gray-900">Table of Contents</h2>
-                                <ul class="mt-4 space-y-2">
-                                    <li v-for="heading in headings" :key="heading.id">
-                                        <a
-                                            :href="`#${heading.id}`"
-                                            :class="[
-                                                'block text-sm transition-colors',
-                                                activeHeading === heading.id
-                                                    ? 'font-medium text-blue-600'
-                                                    : 'text-gray-500 hover:text-gray-900',
-                                            ]"
-                                            @click.prevent="scrollToHeading(heading.id)"
-                                        >
-                                            {{ heading.title }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+            <div class="bg-white">
+                <div class="mx-auto grid max-w-7xl lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_220px]">
+                    <aside class="hidden border-r border-gray-100 lg:block">
+                        <div class="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto px-4 py-8">
                             <Link
                                 :href="route('help-center')"
-                                class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700"
+                                class="mb-5 inline-flex items-center gap-1.5 px-3 text-xs font-semibold text-blue-600 hover:text-blue-700"
                             >
-                                ← Back to Help Center
+                                ← Help Center
                             </Link>
+                            <HelpCategoryNav
+                                mode="browse"
+                                :active-category-slug="article.categorySlug"
+                                :active-article-slug="article.slug"
+                            />
                         </div>
                     </aside>
 
-                    <article class="lg:col-span-2">
-                        <div class="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-4 lg:hidden">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">On this page</p>
-                            <ul class="mt-3 space-y-2">
-                                <li v-for="heading in headings" :key="`mobile-${heading.id}`">
-                                    <a
-                                        :href="`#${heading.id}`"
-                                        class="text-sm text-gray-600 hover:text-blue-600"
-                                        @click.prevent="scrollToHeading(heading.id)"
-                                    >
-                                        {{ heading.title }}
-                                    </a>
+                    <div class="min-w-0 px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
+                        <nav aria-label="Breadcrumb" class="text-sm text-gray-500">
+                            <ol class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                <li>
+                                    <Link :href="route('help-center')" class="font-medium text-blue-600 hover:text-blue-700">
+                                        Help Center
+                                    </Link>
                                 </li>
-                            </ul>
-                        </div>
+                                <li aria-hidden="true" class="text-gray-300">/</li>
+                                <li>
+                                    <Link
+                                        :href="`${route('help-center')}#${article.categorySlug}`"
+                                        class="hover:text-gray-800"
+                                    >
+                                        {{ article.category }}
+                                    </Link>
+                                </li>
+                                <li aria-hidden="true" class="hidden text-gray-300 sm:inline">/</li>
+                                <li class="hidden font-medium text-gray-700 sm:inline" aria-current="page">
+                                    {{ article.title }}
+                                </li>
+                            </ol>
+                        </nav>
 
-                        <BlogContent :blocks="article.content" />
-
-                        <div class="mt-8 flex flex-wrap gap-2">
-                            <span
-                                v-for="tag in article.tags"
-                                :key="tag"
-                                class="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600"
-                            >
-                                {{ tag }}
-                            </span>
-                        </div>
-
-                        <div class="mt-10 rounded-2xl border border-gray-200 bg-gray-50 p-6">
-                            <p class="text-sm font-semibold text-gray-900">Was this helpful?</p>
-                            <p class="mt-2 text-sm text-gray-500">
-                                If you still need assistance, email
-                                <a :href="`mailto:${SUPPORT_EMAIL}`" class="font-medium text-blue-600 hover:underline">{{ SUPPORT_EMAIL }}</a>
-                                or visit the contact page.
+                        <header class="mt-6 border-b border-gray-100 pb-6">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
+                                {{ article.category }}
                             </p>
-                            <div class="mt-4 flex flex-wrap gap-3">
-                                <Link :href="route('contact')" :class="[btnSecondary, '!px-4 !py-2.5 text-xs']">
-                                    Contact Support
-                                </Link>
-                                <Link :href="route('help-center')" class="text-sm font-semibold text-blue-600 hover:text-blue-700">
-                                    ← Back to Help Center
-                                </Link>
+                            <h1 class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
+                                {{ article.title }}
+                            </h1>
+                            <p class="mt-3 max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
+                                {{ article.excerpt }}
+                            </p>
+                            <div class="mt-5 flex flex-wrap items-center gap-3">
+                                <HelpArticleMeta
+                                    :updated-at="article.updatedAt"
+                                    :reading-time="article.readingTime"
+                                />
+                                <HelpCopyLink />
                             </div>
-                        </div>
-                    </article>
+                        </header>
 
-                    <aside class="lg:col-span-1">
-                        <div class="sticky top-24 space-y-6">
-                            <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                                <h2 class="font-semibold text-gray-900">Related Articles</h2>
-                                <ul class="mt-4 space-y-4">
+                        <article class="pt-2">
+                            <HelpContent :blocks="article.content" :current-slug="article.slug" />
+
+                            <div v-if="article.tags?.length" class="mt-8 flex flex-wrap gap-2">
+                                <span
+                                    v-for="tag in article.tags"
+                                    :key="tag"
+                                    class="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600"
+                                >
+                                    {{ tag }}
+                                </span>
+                            </div>
+
+                            <div class="mt-10">
+                                <HelpFeedback :article-slug="article.slug" />
+                            </div>
+
+                            <nav aria-label="Article pagination" class="mt-10 grid gap-3 sm:grid-cols-2">
+                                <Link
+                                    v-if="adjacent.previous"
+                                    :href="route('help-center.show', adjacent.previous.slug)"
+                                    class="group rounded-2xl border border-gray-200 bg-white p-4 transition-all hover:border-blue-200 hover:shadow-sm"
+                                >
+                                    <p class="text-xs font-medium text-gray-400">Previous</p>
+                                    <p class="mt-1 text-sm font-semibold text-gray-900 group-hover:text-blue-600">
+                                        ← {{ adjacent.previous.title }}
+                                    </p>
+                                </Link>
+                                <div v-else class="hidden sm:block" />
+                                <Link
+                                    v-if="adjacent.next"
+                                    :href="route('help-center.show', adjacent.next.slug)"
+                                    class="group rounded-2xl border border-gray-200 bg-white p-4 text-right transition-all hover:border-blue-200 hover:shadow-sm sm:col-start-2"
+                                >
+                                    <p class="text-xs font-medium text-gray-400">Next</p>
+                                    <p class="mt-1 text-sm font-semibold text-gray-900 group-hover:text-blue-600">
+                                        {{ adjacent.next.title }} →
+                                    </p>
+                                </Link>
+                            </nav>
+
+                            <div class="mt-10 rounded-2xl border border-gray-200 p-5">
+                                <div class="flex items-center justify-between gap-3">
+                                    <h2 class="text-sm font-semibold text-gray-900">Related articles</h2>
+                                    <Link
+                                        :href="route('help-center')"
+                                        class="text-xs font-semibold text-blue-600 hover:text-blue-700"
+                                    >
+                                        Back to Help Center
+                                    </Link>
+                                </div>
+                                <ul class="mt-4 grid gap-3 sm:grid-cols-2">
                                     <li v-for="related in relatedArticles" :key="related.slug">
-                                        <Link :href="route('help-center.show', related.slug)" class="group block">
+                                        <Link
+                                            :href="route('help-center.show', related.slug)"
+                                            class="group block rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 transition-colors hover:border-blue-100 hover:bg-blue-50/40"
+                                        >
                                             <p class="text-sm font-medium text-gray-900 group-hover:text-blue-600">
                                                 {{ related.title }}
                                             </p>
-                                            <p class="mt-0.5 text-xs text-gray-400">
-                                                {{ related.readingTime }} min read · {{ related.category }}
-                                            </p>
+                                            <HelpArticleMeta
+                                                class="mt-1"
+                                                :updated-at="related.updatedAt"
+                                                :reading-time="related.readingTime"
+                                                compact
+                                            />
                                         </Link>
                                     </li>
                                 </ul>
                             </div>
-                            <div class="rounded-2xl border border-blue-100 bg-blue-50 p-6">
+
+                            <div v-if="categoryArticles.length > 1" class="mt-8">
+                                <h2 class="text-sm font-semibold text-gray-900">More in {{ article.category }}</h2>
+                                <ul class="mt-3 space-y-1">
+                                    <li v-for="item in categoryArticles" :key="`cat-${item.slug}`">
+                                        <Link
+                                            v-if="item.slug !== article.slug"
+                                            :href="route('help-center.show', item.slug)"
+                                            class="block rounded-lg px-2 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-50 hover:text-blue-600"
+                                        >
+                                            {{ item.title }}
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </article>
+                    </div>
+
+                    <aside class="hidden border-l border-gray-100 xl:block">
+                        <div class="sticky top-20 max-h-[calc(100vh-5rem)] space-y-8 overflow-y-auto px-5 py-8">
+                            <HelpToc
+                                :headings="headings"
+                                :active-heading="activeHeading"
+                                @navigate="scrollToHeading"
+                            />
+                            <div class="rounded-2xl border border-blue-100 bg-blue-50 p-4">
                                 <p class="text-sm font-semibold text-gray-900">Ready to sign?</p>
-                                <p class="mt-2 text-sm text-gray-600">Upload a PDF and finish in under a minute.</p>
-                                <Link :href="route('sign.index')" :class="[btnPrimary, 'mt-4 w-full !px-4 !py-3 text-xs']">
+                                <p class="mt-1 text-xs leading-relaxed text-gray-600">Upload a PDF and finish in under a minute.</p>
+                                <Link :href="route('sign.index')" :class="[btnPrimary, 'mt-3 w-full !px-3 !py-2.5 text-xs']">
                                     {{ CTA_START_SIGNING }}
                                 </Link>
                             </div>
                         </div>
                     </aside>
                 </div>
-            </section>
+            </div>
         </PublicLayout>
     </template>
 </template>
