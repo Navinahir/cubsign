@@ -5,6 +5,7 @@ export const EARLY_ACCESS_SUBHEADLINE =
     'Use CubSign completely free while we improve the platform based on user feedback.';
 
 export const CTA_START_SIGNING = 'Start Signing Free';
+export const CTA_TRY_CUBSIGN = 'Try CubSign Free';
 export const CTA_UPLOAD_PDF = 'SIGN PDF';
 /** @deprecated Use CTA_UPLOAD_PDF */
 export const CTA_SIGN_PDF_NOW = 'SIGN PDF';
@@ -73,28 +74,210 @@ export const APP_VERSION = '0.13.2';
 
 export const SUPPORT_EMAIL = 'support@cubsign.com';
 
-export const companyStats = [
-    { value: 'Free', label: 'During Early Access' },
-    { value: 'Secure', label: 'Encrypted documents' },
-    { value: 'Simple', label: 'Sign in minutes' },
-    { value: 'Mobile', label: 'Works on any device' },
-    { value: 'Support', label: 'Email assistance' },
-];
-
 export const companyValues = [
-    { title: 'Security', description: 'HTTPS in transit and encrypted storage for uploaded documents.', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
-    { title: 'Privacy', description: 'Your data is never sold. You control who sees your documents.', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
-    { title: 'Simplicity', description: 'Sign in under 60 seconds. No training required.', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-    { title: 'Performance', description: 'Fast uploads, instant downloads, 99.9% availability.', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-    { title: 'Customer First', description: 'Free during Early Access while we build based on your feedback.', icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z' },
-    { title: 'Innovation', description: 'Continuously improving with smart detection and modern workflows.', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
+    {
+        title: 'Simplicity',
+        description: 'Sign documents in minutes without training, cluttered menus, or complicated setup.',
+        icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+    },
+    {
+        title: 'Security',
+        description: 'Documents travel over HTTPS and are handled with careful access controls at every step.',
+        icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+    },
+    {
+        title: 'Privacy',
+        description: 'We collect only what we need to run the product. Your documents are never sold or shared for advertising.',
+        icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+    },
+    {
+        title: 'Reliability',
+        description: 'A focused signing workflow you can depend on — upload, sign, send, and download without friction.',
+        icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+    },
+    {
+        title: 'Continuous Improvement',
+        description: 'We ship improvements based on real Early Access feedback, not guesswork.',
+        icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+    },
 ];
 
+export const aboutMissionPoints = [
+    {
+        title: 'Simplify document signing',
+        description: 'Replace the print-sign-scan loop with a clear, browser-based workflow anyone can finish quickly.',
+    },
+    {
+        title: 'Eliminate printing and scanning',
+        description: 'Keep agreements digital from the first upload to the final signed PDF — no paper trail required.',
+    },
+    {
+        title: 'Make secure eSignatures accessible',
+        description: 'Offer a trustworthy signing experience without enterprise contracts or software to install.',
+    },
+];
+
+export const aboutWhyChoose = [
+    {
+        title: 'Secure signing',
+        description: 'Encrypted connections and careful document handling so every signature stays protected in transit.',
+        icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+    },
+    {
+        title: 'Fast workflow',
+        description: 'Upload a PDF, place your signature, and download — or send for signature — without extra steps.',
+        icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+    },
+    {
+        title: 'Modern interface',
+        description: 'A clean editor built for focus: place fields, sign, and review without fighting the UI.',
+        icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+    },
+    {
+        title: 'Cross-device compatibility',
+        description: 'Works in modern browsers on desktop, tablet, and phone — sign wherever you are.',
+        icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z',
+    },
+    {
+        title: 'No software installation',
+        description: 'Open CubSign in your browser and start signing. Nothing to download or maintain.',
+        icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9',
+    },
+];
+
+export const aboutHowItWorks = [
+    {
+        step: 1,
+        title: 'Upload PDF',
+        description: 'Drop your document into CubSign and open it in the browser editor.',
+    },
+    {
+        step: 2,
+        title: 'Add Signature',
+        description: 'Draw, type, or upload a signature, then place fields where they belong.',
+    },
+    {
+        step: 3,
+        title: 'Download Signed PDF',
+        description: 'Finish and download the signed file — or send it to recipients for signature.',
+    },
+];
+
+export const aboutTechnology = [
+    {
+        title: 'Modern web technologies',
+        description: 'A responsive web app built with current frontend and backend tooling for a fast, reliable experience.',
+    },
+    {
+        title: 'Secure encrypted connections',
+        description: 'All traffic uses HTTPS so documents and account data stay protected between your device and our servers.',
+    },
+    {
+        title: 'Responsive design',
+        description: 'Layouts adapt to phones, tablets, and desktops so signing stays clear on every screen size.',
+    },
+    {
+        title: 'Reliable cloud infrastructure',
+        description: 'Documents and accounts run on cloud infrastructure designed for availability and secure storage.',
+    },
+];
+
+export const aboutPrivacyPoints = [
+    {
+        title: 'User privacy',
+        description: 'We respect your privacy and do not sell personal data. Access to documents is limited to you and the people you invite.',
+    },
+    {
+        title: 'Secure document handling',
+        description: 'Uploaded PDFs are stored securely and transmitted over encrypted connections throughout the signing flow.',
+    },
+    {
+        title: 'No unnecessary data collection',
+        description: 'We collect only what is needed to provide the service, support accounts, and improve CubSign during Early Access.',
+    },
+];
+
+/** Roadmap milestones — status is "completed" or "planned" only. */
 export const aboutTimeline = [
-    { year: '2025', title: 'CubSign Founded', description: 'Born from frustration with print-sign-scan workflows.' },
-    { year: '2025', title: 'MVP Launch', description: 'Core signing engine and PDF editor built from scratch.' },
-    { year: '2025', title: 'Early Access', description: 'Opened to early users. Completely free.' },
-    { year: '2026', title: 'Templates & Tracking', description: 'Reusable templates, multi-recipient workflows, and document status tracking.' },
+    {
+        year: '2025',
+        title: 'CubSign founded',
+        description: 'Started from the frustration of printing, signing, scanning, and emailing documents.',
+        status: 'completed',
+    },
+    {
+        year: '2025',
+        title: 'Core signing MVP',
+        description: 'Browser-based PDF upload, signature placement, and signed PDF download.',
+        status: 'completed',
+    },
+    {
+        year: '2025',
+        title: 'Early Access launch',
+        description: 'Opened CubSign free to early users while gathering product feedback.',
+        status: 'completed',
+    },
+    {
+        year: '2026',
+        title: 'Templates & multi-recipient workflows',
+        description: 'Reusable templates, send-for-signature flows, and document status tracking.',
+        status: 'completed',
+    },
+    {
+        year: '2026',
+        title: 'Deeper audit trail insights',
+        description: 'Clearer signing history and activity detail for completed documents. Planned.',
+        status: 'planned',
+    },
+    {
+        year: '2026',
+        title: 'Team collaboration features',
+        description: 'Shared workspaces and role-friendly document management for growing teams. Planned.',
+        status: 'planned',
+    },
+];
+
+export const aboutFaqs = [
+    {
+        question: 'What is CubSign?',
+        answer: 'CubSign is an online PDF signing platform. You can upload a PDF, add your signature in the browser, download the signed file, or send documents to others for signature — without printing or installing software.',
+    },
+    {
+        question: 'Who builds CubSign?',
+        answer: 'CubSign is built by Cubiz Infotech, a focused product team improving the platform during Early Access based on real user feedback.',
+    },
+    {
+        question: 'Why was CubSign created?',
+        answer: 'We built CubSign to end the print-sign-scan cycle. Many e-signature tools felt expensive or overly complex for everyday contracts, so we focused on a simple, secure workflow anyone can use.',
+    },
+    {
+        question: 'Is CubSign free?',
+        answer: 'Yes. CubSign is free during Early Access. You can upload, sign, send for signature, and download PDFs without a credit card.',
+    },
+    {
+        question: 'Do I need to create an account?',
+        answer: 'Not for basic self-signing. You can upload a PDF, sign it, and download the result without an account. Creating an account unlocks document storage and send-for-signature workflows.',
+    },
+    {
+        question: 'Are electronic signatures on CubSign legally valid?',
+        answer: 'Electronic signatures are widely recognized under modern e-signature laws when parties intend to sign. CubSign helps you capture signatures digitally; you remain responsible for using them appropriately for your documents and jurisdiction.',
+    },
+    {
+        question: 'How does CubSign keep documents secure?',
+        answer: 'Documents are transmitted over HTTPS and stored with industry-standard cloud security practices. Access is limited to authorized users and invited recipients.',
+    },
+    {
+        question: 'Does CubSign work on mobile devices?',
+        answer: 'Yes. CubSign runs in modern browsers on desktop, tablet, and mobile, so you can sign on the device you already use.',
+    },
+    {
+        question: 'Do I need to install any software?',
+        answer: 'No. CubSign is entirely browser-based. Open the site, upload your PDF, and start signing — nothing to download or update.',
+    },
+    {
+        question: 'How can I contact the CubSign team?',
+        answer: 'Visit the Contact page or email support@cubsign.com. We are a small team and read every message during Early Access.',
+    },
 ];
 
 export const socialStats = [

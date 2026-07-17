@@ -13,6 +13,7 @@ const navLinks = computed(() => {
     const links = [
         { label: 'Features', routeName: 'features' },
         { label: 'Upload PDF', routeName: 'sign.index', highlight: true },
+        { label: 'About', routeName: 'about' },
         { label: 'Help', routeName: 'help-center' },
         { label: 'Blog', routeName: 'blog' },
     ];
