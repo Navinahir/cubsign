@@ -37,6 +37,7 @@ class SitemapTest extends TestCase
         $this->assertStringContainsString('<loc>https://cubsign.com/about</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/pricing</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/faq</loc>', $content);
+        $this->assertStringContainsString('<loc>https://cubsign.com/help-center</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/privacy</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/terms</loc>', $content);
         $this->assertStringContainsString('<loc>https://cubsign.com/cookies</loc>', $content);
@@ -55,6 +56,24 @@ class SitemapTest extends TestCase
             $content,
         );
         $this->assertStringContainsString('<lastmod>2025-11-15</lastmod>', $content);
+    }
+
+    public function test_sitemap_includes_help_center_articles(): void
+    {
+        config(['app.url' => 'https://cubsign.com']);
+
+        $response = $this->get('/sitemap.xml');
+        $content = $response->getContent();
+
+        $this->assertStringContainsString(
+            '<loc>https://cubsign.com/help-center/how-to-upload-a-pdf</loc>',
+            $content,
+        );
+        $this->assertStringContainsString(
+            '<loc>https://cubsign.com/help-center/contact-support</loc>',
+            $content,
+        );
+        $this->assertStringContainsString('<lastmod>2026-06-15</lastmod>', $content);
     }
 
     public function test_sitemap_excludes_private_routes(): void

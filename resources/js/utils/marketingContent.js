@@ -27,7 +27,7 @@ export function normalizeBlogBlocks(blocks) {
             continue;
         }
 
-        if (block.type === 'ul') {
+        if (block.type === 'ul' || block.type === 'ol') {
             const items = (block.items ?? []).filter(hasMarketingText);
             if (!items.length) continue;
             normalized.push({ ...block, items });

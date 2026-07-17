@@ -13,6 +13,7 @@ const navLinks = computed(() => {
     const links = [
         { label: 'Features', routeName: 'features' },
         { label: 'Upload PDF', routeName: 'sign.index', highlight: true },
+        { label: 'Help', routeName: 'help-center' },
         { label: 'Blog', routeName: 'blog' },
     ];
     if (user.value) {
@@ -29,6 +30,12 @@ const footerGroups = [
 ];
 
 function isActive(routeName) {
+    if (routeName === 'help-center') {
+        return route().current('help-center') || route().current('help-center.show');
+    }
+    if (routeName === 'blog') {
+        return route().current('blog') || route().current('blog.show');
+    }
     return route().current(routeName);
 }
 

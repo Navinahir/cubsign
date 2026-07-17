@@ -71,6 +71,10 @@ class SitemapService
             $this->appendUrl($urls, $seen, $entry);
         }
 
+        foreach ($this->helpArticleUrls() as $entry) {
+            $this->appendUrl($urls, $seen, $entry);
+        }
+
         foreach (config('sitemap.documentation', []) as $entry) {
             $this->appendUrl($urls, $seen, $this->normalizeEntry($entry));
         }
@@ -111,6 +115,43 @@ class SitemapService
 
             if (! empty($post['published_at'])) {
                 $entry['lastmod'] = $post['published_at'];
+            }
+
+            $urls[] = $this->normalizeEntry($entry);
+        }
+
+        return $urls;
+    }
+
+    /**
+     * @return list<array{loc: string, lastmod?: string, changefreq?: string, priority?: string}>
+     */
+    private function helpArticleUrls(): array
+    {
+        $articles = config('help.articles', []);
+
+        if ($articles === []) {
+            return [];
+        }
+
+        $defaults = config('sitemap.help_center_defaults', []);
+        $urls = [];
+
+        foreach ($articles as $article) {
+            $slug = $article['slug'] ?? null;
+
+            if (! is_string($slug) || $slug === '') {
+                continue;
+            }
+
+            $entry = [
+                'path' => '/help-center/'.$slug,
+                'priority' => $defaults['priority'] ?? null,
+                'changefreq' => $defaults['changefreq'] ?? null,
+            ];
+
+            if (! empty($article['updated_at'])) {
+                $entry['lastmod'] = $article['updated_at'];
             }
 
             $urls[] = $this->normalizeEntry($entry);

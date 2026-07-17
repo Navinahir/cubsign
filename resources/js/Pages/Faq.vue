@@ -5,7 +5,6 @@ import MarketingSeo from '@/Components/MarketingSeo.vue';
 import { Link } from '@inertiajs/vue3';
 import {
     EARLY_ACCESS_HEADLINE,
-    CTA_START_SIGNING,
     btnPrimary,
     pageHeaderClass,
 } from '@/constants/marketing';
@@ -217,8 +216,8 @@ function isOpen(categoryIndex, itemIndex) {
                     Reach out to our support team. We are happy to help.
                 </p>
                 <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                    <Link :href="route('register')" :class="[btnPrimary, 'w-full sm:w-auto']">
-                        {{ CTA_START_SIGNING }}
+                    <Link :href="route('help-center')" :class="[btnPrimary, 'w-full sm:w-auto']">
+                        Browse Help Center
                     </Link>
                     <Link :href="route('contact')" class="w-full rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 sm:w-auto">
                         Contact Support

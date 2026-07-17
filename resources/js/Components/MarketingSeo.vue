@@ -59,7 +59,7 @@ const websiteJsonLd = computed(() => JSON.stringify({
     description: 'Free online PDF signing platform',
     potentialAction: {
         '@type': 'SearchAction',
-        target: `${appUrl.value}/faq?q={search_term_string}`,
+        target: `${appUrl.value}/help-center?q={search_term_string}`,
         'query-input': 'required name=search_term_string',
     },
 }));

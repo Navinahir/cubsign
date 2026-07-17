@@ -22,5 +22,8 @@ const renderBlocks = computed(() => blogHeadingAnchors(normalizeBlogBlocks(props
         <ul v-else-if="block.type === 'ul'" class="mb-5 list-disc space-y-2 pl-5 text-base text-gray-600">
             <li v-for="item in block.items" :key="item">{{ item }}</li>
         </ul>
+        <ol v-else-if="block.type === 'ol'" class="mb-5 list-decimal space-y-2 pl-5 text-base text-gray-600">
+            <li v-for="item in block.items" :key="item">{{ item }}</li>
+        </ol>
     </template>
 </template>

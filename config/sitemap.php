@@ -26,6 +26,7 @@ return [
         ['path' => '/about', 'priority' => '0.7', 'changefreq' => 'monthly'],
         ['path' => '/pricing', 'priority' => '0.8', 'changefreq' => 'monthly'],
         ['path' => '/faq', 'priority' => '0.7', 'changefreq' => 'monthly'],
+        ['path' => '/help-center', 'priority' => '0.8', 'changefreq' => 'weekly'],
         ['path' => '/privacy', 'priority' => '0.5', 'changefreq' => 'yearly'],
         ['path' => '/terms', 'priority' => '0.5', 'changefreq' => 'yearly'],
         ['path' => '/cookies', 'priority' => '0.5', 'changefreq' => 'yearly'],
@@ -57,14 +58,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Help Center article defaults
+    |--------------------------------------------------------------------------
+    |
+    | Article URLs are loaded from config/help.php. Defaults apply when an
+    | article entry does not override priority/changefreq.
+    |
+    */
+    'help_center_defaults' => [
+        'priority' => '0.6',
+        'changefreq' => 'monthly',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Help Center pages (included when entries exist)
     |--------------------------------------------------------------------------
     |
-    | Use when Help Center has dedicated URLs beyond /faq.
+    | Optional extra Help Center URLs beyond articles in config/help.php.
     |
     */
     'help_center' => [
-        // ['path' => '/help/getting-started', 'priority' => '0.6', 'changefreq' => 'weekly'],
+        // ['path' => '/help-center/extra', 'priority' => '0.6', 'changefreq' => 'weekly'],
     ],
 
 ];
