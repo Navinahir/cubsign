@@ -197,46 +197,6 @@ export const aboutPrivacyPoints = [
     },
 ];
 
-/** Roadmap milestones — status is "completed" or "planned" only. */
-export const aboutTimeline = [
-    {
-        year: '2025',
-        title: 'CubSign founded',
-        description: 'Started from the frustration of printing, signing, scanning, and emailing documents.',
-        status: 'completed',
-    },
-    {
-        year: '2025',
-        title: 'Core signing MVP',
-        description: 'Browser-based PDF upload, signature placement, and signed PDF download.',
-        status: 'completed',
-    },
-    {
-        year: '2025',
-        title: 'Early Access launch',
-        description: 'Opened CubSign free to early users while gathering product feedback.',
-        status: 'completed',
-    },
-    {
-        year: '2026',
-        title: 'Templates & multi-recipient workflows',
-        description: 'Reusable templates, send-for-signature flows, and document status tracking.',
-        status: 'completed',
-    },
-    {
-        year: '2026',
-        title: 'Deeper audit trail insights',
-        description: 'Clearer signing history and activity detail for completed documents. Planned.',
-        status: 'planned',
-    },
-    {
-        year: '2026',
-        title: 'Team collaboration features',
-        description: 'Shared workspaces and role-friendly document management for growing teams. Planned.',
-        status: 'planned',
-    },
-];
-
 export const aboutFaqs = [
     {
         question: 'What is CubSign?',
@@ -327,30 +287,6 @@ export const pricingTrustBadges = [
     'Free Early Access',
 ];
 
-export const testimonials = [
-    {
-        initials: 'IJ',
-        name: 'Igor Jacon',
-        role: 'Founder',
-        avatarBg: 'bg-blue-500',
-        quote: 'CubSign saves me hours every week. I sign client contracts in seconds without printing a single page.',
-    },
-    {
-        initials: 'MG',
-        name: 'Mikkel Gerdes',
-        role: 'CEO',
-        avatarBg: 'bg-emerald-500',
-        quote: 'My clients sign lease agreements in minutes. It is the simplest signing tool I have used.',
-    },
-    {
-        initials: 'L',
-        name: 'Laurent',
-        role: 'Managing Director',
-        avatarBg: 'bg-violet-500',
-        quote: 'Onboarding paperwork used to take days. Now new hires sign everything digitally before their first day.',
-    },
-];
-
 export const homeFaqs = [
     {
         question: 'Is CubSign free to use?',
@@ -405,7 +341,6 @@ export const footerLinks = {
         { label: 'Cookie Policy', routeName: 'cookies' },
     ],
     resources: [
-        { label: 'Documentation', routeName: 'help-center' },
         { label: 'Help Center', routeName: 'help-center' },
         { label: 'Blog', routeName: 'blog' },
         { label: 'RSS Feed', href: '/rss.xml', sameTab: true },

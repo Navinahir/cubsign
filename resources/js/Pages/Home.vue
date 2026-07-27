@@ -41,7 +41,7 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
             <section class="marketing-section-alt !pb-20 lg:!pb-28">
                 <div class="mx-auto max-w-6xl">
                     <ScrollReveal class="mb-10">
-                        <SectionHeader eyebrow="Trusted by" title="Used by freelancers, teams, and small businesses" />
+                        <SectionHeader eyebrow="Built for" title="Freelancers, teams, and small businesses" />
                     </ScrollReveal>
                     <ScrollReveal :delay="60"><SocialProof compact /></ScrollReveal>
                 </div>

@@ -10,7 +10,6 @@ import BlogToc from '@/Components/Blog/BlogToc.vue';
 import BlogShare from '@/Components/Blog/BlogShare.vue';
 import BlogFaq from '@/Components/Blog/BlogFaq.vue';
 import BlogFeedback from '@/Components/Blog/BlogFeedback.vue';
-import BlogNewsletter from '@/Components/Blog/BlogNewsletter.vue';
 import {
     getPostBySlug,
     getRelatedPosts,
@@ -239,27 +238,11 @@ onUnmounted(() => observer?.disconnect());
                                 <div>
                                     <p class="font-semibold text-gray-900">{{ blogAuthor.name }}</p>
                                     <p class="mt-1 text-sm leading-relaxed text-gray-600">{{ blogAuthor.bio }}</p>
-                                    <div class="mt-3 flex gap-3">
-                                        <a
-                                            v-for="(href, network) in blogAuthor.social"
-                                            :key="network"
-                                            :href="href"
-                                            class="text-xs font-medium uppercase tracking-wide text-gray-400 hover:text-blue-600"
-                                            :aria-label="`${blogAuthor.name} on ${network}`"
-                                        >
-                                            {{ network }}
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
 
                             <div class="mt-10">
                                 <BlogFeedback :post-slug="post.slug" />
-                            </div>
-
-                            <div class="mt-8 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center">
-                                <p class="text-sm font-semibold text-gray-900">Comments</p>
-                                <p class="mt-1 text-sm text-gray-500">Discussion is coming soon. Share feedback above or contact support in the meantime.</p>
                             </div>
 
                             <nav aria-label="Article pagination" class="mt-10 grid gap-3 sm:grid-cols-2">
@@ -328,9 +311,6 @@ onUnmounted(() => observer?.disconnect());
                                 </ul>
                             </div>
 
-                            <div class="mt-10">
-                                <BlogNewsletter />
-                            </div>
                         </article>
                     </div>
 

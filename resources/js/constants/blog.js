@@ -6,11 +6,6 @@ export const blogAuthor = {
     initials: "CT",
     avatarBg: "bg-blue-600",
     bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
-    social: {
-        twitter: "#",
-        linkedin: "#",
-        github: "#",
-    },
 };
 
 export const blogCategories = [

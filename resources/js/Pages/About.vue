@@ -10,7 +10,6 @@ import DecorativeBg from '@/Components/Marketing/DecorativeBg.vue';
 import HeroFlowPreview from '@/Components/Marketing/HeroFlowPreview.vue';
 import {
     companyValues,
-    aboutTimeline,
     aboutMissionPoints,
     aboutWhyChoose,
     aboutHowItWorks,
@@ -280,55 +279,6 @@ const breadcrumbSchema = [
                     Read the full details in our
                     <Link :href="route('privacy')" class="font-medium text-blue-600 hover:text-blue-700">Privacy Policy</Link>.
                 </p>
-            </div>
-        </section>
-
-        <!-- Roadmap -->
-        <section class="marketing-section-alt" aria-label="Product roadmap">
-            <div class="mx-auto max-w-3xl">
-                <ScrollReveal>
-                    <SectionHeader
-                        eyebrow="Roadmap"
-                        title="Where we have been — and where we are going"
-                        description="Completed milestones and clearly marked planned goals. We only list features that ship or are actively planned."
-                        compact
-                    />
-                </ScrollReveal>
-                <div class="relative mt-10">
-                    <div class="absolute left-5 top-0 hidden h-full w-0.5 bg-gradient-to-b from-blue-400 to-indigo-300 sm:block" aria-hidden="true" />
-                    <ScrollReveal
-                        v-for="(item, i) in aboutTimeline"
-                        :key="`${item.year}-${item.title}`"
-                        :delay="i * 50"
-                        class="relative flex gap-6 pb-10 last:pb-0"
-                    >
-                        <div
-                            :class="[
-                                'relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white shadow-md',
-                                item.status === 'planned' ? 'bg-indigo-400' : 'bg-blue-600',
-                            ]"
-                        >
-                            {{ item.year.slice(2) }}
-                        </div>
-                        <div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <p class="text-xs font-semibold text-blue-600">{{ item.year }}</p>
-                                <span
-                                    :class="[
-                                        'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
-                                        item.status === 'planned'
-                                            ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
-                                            : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-                                    ]"
-                                >
-                                    {{ item.status === 'planned' ? 'Planned' : 'Completed' }}
-                                </span>
-                            </div>
-                            <h3 class="mt-1 font-semibold text-gray-900">{{ item.title }}</h3>
-                            <p class="mt-1 text-sm text-gray-500">{{ item.description }}</p>
-                        </div>
-                    </ScrollReveal>
-                </div>
             </div>
         </section>
 

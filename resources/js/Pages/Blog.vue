@@ -5,7 +5,6 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import BlogCover from '@/Components/Marketing/BlogCover.vue';
 import BlogArticleMeta from '@/Components/Blog/BlogArticleMeta.vue';
-import BlogNewsletter from '@/Components/Blog/BlogNewsletter.vue';
 import {
     blogCategories,
     blogCategoryNames,
@@ -353,7 +352,6 @@ function goToPage(pageNumber) {
                             </ul>
                         </div>
 
-                        <BlogNewsletter compact />
                     </aside>
                 </div>
             </div>
