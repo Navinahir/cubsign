@@ -24,6 +24,9 @@ class BlogRssController extends Controller
             $description = htmlspecialchars($post['excerpt'] ?? '', ENT_XML1 | ENT_QUOTES, 'UTF-8');
             $pubDate = gmdate('D, d M Y H:i:s T', strtotime($post['published_at'] ?? 'now') ?: time());
             $guid = htmlspecialchars("{$appUrl}/blog/{$slug}", ENT_XML1 | ENT_QUOTES, 'UTF-8');
+            $coverPath = public_path("images/blog/covers/{$slug}.png");
+            $coverSize = is_file($coverPath) ? (string) filesize($coverPath) : '0';
+            $coverUrl = htmlspecialchars("{$appUrl}/images/blog/covers/{$slug}.png", ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
             return implode("\n", [
                 '    <item>',
@@ -32,6 +35,7 @@ class BlogRssController extends Controller
                 "      <guid isPermaLink=\"true\">{$guid}</guid>",
                 "      <pubDate>{$pubDate}</pubDate>",
                 "      <description>{$description}</description>",
+                "      <enclosure url=\"{$coverUrl}\" type=\"image/png\" length=\"{$coverSize}\" />",
                 '    </item>',
             ]);
         })->implode("\n");

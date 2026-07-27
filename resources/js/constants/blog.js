@@ -1,5 +1,7 @@
 /** Blog content hub — keep slugs/dates in sync with config/blog.php */
 
+import { withBlogCoverMeta } from '@/Components/Blog/covers/coverUtils';
+
 export const blogAuthor = {
     name: "CubSign Team",
     role: "Product & Content",
@@ -6131,39 +6133,41 @@ export const blogPosts = [
     },
 ];
 
+const postsWithCovers = blogPosts.map(withBlogCoverMeta);
+
 export function getPostBySlug(slug) {
-    return blogPosts.find((p) => p.slug === slug) ?? null;
+    return postsWithCovers.find((p) => p.slug === slug) ?? null;
 }
 
 export function getPostsByCategory(categoryName) {
-    return blogPosts.filter((p) => p.category === categoryName);
+    return postsWithCovers.filter((p) => p.category === categoryName);
 }
 
 export function getFeaturedPost() {
-    return blogPosts.find((p) => p.featured) ?? blogPosts[0];
+    return postsWithCovers.find((p) => p.featured) ?? postsWithCovers[0];
 }
 
 export function getPopularPosts(limit = 5) {
-    const flagged = blogPosts.filter((p) => p.popular);
-    const pool = flagged.length ? flagged : [...blogPosts].sort((a, b) => b.readingTime - a.readingTime);
+    const flagged = postsWithCovers.filter((p) => p.popular);
+    const pool = flagged.length ? flagged : [...postsWithCovers].sort((a, b) => b.readingTime - a.readingTime);
     return pool.slice(0, limit);
 }
 
 export function getRecentPosts(limit = 5) {
-    return [...blogPosts]
+    return [...postsWithCovers]
         .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
         .slice(0, limit);
 }
 
 export function getRecentlyUpdatedPosts(limit = 5) {
-    return [...blogPosts]
+    return [...postsWithCovers]
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
         .slice(0, limit);
 }
 
 export function getRelatedPosts(slug, limit = 3) {
     const current = getPostBySlug(slug);
-    if (!current) return blogPosts.slice(0, limit);
+    if (!current) return postsWithCovers.slice(0, limit);
 
     const bySlug = (current.related ?? [])
         .map((s) => getPostBySlug(s))
@@ -6171,7 +6175,7 @@ export function getRelatedPosts(slug, limit = 3) {
 
     if (bySlug.length >= limit) return bySlug.slice(0, limit);
 
-    const extras = blogPosts.filter(
+    const extras = postsWithCovers.filter(
         (p) =>
             p.slug !== slug &&
             !bySlug.some((r) => r.slug === p.slug) &&
@@ -6182,7 +6186,7 @@ export function getRelatedPosts(slug, limit = 3) {
 }
 
 export function getAdjacentPosts(slug) {
-    const chronological = [...blogPosts].sort(
+    const chronological = [...postsWithCovers].sort(
         (a, b) => new Date(a.publishedAt) - new Date(b.publishedAt),
     );
     const index = chronological.findIndex((p) => p.slug === slug);
@@ -6213,9 +6217,9 @@ function postSearchHaystack(post) {
 
 export function searchBlogPosts(query) {
     const q = query.trim().toLowerCase();
-    if (!q) return [...blogPosts].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+    if (!q) return [...postsWithCovers].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
-    return blogPosts.filter((post) => postSearchHaystack(post).includes(q));
+    return postsWithCovers.filter((post) => postSearchHaystack(post).includes(q));
 }
 
 export function filterBlogPosts({ query = '', category = 'All' } = {}) {

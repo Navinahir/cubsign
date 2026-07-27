@@ -188,10 +188,11 @@ function goToPage(pageNumber) {
                             class="group block overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
                         >
                             <BlogCover
-                                :gradient="featuredPost.heroGradient"
+                                :slug="featuredPost.slug"
+                                :title="featuredPost.title"
                                 :category="featuredPost.category"
                                 featured
-                                size="large"
+                                priority
                             />
                             <div class="p-8">
                                 <BlogArticleMeta
@@ -226,7 +227,8 @@ function goToPage(pageNumber) {
                                     class="group marketing-card-lift flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
                                 >
                                     <BlogCover
-                                        :gradient="post.heroGradient"
+                                        :slug="post.slug"
+                                        :title="post.title"
                                         :category="post.category"
                                         :popular="post.popular"
                                     />

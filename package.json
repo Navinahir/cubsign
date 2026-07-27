@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "generate:blog-covers": "node scripts/generate-blog-covers.mjs"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0.0",
@@ -15,6 +16,7 @@
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^3.1",
         "postcss": "^8.4.31",
+        "sharp": "^0.34.5",
         "tailwindcss": "^3.2.1",
         "vite": "^8.0.0",
         "vue": "^3.4.0"

@@ -132,10 +132,11 @@ onUnmounted(() => observer?.disconnect());
             </div>
 
             <BlogCover
-                :gradient="post.heroGradient"
+                :slug="post.slug"
+                :title="post.title"
                 :category="post.category"
                 :popular="post.popular"
-                size="large"
+                priority
             />
 
             <div class="bg-white">

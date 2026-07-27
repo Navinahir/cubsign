@@ -16,7 +16,16 @@ const props = defineProps({
 const page = usePage();
 const appUrl = computed(() => page.props.app?.url ?? '');
 const canonicalUrl = computed(() => `${appUrl.value}${props.path}`);
-const ogImage = computed(() => props.article?.coverImage ?? `${appUrl.value}/favicon.svg`);
+const ogImage = computed(() => {
+    const img = props.article?.coverImage;
+    if (img) {
+        return img.startsWith('http') ? img : `${appUrl.value}${img}`;
+    }
+    return `${appUrl.value}/favicon.svg`;
+});
+
+const ogImageWidth = computed(() => (props.article?.coverImage ? 1200 : undefined));
+const ogImageHeight = computed(() => (props.article?.coverImage ? 675 : undefined));
 
 const faqJsonLd = computed(() => {
     if (!props.faqSchema.length) return null;
@@ -62,11 +71,14 @@ const articleJsonLd = computed(() => {
         description: props.article.excerpt,
         author: { '@type': 'Person', name: props.article.author.name },
         datePublished: props.article.publishedAt,
-        publisher: { '@type': 'Organization', name: 'CubSign', logo: { '@type': 'ImageObject', url: ogImage.value } },
+        publisher: { '@type': 'Organization', name: 'CubSign', logo: { '@type': 'ImageObject', url: `${appUrl.value}/favicon.svg` } },
         mainEntityOfPage: canonicalUrl.value,
     };
     if (props.article.updatedAt) {
         payload.dateModified = props.article.updatedAt;
+    }
+    if (props.article.coverImage) {
+        payload.image = [ogImage.value];
     }
     if (props.article.keywords?.length) {
         payload.keywords = props.article.keywords.join(', ');
@@ -99,6 +111,8 @@ const websiteJsonLd = computed(() => JSON.stringify({
         <meta head-key="og:description" property="og:description" :content="description" />
         <meta head-key="og:url" property="og:url" :content="canonicalUrl" />
         <meta head-key="og:image" property="og:image" :content="ogImage" />
+        <meta v-if="ogImageWidth" head-key="og:image:width" property="og:image:width" :content="String(ogImageWidth)" />
+        <meta v-if="ogImageHeight" head-key="og:image:height" property="og:image:height" :content="String(ogImageHeight)" />
         <meta v-if="article?.publishedAt" head-key="article:published_time" property="article:published_time" :content="article.publishedAt" />
         <meta v-if="article?.updatedAt" head-key="article:modified_time" property="article:modified_time" :content="article.updatedAt" />
         <meta v-if="article?.author?.name" head-key="article:author" property="article:author" :content="article.author.name" />
