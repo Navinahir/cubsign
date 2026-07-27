@@ -5,6 +5,7 @@ export const EARLY_ACCESS_SUBHEADLINE =
     'Use CubSign completely free while we improve the platform based on user feedback.';
 
 export const CTA_START_SIGNING = 'Start Signing Free';
+export const CTA_START_SIGNING_PDFS = 'Start Signing PDFs';
 export const CTA_TRY_CUBSIGN = 'Try CubSign Free';
 export const CTA_UPLOAD_PDF = 'SIGN PDF';
 /** @deprecated Use CTA_UPLOAD_PDF */
@@ -96,11 +97,17 @@ export const companyValues = [
         icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
     },
     {
-        title: 'Continuous Improvement',
-        description: 'We ship improvements based on real Early Access feedback, not guesswork.',
-        icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+        title: 'Customer First',
+        description: 'We listen to real signing workflows and ship improvements based on feedback — not assumptions about what users need.',
+        icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
     },
 ];
+
+export const aboutMissionStatement =
+    'Make secure, browser-based PDF signing accessible to everyone — without printing, enterprise contracts, or software to install.';
+
+export const aboutVisionStatement =
+    'A trusted platform for everyday document workflows, where signing is fast, clear, and dependable for freelancers, teams, and growing businesses.';
 
 export const aboutMissionPoints = [
     {
@@ -148,18 +155,21 @@ export const aboutWhyChoose = [
 export const aboutHowItWorks = [
     {
         step: 1,
-        title: 'Upload PDF',
-        description: 'Drop your document into CubSign and open it in the browser editor.',
+        title: 'Upload',
+        description: 'Drop your PDF into CubSign. No account required to get started.',
+        icon: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5',
     },
     {
         step: 2,
-        title: 'Add Signature',
-        description: 'Draw, type, or upload a signature, then place fields where they belong.',
+        title: 'Sign',
+        description: 'Draw, type, or upload your signature and place it on the document.',
+        icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z',
     },
     {
         step: 3,
-        title: 'Download Signed PDF',
-        description: 'Finish and download the signed file — or send it to recipients for signature.',
+        title: 'Download',
+        description: 'Save the signed PDF instantly — or send it to others for signature.',
+        icon: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V16.5',
     },
 ];
 
@@ -184,16 +194,56 @@ export const aboutTechnology = [
 
 export const aboutPrivacyPoints = [
     {
-        title: 'User privacy',
-        description: 'We respect your privacy and do not sell personal data. Access to documents is limited to you and the people you invite.',
+        title: 'Limited data collection',
+        description: 'We collect only what is needed to run the service — account details, uploaded documents, and support messages. We do not sell personal data.',
     },
     {
-        title: 'Secure document handling',
-        description: 'Uploaded PDFs are stored securely and transmitted over encrypted connections throughout the signing flow.',
+        title: 'Controlled document access',
+        description: 'Uploaded PDFs are accessible to you and the recipients you invite. You can delete documents from your workspace at any time.',
     },
     {
-        title: 'No unnecessary data collection',
-        description: 'We collect only what is needed to provide the service, support accounts, and improve CubSign during Early Access.',
+        title: 'Encrypted connections',
+        description: 'Traffic between your browser and CubSign uses HTTPS. How files are stored and retained is described in our Privacy Policy.',
+    },
+];
+
+/** Roadmap milestones — status is "completed" or "planned" only. */
+export const aboutTimeline = [
+    {
+        year: '2025',
+        title: 'CubSign founded',
+        description: 'Started from the frustration of printing, signing, scanning, and emailing documents.',
+        status: 'completed',
+    },
+    {
+        year: '2025',
+        title: 'Core signing MVP',
+        description: 'Browser-based PDF upload, signature placement, and signed PDF download.',
+        status: 'completed',
+    },
+    {
+        year: '2025',
+        title: 'Early Access launch',
+        description: 'Opened CubSign free to early users while gathering product feedback.',
+        status: 'completed',
+    },
+    {
+        year: '2026',
+        title: 'Templates & multi-recipient workflows',
+        description: 'Reusable templates, send-for-signature flows, and document status tracking.',
+        status: 'completed',
+    },
+    {
+        year: '2026',
+        title: 'Deeper audit trail insights',
+        description: 'Clearer signing history and activity detail for completed documents.',
+        status: 'planned',
+    },
+    {
+        year: '2026',
+        title: 'Team collaboration features',
+        description: 'Shared workspaces and role-friendly document management for growing teams.',
+        status: 'planned',
     },
 ];
 

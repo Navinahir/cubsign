@@ -11,6 +11,7 @@ const props = defineProps({
     type: { type: String, default: 'website' },
     article: { type: Object, default: null },
     searchTarget: { type: String, default: '' },
+    aboutOrganization: { type: Boolean, default: false },
 });
 
 const page = usePage();
@@ -54,13 +55,30 @@ const breadcrumbJsonLd = computed(() => {
     });
 });
 
-const orgJsonLd = computed(() => JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'CubSign',
-    url: appUrl.value,
-    logo: `${appUrl.value}/favicon.svg`,
-}));
+const orgJsonLd = computed(() => {
+    const base = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'CubSign',
+        url: appUrl.value,
+        logo: `${appUrl.value}/favicon.svg`,
+    };
+
+    if (props.aboutOrganization) {
+        return JSON.stringify({
+            ...base,
+            description: 'CubSign is a browser-based PDF signing platform built to simplify secure electronic signatures for individuals and small teams.',
+            foundingDate: '2025',
+            email: 'support@cubsign.com',
+            parentOrganization: {
+                '@type': 'Organization',
+                name: 'Cubiz Infotech',
+            },
+        });
+    }
+
+    return JSON.stringify(base);
+});
 
 const articleJsonLd = computed(() => {
     if (!props.article) return null;
