@@ -17,11 +17,12 @@ import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { blogExpansions } from './blog-expansions-data.mjs';
+import { assetMetaFor } from './blog-asset-meta.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, '../resources/js/constants/blog.js');
 
-const REVIEWED = '2026-07-17';
+const REVIEWED = '2026-07-27';
 
 const author = {
     name: 'CubSign Team',
@@ -29,11 +30,6 @@ const author = {
     initials: 'CT',
     avatarBg: 'bg-blue-600',
     bio: 'The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.',
-    social: {
-        twitter: '#',
-        linkedin: '#',
-        github: '#',
-    },
 };
 
 const categories = [
@@ -73,12 +69,39 @@ function tip(text) {
 function note(text) {
     return { type: 'note', text };
 }
+function figure(slug, assetKey, variant = 'wide') {
+    const meta = assetMetaFor(slug);
+    const assetMeta = meta[assetKey];
+    return {
+        type: 'figure',
+        slug,
+        asset: assetKey,
+        alt: assetMeta.alt,
+        caption: assetMeta.caption,
+        variant,
+    };
+}
+function callout(slug) {
+    const meta = assetMetaFor(slug);
+    const c = meta.callout;
+    return {
+        type: 'callout',
+        slug,
+        title: c.title,
+        text: c.text,
+        asset: c.asset,
+        alt: meta[c.asset]?.alt ?? '',
+    };
+}
 
 function countWords(content) {
     return content
         .flatMap((b) => {
             if (b.text) return b.text.split(/\s+/);
             if (b.items) return b.items.flatMap((i) => i.split(/\s+/));
+            if (b.alt) return b.alt.split(/\s+/);
+            if (b.caption) return b.caption.split(/\s+/);
+            if (b.title) return b.title.split(/\s+/);
             return [];
         })
         .filter(Boolean).length;
@@ -92,8 +115,8 @@ const articles = [];
 
 function add(meta, content, faq, related) {
     const words = countWords(content);
-    if (words < 1200 || words > 1500) {
-        console.warn(`WORD COUNT OUT OF RANGE ${meta.slug}: ${words} (target 1200-1500)`);
+    if (words < 1200 || words > 1800) {
+        console.warn(`WORD COUNT OUT OF RANGE ${meta.slug}: ${words} (target 1200-1800)`);
     }
     articles.push({
         ...meta,
@@ -111,9 +134,12 @@ function add(meta, content, faq, related) {
  * Guarantees every required H2, at least one tip + note, and all four CTAs.
  */
 function build(a) {
+    const slug = a.meta.slug;
+    const assets = assetMetaFor(slug);
     const c = [];
 
     a.intro.forEach((t) => c.push(p(t)));
+    c.push(figure(slug, 'workflow', 'diagram'));
 
     c.push(h2(a.whyHeading || 'Why it matters'));
     a.why.forEach((t) => c.push(p(t)));
@@ -130,8 +156,14 @@ function build(a) {
             }
         });
     }
+    c.push(figure(slug, 'ui', 'screenshot'));
     if (a.stepsOutro) c.push(p(a.stepsOutro));
     c.push(p(CTA.upload));
+
+    c.push(h2('How CubSign helps'));
+    assets.cubsignHelps.forEach((t) => c.push(p(t)));
+    c.push(ul(...assets.cubsignFeatures));
+    c.push(callout(slug));
 
     c.push(h2(a.bestHeading || 'Best practices'));
     if (a.bestIntro) c.push(p(a.bestIntro));
@@ -186,8 +218,8 @@ function register(a) {
         words = countWords(content);
     }
 
-    // If still short, keep as-is (warn via add). If over 1500, drop expansion blocks.
-    if (words > 1500 && exp.extraBlocks?.length) {
+    // If still short, keep as-is (warn via add). If over 1800, drop expansion blocks.
+    if (words > 1800 && exp.extraBlocks?.length) {
         withCore.extra = [...(a.extra ?? [])];
         content = build(withCore);
     }
@@ -2216,6 +2248,9 @@ function postSearchHaystack(post) {
         ...post.content.flatMap((block) => {
             if (block.text) return [block.text];
             if (block.items) return block.items;
+            if (block.alt) return [block.alt];
+            if (block.caption) return [block.caption];
+            if (block.title) return [block.title];
             return [];
         }),
         ...(post.faq ?? []).flatMap((f) => [f.question, f.answer]),

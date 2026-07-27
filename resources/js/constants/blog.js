@@ -1,7 +1,5 @@
 /** Blog content hub — keep slugs/dates in sync with config/blog.php */
 
-import { withBlogCoverMeta } from '@/Components/Blog/covers/coverUtils';
-
 export const blogAuthor = {
     name: "CubSign Team",
     role: "Product & Content",
@@ -83,7 +81,7 @@ export const blogPosts = [
         categorySlug: "pdf-signing",
         publishedAt: "2025-12-02",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "PDF Signing",
             "Tutorial",
@@ -107,7 +105,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 7,
+        readingTime: 8,
         content: [
             {
                 type: "p",
@@ -116,6 +114,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide walks through the complete flow in CubSign, from your very first upload to archiving the completed file for your records. It is written for people who sign only occasionally as well as teams that process dozens of documents a week, and it assumes no prior experience with electronic signing tools of any kind.",
+            },
+            {
+                type: "figure",
+                slug: "how-to-sign-a-pdf-online",
+                asset: "workflow",
+                alt: "CubSign workflow diagram showing upload PDF, place signature in editor, and download signed file",
+                caption: "The CubSign self-sign flow: upload your PDF on cubsign.com/sign, place fields in the editor, and download the finished document.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -181,12 +187,54 @@ export const blogPosts = [
                 text: "Step 6 — Complete the flow, download the signed PDF, and save it alongside any confirmation email you receive. Save the download into your deal or client folder immediately—Downloads is not a record system.",
             },
             {
+                type: "figure",
+                slug: "how-to-sign-a-pdf-online",
+                asset: "ui",
+                alt: "CubSign upload page with drag-and-drop PDF zone and example Contract.pdf file",
+                caption: "The CubSign upload screen accepts standard PDFs up to 25 MB — no account required for your first signature.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "If an upload fails, the usual culprits are a renamed Word file, a document above the size limit, or an unstable connection. Rule those out before assuming anything is wrong with the tool itself.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign is built around a three-step self-sign path: open the Upload PDF page, place your signature in the browser editor, and download the signed copy. You never need desktop software or a scanner.",
+            },
+            {
+                type: "p",
+                text: "If you create a free CubSign account, the same workflow unlocks document storage, signing history, and the ability to send documents to other people for signature — all from the same editor you use for self-signing.",
+            },
+            {
+                type: "p",
+                text: "During Early Access, unlimited signatures and downloads are included at no cost, so you can practice the flow on real documents before sending anything to a client.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Guest signing — upload and sign without creating an account",
+                    "Draw, type, or upload your signature in the editor",
+                    "Date and text fields for standard agreement forms",
+                    "HTTPS-encrypted upload and download",
+                    "Mobile-friendly signing in any modern browser",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "how-to-sign-a-pdf-online",
+                title: "CubSign UI tip",
+                text: "After uploading, use the page thumbnails in the editor sidebar to jump between signature pages quickly. Zoom in before placing fields on dense contract pages.",
+                asset: "ui",
+                alt: "CubSign upload page with drag-and-drop PDF zone and example Contract.pdf file",
             },
             {
                 type: "h2",
@@ -341,7 +389,7 @@ export const blogPosts = [
         categorySlug: "electronic-signatures",
         publishedAt: "2025-12-10",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "eSignature",
             "Digital Signature",
@@ -365,7 +413,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 6,
+        readingTime: 7,
         content: [
             {
                 type: "p",
@@ -374,6 +422,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This article explains the practical difference in plain language, shows when each one actually applies, and then connects both to how CubSign supports everyday electronic signing for freelancers, small businesses, and teams that need speed without unnecessary technical overhead.",
+            },
+            {
+                type: "figure",
+                slug: "electronic-signature-vs-digital-signature",
+                asset: "workflow",
+                alt: "Diagram comparing electronic signature creation, digital certificate, and audit log in CubSign",
+                caption: "CubSign focuses on practical electronic signatures with an audit trail — distinct from PKI-backed digital certificates used in some enterprise systems.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -439,12 +495,54 @@ export const blogPosts = [
                 text: "Step 6 — Either way, preserve the final PDF plus the signing activity as your evidence package. Store the final PDF plus any activity summary your process relies on.",
             },
             {
+                type: "figure",
+                slug: "electronic-signature-vs-digital-signature",
+                asset: "ui",
+                alt: "CubSign editor comparing electronic signature document and certificate-style document side by side",
+                caption: "Most CubSign users need a clear electronic signature and activity record, not a hardware token or enterprise certificate authority.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Most day-to-day business documents land at step four: a plain electronic signature is enough. Certificate-based digital signatures are the exception reserved for high-assurance contexts, not the default for a quote or an offer letter.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign produces electronic signatures — your drawn, typed, or uploaded mark applied to a PDF with a timestamped activity record. That is what most freelancers, agencies, and small businesses need day to day.",
+            },
+            {
+                type: "p",
+                text: "The CubSign audit trail logs views, signatures, and downloads with timestamps, giving you evidence of who signed and when without requiring specialized digital certificate infrastructure.",
+            },
+            {
+                type: "p",
+                text: "When a counterparty asks about “digital signatures,” you can explain that CubSign provides legally recognized electronic signatures with a verifiable history — visit the Security Center for full details on how documents are protected.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Electronic signatures via draw, type, or image upload",
+                    "Per-document audit trail with timestamps",
+                    "Recipient signing links tied to email addresses",
+                    "HTTPS encryption for all signing sessions",
+                    "Downloadable signed PDF as the authoritative record",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "electronic-signature-vs-digital-signature",
+                title: "How CubSign helps",
+                text: "Open any completed document in your workspace to review the full activity timeline — sent, viewed, signed, and downloaded events are listed in order.",
+                asset: "ui",
+                alt: "CubSign editor comparing electronic signature document and certificate-style document side by side",
             },
             {
                 type: "h2",
@@ -626,7 +724,7 @@ export const blogPosts = [
         categorySlug: "security",
         publishedAt: "2025-12-18",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Security",
             "Encryption",
@@ -650,7 +748,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 6,
+        readingTime: 7,
         content: [
             {
                 type: "p",
@@ -659,6 +757,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "The reassuring answer is that electronic signatures can be highly secure when both the platform and the process are designed with care. This article breaks security into distinct layers—the connection, the stored file, who can open a document, and the evidence trail—so you can evaluate CubSign or any workflow like a professional.",
+            },
+            {
+                type: "figure",
+                slug: "how-secure-are-electronic-signatures",
+                asset: "workflow",
+                alt: "CubSign security workflow: HTTPS upload, encrypted signing session, secure cloud storage",
+                caption: "CubSign protects documents at every stage — encrypted in transit during upload and signing, then stored with access limited to owners and invited recipients.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -724,12 +830,54 @@ export const blogPosts = [
                 text: "Step 6 — Confirm you can download and archive the final PDF as your own independent record. Report suspicious links to CubSign support instead of interacting with them.",
             },
             {
+                type: "figure",
+                slug: "how-secure-are-electronic-signatures",
+                asset: "ui",
+                alt: "CubSign Security Center page showing HTTPS status and document protection overview",
+                caption: "The CubSign Security Center explains HTTPS, encryption in transit, authentication, and responsible disclosure in plain language.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "CubSign is built around this layered model: HTTPS in transit, encrypted storage at rest, restricted access, and logging of core signing events that stays attached to your workspace history.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "Every CubSign session runs over HTTPS, so uploads, signature submissions, and downloads are encrypted between your browser and our servers.",
+            },
+            {
+                type: "p",
+                text: "Recipient signing links are unique per person and per document — recipients do not need a CubSign account, but they must use the secure link sent to their email.",
+            },
+            {
+                type: "p",
+                text: "Workspace owners can delete documents when they are no longer needed, and activity events are logged so you can demonstrate what happened if a question arises later.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "TLS encryption for all public and signing pages",
+                    "Per-recipient secure signing invitations",
+                    "Email verification for workspace accounts",
+                    "Google sign-in as an alternative to passwords",
+                    "Document deletion from your workspace",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "how-secure-are-electronic-signatures",
+                title: "Security best practice",
+                text: "Before signing a sensitive contract, confirm the browser address bar shows HTTPS on cubsign.com or your trusted CubSign signing link. Avoid signing on shared public computers.",
+                asset: "ui",
+                alt: "CubSign Security Center page showing HTTPS status and document protection overview",
             },
             {
                 type: "h2",
@@ -911,7 +1059,7 @@ export const blogPosts = [
         categorySlug: "business",
         publishedAt: "2026-01-05",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Small Business",
             "Productivity",
@@ -935,7 +1083,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 6,
+        readingTime: 7,
         content: [
             {
                 type: "p",
@@ -944,6 +1092,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This article maps the specific places where small teams reclaim hours each week, from client quotes to vendor onboarding, and shows how to turn those savings into a measurable advantage using CubSign rather than a vague promise of \"going digital.\"",
+            },
+            {
+                type: "figure",
+                slug: "how-small-businesses-save-time-using-esignatures",
+                asset: "workflow",
+                alt: "CubSign request signature workflow: send email link, client signs without account, automatic completion notification",
+                caption: "Small teams use CubSign to replace print-scan-email cycles with a single send-and-track workflow.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -1009,12 +1165,54 @@ export const blogPosts = [
                 text: "Step 6 — Measure turnaround time before and after adoption to prove the return in hard numbers. Record turnaround time so you can show the before-and-after gap.",
             },
             {
+                type: "figure",
+                slug: "how-small-businesses-save-time-using-esignatures",
+                asset: "ui",
+                alt: "CubSign editor recipient panel showing pending and signed status for client@email.com",
+                caption: "Track each recipient’s status from the editor — see who has signed and who is still pending without chasing email threads.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Even adopting just the first two items usually shaves a full day off your average deal cycle, and the effect compounds as more document types move online.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign lets you upload a PDF once, add recipients by email, place signature fields, and send — recipients sign through a link without creating an account.",
+            },
+            {
+                type: "p",
+                text: "Your workspace dashboard shows document status at a glance: pending, viewed, and signed. That visibility alone saves hours of “just checking if you got my email” follow-ups.",
+            },
+            {
+                type: "p",
+                text: "Templates let you save field layouts for agreements you send repeatedly — NDAs, offer letters, and vendor forms — so the next send takes minutes instead of rebuilding from scratch.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Multi-recipient signature requests by email",
+                    "Real-time status tracking in the workspace",
+                    "Reusable templates with saved field positions",
+                    "Audit trail on every document",
+                    "Free unlimited sends during Early Access",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "how-small-businesses-save-time-using-esignatures",
+                title: "Time-saving tip",
+                text: "Save your most-used agreement as a CubSign template. The next time a client is ready to sign, upload the template PDF and only change the recipient email.",
+                asset: "ui",
+                alt: "CubSign editor recipient panel showing pending and signed status for client@email.com",
             },
             {
                 type: "h2",
@@ -1196,7 +1394,7 @@ export const blogPosts = [
         categorySlug: "guides",
         publishedAt: "2026-01-12",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Contracts",
             "Best Practices",
@@ -1218,7 +1416,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 6,
+        readingTime: 7,
         content: [
             {
                 type: "p",
@@ -1227,6 +1425,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide is a practical checklist for preparing, reviewing, and signing contracts electronically without missing the details that cause disputes. It applies whether you are countersigning a client agreement or sending your own contract out for signature.",
+            },
+            {
+                type: "figure",
+                slug: "best-practices-for-signing-contracts-online",
+                asset: "workflow",
+                alt: "CubSign contract signing best practice workflow: review all pages, align signature fields, archive in workspace",
+                caption: "Professional contract signing in CubSign starts with reviewing every page before placing fields.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -1292,12 +1498,54 @@ export const blogPosts = [
                 text: "Step 6 — Download the executed PDF and archive it in the deal folder the same day. File the PDF where renewals and audits will find it months later.",
             },
             {
+                type: "figure",
+                slug: "best-practices-for-signing-contracts-online",
+                asset: "ui",
+                alt: "CubSign PDF editor with signature field aligned to signature line on contract page",
+                caption: "Align signature and date fields with the printed blocks on the contract — zoom in on dense pages before completing.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "The final step is the one most people skip, yet it is the difference between \"we signed something\" and \"here is the exact executed agreement\" when a question arises months later.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign’s editor lets you scroll through every page before signing, add initials on exhibits, and place date fields next to signature lines — the same discipline you would use on paper.",
+            },
+            {
+                type: "p",
+                text: "Name your downloaded file with the counterparty and date (for example, Acme-MSA-2026-07-27-signed.pdf) so your workspace and local folders stay searchable.",
+            },
+            {
+                type: "p",
+                text: "When sending for signature, add all required signers upfront in the recipient panel so fields are assigned correctly the first time.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Multi-page PDF navigation in the editor",
+                    "Signature, initials, date, and text fields",
+                    "Recipient assignment per field",
+                    "Download with a clear filename",
+                    "Workspace storage for signed agreements",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "best-practices-for-signing-contracts-online",
+                title: "Field placement tip",
+                text: "Use the editor zoom controls on signature pages with small print. A field that overlaps clause text can create ambiguity during a later review.",
+                asset: "ui",
+                alt: "CubSign PDF editor with signature field aligned to signature line on contract page",
             },
             {
                 type: "h2",
@@ -1479,7 +1727,7 @@ export const blogPosts = [
         categorySlug: "security",
         publishedAt: "2026-01-20",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "PDF Security",
             "Privacy",
@@ -1501,7 +1749,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 6,
+        readingTime: 7,
         content: [
             {
                 type: "p",
@@ -1510,6 +1758,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide covers practical ways to reduce accidental exposure across the full life of a document—how you share it, who can open it, where it rests, and how you sign it—so your most valuable files stop leaking through everyday carelessness.",
+            },
+            {
+                type: "figure",
+                slug: "how-to-protect-pdf-documents",
+                asset: "workflow",
+                alt: "CubSign document protection workflow: HTTPS transfer, owner-only access, delete from workspace",
+                caption: "Protect PDFs by using HTTPS signing, limiting access to invited recipients, and removing documents when retention ends.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -1575,12 +1831,54 @@ export const blogPosts = [
                 text: "Step 6 — Archive the final file in a restricted location and remove stray copies elsewhere. Train teammates on the same sharing rules so one person does not undo the rest.",
             },
             {
+                type: "figure",
+                slug: "how-to-protect-pdf-documents",
+                asset: "ui",
+                alt: "CubSign Security Center and workspace document access controls overview",
+                caption: "CubSign combines transport encryption with workspace access controls — only document owners and invited recipients can open signing links.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Notice that most steps cost nothing and add seconds, yet together they eliminate the majority of accidental exposures that plague email-first document handling.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign never requires you to email unsigned PDF drafts back and forth — upload once, send a signing link, and let recipients complete their portion in a controlled session.",
+            },
+            {
+                type: "p",
+                text: "Workspace documents are accessible only to your account and the specific recipients you invite. Each signing link is tied to an email address and a single document.",
+            },
+            {
+                type: "p",
+                text: "When a retention period ends, delete the document from your CubSign workspace. See the Privacy Policy for details on how deleted files are handled.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "HTTPS for all uploads and downloads",
+                    "Per-recipient signing URLs",
+                    "Workspace owner access control",
+                    "On-demand document deletion",
+                    "Activity logging for accountability",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "how-to-protect-pdf-documents",
+                title: "Protection reminder",
+                text: "Do not forward CubSign signing links to a different email address than the one you assigned. Create a new recipient in the editor if someone else needs to sign.",
+                asset: "ui",
+                alt: "CubSign Security Center and workspace document access controls overview",
             },
             {
                 type: "h2",
@@ -1762,7 +2060,7 @@ export const blogPosts = [
         categorySlug: "pdf-signing",
         publishedAt: "2026-01-28",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Request Signature",
             "Workflow",
@@ -1784,7 +2082,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 6,
+        readingTime: 7,
         content: [
             {
                 type: "p",
@@ -1793,6 +2091,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide walks through requesting signatures on a PDF with CubSign, from preparing the document to following up on anyone still pending, and shows how to do it without forcing every recipient to create an account first.",
+            },
+            {
+                type: "figure",
+                slug: "how-to-request-digital-signatures",
+                asset: "workflow",
+                alt: "CubSign request signatures workflow: add recipients by email, place fields per signer, send and track from dashboard",
+                caption: "Requesting signatures in CubSign: add recipients, assign fields, send, and monitor completion from your workspace.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -1858,12 +2164,54 @@ export const blogPosts = [
                 text: "Step 6 — Send the request, then watch status and follow up only with those still pending. Download one completed PDF when the last required signature lands.",
             },
             {
+                type: "figure",
+                slug: "how-to-request-digital-signatures",
+                asset: "ui",
+                alt: "CubSign editor showing recipient list and Send for signature button",
+                caption: "Add recipients in the editor sidebar, place fields assigned to each signer, then send — CubSign emails a secure link automatically.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Following up by status rather than guesswork is the quiet superpower here: you nudge exactly the people who are stuck and leave everyone else alone.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "Switch to request mode in the CubSign editor after uploading your PDF. Add each signer’s name and email, then place signature and date fields assigned to the correct recipient.",
+            },
+            {
+                type: "p",
+                text: "Recipients receive an email with a secure link. They sign in the browser without a CubSign account, and you receive a notification when everyone has completed.",
+            },
+            {
+                type: "p",
+                text: "The workspace shows each document’s status so you know whether to follow up — viewed but not signed is a very different nudge than never opened.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Request signatures from unlimited recipients",
+                    "Per-signer field assignment",
+                    "Email invitations with secure links",
+                    "Status tracking: pending, viewed, signed",
+                    "Completed PDF download when all parties sign",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "how-to-request-digital-signatures",
+                title: "Sending tip",
+                text: "Double-check recipient emails before sending — a typo means the wrong person receives a signing link. You can add a message in your own email when forwarding the CubSign notification if needed.",
+                asset: "ui",
+                alt: "CubSign editor showing recipient list and Send for signature button",
             },
             {
                 type: "h2",
@@ -2045,7 +2393,7 @@ export const blogPosts = [
         categorySlug: "business",
         publishedAt: "2026-02-03",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Paperless",
             "Operations",
@@ -2076,6 +2424,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This article looks past the recycling-bin cliché at the concrete benefits of paperless workflows—speed, searchability, remote collaboration, and audit readiness—and how a signing tool like CubSign anchors the change without a disruptive rip-and-replace project.",
+            },
+            {
+                type: "figure",
+                slug: "benefits-of-paperless-workflows",
+                asset: "workflow",
+                alt: "CubSign paperless workflow: upload template once, reuse fields, track document status in dashboard",
+                caption: "Paperless signing with CubSign: templates, tracking, and instant delivery replace printing and scanning.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -2141,12 +2497,54 @@ export const blogPosts = [
                 text: "Step 6 — Retire the paper version once the digital flow proves reliable. Measure retrieval time for a random past agreement before and after.",
             },
             {
+                type: "figure",
+                slug: "benefits-of-paperless-workflows",
+                asset: "ui",
+                alt: "CubSign templates library showing saved NDA and offer letter templates with reusable fields",
+                caption: "CubSign templates keep signature and date fields in place so recurring documents are ready to send in a few clicks.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Converting one workflow builds the habits and templates that make the next conversion faster, so momentum grows rather than stalls.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign eliminates print-sign-scan for everyday agreements. Upload a PDF, sign or send for signature, and store the finished file in your workspace — searchable and accessible from any device.",
+            },
+            {
+                type: "p",
+                text: "Templates turn your most common documents into reusable starting points. Field positions, signature slots, and date lines stay exactly where you placed them.",
+            },
+            {
+                type: "p",
+                text: "Because everything lives in one workspace, you stop hunting through email attachments for “the signed one” versus “the draft.”",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Browser-based signing — no printer required",
+                    "Template library for recurring documents",
+                    "Centralized document workspace",
+                    "Instant download of signed PDFs",
+                    "Audit trail replacing paper routing slips",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "benefits-of-paperless-workflows",
+                title: "Paperless starter",
+                text: "Pick one recurring form — an NDA, onboarding packet, or vendor agreement — and build a CubSign template this week. That single template often eliminates more paper than ad-hoc signing.",
+                asset: "ui",
+                alt: "CubSign templates library showing saved NDA and offer letter templates with reusable fields",
             },
             {
                 type: "h2",
@@ -2255,35 +2653,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "Searchability is the underrated benefit",
-            },
-            {
-                type: "p",
-                text: "Filing cabinets do not full-text search. Digital PDFs with consistent names turn renewals, audits, and customer questions into minutes instead of scavenger hunts. That operational clarity often outweighs the environmental argument—even though both matter.",
-            },
-            {
-                type: "p",
-                text: "Remote teammates also stop waiting on mailed packets. Signature latency collapses when everyone can open the same CubSign link from wherever they work.",
-            },
-            {
-                type: "h2",
-                text: "Avoiding chaotic digital piles",
-            },
-            {
-                type: "p",
-                text: "Paperless fails when “digital” means a messy Downloads folder. Pair CubSign with naming conventions and a known archive location so paperless equals organized, not just dematerialized.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Use counterpart-date-document filenames.",
-                    "Store in a shared system of record.",
-                    "Limit personal copies of sensitive files.",
-                    "Review archive structure quarterly.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -2357,7 +2726,7 @@ export const blogPosts = [
         categorySlug: "guides",
         publishedAt: "2026-02-11",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Mobile",
             "PDF Signing",
@@ -2379,7 +2748,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 6,
+        readingTime: 7,
         content: [
             {
                 type: "p",
@@ -2388,6 +2757,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide covers how to sign PDFs cleanly on a phone or tablet with CubSign, from orienting the screen to saving the finished file, so mobile convenience never costs you a sloppy signature or a lost document.",
+            },
+            {
+                type: "figure",
+                slug: "how-to-sign-pdfs-on-mobile",
+                asset: "workflow",
+                alt: "CubSign mobile signing workflow: open link in phone browser, draw signature in landscape, submit signed PDF",
+                caption: "Sign on mobile by opening CubSign in your phone browser — rotate to landscape for a cleaner drawn signature.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -2453,12 +2830,54 @@ export const blogPosts = [
                 text: "Step 6 — Complete the flow and download immediately so the signed PDF lands in device storage. Download immediately so the file lands in device storage you control.",
             },
             {
+                type: "figure",
+                slug: "how-to-sign-pdfs-on-mobile",
+                asset: "ui",
+                alt: "CubSign mobile interface on phone showing PDF document and Sign document button",
+                caption: "CubSign runs in mobile browsers — no app install. Open cubsign.com/sign or your signing link on any modern phone.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Downloading right away is the step mobile signers most often forget; a completed session that never gets saved to the device is easy to lose in a busy day.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign’s editor adapts to mobile screens. Upload from your phone’s file picker or open a recipient signing link from email — the same HTTPS-protected session as desktop.",
+            },
+            {
+                type: "p",
+                text: "Rotate to landscape before drawing a signature. The extra canvas width produces a mark that looks professional at normal zoom levels.",
+            },
+            {
+                type: "p",
+                text: "If drawing on glass feels awkward, switch to a typed signature in the editor — legibility often matters more than flourish on small screens.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Full editor in mobile browsers",
+                    "Touch-friendly signature canvas",
+                    "Typed signature option for clarity",
+                    "Recipient links work on iOS and Android",
+                    "Download signed PDF to your phone",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "how-to-sign-pdfs-on-mobile",
+                title: "Mobile tip",
+                text: "Pinch to zoom on dense PDF pages before placing a field. On phones, a signature that looks fine at default zoom may overlap text when the PDF is printed.",
+                asset: "ui",
+                alt: "CubSign mobile interface on phone showing PDF document and Sign document button",
             },
             {
                 type: "h2",
@@ -2640,7 +3059,7 @@ export const blogPosts = [
         categorySlug: "guides",
         publishedAt: "2026-02-18",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Mistakes",
             "Tips",
@@ -2671,6 +3090,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This article is a field guide to the most common PDF signing mistakes and, more usefully, how to prevent and recover from each. Read it once and you will sidestep the errors that quietly cost other people days.",
+            },
+            {
+                type: "figure",
+                slug: "common-mistakes-when-signing-pdfs",
+                asset: "workflow",
+                alt: "CubSign mistake-prevention workflow: verify final PDF not draft, read all pages including initials, download signed copy",
+                caption: "Avoid common PDF signing mistakes by confirming the file version, reading every page, and downloading the completed document.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -2736,12 +3163,54 @@ export const blogPosts = [
                 text: "Step 6 — Download and archive the completed file the moment you finish. Verify you signed the page that actually required your signature.",
             },
             {
+                type: "figure",
+                slug: "common-mistakes-when-signing-pdfs",
+                asset: "ui",
+                alt: "CubSign editor warning example showing DRAFT.pdf filename and signature field placement",
+                caption: "Check the filename and remove any “DRAFT” or “v2” labels before signing — CubSign signs exactly the PDF you upload.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Because this check is fast, make it non-negotiable. The discipline of always running it is what prevents the expensive mistakes, not any single step in isolation.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign signs the exact PDF you upload. If you attach a draft with a watermark, that watermark appears in the signed output — always upload the final agreed version.",
+            },
+            {
+                type: "p",
+                text: "The editor’s page navigator helps you catch missed initials on exhibit pages. Scroll the full document before tapping Complete.",
+            },
+            {
+                type: "p",
+                text: "After signing, download the finished PDF immediately. Relying only on a browser tab without saving leaves you without a copy if the session closes.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Page-by-page navigation before complete",
+                    "Initials fields for multi-page exhibits",
+                    "Clear download step after signing",
+                    "Workspace copy when signed while logged in",
+                    "Audit trail showing completion time",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "common-mistakes-when-signing-pdfs",
+                title: "Mistake to avoid",
+                text: "Never place a signature field over pricing or date text. Use zoom to position the field on the signature line only — overlapping terms can create disputes later.",
+                asset: "ui",
+                alt: "CubSign editor warning example showing DRAFT.pdf filename and signature field placement",
             },
             {
                 type: "h2",
@@ -2850,35 +3319,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "Why smart people still make these errors",
-            },
-            {
-                type: "p",
-                text: "Urgency plus familiarity is a dangerous mix. When you have signed “this kind of thing” a hundred times, your brain fills in blanks and skips verification. The checklist exists to protect you from autopilot, not from inexperience.",
-            },
-            {
-                type: "p",
-                text: "CubSign makes the mechanics easy; the remaining risk is human haste. Slow down for thirty seconds at the end of every session.",
-            },
-            {
-                type: "h2",
-                text: "Recovering when a mistake already happened",
-            },
-            {
-                type: "p",
-                text: "If you signed the wrong version, stop using that file. Prepare the correct PDF, re-run signatures with all parties, and clearly retire the erroneous copy so it cannot circulate. Document what happened if the agreement is material.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Void or replace incorrect signing requests promptly.",
-                    "Communicate clearly with counterparts.",
-                    "Archive only the corrected final PDF.",
-                    "Update your checklist to prevent repeats.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -2952,7 +3392,7 @@ export const blogPosts = [
         categorySlug: "legal",
         publishedAt: "2026-01-10",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Legal",
             "Compliance",
@@ -2983,6 +3423,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This article gives a practical, non-lawyer view of when electronic signatures hold up, which frameworks recognize them, and what evidence strengthens your position. It is educational rather than legal advice, so treat high-stakes documents accordingly.",
+            },
+            {
+                type: "figure",
+                slug: "are-electronic-signatures-legally-binding",
+                asset: "workflow",
+                alt: "CubSign legal signing workflow: clear intent to sign, identity via email link, audit trail with timestamp",
+                caption: "CubSign supports legally recognized electronic signatures through clear signing intent, identity via email links, and timestamped audit records.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -3048,12 +3496,54 @@ export const blogPosts = [
                 text: "Step 6 — Escalate any document with special formalities to qualified counsel first. Escalate wills, certain real-estate acts, or notarization needs to counsel.",
             },
             {
+                type: "figure",
+                slug: "are-electronic-signatures-legally-binding",
+                asset: "ui",
+                alt: "CubSign audit trail showing document sent, viewed, signed events with timestamps on Binding-Agreement.pdf",
+                caption: "The CubSign audit trail records who signed and when — supporting the integrity of electronically signed agreements.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Notice the recurring theme across frameworks: intent, association, and a trustworthy record. Ink is not the point—reliable evidence of agreement is.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign captures the essential elements courts and businesses expect: a clear action to sign, association of the signature with the document, and a record of when the signing occurred.",
+            },
+            {
+                type: "p",
+                text: "Recipient links are sent to specific email addresses, tying each signature to an identifiable party. Combined with timestamps in the audit trail, this supports enforceability in most commercial contexts.",
+            },
+            {
+                type: "p",
+                text: "Laws vary by jurisdiction and document type. CubSign provides the technical record — consult qualified counsel for regulated industries or high-stakes transactions.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Explicit complete/sign actions in the editor",
+                    "Email-tied recipient invitations",
+                    "Timestamped audit trail per document",
+                    "Downloadable signed PDF as evidence",
+                    "IP and event logging on signing activity",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "are-electronic-signatures-legally-binding",
+                title: "Record keeping",
+                text: "After all parties sign, download the final PDF and store it in your official system of record. The CubSign workspace copy is convenient, but your contract filing system should have the authoritative version.",
+                asset: "ui",
+                alt: "CubSign audit trail showing document sent, viewed, signed events with timestamps on Binding-Agreement.pdf",
             },
             {
                 type: "h2",
@@ -3162,35 +3652,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "Frameworks you will hear about",
-            },
-            {
-                type: "p",
-                text: "In the United States, the ESIGN Act and state UETA laws establish baselines for electronic records in commerce. In the EU, eIDAS describes tiers of electronic signatures. Other countries have their own statutes. None of these frameworks typically require a specific software brand—they focus on consent, integrity, and evidence.",
-            },
-            {
-                type: "p",
-                text: "This article is educational, not legal advice. When stakes are high or the document type is unusual, ask a qualified attorney in your jurisdiction.",
-            },
-            {
-                type: "h2",
-                text: "Practical evidence habits",
-            },
-            {
-                type: "p",
-                text: "Intent plus a trustworthy process beats an ornate signature graphic. CubSign helps by keeping encrypted documents and logging core events alongside the finished PDF you archive.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Present the full final PDF before signing.",
-                    "Record who was invited and when they completed.",
-                    "Store the executed file with the deal record.",
-                    "Avoid informal “screenshot of a signature” substitutes.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -3264,7 +3725,7 @@ export const blogPosts = [
         categorySlug: "security",
         publishedAt: "2026-02-18",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Security",
             "CubSign",
@@ -3296,6 +3757,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "You will see how encryption, access control, and activity logging work together, and where your own habits complete the picture. The goal is not marketing reassurance but a clear mental model you can verify and trust.",
+            },
+            {
+                type: "figure",
+                slug: "securing-your-documents-with-cubsign",
+                asset: "workflow",
+                alt: "CubSign document security workflow: verify HTTPS on cubsign.com, invite-only recipients, review activity log",
+                caption: "Secure your documents with CubSign by using verified HTTPS connections, invite-only recipients, and regular activity log reviews.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -3361,12 +3830,54 @@ export const blogPosts = [
                 text: "Step 6 — You download the completed PDF, again over an encrypted connection. Contact support if a message claiming to be from CubSign looks suspicious.",
             },
             {
+                type: "figure",
+                slug: "securing-your-documents-with-cubsign",
+                asset: "ui",
+                alt: "CubSign Security Center page with HTTPS active indicator and document protection summary",
+                caption: "Visit cubsign.com/security for CubSign’s full security overview — HTTPS, encryption, authentication, and disclosure policy.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "At no point does the document sit as a plain file that anyone could casually open, and every access leaves a trace you can review later.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign is served exclusively over HTTPS. Bookmark cubsign.com/sign and verify the padlock icon before uploading sensitive contracts.",
+            },
+            {
+                type: "p",
+                text: "Only add recipients who should see the document. Each person receives their own link — do not share links in public channels.",
+            },
+            {
+                type: "p",
+                text: "Review the activity log on important documents monthly. Unexpected view events before sending can indicate a forwarded link.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Security Center at /security",
+                    "HTTPS-only signing sessions",
+                    "Google OAuth and email verification",
+                    "Per-document activity history",
+                    "Responsible disclosure at security@cubsign.com",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "securing-your-documents-with-cubsign",
+                title: "Account security",
+                text: "Enable email verification on your CubSign account and use a strong unique password or Google sign-in. Workspace access should be limited to people who handle contracts.",
+                asset: "ui",
+                alt: "CubSign Security Center page with HTTPS active indicator and document protection summary",
             },
             {
                 type: "h2",
@@ -3475,35 +3986,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "What CubSign protects—and what you still own",
-            },
-            {
-                type: "p",
-                text: "CubSign encrypts documents in transit with HTTPS and encrypts stored files at rest. Access is limited to authorized users and valid recipient links. Activity logging supports accountability after signing. We do not sell your document contents as a product.",
-            },
-            {
-                type: "p",
-                text: "You still choose recipients, devices, and archive locations. Platform security multiplies good habits; it cannot replace them.",
-            },
-            {
-                type: "h2",
-                text: "Privacy expectations during Early Access",
-            },
-            {
-                type: "p",
-                text: "Early Access focuses on practical protections and a clear product experience while we learn from real workflows. Read the Privacy Policy for data practices, and use the Contact page if you have industry-specific questions.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "HTTPS for uploads and downloads.",
-                    "Encryption at rest for stored PDFs.",
-                    "Restricted access via accounts and links.",
-                    "Activity history for key signing events.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -3577,7 +4059,7 @@ export const blogPosts = [
         categorySlug: "product-updates",
         publishedAt: "2026-03-05",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Multi-recipient",
             "Product",
@@ -3608,6 +4090,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide shows how to coordinate multi-recipient signing on a single PDF with CubSign: assigning fields to named signers, controlling order when it matters, and tracking progress from send to completion in one place instead of a spreadsheet.",
+            },
+            {
+                type: "figure",
+                slug: "request-signatures-from-multiple-recipients",
+                asset: "workflow",
+                alt: "CubSign multi-recipient workflow: add two or more signers, assign fields per person, track all statuses",
+                caption: "Request signatures from multiple people in one CubSign document — assign fields per recipient and track everyone’s status.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -3673,12 +4163,54 @@ export const blogPosts = [
                 text: "Step 6 — Track status and nudge only the specific people who are still pending. Download the single completed PDF after the last signature.",
             },
             {
+                type: "figure",
+                slug: "request-signatures-from-multiple-recipients",
+                asset: "ui",
+                alt: "CubSign editor with two recipients and color-coded signature field assignments",
+                caption: "Each recipient in CubSign has a color in the editor — assign signature fields to the correct signer before sending.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "When the final signature lands, you download one completed PDF containing everyone signatures—no manual merging, no version reconciliation.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "Add every required signer in the CubSign editor before placing fields. Each recipient gets a color code so you can assign signature, initials, and date fields to the right person.",
+            },
+            {
+                type: "p",
+                text: "CubSign sends each recipient their own secure link. They sign independently — you do not need to route a single PDF sequentially by email.",
+            },
+            {
+                type: "p",
+                text: "The workspace shows per-recipient status. Follow up only with people still marked pending, not the entire group.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Unlimited recipients per document",
+                    "Color-coded field assignment",
+                    "Independent signing order",
+                    "Per-recipient status in workspace",
+                    "Single completed PDF when all sign",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "request-signatures-from-multiple-recipients",
+                title: "Multi-signer tip",
+                text: "For three-party agreements, list all signers first, then place fields in document order (Party A, Party B, Party C). Review the field legend in the sidebar before sending.",
+                asset: "ui",
+                alt: "CubSign editor with two recipients and color-coded signature field assignments",
             },
             {
                 type: "h2",
@@ -3787,35 +4319,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "Field assignment prevents crossed wires",
-            },
-            {
-                type: "p",
-                text: "Multi-party documents fail when two people sign the same line or leave the wrong block empty. Assign fields deliberately. CubSign’s recipient model exists so each signer sees what they are responsible for.",
-            },
-            {
-                type: "p",
-                text: "If roles are complex—signer, approver, witness—label fields clearly in the PDF text itself before uploading.",
-            },
-            {
-                type: "h2",
-                text: "Order and communication",
-            },
-            {
-                type: "p",
-                text: "Some processes need CEO signature after legal review; others allow parallel signing. State the expectation in your cover note so recipients are not guessing. Parallel signing is faster when policy allows it.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "List signers and roles in the send note.",
-                    "Assign fields to emails, not to “whoever opens first”.",
-                    "Use status to drive follow-ups.",
-                    "Archive one final multi-signature PDF.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -3889,7 +4392,7 @@ export const blogPosts = [
         categorySlug: "guides",
         publishedAt: "2026-04-12",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Mobile",
             "Tips",
@@ -3920,6 +4423,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This is the quick-reference version: five high-impact tips, each simple to remember, covering orientation, zoom, signature style, review, and saving. Keep it handy for the next time a document lands while you are away from your desk.",
+            },
+            {
+                type: "figure",
+                slug: "mobile-pdf-signing-tips",
+                asset: "workflow",
+                alt: "CubSign mobile tips workflow: rotate to landscape, pinch zoom on dense pages, type signature when needed",
+                caption: "Mobile PDF signing tips in CubSign: landscape for drawing, zoom for detail, typed signature when clarity matters.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -3980,12 +4491,54 @@ export const blogPosts = [
                 text: "Step 5 — Download the document the instant it is complete so it lands in device storage. Review exhibits even when they feel tedious on a small screen.",
             },
             {
+                type: "figure",
+                slug: "mobile-pdf-signing-tips",
+                asset: "ui",
+                alt: "CubSign phone interface with rotate for drawing callout and sign document button",
+                caption: "CubSign on mobile — rotate your phone, zoom into signature blocks, and use typed signatures when drawing is unclear.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "That is the whole list. Each tip takes seconds, and together they eliminate nearly every frustration people report when signing on a phone.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign’s mobile editor supports the same field types as desktop. Open your signing link on cellular data or Wi‑Fi — both use HTTPS encryption.",
+            },
+            {
+                type: "p",
+                text: "Enable screen rotation lock off temporarily while drawing. A steady landscape canvas beats a cramped portrait scribble every time.",
+            },
+            {
+                type: "p",
+                text: "For field reports and dense tables, pinch-zoom before signing. You are confirming specific rows — make sure you can read them.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Responsive editor layout",
+                    "Touch-optimized signature pad",
+                    "Typed signature fallback",
+                    "Mobile recipient links",
+                    "Download to device files app",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "mobile-pdf-signing-tips",
+                title: "On-the-go signing",
+                text: "If you receive a CubSign link while away from your desk, you can complete it on your phone and download the signed PDF to forward from your mobile email app.",
+                asset: "ui",
+                alt: "CubSign phone interface with rotate for drawing callout and sign document button",
             },
             {
                 type: "h2",
@@ -4094,35 +4647,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "Five tips that compound",
-            },
-            {
-                type: "p",
-                text: "Each tip removes a specific failure mode: cramped signatures, misaligned fields, unreadable scribbles, inconsistent identity marks, and lost files. Used together, they make phone signing feel as trustworthy as desktop signing.",
-            },
-            {
-                type: "p",
-                text: "CubSign’s mobile browser experience is built for this flow—no special app install required—so the limiting factor is usually technique, not tooling.",
-            },
-            {
-                type: "h2",
-                text: "Teaching mobile signing to your team",
-            },
-            {
-                type: "p",
-                text: "Send this article to anyone who signs from a phone. A shared ritual beats five people inventing five different workarounds.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Standardize on typed signatures for tiny screens.",
-                    "Require download confirmation in team chat for critical deals.",
-                    "Discourage public-Wi-Fi signing for sensitive contracts.",
-                    "Keep a short mobile checklist in your handbook.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -4196,7 +4720,7 @@ export const blogPosts = [
         categorySlug: "product-updates",
         publishedAt: "2025-11-15",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Early Access",
             "Product Launch",
@@ -4227,6 +4751,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "Here we cover what Early Access includes, why we are running it this way, how to get the most from it, and what to expect as the product evolves. If you sign or send documents regularly, this is the moment to shape a tool around how you actually work.",
+            },
+            {
+                type: "figure",
+                slug: "introducing-cubsign-early-access",
+                asset: "workflow",
+                alt: "CubSign Early Access workflow: sign free, send unlimited signature requests, share product feedback",
+                caption: "CubSign Early Access: free unlimited signing, signature requests, and a direct line to shape the product.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -4292,12 +4824,54 @@ export const blogPosts = [
                 text: "Step 6 — Share feedback on anything that felt slow, confusing, or missing. Send product feedback so Early Access improvements match real workflows.",
             },
             {
+                type: "figure",
+                slug: "introducing-cubsign-early-access",
+                asset: "ui",
+                alt: "CubSign upload page welcoming Early Access users with free Upload PDF button",
+                caption: "Early Access users get full CubSign features at $0 — upload, sign, send, and store documents while we refine the platform.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Your feedback at these early steps carries the most weight, because it directly influences templates, tracking, and editor improvements before they harden.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign Early Access gives you unlimited self-signing, signature requests, recipients, and downloads at no charge while we collect feedback and harden the platform.",
+            },
+            {
+                type: "p",
+                text: "Create a free account to unlock workspace storage, templates, and document history. Guest signing still works for quick one-off PDFs.",
+            },
+            {
+                type: "p",
+                text: "We read every message from the Contact page and support@cubsign.com. Early Access is your chance to influence what we build next.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "$0 during Early Access",
+                    "No credit card required",
+                    "Unlimited signatures and documents",
+                    "Templates and audit trail included",
+                    "Google sign-in supported",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "introducing-cubsign-early-access",
+                title: "Get started",
+                text: "Open the Upload PDF page and sign your first document in under a minute. Then create a free account to save it and try sending a signature request to a colleague.",
+                asset: "ui",
+                alt: "CubSign upload page welcoming Early Access users with free Upload PDF button",
             },
             {
                 type: "h2",
@@ -4406,35 +4980,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "What Early Access means for you",
-            },
-            {
-                type: "p",
-                text: "CubSign is free during Early Access while we refine signing, tracking, and templates with real user feedback. You get practical PDF signing without enterprise complexity, and your input shapes what we build next.",
-            },
-            {
-                type: "p",
-                text: "Security and simplicity are non-negotiable product principles: HTTPS, encrypted storage, and a UI that does not require a training seminar.",
-            },
-            {
-                type: "h2",
-                text: "Where to go after your first signature",
-            },
-            {
-                type: "p",
-                text: "Read How to Sign a PDF Online for the core tutorial, How CubSign Protects Your Documents for security basics, and the Help Center for click-by-click product steps. The Features page shows the broader toolkit in one place.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Sign your first PDF today.",
-                    "Request a signature from a colleague.",
-                    "Browse Help Center articles as questions appear.",
-                    "Tell us what to improve next.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -4508,7 +5053,7 @@ export const blogPosts = [
         categorySlug: "electronic-signatures",
         publishedAt: "2026-03-12",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Audit Trail",
             "Compliance",
@@ -4539,6 +5084,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This article explains what an audit trail captures, why it matters for trust and dispute readiness, and how CubSign records signing events so your finished PDF is backed by evidence rather than assumption.",
+            },
+            {
+                type: "figure",
+                slug: "what-is-an-audit-trail",
+                asset: "workflow",
+                alt: "CubSign audit trail workflow: document sent, recipient viewed, signed, and downloaded with timestamps",
+                caption: "A CubSign audit trail logs each document event — sent, viewed, signed, downloaded — with timestamps and participant details.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -4604,12 +5157,54 @@ export const blogPosts = [
                 text: "Step 6 — Supporting metadata such as timestamps and, where relevant, IP information. Explain to teammates that the trail complements—not replaces—the PDF.",
             },
             {
+                type: "figure",
+                slug: "what-is-an-audit-trail",
+                asset: "ui",
+                alt: "CubSign document activity log showing sent, viewed, signed, and downloaded events with timestamps",
+                caption: "View the full activity timeline on any document in your CubSign workspace.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Together these events form a chronological narrative. Any single entry is minor, but the sequence is what makes an executed document defensible months later.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "Every CubSign document records key events automatically. You do not configure logging — it is part of every send and sign flow.",
+            },
+            {
+                type: "p",
+                text: "When a client asks “did they sign yet?”, open the document in your workspace instead of searching email. The audit trail shows viewed and signed timestamps.",
+            },
+            {
+                type: "p",
+                text: "For compliance conversations, export the signed PDF and reference the activity history. Together they demonstrate who acted and when.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Automatic event logging",
+                    "Timestamps on every action",
+                    "Signer name and email captured",
+                    "View history in document details",
+                    "Supports contract dispute resolution",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "what-is-an-audit-trail",
+                title: "Audit tip",
+                text: "After a deal closes, screenshot or note the final audit trail status in your CRM record. The signed PDF plus activity log is your complete evidence package.",
+                asset: "ui",
+                alt: "CubSign document activity log showing sent, viewed, signed, and downloaded events with timestamps",
             },
             {
                 type: "h2",
@@ -4718,35 +5313,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "What typically gets recorded",
-            },
-            {
-                type: "p",
-                text: "Useful trails capture document creation, invitations, views, signature application, and completion times. IP and timestamp metadata add context if questions arise later. CubSign logs core signing events inside your workspace history.",
-            },
-            {
-                type: "p",
-                text: "The signed PDF remains the primary artifact. The trail explains how you got there.",
-            },
-            {
-                type: "h2",
-                text: "Using trails without overinterpreting them",
-            },
-            {
-                type: "p",
-                text: "An audit trail supports accountability; it is not a substitute for reading terms or verifying identity outside the platform when your risk model requires it. Use it as evidence of process, alongside human judgment.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Pair trails with the final PDF.",
-                    "Do not rely on screenshots of signatures alone.",
-                    "Preserve history when disputes are foreseeable.",
-                    "Limit access to sensitive activity records.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -4820,7 +5386,7 @@ export const blogPosts = [
         categorySlug: "getting-started",
         publishedAt: "2026-03-20",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Signature",
             "Getting Started",
@@ -4842,7 +5408,7 @@ export const blogPosts = [
             avatarBg: "bg-blue-600",
             bio: "The CubSign Team writes practical guides on PDF signing, electronic signatures, document security, and paperless workflows for freelancers, small businesses, and growing teams.",
         },
-        readingTime: 6,
+        readingTime: 7,
         content: [
             {
                 type: "p",
@@ -4851,6 +5417,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide walks through creating a clean reusable signature in CubSign, whether you draw, type, or upload it, and how to keep it looking sharp across every PDF you sign. A few minutes now pays off on every future document.",
+            },
+            {
+                type: "figure",
+                slug: "how-to-create-a-reusable-signature",
+                asset: "workflow",
+                alt: "CubSign reusable signature workflow: draw once in editor, save style, apply quickly on next document",
+                caption: "Create a signature once in CubSign and reuse it across documents — draw, type, or upload your preferred style.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -4916,12 +5490,54 @@ export const blogPosts = [
                 text: "Step 6 — Apply it to a test PDF to confirm it looks clean at real signing size. Never share your CubSign account so others cannot misuse a saved mark.",
             },
             {
+                type: "figure",
+                slug: "how-to-create-a-reusable-signature",
+                asset: "ui",
+                alt: "CubSign signature panel showing Draw and Type options with signature canvas",
+                caption: "The CubSign signature panel lets you draw on canvas, type your name, or upload an image — reuse your choice on the next document.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Testing on a sample document is worth the extra minute; a signature that looks fine in the editor can appear cramped or faint once placed, and it is better to catch that now.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "In the CubSign editor, open the signature panel and create your mark once — draw, type, or upload. Your session remembers it for subsequent fields on the same document.",
+            },
+            {
+                type: "p",
+                text: "With a CubSign account, your signing workflow stays consistent across sessions. Use the same typed signature for formal documents and drawn for informal ones.",
+            },
+            {
+                type: "p",
+                text: "Save a PNG of your signature locally if you prefer the upload option — CubSign accepts standard image formats in the signature panel.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Draw signature on canvas",
+                    "Type with handwriting-style font",
+                    "Upload signature image",
+                    "Apply to multiple fields per document",
+                    "Consistent marks across workspace sessions",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "how-to-create-a-reusable-signature",
+                title: "Signature consistency",
+                text: "For brand-facing documents, typed signatures often look cleaner than trackpad drawings. Try both in CubSign on the same PDF and compare at 100% zoom before sending.",
+                asset: "ui",
+                alt: "CubSign signature panel showing Draw and Type options with signature canvas",
             },
             {
                 type: "h2",
@@ -5103,7 +5719,7 @@ export const blogPosts = [
         categorySlug: "getting-started",
         publishedAt: "2026-03-28",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Signature",
             "UX",
@@ -5134,6 +5750,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This article compares drawing and typing your signature, laying out the trade-offs clearly so you can pick the right style for the situation rather than defaulting to whichever the tool happens to open on.",
+            },
+            {
+                type: "figure",
+                slug: "draw-vs-type-your-signature",
+                asset: "workflow",
+                alt: "CubSign draw versus type signature workflow comparing draw canvas, typed name, and upload image options",
+                caption: "CubSign supports draw, type, and upload — choose based on document formality and the device you are using.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -5199,12 +5823,54 @@ export const blogPosts = [
                 text: "Step 6 — Pick one style per document so the result looks consistent. Review the finished page at 100% zoom before completing.",
             },
             {
+                type: "figure",
+                slug: "draw-vs-type-your-signature",
+                asset: "ui",
+                alt: "CubSign editor side-by-side Draw and Type signature panels",
+                caption: "Compare draw and type signatures in the CubSign editor before completing the document.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "There is no universally correct answer; there is only the right choice for this document, this device, and this audience. Deciding on purpose is what matters.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "CubSign does not force one signature style. Draw for a personal touch on informal agreements; type when legibility at small sizes matters; upload when you already have a scanned signature on file.",
+            },
+            {
+                type: "p",
+                text: "On desktop with a mouse, drawing can look shaky. Typed signatures often read better on contracts that will be archived for years.",
+            },
+            {
+                type: "p",
+                text: "Recipients signing via CubSign links get the same three options — choose what produces the clearest mark on your device.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Draw, type, and upload in one panel",
+                    "Switch methods before completing",
+                    "Mobile-optimized canvas",
+                    "Preview at document zoom level",
+                    "Same options for recipients",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "draw-vs-type-your-signature",
+                title: "Choosing a style",
+                text: "For multi-page contracts, use one consistent method throughout. Mixing a drawn signature on page 1 and typed on page 5 can look unprofessional in a legal review.",
+                asset: "ui",
+                alt: "CubSign editor side-by-side Draw and Type signature panels",
             },
             {
                 type: "h2",
@@ -5313,35 +5979,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "Intent matters more than pixel style",
-            },
-            {
-                type: "p",
-                text: "Whether the pixels were drawn or typed, what matters legally in many contexts is that you intended to sign the document presented. Choose the style that is clear and authentic to how you work, not the one that looks most like fountain-pen calligraphy.",
-            },
-            {
-                type: "p",
-                text: "Unreadable flourishes help no one. Clarity is a feature.",
-            },
-            {
-                type: "h2",
-                text: "When upload beats both",
-            },
-            {
-                type: "p",
-                text: "Upload wins when legal or brand teams mandate a specific image, or when you already have a high-quality transparent signature file. CubSign supports upload alongside draw and type so you are not forced into a single aesthetic.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Draw for personal handwritten feel on tablets.",
-                    "Type for legibility on small screens.",
-                    "Upload for mandated brand marks.",
-                    "Use one style per document.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -5415,7 +6052,7 @@ export const blogPosts = [
         categorySlug: "business",
         publishedAt: "2026-04-02",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "NDA",
             "Startups",
@@ -5446,6 +6083,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide covers signing NDAs online in a way that keeps confidentiality tight and deals moving. It is written for founders and early teams who need to move fast without losing control of who agreed to what, using CubSign to make the process clean and trackable.",
+            },
+            {
+                type: "figure",
+                slug: "nda-signing-guide-for-startups",
+                asset: "workflow",
+                alt: "CubSign NDA signing workflow for startups: send mutual NDA, founder signs, store securely in workspace",
+                caption: "Startups use CubSign to send NDAs, collect founder and counterparty signatures, and store executed copies in the workspace.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -5511,12 +6156,54 @@ export const blogPosts = [
                 text: "Step 6 — Store the executed NDA where fundraising and sales teams can find it. Use a naming convention that includes counterparty and date.",
             },
             {
+                type: "figure",
+                slug: "nda-signing-guide-for-startups",
+                asset: "ui",
+                alt: "CubSign request signature interface with Mutual-NDA.pdf and recipient email fields",
+                caption: "Send a mutual NDA through CubSign — add both parties as recipients and track who has signed.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "Storing executed NDAs somewhere findable matters more than founders expect; when a deal accelerates later, you want the confidentiality agreement in hand instantly, not buried in an inbox.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "Upload your standard mutual NDA to CubSign, add both parties as recipients, and place signature fields on the signature blocks. Send before sharing sensitive pitch materials.",
+            },
+            {
+                type: "p",
+                text: "Save the NDA as a template once fields are positioned. Every new investor or partner conversation starts from the same layout.",
+            },
+            {
+                type: "p",
+                text: "Store executed NDAs in your CubSign workspace with clear filenames (Investor-NDA-Acme-2026.pdf) so due diligence later is painless.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Multi-party NDA signing",
+                    "Template for recurring NDAs",
+                    "Secure workspace storage",
+                    "Audit trail for investor records",
+                    "Free during Early Access",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "nda-signing-guide-for-startups",
+                title: "Startup checklist",
+                text: "Before sharing your deck, confirm the NDA is fully signed by all parties in CubSign — not just sent. Check workspace status shows Signed for every recipient.",
+                asset: "ui",
+                alt: "CubSign request signature interface with Mutual-NDA.pdf and recipient email fields",
             },
             {
                 type: "h2",
@@ -5625,35 +6312,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "Speed without losing control",
-            },
-            {
-                type: "p",
-                text: "Startups lose deals when NDAs take a week of email ping-pong. A clean template plus CubSign lets you send the same morning you decide to talk, while still producing an executed PDF you can find during diligence.",
-            },
-            {
-                type: "p",
-                text: "Do not let speed become sloppiness: wrong entity names and unclear mutual/one-way terms create expensive cleanup later.",
-            },
-            {
-                type: "h2",
-                text: "Where NDAs live after signing",
-            },
-            {
-                type: "p",
-                text: "Sales, fundraising, and recruiting all ask for NDAs at inconvenient times. Store them where those teams already look—deal folders or a secured shared drive—and keep CubSign as the signing system of entry.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Template once; reuse often.",
-                    "Confirm mutual vs one-way every send.",
-                    "Sign electronically with clear fields.",
-                    "Archive with counterparty-date names.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -5727,7 +6385,7 @@ export const blogPosts = [
         categorySlug: "guides",
         publishedAt: "2026-04-20",
         updatedAt: "2026-07-17",
-        lastReviewed: "2026-07-17",
+        lastReviewed: "2026-07-27",
         tags: [
             "Freelancers",
             "Contracts",
@@ -5758,6 +6416,14 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "This guide is that checklist: the specific items a freelancer should verify before signing a client PDF, covering scope, payment, IP, and the signing hygiene that keeps your records clean. Run it every time and unpleasant surprises become rare.",
+            },
+            {
+                type: "figure",
+                slug: "freelancer-contract-signing-checklist",
+                asset: "workflow",
+                alt: "CubSign freelancer contract workflow: finalize scope PDF, client signs via email link, freelancer countersigns and downloads",
+                caption: "Freelancers use CubSign to send SOWs and contracts, collect client signatures, and retain signed copies for every engagement.",
+                variant: "diagram",
             },
             {
                 type: "h2",
@@ -5823,12 +6489,54 @@ export const blogPosts = [
                 text: "Step 6 — Sign, then download the completed copy to your records the same day. File the contract under client-and-date naming.",
             },
             {
+                type: "figure",
+                slug: "freelancer-contract-signing-checklist",
+                asset: "ui",
+                alt: "CubSign editor checklist view with Client-SOW.pdf and client signature request pending",
+                caption: "Track client signature status on statements of work directly from your CubSign workspace.",
+                variant: "screenshot",
+            },
+            {
                 type: "p",
                 text: "If any item raises a question, ask before signing, not after. A clarifying email costs minutes; renegotiating a signed contract costs goodwill and often money.",
             },
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "h2",
+                text: "How CubSign helps",
+            },
+            {
+                type: "p",
+                text: "Freelancers use CubSign to send statements of work and service agreements without printing. Clients sign from email links; you countersign and download the executed PDF.",
+            },
+            {
+                type: "p",
+                text: "Build a template for your standard contract with signature and date fields pre-placed. New clients mean a new recipient email, not rebuilding the PDF layout.",
+            },
+            {
+                type: "p",
+                text: "Keep every signed SOW in your workspace folder structure or download to your project archive — either way, you have proof of scope agreement before work begins.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Client signing without an account",
+                    "Countersign after client completes",
+                    "Template for standard freelancer SOW",
+                    "Status tracking per engagement",
+                    "Download for project files",
+                ],
+            },
+            {
+                type: "callout",
+                slug: "freelancer-contract-signing-checklist",
+                title: "Freelancer tip",
+                text: "Do not start billable work until CubSign shows Signed for the client on your SOW. The audit trail timestamp is your alignment evidence if scope is questioned later.",
+                asset: "ui",
+                alt: "CubSign editor checklist view with Client-SOW.pdf and client signature request pending",
             },
             {
                 type: "h2",
@@ -5937,35 +6645,6 @@ export const blogPosts = [
             },
             {
                 type: "h2",
-                text: "Payment and IP deserve extra minutes",
-            },
-            {
-                type: "p",
-                text: "Freelancers often skim past the terms that hurt later: net-90 payment, unlimited revisions, or IP assignment that blocks portfolio use. Spend deliberate minutes on those sections every time.",
-            },
-            {
-                type: "p",
-                text: "CubSign makes execution fast; your checklist makes execution safe. Together they protect both cash flow and future marketing of your work.",
-            },
-            {
-                type: "h2",
-                text: "When to walk away before signing",
-            },
-            {
-                type: "p",
-                text: "If the PDF contradicts what was promised and the client refuses to update it, do not sign hoping goodwill will override the document. Written terms govern. It is better to pause a deal than to litigate a bad clause unpaid.",
-            },
-            {
-                type: "ul",
-                items: [
-                    "Demand written fixes for mismatched scope.",
-                    "Clarify revision limits.",
-                    "Protect portfolio rights when possible.",
-                    "Keep every executed contract organized.",
-                ],
-            },
-            {
-                type: "h2",
                 text: "Putting it into practice this week",
             },
             {
@@ -6033,41 +6712,39 @@ export const blogPosts = [
     },
 ];
 
-const postsWithCovers = blogPosts.map(withBlogCoverMeta);
-
 export function getPostBySlug(slug) {
-    return postsWithCovers.find((p) => p.slug === slug) ?? null;
+    return blogPosts.find((p) => p.slug === slug) ?? null;
 }
 
 export function getPostsByCategory(categoryName) {
-    return postsWithCovers.filter((p) => p.category === categoryName);
+    return blogPosts.filter((p) => p.category === categoryName);
 }
 
 export function getFeaturedPost() {
-    return postsWithCovers.find((p) => p.featured) ?? postsWithCovers[0];
+    return blogPosts.find((p) => p.featured) ?? blogPosts[0];
 }
 
 export function getPopularPosts(limit = 5) {
-    const flagged = postsWithCovers.filter((p) => p.popular);
-    const pool = flagged.length ? flagged : [...postsWithCovers].sort((a, b) => b.readingTime - a.readingTime);
+    const flagged = blogPosts.filter((p) => p.popular);
+    const pool = flagged.length ? flagged : [...blogPosts].sort((a, b) => b.readingTime - a.readingTime);
     return pool.slice(0, limit);
 }
 
 export function getRecentPosts(limit = 5) {
-    return [...postsWithCovers]
+    return [...blogPosts]
         .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
         .slice(0, limit);
 }
 
 export function getRecentlyUpdatedPosts(limit = 5) {
-    return [...postsWithCovers]
+    return [...blogPosts]
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
         .slice(0, limit);
 }
 
 export function getRelatedPosts(slug, limit = 3) {
     const current = getPostBySlug(slug);
-    if (!current) return postsWithCovers.slice(0, limit);
+    if (!current) return blogPosts.slice(0, limit);
 
     const bySlug = (current.related ?? [])
         .map((s) => getPostBySlug(s))
@@ -6075,7 +6752,7 @@ export function getRelatedPosts(slug, limit = 3) {
 
     if (bySlug.length >= limit) return bySlug.slice(0, limit);
 
-    const extras = postsWithCovers.filter(
+    const extras = blogPosts.filter(
         (p) =>
             p.slug !== slug &&
             !bySlug.some((r) => r.slug === p.slug) &&
@@ -6086,7 +6763,7 @@ export function getRelatedPosts(slug, limit = 3) {
 }
 
 export function getAdjacentPosts(slug) {
-    const chronological = [...postsWithCovers].sort(
+    const chronological = [...blogPosts].sort(
         (a, b) => new Date(a.publishedAt) - new Date(b.publishedAt),
     );
     const index = chronological.findIndex((p) => p.slug === slug);
@@ -6107,6 +6784,9 @@ function postSearchHaystack(post) {
         ...post.content.flatMap((block) => {
             if (block.text) return [block.text];
             if (block.items) return block.items;
+            if (block.alt) return [block.alt];
+            if (block.caption) return [block.caption];
+            if (block.title) return [block.title];
             return [];
         }),
         ...(post.faq ?? []).flatMap((f) => [f.question, f.answer]),
@@ -6117,9 +6797,9 @@ function postSearchHaystack(post) {
 
 export function searchBlogPosts(query) {
     const q = query.trim().toLowerCase();
-    if (!q) return [...postsWithCovers].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+    if (!q) return [...blogPosts].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
-    return postsWithCovers.filter((post) => postSearchHaystack(post).includes(q));
+    return blogPosts.filter((post) => postSearchHaystack(post).includes(q));
 }
 
 export function filterBlogPosts({ query = '', category = 'All' } = {}) {

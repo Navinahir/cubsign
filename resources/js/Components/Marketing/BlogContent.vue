@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import BlogArticleFigure from '@/Components/Blog/BlogArticleFigure.vue';
 import { blogHeadingAnchors, normalizeBlogBlocks } from '@/utils/marketingContent';
 import { linkifyBlogText } from '@/constants/blog';
 
@@ -136,6 +137,53 @@ function segments(text) {
                         <template v-else>{{ seg.value }}</template>
                     </template>
                 </p>
+            </aside>
+            <BlogArticleFigure
+                v-else-if="block.type === 'figure'"
+                :slug="block.slug || currentSlug"
+                :asset="block.asset || 'workflow'"
+                :alt="block.alt"
+                :caption="block.caption"
+                :variant="block.variant || 'wide'"
+            />
+            <aside
+                v-else-if="block.type === 'callout'"
+                class="mb-8 overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50/60 shadow-sm"
+            >
+                <div class="grid gap-4 p-5 sm:grid-cols-[minmax(0,1fr)_200px] sm:items-center sm:p-6">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-blue-700">
+                            {{ block.title || 'CubSign tip' }}
+                        </p>
+                        <p class="mt-2 text-sm leading-relaxed text-blue-950">
+                            <template v-for="(seg, segIndex) in segments(block.text)" :key="segIndex">
+                                <Link
+                                    v-if="seg.type === 'blog'"
+                                    :href="route('blog.show', seg.slug)"
+                                    class="font-medium text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-950"
+                                >
+                                    {{ seg.value }}
+                                </Link>
+                                <Link
+                                    v-else-if="seg.type === 'route'"
+                                    :href="route(seg.routeName)"
+                                    class="font-medium text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-950"
+                                >
+                                    {{ seg.value }}
+                                </Link>
+                                <template v-else>{{ seg.value }}</template>
+                            </template>
+                        </p>
+                    </div>
+                    <BlogArticleFigure
+                        v-if="block.asset"
+                        :slug="block.slug || currentSlug"
+                        :asset="block.asset"
+                        :alt="block.alt"
+                        variant="screenshot"
+                        compact
+                    />
+                </div>
             </aside>
         </template>
     </div>

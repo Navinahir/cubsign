@@ -31,6 +31,18 @@ export function normalizeBlogBlocks(blocks) {
             const items = (block.items ?? []).filter(hasMarketingText);
             if (!items.length) continue;
             normalized.push({ ...block, items });
+            continue;
+        }
+
+        if (block.type === 'figure') {
+            if (!hasMarketingText(block.slug) && !hasMarketingText(block.asset)) continue;
+            normalized.push({ ...block });
+            continue;
+        }
+
+        if (block.type === 'callout') {
+            if (!hasMarketingText(block.text)) continue;
+            normalized.push({ ...block });
         }
     }
 
