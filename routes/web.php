@@ -14,6 +14,7 @@ use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\OverviewController;
 use App\Http\Controllers\Web\PricingController;
 use App\Http\Controllers\Web\PrivacyController;
+use App\Http\Controllers\Web\SecurityController;
 use App\Http\Controllers\Web\SitemapController;
 use App\Http\Controllers\Web\TermsController;
 use App\Http\Controllers\Web\Sign\CompleteController as SignCompleteController;
@@ -39,7 +40,7 @@ Route::get('/help-center', [HelpCenterController::class, 'index'])->name('help-c
 Route::get('/help-center/{slug}', [HelpCenterController::class, 'show'])->name('help-center.show');
 Route::get('/about', AboutController::class)->name('about');
 Route::get('/contact', ContactController::class)->name('contact');
-Route::redirect('/security', '/');
+Route::get('/security', SecurityController::class)->name('security');
 Route::get('/privacy', PrivacyController::class)->name('privacy');
 Route::get('/terms', TermsController::class)->name('terms');
 Route::get('/cookies', CookiePolicyController::class)->name('cookies');

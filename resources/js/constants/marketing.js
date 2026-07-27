@@ -392,6 +392,7 @@ export const footerLinks = {
     ],
     resources: [
         { label: 'Help Center', routeName: 'help-center' },
+        { label: 'Security Center', routeName: 'security' },
         { label: 'Blog', routeName: 'blog' },
         { label: 'RSS Feed', href: '/rss.xml', sameTab: true },
         { label: 'Sitemap', href: '/sitemap.xml', sameTab: true },

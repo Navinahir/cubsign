@@ -34,6 +34,9 @@ function isActive(routeName) {
     if (routeName === 'help-center') {
         return route().current('help-center') || route().current('help-center.show');
     }
+    if (routeName === 'security') {
+        return route().current('security');
+    }
     if (routeName === 'blog') {
         return route().current('blog') || route().current('blog.show');
     }

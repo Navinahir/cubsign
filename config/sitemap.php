@@ -27,6 +27,7 @@ return [
         ['path' => '/pricing', 'priority' => '0.8', 'changefreq' => 'monthly'],
         ['path' => '/faq', 'priority' => '0.7', 'changefreq' => 'monthly'],
         ['path' => '/help-center', 'priority' => '0.8', 'changefreq' => 'weekly'],
+        ['path' => '/security', 'priority' => '0.7', 'changefreq' => 'monthly'],
         ['path' => '/privacy', 'priority' => '0.5', 'changefreq' => 'yearly'],
         ['path' => '/terms', 'priority' => '0.5', 'changefreq' => 'yearly'],
         ['path' => '/cookies', 'priority' => '0.5', 'changefreq' => 'yearly'],
