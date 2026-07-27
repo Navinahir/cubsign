@@ -90,21 +90,6 @@ function formatSize(bytes) {
             <!-- ─── Workspace row ─────────────────────────────── -->
             <div class="flex min-h-0 flex-1 overflow-hidden">
 
-                <!-- ─── Thumbnail strip placeholder (decorative — desktop only) ──── -->
-                <div class="hidden w-[72px] shrink-0 flex-col items-center gap-2.5 overflow-y-auto bg-gray-300 px-2 py-3 lg:flex">
-                    <div
-                        v-for="n in 3"
-                        :key="n"
-                        class="w-full overflow-hidden rounded border border-gray-400/30 bg-gray-200/60"
-                        style="aspect-ratio: 8.5 / 11"
-                    >
-                        <div class="flex flex-col gap-[3px] p-1.5">
-                            <div v-for="j in 7" :key="j" class="h-[2px] rounded-full bg-gray-400/40"
-                                 :style="{ width: (j % 3 === 0 ? '65%' : j % 2 === 0 ? '80%' : '95%') }" />
-                        </div>
-                    </div>
-                </div>
-
                 <!-- ─── Center workspace / drop zone ─────────── -->
                 <div
                     class="relative flex min-h-0 flex-1 flex-col items-center justify-center transition-colors duration-200"
@@ -401,7 +386,6 @@ function formatSize(bytes) {
             <div class="shrink-0 border-t border-gray-200 bg-white px-3 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] md:px-6">
                 <div class="flex items-center justify-between gap-4">
 
-                    <!-- Step indicators (disabled) -->
                     <div class="flex items-center gap-2">
                         <div class="flex items-center gap-2">
                             <div class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-[11px] font-bold text-white">1</div>
@@ -419,17 +403,22 @@ function formatSize(bytes) {
                         </div>
                     </div>
 
-                    <p class="hidden text-xs text-gray-400 lg:block">Select a PDF to continue</p>
+                    <p v-if="!selectedFile" class="text-xs text-gray-400 sm:text-sm">Select a PDF to continue</p>
 
-                    <!-- Disabled finish button -->
                     <button
-                        disabled
-                        class="inline-flex shrink-0 cursor-not-allowed items-center gap-2 rounded-xl bg-gray-100 px-7 py-2.5 text-sm font-semibold text-gray-400"
+                        v-else
+                        type="button"
+                        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-7 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
+                        :disabled="form.processing"
+                        @click="submit"
                     >
-                        Finish Signing
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
+                        <span v-if="form.processing">Uploading…</span>
+                        <span v-else class="inline-flex items-center gap-2">
+                            Open in Editor
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </span>
                     </button>
 
                 </div>

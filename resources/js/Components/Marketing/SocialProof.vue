@@ -1,5 +1,4 @@
 <script setup>
-import AnimatedCounter from '@/Components/Marketing/AnimatedCounter.vue';
 import { socialStats, customerLogos } from '@/constants/marketing';
 
 defineProps({
@@ -11,7 +10,7 @@ defineProps({
     <div>
         <div :class="['grid grid-cols-3 gap-4', compact ? 'mb-10' : 'mb-14 gap-5']">
             <div v-for="stat in socialStats" :key="stat.label" class="marketing-card-lift rounded-2xl border border-gray-100 bg-white p-5 text-center shadow-sm shadow-gray-100/80 sm:p-6">
-                <p :class="[compact ? 'text-2xl' : 'text-3xl sm:text-4xl', 'font-bold tracking-tight text-blue-600']"><AnimatedCounter :value="stat.value" /></p>
+                <p :class="[compact ? 'text-2xl' : 'text-3xl sm:text-4xl', 'font-bold tracking-tight text-blue-600']">{{ stat.value }}</p>
                 <p class="mt-1.5 text-xs font-medium text-gray-500 sm:text-sm">{{ stat.label }}</p>
             </div>
         </div>
