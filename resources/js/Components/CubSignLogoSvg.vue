@@ -33,17 +33,20 @@ const heightClasses = {
             <path d="M11.5 17.5L14.5 20.5L20.5 13.5" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
         </g>
         <line x1="46" y1="10" x2="46" y2="42" stroke="#CBD5E1" stroke-width="1" />
-        <text x="54" y="31" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="800" letter-spacing="0.3" fill="#0A1628">Cub</text>
-        <text x="96" y="31" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="800" letter-spacing="0.3" fill="#2563EB">Sign</text>
+        <text x="54" y="31" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700">
+            <tspan fill="#0A1628">Cub</tspan><tspan fill="#2563EB">Sign</tspan>
+        </text>
         <text
             v-if="variant === 'auth'"
-            x="54"
+            x="91"
             y="44"
+            text-anchor="middle"
             font-family="system-ui, -apple-system, sans-serif"
             font-size="7"
             font-weight="600"
-            letter-spacing="1.2"
+            letter-spacing="1.6"
             fill="#64748B"
+            opacity="0.72"
         >SIMPLE PDF SIGNING.</text>
     </svg>
 </template>
