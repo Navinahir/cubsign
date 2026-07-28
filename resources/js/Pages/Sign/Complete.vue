@@ -106,7 +106,7 @@ const benefits = [
             <!-- ── CARDS ── -->
             <div class="mt-6 grid w-full max-w-[54rem] grid-cols-1 items-stretch gap-4 sm:grid-cols-2">
 
-                <!-- CARD 1 — Download -->
+                <!-- CARD 1. Download -->
                 <div class="flex flex-col rounded-2xl border border-gray-300 bg-white p-6 shadow-md transition-shadow duration-200 hover:shadow-lg">
 
                     <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-200/80">
@@ -117,7 +117,7 @@ const benefits = [
 
                     <h2 class="mt-3.5 text-base font-bold text-gray-900">Download Now</h2>
                     <p class="mt-1 flex-1 text-sm leading-relaxed text-gray-500">
-                        Get your signed PDF immediately — no account needed.
+                        Get your signed PDF immediately with no account needed.
                     </p>
 
                     <div class="mt-5 space-y-2.5 border-t border-gray-100 pt-5">
@@ -145,7 +145,7 @@ const benefits = [
                     </div>
                 </div>
 
-                <!-- CARD 2 — Authenticated: Saved to My Documents -->
+                <!-- CARD 2. Authenticated: Saved to My Documents -->
                 <div
                     v-if="isAuthenticated"
                     :class="[
@@ -199,7 +199,7 @@ const benefits = [
                     <!-- Body -->
                     <p class="mt-1 flex-1 text-sm leading-relaxed text-gray-500">
                         <template v-if="isSaving">
-                            Uploading your signed PDF — this only takes a moment.
+                            Uploading your signed PDF. This only takes a moment.
                         </template>
                         <template v-else-if="isSaved">
                             Your signed PDF is saved and available anytime from your dashboard.
@@ -241,7 +241,7 @@ const benefits = [
                     </div>
                 </div>
 
-                <!-- CARD 2 — Guest: Create Account -->
+                <!-- CARD 2. Guest: Create Account -->
                 <div
                     v-else
                     class="relative flex flex-col rounded-2xl border-2 border-blue-500 bg-white p-6 shadow-lg shadow-blue-100/50 transition-shadow duration-200 hover:shadow-xl hover:shadow-blue-100/60"

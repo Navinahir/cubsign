@@ -6,12 +6,12 @@
 export const blogExpansions = {
     'how-to-sign-a-pdf-online': {
         stepsDetail: [
-            'A Word file renamed to .pdf will usually fail—export to PDF from the original app if you are unsure.',
+            'A Word file renamed to .pdf will usually fail, export to PDF from the original app if you are unsure.',
             'Stay on the page until the editor loads; interrupting the upload mid-transfer is the most common cause of a “stuck” session.',
             'Match the field size to the printed line so the finished mark looks intentional rather than pasted on.',
             'If you draw, slow the stroke; if you type, check spelling of your legal name before applying it.',
             'Zoom out once so you see the full page context, then zoom in on dense signature blocks.',
-            'Save the download into your deal or client folder immediately—Downloads is not a record system.',
+            'Save the download into your deal or client folder immediately, Downloads is not a record system.',
         ],
         practice: [
             'This week, sign one low-risk PDF end to end and time yourself from upload to archived download. If field placement or signature style feels awkward, adjust once and reuse that preference on the next file.',
@@ -48,7 +48,7 @@ export const blogExpansions = {
             'Look for HTTPS in the address bar before uploading anything sensitive.',
             'Confirm the sender identity through a known channel if the invite was unexpected.',
             'Verify recipient emails character by character before sending a signing request.',
-            'Review the PDF terms fully—security does not replace reading the contract.',
+            'Review the PDF terms fully, security does not replace reading the contract.',
             'Download and store the completed file in a controlled folder, not a shared desktop.',
             'Report suspicious links to CubSign support instead of interacting with them.',
         ],
@@ -65,7 +65,7 @@ export const blogExpansions = {
     },
     'how-small-businesses-save-time-using-esignatures': {
         stepsDetail: [
-            'Pick the document type that currently waits longest for ink—often quotes or vendor forms.',
+            'Pick the document type that currently waits longest for ink, often quotes or vendor forms.',
             'Export a clean PDF with a clear signature block before anyone is invited.',
             'Send from CubSign with accurate recipient emails and a one-line context note.',
             'Watch status instead of digging through email threads for “did you sign yet?”',
@@ -73,7 +73,7 @@ export const blogExpansions = {
             'Record turnaround time so you can show the before-and-after gap.',
         ],
         practice: [
-            'Choose one recurring document—client quotes work well—and move the entire signing loop into CubSign for the next five deals. Capture average hours from “ready to sign” to “fully executed.”',
+            'Choose one recurring document, client quotes work well and move the entire signing loop into CubSign for the next five deals. Capture average hours from “ready to sign” to “fully executed.”',
             'Share the number with your team. Visible time savings convert skeptics faster than any product pitch.',
         ],
         practiceChecklist: [
@@ -98,7 +98,7 @@ export const blogExpansions = {
     },
     'best-practices-for-signing-contracts-online': {
         stepsDetail: [
-            'Read party names aloud—mismatched legal entities are a common silent error.',
+            'Read party names aloud, mismatched legal entities are a common silent error.',
             'Search the PDF for “DRAFT” or watermark artifacts before placing fields.',
             'Highlight payment, term, and liability sections so you cannot skim past them.',
             'Align fields to the printed signature block; avoid floating marks in margins.',
@@ -106,7 +106,7 @@ export const blogExpansions = {
             'File the PDF where renewals and audits will find it months later.',
         ],
         practice: [
-            'Print this checklist (or pin it) next to your monitor and run it on the next three contracts you sign or send. Note which step you almost skipped—that is the one to emphasize in your team standard.',
+            'Print this checklist (or pin it) next to your monitor and run it on the next three contracts you sign or send. Note which step you almost skipped, that is the one to emphasize in your team standard.',
             'If you send contracts for others to sign, add a two-sentence cover note explaining what to review and where to sign. Clarity reduces incomplete returns.',
         ],
         practiceChecklist: [
@@ -117,7 +117,7 @@ export const blogExpansions = {
         ],
         extraBlocks: [
             { type: 'h2', text: 'Separate negotiation from execution' },
-            { type: 'p', text: 'Negotiation belongs in email, tracked comments, or a redline tool. Execution belongs on a clean PDF. Mixing the two—sending a half-edited file for signature—guarantees confusion about which terms were actually accepted.' },
+            { type: 'p', text: 'Negotiation belongs in email, tracked comments, or a redline tool. Execution belongs on a clean PDF. Mixing the two, sending a half-edited file for signature, guarantees confusion about which terms were actually accepted.' },
             { type: 'p', text: 'Lock the final text, then open CubSign. That sequence keeps commercial clarity and signing speed from fighting each other.' },
             { type: 'h2', text: 'Team standards that scale' },
             { type: 'p', text: 'A one-page internal standard covering who may send for signature, how files are named, and where completed PDFs live turns individual care into organizational reliability. CubSign becomes the shared workflow that enforces the standard in practice.' },
@@ -150,7 +150,7 @@ export const blogExpansions = {
         ],
         extraBlocks: [
             { type: 'h2', text: 'Access control beats password folklore' },
-            { type: 'p', text: 'Password-protecting a PDF and then emailing the password in the next message is theater, not security. Prefer platforms that encrypt files, restrict access to authorized users and valid links, and log key events—CubSign’s model for everyday signing.' },
+            { type: 'p', text: 'Password-protecting a PDF and then emailing the password in the next message is theater, not security. Prefer platforms that encrypt files, restrict access to authorized users and valid links, and log key events, CubSign’s model for everyday signing.' },
             { type: 'p', text: 'Combine that with least-privilege sharing: only the people who must sign or approve should receive the file. Curiosity CCs are a common source of accidental exposure.' },
             { type: 'h2', text: 'Lifecycle thinking for PDF security' },
             { type: 'p', text: 'Protection starts before upload and continues after download. Draft carefully, share narrowly, sign through an encrypted flow, then archive deliberately. A secure signing session followed by a PDF left on a café laptop is still a failure.' },
@@ -172,7 +172,7 @@ export const blogExpansions = {
             'Download one completed PDF when the last required signature lands.',
         ],
         practice: [
-            'Send one real signature request this week—even a simple internal acknowledgment—to practice field assignment and status tracking. Prefer a low-stakes document for the first run if your team is new to CubSign.',
+            'Send one real signature request this week even a simple internal acknowledgment, to practice field assignment and status tracking. Prefer a low-stakes document for the first run if your team is new to CubSign.',
             'After completion, ask the recipient what was clear or confusing. Use that feedback to improve your cover notes.',
         ],
         practiceChecklist: [
@@ -183,7 +183,7 @@ export const blogExpansions = {
         ],
         extraBlocks: [
             { type: 'h2', text: 'Writing cover notes that get signatures faster' },
-            { type: 'p', text: 'Recipients stall when they do not know what they are signing or how urgent it is. A three-sentence note—what the document is, what you need, and when you need it—cuts clarification emails dramatically.' },
+            { type: 'p', text: 'Recipients stall when they do not know what they are signing or how urgent it is. A three-sentence note, what the document is, what you need, and when you need it, cuts clarification emails dramatically.' },
             { type: 'p', text: 'Avoid dumping legal essays into the note. Point them to the PDF for terms, and use the message for logistics only.' },
             { type: 'h2', text: 'Following up without nagging' },
             { type: 'p', text: 'Status views let you nudge only the people who have not finished. Blanket “please sign” emails to everyone annoy those who already completed their part and dilute urgency for those who have not.' },
@@ -205,7 +205,7 @@ export const blogExpansions = {
             'Measure retrieval time for a random past agreement before and after.',
         ],
         practice: [
-            'Pick one paper ritual—expense acknowledgments or client agreements—and run it fully paperless for two weeks. Notice printer trips, lost pages, and search time disappearing.',
+            'Pick one paper ritual, expense acknowledgments or client agreements and run it fully paperless for two weeks. Notice printer trips, lost pages, and search time disappearing.',
             'Capture a short before-and-after story for leadership; paperless wins stick when they are concrete.',
         ],
         practiceChecklist: [
@@ -216,7 +216,7 @@ export const blogExpansions = {
         ],
         extraBlocks: [
             { type: 'h2', text: 'Searchability is the underrated benefit' },
-            { type: 'p', text: 'Filing cabinets do not full-text search. Digital PDFs with consistent names turn renewals, audits, and customer questions into minutes instead of scavenger hunts. That operational clarity often outweighs the environmental argument—even though both matter.' },
+            { type: 'p', text: 'Filing cabinets do not full-text search. Digital PDFs with consistent names turn renewals, audits, and customer questions into minutes instead of scavenger hunts. That operational clarity often outweighs the environmental argument even though both matter.' },
             { type: 'p', text: 'Remote teammates also stop waiting on mailed packets. Signature latency collapses when everyone can open the same CubSign link from wherever they work.' },
             { type: 'h2', text: 'Avoiding chaotic digital piles' },
             { type: 'p', text: 'Paperless fails when “digital” means a messy Downloads folder. Pair CubSign with naming conventions and a known archive location so paperless equals organized, not just dematerialized.' },
@@ -234,7 +234,7 @@ export const blogExpansions = {
             'Rotate to landscape before drawing so your signature has horizontal room.',
             'Pinch-zoom before placing fields on dense multi-column pages.',
             'Prefer typed signatures if finger drawing looks uneven.',
-            'Review every page in portrait or landscape—whichever shows clauses clearly.',
+            'Review every page in portrait or landscape, whichever shows clauses clearly.',
             'Download immediately so the file lands in device storage you control.',
         ],
         practice: [
@@ -267,11 +267,11 @@ export const blogExpansions = {
             'Place fields with padding so marks never cover prices or dates.',
             'Scan exhibit pages for initials blocks before you finish.',
             'Choose a legible typed mark if your drawn signature is unreadable.',
-            'Download immediately—closing the tab is not the same as saving.',
+            'Download immediately, closing the tab is not the same as saving.',
             'Verify you signed the page that actually required your signature.',
         ],
         practice: [
-            'Review your last three signed PDFs for the mistakes on this list. If you find a near-miss—almost covered text, almost skipped initials—add a personal pre-flight checklist of three bullets you will never skip again.',
+            'Review your last three signed PDFs for the mistakes on this list. If you find a near-miss. Almost covered text, almost skipped initials, add a personal pre-flight checklist of three bullets you will never skip again.',
             'Share that mini-checklist with anyone who signs on your behalf.',
         ],
         practiceChecklist: [
@@ -315,7 +315,7 @@ export const blogExpansions = {
         ],
         extraBlocks: [
             { type: 'h2', text: 'Frameworks you will hear about' },
-            { type: 'p', text: 'In the United States, the ESIGN Act and state UETA laws establish baselines for electronic records in commerce. In the EU, eIDAS describes tiers of electronic signatures. Other countries have their own statutes. None of these frameworks typically require a specific software brand—they focus on consent, integrity, and evidence.' },
+            { type: 'p', text: 'In the United States, the ESIGN Act and state UETA laws establish baselines for electronic records in commerce. In the EU, eIDAS describes tiers of electronic signatures. Other countries have their own statutes. None of these frameworks typically require a specific software brand, they focus on consent, integrity, and evidence.' },
             { type: 'p', text: 'This article is educational, not legal advice. When stakes are high or the document type is unusual, ask a qualified attorney in your jurisdiction.' },
             { type: 'h2', text: 'Practical evidence habits' },
             { type: 'p', text: 'Intent plus a trustworthy process beats an ornate signature graphic. CubSign helps by keeping encrypted documents and logging core events alongside the finished PDF you archive.' },
@@ -337,7 +337,7 @@ export const blogExpansions = {
             'Contact support if a message claiming to be from CubSign looks suspicious.',
         ],
         practice: [
-            'Walk through one document’s life in CubSign: upload, sign or send, complete, download, and archive. At each stage, note which protection applies—HTTPS, access control, encryption at rest, or activity logging.',
+            'Walk through one document’s life in CubSign: upload, sign or send, complete, download, and archive. At each stage, note which protection applies, HTTPS, access control, encryption at rest, or activity logging.',
             'Share that mental model with new teammates during onboarding.',
         ],
         practiceChecklist: [
@@ -347,7 +347,7 @@ export const blogExpansions = {
             'Bookmark Help Center security articles.',
         ],
         extraBlocks: [
-            { type: 'h2', text: 'What CubSign protects—and what you still own' },
+            { type: 'h2', text: 'What CubSign protects and what you still own' },
             { type: 'p', text: 'CubSign encrypts documents in transit with HTTPS and encrypts stored files at rest. Access is limited to authorized users and valid recipient links. Activity logging supports accountability after signing. We do not sell your document contents as a product.' },
             { type: 'p', text: 'You still choose recipients, devices, and archive locations. Platform security multiplies good habits; it cannot replace them.' },
             { type: 'h2', text: 'Privacy expectations during Early Access' },
@@ -382,7 +382,7 @@ export const blogExpansions = {
         extraBlocks: [
             { type: 'h2', text: 'Field assignment prevents crossed wires' },
             { type: 'p', text: 'Multi-party documents fail when two people sign the same line or leave the wrong block empty. Assign fields deliberately. CubSign’s recipient model exists so each signer sees what they are responsible for.' },
-            { type: 'p', text: 'If roles are complex—signer, approver, witness—label fields clearly in the PDF text itself before uploading.' },
+            { type: 'p', text: 'If roles are complex, signer, approver, witness, label fields clearly in the PDF text itself before uploading.' },
             { type: 'h2', text: 'Order and communication' },
             { type: 'p', text: 'Some processes need CEO signature after legal review; others allow parallel signing. State the expectation in your cover note so recipients are not guessing. Parallel signing is faster when policy allows it.' },
             { type: 'ul', items: [
@@ -415,7 +415,7 @@ export const blogExpansions = {
         extraBlocks: [
             { type: 'h2', text: 'Five tips that compound' },
             { type: 'p', text: 'Each tip removes a specific failure mode: cramped signatures, misaligned fields, unreadable scribbles, inconsistent identity marks, and lost files. Used together, they make phone signing feel as trustworthy as desktop signing.' },
-            { type: 'p', text: 'CubSign’s mobile browser experience is built for this flow—no special app install required—so the limiting factor is usually technique, not tooling.' },
+            { type: 'p', text: 'CubSign’s mobile browser experience is built for this flow without special app install required, so the limiting factor is usually technique, not tooling.' },
             { type: 'h2', text: 'Teaching mobile signing to your team' },
             { type: 'p', text: 'Send this article to anyone who signs from a phone. A shared ritual beats five people inventing five different workarounds.' },
             { type: 'ul', items: [
@@ -466,7 +466,7 @@ export const blogExpansions = {
             'Note timestamps for send, view, sign, and completion events.',
             'Keep the final PDF together with that history for your records.',
             'Export or screenshot key history when offline evidence packs are required.',
-            'Explain to teammates that the trail complements—not replaces—the PDF.',
+            'Explain to teammates that the trail complements, not replaces, the PDF.',
         ],
         practice: [
             'After your next completed document, open the activity history and narrate the story out loud: created, sent, viewed, signed, completed. That narrative is what an audit trail is for.',
@@ -495,14 +495,14 @@ export const blogExpansions = {
     'how-to-create-a-reusable-signature': {
         stepsDetail: [
             'Decide whether draw, type, or upload best matches your documents.',
-            'Create the mark carefully—slow strokes or a correctly spelled typed name.',
+            'Create the mark carefully, slow strokes or a correctly spelled typed name.',
             'If uploading, use a high-contrast PNG with a transparent background when possible.',
             'Apply it on a sample PDF and check readability at typical field sizes.',
             'Recreate the signature if your legal name changes.',
             'Never share your CubSign account so others cannot misuse a saved mark.',
         ],
         practice: [
-            'Create one reusable signature today and apply it on two different PDFs—one with a large signature line and one with a small block. Adjust style until both look professional.',
+            'Create one reusable signature today and apply it on two different PDFs, one with a large signature line and one with a small block. Adjust style until both look professional.',
             'Store any uploaded image source file in a private location, not a shared team drive.',
         ],
         practiceChecklist: [
@@ -535,7 +535,7 @@ export const blogExpansions = {
             'Review the finished page at 100% zoom before completing.',
         ],
         practice: [
-            'Sign the same sample PDF twice—once drawn, once typed. Ask a colleague which looks clearer. Adopt that default for similar documents going forward.',
+            'Sign the same sample PDF twice, once drawn, once typed. Ask a colleague which looks clearer. Adopt that default for similar documents going forward.',
             'Keep the other method as a fallback when the primary option fails on a given device.',
         ],
         practiceChecklist: [
@@ -582,7 +582,7 @@ export const blogExpansions = {
             { type: 'p', text: 'Startups lose deals when NDAs take a week of email ping-pong. A clean template plus CubSign lets you send the same morning you decide to talk, while still producing an executed PDF you can find during diligence.' },
             { type: 'p', text: 'Do not let speed become sloppiness: wrong entity names and unclear mutual/one-way terms create expensive cleanup later.' },
             { type: 'h2', text: 'Where NDAs live after signing' },
-            { type: 'p', text: 'Sales, fundraising, and recruiting all ask for NDAs at inconvenient times. Store them where those teams already look—deal folders or a secured shared drive—and keep CubSign as the signing system of entry.' },
+            { type: 'p', text: 'Sales, fundraising, and recruiting all ask for NDAs at inconvenient times. Store them where those teams already look, deal folders or a secured shared drive and keep CubSign as the signing system of entry.' },
             { type: 'ul', items: [
                 'Template once; reuse often.',
                 'Confirm mutual vs one-way every send.',
@@ -602,7 +602,7 @@ export const blogExpansions = {
         ],
         practice: [
             'Build a personal one-page checklist from this article and keep it next to your proposal template. Run it on the next contract before you touch a signature field.',
-            'If a clause feels off, ask for a revision in writing before signing—never after.',
+            'If a clause feels off, ask for a revision in writing before signing. Never after.',
         ],
         practiceChecklist: [
             'Verify scope vs conversation.',

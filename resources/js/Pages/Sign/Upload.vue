@@ -80,7 +80,7 @@ function formatSize(bytes) {
 <template>
     <MarketingSeo
         title="Sign PDF Online Free — CubSign"
-        description="Upload a PDF and sign it in your browser. Draw, type, or upload your signature—no install required. Free during CubSign Early Access."
+        description="Upload a PDF and sign it in your browser. Draw, type, or upload your signature with no install required. Free during CubSign Early Access."
         path="/sign"
     />
     <SignLayout :step="1">

@@ -34,7 +34,7 @@ import { featuresShowcases } from '@/constants/featuresPage';
                 CubSign features
             </h1>
             <p class="mt-4 max-w-2xl text-base leading-relaxed text-gray-600 sm:text-lg">
-                Sign PDFs yourself, request signatures from others, reuse templates, and keep a clear record of what happened—free during Early Access.
+                Sign PDFs yourself, request signatures from others, reuse templates, and keep a clear record of what happened. Free during Early Access.
             </p>
         </div>
     </section>

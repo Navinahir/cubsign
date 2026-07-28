@@ -1,4 +1,4 @@
-/** Security Center content — /security */
+/** Security Center content, /security */
 
 export const securityArticleMeta = {
     title: 'CubSign Security Center',
@@ -38,7 +38,7 @@ export const securitySections = [
         description: 'Documents and account data are protected while moving between your device and CubSign.',
         icon: 'M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z',
         paragraphs: [
-            'Encryption in transit means data is scrambled while it travels across the internet. CubSign uses TLS for every request — including PDF uploads, signature submissions, and API calls from the signing editor.',
+            'Encryption in transit means data is scrambled while it travels across the internet. CubSign uses TLS for every request, including PDF uploads, signature submissions, and API calls from the signing editor.',
             'Recipient signing links also use HTTPS, so documents sent for signature are protected the same way as documents you sign yourself.',
         ],
         bullets: [
@@ -89,7 +89,7 @@ export const securitySections = [
             'You can reset a forgotten password through a secure, time-limited link sent to your registered email. Password changes require your current password when logged in.',
         ],
         bullets: [
-            'Passwords are hashed — not stored as readable text',
+            'Passwords are hashed, not stored as readable text',
             'Password reset links expire after a limited time',
             'Account deletion requires password confirmation',
             'Use a unique, strong password you do not reuse elsewhere',
@@ -101,11 +101,11 @@ export const securitySections = [
         description: 'Sign in with Google as an alternative to email and password.',
         icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9',
         paragraphs: [
-            'CubSign supports Google sign-in through OAuth. When you choose “Continue with Google,” you are redirected to Google to authenticate. CubSign receives only the profile information Google shares — typically your name and email address.',
+            'CubSign supports Google sign-in through OAuth. When you choose “Continue with Google,” you are redirected to Google to authenticate. CubSign receives only the profile information Google shares, typically your name and email address.',
             'CubSign does not receive or store your Google password. If you previously registered with email and password and want to link Google sign-in to the same address, contact support before connecting accounts to avoid duplicates.',
         ],
         bullets: [
-            'OAuth flow handled by Google — CubSign never sees your Google password',
+            'OAuth flow handled by Google. CubSign never sees your Google password',
             'Google accounts must use a verified email address',
             'You can sign out of CubSign without affecting your Google account',
         ],
@@ -116,7 +116,7 @@ export const securitySections = [
         description: 'How security and privacy work together at CubSign.',
         icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
         paragraphs: [
-            'Security and privacy are related but distinct. CubSign collects only the data needed to provide the signing service — account details, uploaded documents, and support communications. We do not sell personal data.',
+            'Security and privacy are related but distinct. CubSign collects only the data needed to provide the signing service, account details, uploaded documents, and support communications. We do not sell personal data.',
             'For full details on what we collect, how long we retain it, and your rights, read our Privacy Policy and Cookie Policy.',
         ],
         bullets: [
@@ -136,7 +136,7 @@ export const securitySections = [
             'Email security@cubsign.com with a clear description of the issue, steps to reproduce, and the impact you believe it has. Include enough detail for us to verify the report, but do not access or modify data that does not belong to you.',
         ],
         bullets: [
-            'Report to security@cubsign.com — do not post vulnerabilities publicly first',
+            'Report to security@cubsign.com. Do not post vulnerabilities publicly first',
             'Give us reasonable time to investigate and fix confirmed issues',
             'Do not exploit vulnerabilities beyond what is needed to demonstrate the issue',
             'We will acknowledge receipt and follow up when we have more information',

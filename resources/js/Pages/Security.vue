@@ -91,7 +91,7 @@ onUnmounted(() => sectionObserver?.disconnect());
                     Security Center
                 </h1>
                 <p class="mx-auto mt-3 max-w-2xl text-base text-gray-600 sm:text-lg">
-                    How CubSign protects your documents, account, and signing workflows — explained clearly, without jargon.
+                    How CubSign protects your documents, account, and signing workflows, explained clearly, without jargon.
                 </p>
                 <p class="mt-4 text-sm text-gray-500">
                     Last updated {{ new Date(securityArticleMeta.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) }}
@@ -131,7 +131,7 @@ onUnmounted(() => sectionObserver?.disconnect());
                         <h2 class="text-2xl font-bold tracking-tight text-gray-900">How we protect your documents</h2>
                         <p class="mt-2 text-sm text-gray-600 sm:text-base">
                             CubSign is built around secure connections, careful access controls, and transparent practices.
-                            This page describes what we do today — not marketing claims we cannot verify.
+                            This page describes what we do today, not marketing claims we cannot verify.
                         </p>
                     </div>
 

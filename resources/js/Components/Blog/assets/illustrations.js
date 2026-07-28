@@ -226,7 +226,7 @@ function sceneUpload(accent, pdf) {
       <g transform="translate(120,100)">
         <rect width="400" height="220" rx="16" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="2" stroke-dasharray="8 6"/>
         <text x="200" y="100" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="600" fill="#2563EB">Drop PDF here</text>
-        <text x="200" y="124" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#64748B">or click to browse — up to 25 MB</text>
+        <text x="200" y="124" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#64748B">or click to browse (up to 25 MB)</text>
         <rect x="140" y="150" width="120" height="36" rx="10" fill="${accent}"/>
         <text x="200" y="173" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">Upload PDF</text>
       </g>
@@ -303,16 +303,16 @@ function sceneAudit(accent, pdf) {
       <rect x="0" y="36" width="640" height="384" fill="#F8FAFC"/>
       <g transform="translate(60,70)">
         <rect width="520" height="300" rx="10" fill="#FFFFFF" stroke="#E2E8F0"/>
-        <text x="20" y="32" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#1E293B">Audit trail — ${pdf}</text>
+        <text x="20" y="32" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#1E293B">Audit trail: ${pdf}</text>
         <line x1="20" y1="44" x2="500" y2="44" stroke="#F1F5F9"/>
         <circle cx="32" cy="72" r="6" fill="${accent}"/>
-        <text x="48" y="76" font-family="system-ui,sans-serif" font-size="10" fill="#334155">Document sent — Jun 12, 2:14 PM</text>
+        <text x="48" y="76" font-family="system-ui,sans-serif" font-size="10" fill="#334155">Document sent, Jun 12, 2:14 PM</text>
         <circle cx="32" cy="104" r="6" fill="#F59E0B"/>
-        <text x="48" y="108" font-family="system-ui,sans-serif" font-size="10" fill="#334155">Viewed by recipient — Jun 12, 4:02 PM</text>
+        <text x="48" y="108" font-family="system-ui,sans-serif" font-size="10" fill="#334155">Viewed by recipient, Jun 12, 4:02 PM</text>
         <circle cx="32" cy="136" r="6" fill="#10B981"/>
-        <text x="48" y="140" font-family="system-ui,sans-serif" font-size="10" fill="#334155">Signed — Jun 12, 4:18 PM</text>
+        <text x="48" y="140" font-family="system-ui,sans-serif" font-size="10" fill="#334155">Signed, Jun 12, 4:18 PM</text>
         <circle cx="32" cy="168" r="6" fill="#6366F1"/>
-        <text x="48" y="172" font-family="system-ui,sans-serif" font-size="10" fill="#334155">Downloaded — Jun 12, 4:19 PM</text>
+        <text x="48" y="172" font-family="system-ui,sans-serif" font-size="10" fill="#334155">Downloaded, Jun 12, 4:19 PM</text>
       </g>
     `;
     return browserChrome(40, 50, 640, 420, 'cubsign.com/documents', inner);

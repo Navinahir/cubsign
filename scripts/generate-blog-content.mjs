@@ -152,7 +152,7 @@ function build(a) {
         c.push(p('Walk through the details of each step so nothing important is skipped under time pressure:'));
         a.steps.forEach((step, i) => {
             if (a.stepsDetail[i]) {
-                c.push(p(`Step ${i + 1} — ${step} ${a.stepsDetail[i]}`));
+                c.push(p(`Step ${i + 1}: ${step} ${a.stepsDetail[i]}`));
             }
         });
     }
@@ -233,7 +233,7 @@ register({
     meta: {
         slug: 'how-to-sign-a-pdf-online',
         title: 'How to Sign a PDF Online',
-        excerpt: 'Learn how to upload, sign, and download a PDF in your browser with CubSign—no printing, scanning, or desktop software required.',
+        excerpt: 'Learn how to upload, sign, and download a PDF in your browser with CubSign without printing, scanning, or desktop software required.',
         category: 'PDF Signing',
         categorySlug: 'pdf-signing',
         publishedAt: '2025-12-02',
@@ -412,7 +412,7 @@ register({
     meta: {
         slug: 'how-secure-are-electronic-signatures',
         title: 'How Secure Are Electronic Signatures?',
-        excerpt: 'Security is more than a padlock icon. Here is how electronic signatures protect documents—and what you should still verify as a signer or sender.',
+        excerpt: 'Security is more than a padlock icon. Here is how electronic signatures protect documents and what you should still verify as a signer or sender.',
         category: 'Security',
         categorySlug: 'security',
         publishedAt: '2025-12-18',
@@ -424,12 +424,12 @@ register({
         popular: true,
         heroGradient: 'from-rose-600 to-orange-700',
         metaTitle: 'How Secure Are Electronic Signatures? | CubSign',
-        metaDescription: 'Learn how encryption, access controls, and audit trails make electronic signatures secure—and how CubSign protects your PDFs.',
+        metaDescription: 'Learn how encryption, access controls, and audit trails make electronic signatures secure and how CubSign protects your PDFs.',
     },
     related: ['how-to-protect-pdf-documents', 'securing-your-documents-with-cubsign', 'electronic-signature-vs-digital-signature', 'are-electronic-signatures-legally-binding'],
     intro: [
         'Security questions surface the moment a contract leaves plain email and enters a signing tool. People want to know whether a drawn signature can be forged, whether files are actually encrypted, and whether a finished PDF can be quietly altered after the fact. Those are exactly the right questions to ask.',
-        'The reassuring answer is that electronic signatures can be highly secure when both the platform and the process are designed with care. This article breaks security into distinct layers—the connection, the stored file, who can open a document, and the evidence trail—so you can evaluate CubSign or any workflow like a professional.',
+        'The reassuring answer is that electronic signatures can be highly secure when both the platform and the process are designed with care. This article breaks security into distinct layers, the connection, the stored file, who can open a document, and the evidence trail, so you can evaluate CubSign or any workflow like a professional.',
     ],
     why: [
         'Security is not a decorative feature; it is the difference between a signed contract you can rely on and a liability waiting to surface. A weak link at any layer can expose sensitive terms, invite disputes, or let the wrong person access a confidential agreement long after it was signed.',
@@ -622,7 +622,7 @@ register({
         'This guide is a practical checklist for preparing, reviewing, and signing contracts electronically without missing the details that cause disputes. It applies whether you are countersigning a client agreement or sending your own contract out for signature.',
     ],
     why: [
-        'A signature is a commitment, and the record around it is what protects you if memories later diverge. Sloppy signing—wrong version, missing initials, no saved copy—turns a routine agreement into a liability precisely when you can least afford one, during a dispute or an audit.',
+        'A signature is a commitment, and the record around it is what protects you if memories later diverge. Sloppy signing, wrong version, missing initials, no saved copy, turns a routine agreement into a liability precisely when you can least afford one, during a dispute or an audit.',
         'Good practice also signals professionalism to the other party. A clean, correctly prepared PDF with clearly placed fields tells a counterparty you are organized and serious, which quietly strengthens every negotiation that follows.',
     ],
     note: 'Never negotiate inside the signable PDF. Keep changes in tracked comments or email, then lock a clean, final version for signature so everyone signs the identical document.',
@@ -664,7 +664,7 @@ register({
     ],
     summary: [
         'Signing contracts online well is mostly about the discipline surrounding the click: confirm the version, read what binds you, place fields cleanly, and archive the executed file immediately. The tool is fast, but your process is what makes the result reliable.',
-        'Adopt the checklist once and it becomes a quiet competitive advantage—fewer errors, faster deals, and records you can actually stand behind.',
+        'Adopt the checklist once and it becomes a quiet competitive advantage, fewer errors, faster deals, and records you can actually stand behind.',
     ],
         extra: [
             h2('Reading a contract without missing the traps'),
@@ -709,12 +709,12 @@ register({
         popular: false,
         heroGradient: 'from-rose-600 to-pink-700',
         metaTitle: 'How to Protect PDF Documents | CubSign',
-        metaDescription: 'Learn practical ways to protect PDF documents during sharing and signing—from access control to encrypted storage.',
+        metaDescription: 'Learn practical ways to protect PDF documents during sharing and signing, from access control to encrypted storage.',
     },
     related: ['how-secure-are-electronic-signatures', 'securing-your-documents-with-cubsign', 'benefits-of-paperless-workflows', 'how-to-request-digital-signatures'],
     intro: [
         'PDFs are the default container for a business most sensitive information: contracts, invoices, offer letters, and financial statements. Yet they are routinely emailed to long CC lists, dropped into shared folders, and left in downloads directories for years. Protecting them is less about exotic tools and more about deliberate habits.',
-        'This guide covers practical ways to reduce accidental exposure across the full life of a document—how you share it, who can open it, where it rests, and how you sign it—so your most valuable files stop leaking through everyday carelessness.',
+        'This guide covers practical ways to reduce accidental exposure across the full life of a document, how you share it, who can open it, where it rests, and how you sign it, so your most valuable files stop leaking through everyday carelessness.',
     ],
     why: [
         'A single exposed PDF can reveal pricing, personal data, or strategy to exactly the wrong audience. Unlike a spoken slip, a leaked document is durable and copyable; once it lands in an unintended inbox, you cannot recall it. That permanence is why prevention beats cleanup every time.',
@@ -759,7 +759,7 @@ register({
     ],
     summary: [
         'Protecting PDF documents is mostly about controlling distribution and access, then letting encryption do its quiet work in transit and at rest. Share narrowly, prefer controlled links, prune permissions, and archive canonical copies in restricted locations.',
-        'Adopt these habits and the most common cause of document leaks—everyday convenience—stops working against you.',
+        'Adopt these habits and the most common cause of document leaks, everyday convenience, stops working against you.',
     ],
         extra: [
             h2('The lifecycle of a sensitive document'),
@@ -792,7 +792,7 @@ register({
     meta: {
         slug: 'how-to-request-digital-signatures',
         title: 'How to Request Digital Signatures',
-        excerpt: 'Send a PDF for signature, assign recipients, and track completion—without forcing every signer to create an account first.',
+        excerpt: 'Send a PDF for signature, assign recipients, and track completion without forcing every signer to create an account first.',
         category: 'PDF Signing',
         categorySlug: 'pdf-signing',
         publishedAt: '2026-01-28',
@@ -904,7 +904,7 @@ register({
     related: ['how-small-businesses-save-time-using-esignatures', 'how-to-protect-pdf-documents', 'introducing-cubsign-early-access', 'how-to-sign-a-pdf-online'],
     intro: [
         'Going paperless is often pitched as an environmental gesture, and it is one, but the real reason teams stick with it is operational. Digital documents are faster to move, easier to find, and far simpler to protect than filing cabinets full of paper that nobody can search.',
-        'This article looks past the recycling-bin cliché at the concrete benefits of paperless workflows—speed, searchability, remote collaboration, and audit readiness—and how a signing tool like CubSign anchors the change without a disruptive rip-and-replace project.',
+        'This article looks past the recycling-bin cliché at the concrete benefits of paperless workflows, including speed, searchability, remote collaboration, and audit readiness, and how a signing tool like CubSign anchors the change without a disruptive rip-and-replace project.',
     ],
     why: [
         'Paper imposes a hidden tax on every process it touches. Documents must be printed, physically routed, stored, retrieved, and eventually shredded, and each hop introduces delay and risk of loss. Digitizing removes those hops, so work flows at the speed of a click rather than a courier.',
@@ -994,7 +994,7 @@ register({
         popular: true,
         heroGradient: 'from-amber-500 to-orange-600',
         metaTitle: 'How to Sign PDFs on Mobile | CubSign',
-        metaDescription: 'Mobile-friendly tips for signing PDFs in your browser with CubSign—placement, signatures, and downloads on the go.',
+        metaDescription: 'Mobile-friendly tips for signing PDFs in your browser with CubSign, placement, signatures, and downloads on the go.',
     },
     related: ['how-to-sign-a-pdf-online', 'common-mistakes-when-signing-pdfs', 'mobile-pdf-signing-tips', 'best-practices-for-signing-contracts-online'],
     intro: [
@@ -1005,7 +1005,7 @@ register({
         'Mobile signing removes the last excuse for delay. When a signer must be at a desk with a printer, documents wait; when they can sign from anywhere, deals close in the gaps of a normal day. For time-sensitive agreements, that responsiveness can be the whole difference.',
         'But the small screen raises the stakes on precision. A field misplaced on a cramped display or a shaky finger-drawn signature can look unprofessional or overlap a clause. Knowing a few mobile-specific techniques keeps the convenience without the compromises.',
     ],
-    note: 'Everything works in your mobile browser—there is no app to install. If a page feels cramped, zoom in before placing a field rather than squinting at the default view.',
+    note: 'Everything works in your mobile browser, there is no app to install. If a page feels cramped, zoom in before placing a field rather than squinting at the default view.',
     stepsHeading: 'Step-by-step: signing on your phone',
     stepsIntro: 'The flow mirrors desktop signing, with a few adjustments that make small screens cooperate.',
     steps: [
@@ -1037,7 +1037,7 @@ register({
         'Forgetting to download the finished file before closing the browser tab.',
         'Signing a sensitive contract on public Wi-Fi when a private network is available.',
     ],
-    mistakesOutro: 'A minute of care—rotate, zoom, review, download—prevents nearly every mobile signing regret before it happens.',
+    mistakesOutro: 'A minute of care, rotate, zoom, review, download, prevents nearly every mobile signing regret before it happens.',
     security: [
         'Phones travel through untrusted networks, so connection choice matters more on mobile. Sign sensitive agreements over cellular data or a trusted network rather than open public Wi-Fi, and rely on CubSign HTTPS encryption to protect the session in transit regardless of where you are.',
         'Device security is the other factor. A signed PDF sitting in an unlocked phone downloads folder is exposed if the device is lost, so use a screen lock, save completed files to a secure location, and avoid signing confidential documents on a borrowed device.',
@@ -1077,7 +1077,7 @@ register({
     meta: {
         slug: 'common-mistakes-when-signing-pdfs',
         title: 'Common Mistakes When Signing PDFs',
-        excerpt: 'Avoid the errors that delay deals or create weak records—from signing the wrong version to skipping a required initial block.',
+        excerpt: 'Avoid the errors that delay deals or create weak records, from signing the wrong version to skipping a required initial block.',
         category: 'Guides',
         categorySlug: 'guides',
         publishedAt: '2026-02-18',
@@ -1093,7 +1093,7 @@ register({
     },
     related: ['best-practices-for-signing-contracts-online', 'how-to-sign-a-pdf-online', 'how-to-sign-pdfs-on-mobile', 'how-to-request-digital-signatures'],
     intro: [
-        'Signing a PDF looks trivial, which is precisely why it is easy to do badly. The same small errors surface again and again—signing the wrong version, obscuring a clause, forgetting to save—and each one can delay a deal or weaken the record you will rely on later.',
+        'Signing a PDF looks trivial, which is precisely why it is easy to do badly. The same small errors surface again and again, signing the wrong version, obscuring a clause, forgetting to save and each one can delay a deal or weaken the record you will rely on later.',
         'This article is a field guide to the most common PDF signing mistakes and, more usefully, how to prevent and recover from each. Read it once and you will sidestep the errors that quietly cost other people days.',
     ],
     why: [
@@ -1207,7 +1207,7 @@ register({
         'Archive the completed PDF together with the invitation and activity record.',
         'Escalate any document with special formalities to qualified counsel first.',
     ],
-    stepsOutro: 'Notice the recurring theme across frameworks: intent, association, and a trustworthy record. Ink is not the point—reliable evidence of agreement is.',
+    stepsOutro: 'Notice the recurring theme across frameworks: intent, association, and a trustworthy record. Ink is not the point, reliable evidence of agreement is.',
     bestIntro: 'These habits make your electronic agreements as defensible as possible.',
     best: [
         'Capture consent to electronic processes explicitly rather than assuming it.',
@@ -1218,7 +1218,7 @@ register({
         'When stakes are high, get jurisdiction-specific advice from counsel.',
     ],
     bestOutro: 'For the terminology behind all this, Electronic Signature vs Digital Signature clarifies when a plain electronic signature suffices and when a certificate is expected.',
-    tip: 'Save the signing activity record alongside every important executed contract. If validity is ever questioned, that trail—not the signature graphic—is what tells the story of intent and timing.',
+    tip: 'Save the signing activity record alongside every important executed contract. If validity is ever questioned, that trail, not the signature graphic, is what tells the story of intent and timing.',
     mistakesIntro: 'Beliefs about e-signature legality are riddled with myths that create needless risk. Avoid these.',
     mistakes: [
         'Assuming electronic signatures are never legally valid, when many are expressly recognized.',
@@ -1235,7 +1235,7 @@ register({
     ],
     summary: [
         'Electronic signatures are legally binding in most ordinary business contexts when there is intent to sign, consent to transact electronically, and a trustworthy record of the event. Frameworks worldwide recognize them, and the audit trail is what gives them weight.',
-        'Reserve extra caution for wills, certain filings, and notarized acts, and consult counsel when stakes are high—but sign routine business documents electronically with confidence.',
+        'Reserve extra caution for wills, certain filings, and notarized acts, and consult counsel when stakes are high, but sign routine business documents electronically with confidence.',
     ],
         extra: [
             h2('What the major frameworks have in common'),
@@ -1288,7 +1288,7 @@ register({
         'You will see how encryption, access control, and activity logging work together, and where your own habits complete the picture. The goal is not marketing reassurance but a clear mental model you can verify and trust.',
     ],
     why: [
-        'Documents inside a signing tool are often the most sensitive a business handles—contracts, personal data, financial terms. Knowing exactly how they are protected is not paranoia; it is basic diligence before you route confidential material through any platform.',
+        'Documents inside a signing tool are often the most sensitive a business handles, contracts, personal data, financial terms. Knowing exactly how they are protected is not paranoia; it is basic diligence before you route confidential material through any platform.',
         'A clear understanding of the safeguards also helps you use them well. Security features only protect you if you know they exist and act accordingly, so understanding CubSign approach turns passive protection into an active, reliable practice.',
     ],
     note: 'Security is a shared responsibility. CubSign protects the platform layer, but verifying recipients and guarding your account are the human layers only you can control.',
@@ -1379,7 +1379,7 @@ register({
     },
     related: ['how-to-request-digital-signatures', 'how-to-sign-a-pdf-online', 'what-is-an-audit-trail', 'how-small-businesses-save-time-using-esignatures'],
     intro: [
-        'One signer is simple; several signers is where signing workflows usually descend into chaos. Multi-party agreements—partnership contracts, board approvals, multi-tenant leases—require the right person to sign the right field, sometimes in a specific order, without anyone getting lost in a thread of reply-all emails.',
+        'One signer is simple; several signers is where signing workflows usually descend into chaos. Multi-party agreements, partnership contracts, board approvals, multi-tenant leases, require the right person to sign the right field, sometimes in a specific order, without anyone getting lost in a thread of reply-all emails.',
         'This guide shows how to coordinate multi-recipient signing on a single PDF with CubSign: assigning fields to named signers, controlling order when it matters, and tracking progress from send to completion in one place instead of a spreadsheet.',
     ],
     why: [
@@ -1397,7 +1397,7 @@ register({
         'Send the request with a short note explaining the document and any deadline.',
         'Track status and nudge only the specific people who are still pending.',
     ],
-    stepsOutro: 'When the final signature lands, you download one completed PDF containing everyone signatures—no manual merging, no version reconciliation.',
+    stepsOutro: 'When the final signature lands, you download one completed PDF containing everyone signatures without manual merging, no version reconciliation.',
     bestIntro: 'These practices keep multi-party requests moving smoothly even with many signers.',
     best: [
         'Confirm each recipient email against a trusted source before sending.',
@@ -1421,7 +1421,7 @@ register({
     mistakesOutro: 'A single well-prepared request beats several ad hoc ones every time. Invest the few extra minutes up front to avoid hours of reconciliation later.',
     security: [
         'More recipients means more places a confidential document travels, so verification matters even more in multi-party signing. Each mistyped address is a potential leak, so confirm every recipient before sending and rely on unique per-signer links rather than shared attachments.',
-        'The audit trail becomes especially valuable with several signers. CubSign logs who signed and when across all parties, so the completed PDF is backed by a clear record of the full sequence—useful if any single signer later questions their participation.',
+        'The audit trail becomes especially valuable with several signers. CubSign logs who signed and when across all parties, so the completed PDF is backed by a clear record of the full sequence, useful if any single signer later questions their participation.',
     ],
     summary: [
         'Collecting signatures from multiple recipients is manageable when you prepare one clean PDF, assign every field to a named signer, control order where needed, and track progress centrally. The result is a single executed document instead of a merge headache.',
@@ -1448,7 +1448,7 @@ register({
         { question: 'Can multiple people sign the same PDF?', answer: 'Yes. Prepare one document with a signature block per person, assign each field to the right recipient, and everyone signs the same file.' },
         { question: 'Can I control the order signers complete the document?', answer: 'Yes, when your document requires a sequence. Set a signing order so each recipient is invited at the correct point in the flow.' },
         { question: 'How do I track a multi-party request?', answer: 'Watch the request status in your workspace to see who has signed and who is pending, then send reminders only to the people still outstanding.' },
-        { question: 'What do I get when everyone has signed?', answer: 'A single completed PDF containing all signatures, backed by an activity record of who signed and when—no manual merging required.' },
+        { question: 'What do I get when everyone has signed?', answer: 'A single completed PDF containing all signatures, backed by an activity record of who signed and when without manual merging required.' },
     ],
 });
 
@@ -1458,7 +1458,7 @@ register({
     meta: {
         slug: 'mobile-pdf-signing-tips',
         title: '5 Tips for Signing PDFs on Your Phone',
-        excerpt: 'Quick, high-impact tips for a cleaner mobile signing experience—from orientation to downloading the finished file.',
+        excerpt: 'Quick, high-impact tips for a cleaner mobile signing experience, from orientation to downloading the finished file.',
         category: 'Guides',
         categorySlug: 'guides',
         publishedAt: '2026-04-12',
@@ -1478,7 +1478,7 @@ register({
         'This is the quick-reference version: five high-impact tips, each simple to remember, covering orientation, zoom, signature style, review, and saving. Keep it handy for the next time a document lands while you are away from your desk.',
     ],
     why: [
-        'Mobile is where many signatures actually happen, so getting it right is not a niche skill—it is the main event for time-sensitive documents. A confident mobile signer keeps deals moving from anywhere instead of postponing until they reach a computer.',
+        'Mobile is where many signatures actually happen, so getting it right is not a niche skill. It is the main event for time-sensitive documents. A confident mobile signer keeps deals moving from anywhere instead of postponing until they reach a computer.',
         'The tips also protect quality. A cramped or careless mobile signature can overlap text or look unprofessional, and the fixes are tiny. A handful of habits is all that stands between "signed on the go" and "had to redo it later."',
     ],
     note: 'None of these tips require an app. CubSign runs in your mobile browser, so every tip below works on both phones and tablets.',
@@ -1495,7 +1495,7 @@ register({
     bestIntro: 'To make these tips automatic, fold them into a consistent mobile routine.',
     best: [
         'Default to landscape for any document that needs a hand-drawn signature.',
-        'Zoom first, place second—never position a field at the zoomed-out view.',
+        'Zoom first, place second. Never position a field at the zoomed-out view.',
         'Keep a saved signature ready for documents you sign frequently.',
         'Choose typed marks when precision on a tiny screen matters most.',
         'Confirm a stable connection before starting a longer document.',
@@ -1568,7 +1568,7 @@ register({
     },
     related: ['how-to-sign-a-pdf-online', 'securing-your-documents-with-cubsign', 'request-signatures-from-multiple-recipients', 'benefits-of-paperless-workflows'],
     intro: [
-        'CubSign is open for early users, and this post explains what that means for you. We built CubSign to strip the friction out of everyday PDF signing—no printing, no scanning, no wrestling with enterprise software—and Early Access is your invitation to use it free while we refine it with your feedback.',
+        'CubSign is open for early users, and this post explains what that means for you. We built CubSign to strip the friction out of everyday PDF signing without printing, scanning, or wrestling with enterprise software. Early Access is your invitation to use it free while we refine it with your feedback.',
         'Here we cover what Early Access includes, why we are running it this way, how to get the most from it, and what to expect as the product evolves. If you sign or send documents regularly, this is the moment to shape a tool around how you actually work.',
     ],
     why: [
@@ -1663,14 +1663,14 @@ register({
     },
     related: ['how-secure-are-electronic-signatures', 'are-electronic-signatures-legally-binding', 'request-signatures-from-multiple-recipients', 'securing-your-documents-with-cubsign'],
     intro: [
-        'A signature tells you a page was marked; an audit trail tells you the whole story. It is the running record of who did what and when during a signing workflow—created, viewed, signed, completed—each event stamped with a time and often supporting metadata. On its own the signature is a snapshot; the audit trail is the film.',
+        'A signature tells you a page was marked; an audit trail tells you the whole story. It is the running record of who did what and when during a signing workflow, created, viewed, signed, completed. Each event stamped with a time and often supporting metadata. On its own the signature is a snapshot; the audit trail is the film.',
         'This article explains what an audit trail captures, why it matters for trust and dispute readiness, and how CubSign records signing events so your finished PDF is backed by evidence rather than assumption.',
     ],
     why: [
         'Signatures get questioned, and when they do, memory is a weak defense. An audit trail answers the questions that actually decide a dispute: Was this the version they saw? When did they sign? Did they receive it at all? Without that record, you are left arguing from recollection.',
         'It also builds everyday trust, quietly. Knowing that every action is logged encourages careful behavior and reassures all parties that the process is transparent. The audit trail is less about catching wrongdoing and more about making the honest, ordinary case easy to demonstrate.',
     ],
-    note: 'An audit trail complements the signed PDF—it does not replace it. Keep both together, because the record and the document tell the full story only in combination.',
+    note: 'An audit trail complements the signed PDF. It does not replace it. Keep both together, because the record and the document tell the full story only in combination.',
     stepsHeading: 'Step-by-step: what an audit trail captures',
     stepsIntro: 'A useful audit trail records the meaningful moments of a document life. Typically it captures the following in order.',
     steps: [
@@ -1704,11 +1704,11 @@ register({
     ],
     mistakesOutro: 'An audit trail you cannot locate is no better than none at all. Keep it organized and attached to the document it supports.',
     security: [
-        'The audit trail is where security and evidence meet. It works only if the events it records are trustworthy, which is why encrypted transit, encrypted storage, and controlled access matter—they keep both the document and its history from being tampered with after the fact.',
+        'The audit trail is where security and evidence meet. It works only if the events it records are trustworthy, which is why encrypted transit, encrypted storage, and controlled access matter, they keep both the document and its history from being tampered with after the fact.',
         'CubSign logs core signing events inside your workspace so the finished PDF carries a supporting record of views, signatures, and completion. Combined with encryption and access control, that trail turns a signed file into a defensible one.',
     ],
     summary: [
-        'An audit trail is the chronological record of a signing workflow—creation, sends, views, signatures, and completion—that gives a signed PDF its evidentiary weight. It complements the document, supports dispute readiness, and quietly builds trust among all parties.',
+        'An audit trail is the chronological record of a signing workflow, creation, sends, views, signatures, and completion, that gives a signed PDF its evidentiary weight. It complements the document, supports dispute readiness, and quietly builds trust among all parties.',
         'Preserve it alongside every important executed file, and a questioned signature becomes a settled fact rather than an argument.',
     ],
         extra: [
@@ -1729,7 +1729,7 @@ register({
         ],
         relatedText: 'To connect the ideas, Are Electronic Signatures Legally Binding? explains why the trail matters legally, and How Secure Are Electronic Signatures? covers the protections that keep it trustworthy.',
     faq: [
-        { question: 'What is an audit trail in document signing?', answer: 'It is the chronological record of events in a signing workflow—creation, sends, views, signatures, and completion—each with a timestamp and often supporting metadata.' },
+        { question: 'What is an audit trail in document signing?', answer: 'It is the chronological record of events in a signing workflow, creation, sends, views, signatures, and completion. Each with a timestamp and often supporting metadata.' },
         { question: 'Does an audit trail replace the signed document?', answer: 'No. It complements the signed PDF. Keep both together, because the record and the document tell the full story only in combination.' },
         { question: 'How does an audit trail help in a dispute?', answer: 'It establishes timing, delivery, and completion, answering questions like when a document was viewed and signed that memory alone cannot reliably resolve.' },
         { question: 'Does CubSign record an audit trail?', answer: 'Yes. CubSign logs core signing events inside your workspace so the finished PDF is backed by a record of views, signatures, and completion.' },
@@ -1754,11 +1754,11 @@ register({
         popular: false,
         heroGradient: 'from-blue-600 to-cyan-700',
         metaTitle: 'How to Create a Reusable Signature | CubSign',
-        metaDescription: 'Create a clean reusable signature for CubSign—draw, type, or upload—and apply it consistently across documents.',
+        metaDescription: 'Create a clean reusable signature for CubSign, draw, type, or upload and apply it consistently across documents.',
     },
     related: ['how-to-sign-a-pdf-online', 'how-to-sign-pdfs-on-mobile', 'best-practices-for-signing-contracts-online', 'draw-vs-type-your-signature'],
     intro: [
-        'If you sign documents regularly, recreating your signature every single time is a small, repeated waste. A reusable signature—created once and applied consistently—saves those seconds and, more importantly, gives every document you sign a uniform, professional look.',
+        'If you sign documents regularly, recreating your signature every single time is a small, repeated waste. A reusable signature, created once and applied consistently, saves those seconds and, more importantly, gives every document you sign a uniform, professional look.',
         'This guide walks through creating a clean reusable signature in CubSign, whether you draw, type, or upload it, and how to keep it looking sharp across every PDF you sign. A few minutes now pays off on every future document.',
     ],
     why: [
@@ -1882,7 +1882,7 @@ register({
         'Save whichever style you prefer as a reusable signature for speed.',
     ],
     bestOutro: 'Once you have chosen a style, How to Create a Reusable Signature shows how to save it so you never have to decide again on routine documents.',
-    tip: 'If your drawn signature keeps coming out shaky, do not fight it—switch to typed. A clean typed name almost always reads better than a struggling hand-drawn one at signing size.',
+    tip: 'If your drawn signature keeps coming out shaky, do not fight it, switch to typed. A clean typed name almost always reads better than a struggling hand-drawn one at signing size.',
     mistakesIntro: 'The draw-versus-type decision goes wrong in a few common ways.',
     mistakes: [
         'Forcing a hand-drawn mark on a tiny phone screen where it looks jagged.',
@@ -1977,7 +1977,7 @@ register({
         'Confirm all parties consent to signing electronically up front.',
     ],
     bestOutro: 'The mechanics of sending and tracking are covered in How to Request Digital Signatures, which pairs naturally with a high-volume NDA workflow.',
-    tip: 'Keep two ready NDA templates—one mutual, one one-way—so you can send the correct version in seconds without editing under time pressure.',
+    tip: 'Keep two ready NDA templates, one mutual, one one-way, so you can send the correct version in seconds without editing under time pressure.',
     mistakesIntro: 'Startup NDA processes tend to fail in these specific ways.',
     mistakes: [
         'Negotiating inside scanned images instead of a clean, editable template.',
@@ -2015,7 +2015,7 @@ register({
         relatedText: 'To scale it, How Small Businesses Save Time Using eSignatures shows the broader payoff, and Are Electronic Signatures Legally Binding? confirms the footing your NDAs stand on.',
     faq: [
         { question: 'Can a startup sign NDAs electronically?', answer: 'Yes. Electronic signatures are widely recognized for NDAs when there is clear intent to sign and consent to electronic processes. Keep the executed PDF and its activity record.' },
-        { question: 'Mutual or one-way NDA—how do I choose?', answer: 'Use mutual when both sides share confidential information and one-way when only one side does. Confirm the direction before sending to avoid signing the wrong version.' },
+        { question: 'Mutual or one-way NDA, how do I choose?', answer: 'Use mutual when both sides share confidential information and one-way when only one side does. Confirm the direction before sending to avoid signing the wrong version.' },
         { question: 'Whose name goes on the NDA?', answer: 'Usually the correct legal entity for each party, not just an individual. Verify entity names so the agreement binds the right organizations.' },
         { question: 'Where should executed NDAs live?', answer: 'In a shared, access-controlled location that fundraising and sales teams can reach, with a naming convention that makes each agreement easy to find.' },
     ],
@@ -2027,7 +2027,7 @@ register({
     meta: {
         slug: 'freelancer-contract-signing-checklist',
         title: 'Freelancer Contract Signing Checklist',
-        excerpt: 'A concise checklist freelancers can run before signing client PDFs—so scope, payment, and IP terms are never a surprise.',
+        excerpt: 'A concise checklist freelancers can run before signing client PDFs, so scope, payment, and IP terms are never a surprise.',
         category: 'Guides',
         categorySlug: 'guides',
         publishedAt: '2026-04-20',
@@ -2047,7 +2047,7 @@ register({
         'This guide is that checklist: the specific items a freelancer should verify before signing a client PDF, covering scope, payment, IP, and the signing hygiene that keeps your records clean. Run it every time and unpleasant surprises become rare.',
     ],
     why: [
-        'Freelancers carry the full risk of a bad contract personally—there is no legal department to absorb a lopsided clause. A single unfavorable payment term or IP assignment can cost weeks of unpaid work or the rights to your own portfolio, which makes pre-signature review one of the highest-value habits in the whole business.',
+        'Freelancers carry the full risk of a bad contract personally, there is no legal department to absorb a lopsided clause. A single unfavorable payment term or IP assignment can cost weeks of unpaid work or the rights to your own portfolio, which makes pre-signature review one of the highest-value habits in the whole business.',
         'The checklist also strengthens your professional footing. Reviewing carefully, raising questions before signing, and keeping clean records signals to clients that you are serious, which tends to earn more respectful treatment throughout the engagement.',
     ],
     note: 'Confirm the scope in the PDF matches what you actually discussed in your sales conversation. Written terms, not verbal understandings, are what you will be held to.',
@@ -2072,7 +2072,7 @@ register({
         'Download and archive each executed contract immediately.',
     ],
     bestOutro: 'For the broader discipline behind this list, Best Practices for Signing Contracts Online turns these freelancer-specific checks into a general signing standard.',
-    tip: 'Save a personal template of your must-have terms—payment timing, revision limits, IP retention—so you can quickly compare any client contract against your own baseline.',
+    tip: 'Save a personal template of your must-have terms, payment timing, revision limits, IP retention, so you can quickly compare any client contract against your own baseline.',
     mistakesIntro: 'Freelancers lose time and money to a predictable set of signing mistakes.',
     mistakes: [
         'Signing before confirming scope matches the actual conversation.',
@@ -2155,7 +2155,7 @@ function serialize(value, indent = 0) {
 // Strip wordCount from export
 const exportPosts = articles.map(({ wordCount, ...rest }) => rest);
 
-const file = `/** Blog content hub — keep slugs/dates in sync with config/blog.php */
+const file = `/** Blog content hub, keep slugs/dates in sync with config/blog.php */
 
 export const blogAuthor = ${serialize(author)};
 
@@ -2369,7 +2369,7 @@ const phpFile = `<?php
 
 /**
  * Blog post metadata for server-side features (sitemap, RSS, etc.).
- * Keep in sync with resources/js/constants/blog.js — run: node scripts/generate-blog-content.mjs
+ * Keep in sync with resources/js/constants/blog.js, run: node scripts/generate-blog-content.mjs
  */
 return [
 

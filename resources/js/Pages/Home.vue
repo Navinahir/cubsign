@@ -20,7 +20,7 @@ defineProps({ hasSignSession: { type: Boolean, default: false } });
 
 const exploreLinks = [
     { label: 'Features', description: 'Self-sign, requests, templates, and audit trails', routeName: 'features' },
-    { label: 'Pricing', description: 'Free during Early Access — no credit card', routeName: 'pricing' },
+    { label: 'Pricing', description: 'Free during Early Access, no credit card', routeName: 'pricing' },
     { label: 'Security Center', description: 'HTTPS, encryption, and responsible disclosure', routeName: 'security' },
     { label: 'Help Center', description: 'Step-by-step guides for every workflow', routeName: 'help-center' },
     { label: 'Blog', description: 'PDF signing guides and best practices', routeName: 'blog' },
@@ -145,7 +145,7 @@ const exploreLinks = [
                         <CtaBanner
                             eyebrow="Early Access"
                             title="Start signing PDFs in your browser"
-                            description="Upload a document, add your signature, and download the finished file — free during Early Access."
+                            description="Upload a document, add your signature, and download the finished file for free during Early Access."
                             :primary-label="CTA_START_SIGNING"
                             footer-note="No credit card required · Works on desktop and mobile"
                             variant="premium"

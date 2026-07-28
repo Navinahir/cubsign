@@ -1,4 +1,4 @@
-/** Shared marketing copy — keep messaging consistent across public pages. */
+/** Shared marketing copy, keep messaging consistent across public pages. */
 export const EARLY_ACCESS_HEADLINE = 'Free During Early Access';
 
 export const EARLY_ACCESS_SUBHEADLINE =
@@ -93,18 +93,18 @@ export const companyValues = [
     },
     {
         title: 'Reliability',
-        description: 'A focused signing workflow you can depend on — upload, sign, send, and download without friction.',
+        description: 'A focused signing workflow you can depend on: upload, sign, send, and download without friction.',
         icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
     },
     {
         title: 'Customer First',
-        description: 'We listen to real signing workflows and ship improvements based on feedback — not assumptions about what users need.',
+        description: 'We listen to real signing workflows and ship improvements based on feedback, not assumptions about what users need.',
         icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
     },
 ];
 
 export const aboutMissionStatement =
-    'Make secure, browser-based PDF signing accessible to everyone — without printing, enterprise contracts, or software to install.';
+    'Make secure, browser-based PDF signing accessible to everyone without printing, enterprise contracts, or software to install.';
 
 export const aboutVisionStatement =
     'A trusted platform for everyday document workflows, where signing is fast, clear, and dependable for freelancers, teams, and growing businesses.';
@@ -116,7 +116,7 @@ export const aboutMissionPoints = [
     },
     {
         title: 'Eliminate printing and scanning',
-        description: 'Keep agreements digital from the first upload to the final signed PDF — no paper trail required.',
+        description: 'Keep agreements digital from the first upload to the final signed PDF with no paper trail required.',
     },
     {
         title: 'Make secure eSignatures accessible',
@@ -132,7 +132,7 @@ export const aboutWhyChoose = [
     },
     {
         title: 'Fast workflow',
-        description: 'Upload a PDF, place your signature, and download — or send for signature — without extra steps.',
+        description: 'Upload a PDF, place your signature, and download or send for signature without extra steps.',
         icon: 'M13 10V3L4 14h7v7l9-11h-7z',
     },
     {
@@ -142,7 +142,7 @@ export const aboutWhyChoose = [
     },
     {
         title: 'Cross-device compatibility',
-        description: 'Works in modern browsers on desktop, tablet, and phone — sign wherever you are.',
+        description: 'Works in modern browsers on desktop, tablet, and phone so you can sign wherever you are.',
         icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z',
     },
     {
@@ -168,7 +168,7 @@ export const aboutHowItWorks = [
     {
         step: 3,
         title: 'Download',
-        description: 'Save the signed PDF instantly — or send it to others for signature.',
+        description: 'Save the signed PDF instantly, or send it to others for signature.',
         icon: 'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V16.5',
     },
 ];
@@ -195,7 +195,7 @@ export const aboutTechnology = [
 export const aboutPrivacyPoints = [
     {
         title: 'Limited data collection',
-        description: 'We collect only what is needed to run the service — account details, uploaded documents, and support messages. We do not sell personal data.',
+        description: 'We collect only what is needed to run the service, account details, uploaded documents, and support messages. We do not sell personal data.',
     },
     {
         title: 'Controlled document access',
@@ -207,7 +207,7 @@ export const aboutPrivacyPoints = [
     },
 ];
 
-/** Roadmap milestones — status is "completed" or "planned" only. */
+/** Roadmap milestones, status is "completed" or "planned" only. */
 export const aboutTimeline = [
     {
         year: '2025',
@@ -250,7 +250,7 @@ export const aboutTimeline = [
 export const aboutFaqs = [
     {
         question: 'What is CubSign?',
-        answer: 'CubSign is an online PDF signing platform. You can upload a PDF, add your signature in the browser, download the signed file, or send documents to others for signature — without printing or installing software.',
+        answer: 'CubSign is an online PDF signing platform. You can upload a PDF, add your signature in the browser, download the signed file, or send documents to others for signature without printing or installing software.',
     },
     {
         question: 'Who builds CubSign?',
@@ -282,7 +282,7 @@ export const aboutFaqs = [
     },
     {
         question: 'Do I need to install any software?',
-        answer: 'No. CubSign is entirely browser-based. Open the site, upload your PDF, and start signing — nothing to download or update.',
+        answer: 'No. CubSign is entirely browser-based. Open the site, upload your PDF, and start signing, nothing to download or update.',
     },
     {
         question: 'How can I contact the CubSign team?',

@@ -124,7 +124,7 @@ function goToPage(pageNumber) {
                     Guides for modern PDF signing
                 </h1>
                 <p class="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-gray-600">
-                    Practical articles on electronic signatures, security, contracts, and paperless workflows—written for freelancers, small businesses, and growing teams.
+                    Practical articles on electronic signatures, security, contracts, and paperless workflows for freelancers, small businesses, and growing teams.
                 </p>
 
                 <div class="relative mx-auto mt-8 max-w-xl">

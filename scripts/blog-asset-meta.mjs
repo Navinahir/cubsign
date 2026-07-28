@@ -14,15 +14,15 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign upload page with drag-and-drop PDF zone and example Contract.pdf file',
-            caption: 'The CubSign upload screen accepts standard PDFs up to 25 MB — no account required for your first signature.',
+            caption: 'The CubSign upload screen accepts standard PDFs up to 25 MB, with no account required for your first signature.',
         },
         cubsignHelps: [
             'CubSign is built around a three-step self-sign path: open the Upload PDF page, place your signature in the browser editor, and download the signed copy. You never need desktop software or a scanner.',
-            'If you create a free CubSign account, the same workflow unlocks document storage, signing history, and the ability to send documents to other people for signature — all from the same editor you use for self-signing.',
+            'If you create a free CubSign account, the same workflow unlocks document storage, signing history, and the ability to send documents to other people for signature, all from the same editor you use for self-signing.',
             'During Early Access, unlimited signatures and downloads are included at no cost, so you can practice the flow on real documents before sending anything to a client.',
         ],
         cubsignFeatures: [
-            'Guest signing — upload and sign without creating an account',
+            'Guest signing; upload and sign without creating an account',
             'Draw, type, or upload your signature in the editor',
             'Date and text fields for standard agreement forms',
             'HTTPS-encrypted upload and download',
@@ -37,16 +37,16 @@ export const BLOG_ASSET_META = {
     'electronic-signature-vs-digital-signature': {
         workflow: {
             alt: 'Diagram comparing electronic signature creation, digital certificate, and audit log in CubSign',
-            caption: 'CubSign focuses on practical electronic signatures with an audit trail — distinct from PKI-backed digital certificates used in some enterprise systems.',
+            caption: 'CubSign focuses on practical electronic signatures with an audit trail, distinct from PKI-backed digital certificates used in some enterprise systems.',
         },
         ui: {
             alt: 'CubSign editor comparing electronic signature document and certificate-style document side by side',
             caption: 'Most CubSign users need a clear electronic signature and activity record, not a hardware token or enterprise certificate authority.',
         },
         cubsignHelps: [
-            'CubSign produces electronic signatures — your drawn, typed, or uploaded mark applied to a PDF with a timestamped activity record. That is what most freelancers, agencies, and small businesses need day to day.',
+            'CubSign produces electronic signatures, your drawn, typed, or uploaded mark applied to a PDF with a timestamped activity record. That is what most freelancers, agencies, and small businesses need day to day.',
             'The CubSign audit trail logs views, signatures, and downloads with timestamps, giving you evidence of who signed and when without requiring specialized digital certificate infrastructure.',
-            'When a counterparty asks about “digital signatures,” you can explain that CubSign provides legally recognized electronic signatures with a verifiable history — visit the Security Center for full details on how documents are protected.',
+            'When a counterparty asks about “digital signatures,” you can explain that CubSign provides legally recognized electronic signatures with a verifiable history, visit the Security Center for full details on how documents are protected.',
         ],
         cubsignFeatures: [
             'Electronic signatures via draw, type, or image upload',
@@ -57,14 +57,14 @@ export const BLOG_ASSET_META = {
         ],
         callout: {
             title: 'How CubSign helps',
-            text: 'Open any completed document in your workspace to review the full activity timeline — sent, viewed, signed, and downloaded events are listed in order.',
+            text: 'Open any completed document in your workspace to review the full activity timeline, sent, viewed, signed, and downloaded events are listed in order.',
             asset: 'ui',
         },
     },
     'how-secure-are-electronic-signatures': {
         workflow: {
             alt: 'CubSign security workflow: HTTPS upload, encrypted signing session, secure cloud storage',
-            caption: 'CubSign protects documents at every stage — encrypted in transit during upload and signing, then stored with access limited to owners and invited recipients.',
+            caption: 'CubSign protects documents at every stage, encrypted in transit during upload and signing, then stored with access limited to owners and invited recipients.',
         },
         ui: {
             alt: 'CubSign Security Center page showing HTTPS status and document protection overview',
@@ -72,7 +72,7 @@ export const BLOG_ASSET_META = {
         },
         cubsignHelps: [
             'Every CubSign session runs over HTTPS, so uploads, signature submissions, and downloads are encrypted between your browser and our servers.',
-            'Recipient signing links are unique per person and per document — recipients do not need a CubSign account, but they must use the secure link sent to their email.',
+            'Recipient signing links are unique per person and per document, recipients do not need a CubSign account, but they must use the secure link sent to their email.',
             'Workspace owners can delete documents when they are no longer needed, and activity events are logged so you can demonstrate what happened if a question arises later.',
         ],
         cubsignFeatures: [
@@ -95,12 +95,12 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign editor recipient panel showing pending and signed status for client@email.com',
-            caption: 'Track each recipient’s status from the editor — see who has signed and who is still pending without chasing email threads.',
+            caption: 'Track each recipient’s status from the editor. See who has signed and who is still pending without chasing email threads.',
         },
         cubsignHelps: [
-            'CubSign lets you upload a PDF once, add recipients by email, place signature fields, and send — recipients sign through a link without creating an account.',
+            'CubSign lets you upload a PDF once, add recipients by email, place signature fields, and send. Recipients sign through a link without creating an account.',
             'Your workspace dashboard shows document status at a glance: pending, viewed, and signed. That visibility alone saves hours of “just checking if you got my email” follow-ups.',
-            'Templates let you save field layouts for agreements you send repeatedly — NDAs, offer letters, and vendor forms — so the next send takes minutes instead of rebuilding from scratch.',
+            'Templates let you save field layouts for agreements you send repeatedly. NDAs, offer letters, and vendor forms, so the next send takes minutes instead of rebuilding from scratch.',
         ],
         cubsignFeatures: [
             'Multi-recipient signature requests by email',
@@ -122,10 +122,10 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign PDF editor with signature field aligned to signature line on contract page',
-            caption: 'Align signature and date fields with the printed blocks on the contract — zoom in on dense pages before completing.',
+            caption: 'Align signature and date fields with the printed blocks on the contract, zoom in on dense pages before completing.',
         },
         cubsignHelps: [
-            'CubSign’s editor lets you scroll through every page before signing, add initials on exhibits, and place date fields next to signature lines — the same discipline you would use on paper.',
+            'CubSign’s editor lets you scroll through every page before signing, add initials on exhibits, and place date fields next to signature lines, the same discipline you would use on paper.',
             'Name your downloaded file with the counterparty and date (for example, Acme-MSA-2026-07-27-signed.pdf) so your workspace and local folders stay searchable.',
             'When sending for signature, add all required signers upfront in the recipient panel so fields are assigned correctly the first time.',
         ],
@@ -149,10 +149,10 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign Security Center and workspace document access controls overview',
-            caption: 'CubSign combines transport encryption with workspace access controls — only document owners and invited recipients can open signing links.',
+            caption: 'CubSign combines transport encryption with workspace access controls, only document owners and invited recipients can open signing links.',
         },
         cubsignHelps: [
-            'CubSign never requires you to email unsigned PDF drafts back and forth — upload once, send a signing link, and let recipients complete their portion in a controlled session.',
+            'CubSign never requires you to email unsigned PDF drafts back and forth; upload once, send a signing link, and let recipients complete their portion in a controlled session.',
             'Workspace documents are accessible only to your account and the specific recipients you invite. Each signing link is tied to an email address and a single document.',
             'When a retention period ends, delete the document from your CubSign workspace. See the Privacy Policy for details on how deleted files are handled.',
         ],
@@ -176,12 +176,12 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign editor showing recipient list and Send for signature button',
-            caption: 'Add recipients in the editor sidebar, place fields assigned to each signer, then send — CubSign emails a secure link automatically.',
+            caption: 'Add recipients in the editor sidebar, place fields assigned to each signer, then send. CubSign emails a secure link automatically.',
         },
         cubsignHelps: [
             'Switch to request mode in the CubSign editor after uploading your PDF. Add each signer’s name and email, then place signature and date fields assigned to the correct recipient.',
             'Recipients receive an email with a secure link. They sign in the browser without a CubSign account, and you receive a notification when everyone has completed.',
-            'The workspace shows each document’s status so you know whether to follow up — viewed but not signed is a very different nudge than never opened.',
+            'The workspace shows each document’s status so you know whether to follow up, viewed but not signed is a very different nudge than never opened.',
         ],
         cubsignFeatures: [
             'Request signatures from unlimited recipients',
@@ -192,7 +192,7 @@ export const BLOG_ASSET_META = {
         ],
         callout: {
             title: 'Sending tip',
-            text: 'Double-check recipient emails before sending — a typo means the wrong person receives a signing link. You can add a message in your own email when forwarding the CubSign notification if needed.',
+            text: 'Double-check recipient emails before sending, a typo means the wrong person receives a signing link. You can add a message in your own email when forwarding the CubSign notification if needed.',
             asset: 'ui',
         },
     },
@@ -206,12 +206,12 @@ export const BLOG_ASSET_META = {
             caption: 'CubSign templates keep signature and date fields in place so recurring documents are ready to send in a few clicks.',
         },
         cubsignHelps: [
-            'CubSign eliminates print-sign-scan for everyday agreements. Upload a PDF, sign or send for signature, and store the finished file in your workspace — searchable and accessible from any device.',
+            'CubSign eliminates print-sign-scan for everyday agreements. Upload a PDF, sign or send for signature, and store the finished file in your workspace, searchable and accessible from any device.',
             'Templates turn your most common documents into reusable starting points. Field positions, signature slots, and date lines stay exactly where you placed them.',
             'Because everything lives in one workspace, you stop hunting through email attachments for “the signed one” versus “the draft.”',
         ],
         cubsignFeatures: [
-            'Browser-based signing — no printer required',
+            'Browser-based signing with no printer required',
             'Template library for recurring documents',
             'Centralized document workspace',
             'Instant download of signed PDFs',
@@ -219,23 +219,23 @@ export const BLOG_ASSET_META = {
         ],
         callout: {
             title: 'Paperless starter',
-            text: 'Pick one recurring form — an NDA, onboarding packet, or vendor agreement — and build a CubSign template this week. That single template often eliminates more paper than ad-hoc signing.',
+            text: 'Pick one recurring form, an NDA, onboarding packet, or vendor agreement, and build a CubSign template this week. That single template often eliminates more paper than ad-hoc signing.',
             asset: 'ui',
         },
     },
     'how-to-sign-pdfs-on-mobile': {
         workflow: {
             alt: 'CubSign mobile signing workflow: open link in phone browser, draw signature in landscape, submit signed PDF',
-            caption: 'Sign on mobile by opening CubSign in your phone browser — rotate to landscape for a cleaner drawn signature.',
+            caption: 'Sign on mobile by opening CubSign in your phone browser, rotate to landscape for a cleaner drawn signature.',
         },
         ui: {
             alt: 'CubSign mobile interface on phone showing PDF document and Sign document button',
-            caption: 'CubSign runs in mobile browsers — no app install. Open cubsign.com/sign or your signing link on any modern phone.',
+            caption: 'CubSign runs in mobile browsers without app install. Open cubsign.com/sign or your signing link on any modern phone.',
         },
         cubsignHelps: [
-            'CubSign’s editor adapts to mobile screens. Upload from your phone’s file picker or open a recipient signing link from email — the same HTTPS-protected session as desktop.',
+            'CubSign’s editor adapts to mobile screens. Upload from your phone’s file picker or open a recipient signing link from email, the same HTTPS-protected session as desktop.',
             'Rotate to landscape before drawing a signature. The extra canvas width produces a mark that looks professional at normal zoom levels.',
-            'If drawing on glass feels awkward, switch to a typed signature in the editor — legibility often matters more than flourish on small screens.',
+            'If drawing on glass feels awkward, switch to a typed signature in the editor, legibility often matters more than flourish on small screens.',
         ],
         cubsignFeatures: [
             'Full editor in mobile browsers',
@@ -257,10 +257,10 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign editor warning example showing DRAFT.pdf filename and signature field placement',
-            caption: 'Check the filename and remove any “DRAFT” or “v2” labels before signing — CubSign signs exactly the PDF you upload.',
+            caption: 'Check the filename and remove any “DRAFT” or “v2” labels before signing. CubSign signs exactly the PDF you upload.',
         },
         cubsignHelps: [
-            'CubSign signs the exact PDF you upload. If you attach a draft with a watermark, that watermark appears in the signed output — always upload the final agreed version.',
+            'CubSign signs the exact PDF you upload. If you attach a draft with a watermark, that watermark appears in the signed output, always upload the final agreed version.',
             'The editor’s page navigator helps you catch missed initials on exhibit pages. Scroll the full document before tapping Complete.',
             'After signing, download the finished PDF immediately. Relying only on a browser tab without saving leaves you without a copy if the session closes.',
         ],
@@ -273,7 +273,7 @@ export const BLOG_ASSET_META = {
         ],
         callout: {
             title: 'Mistake to avoid',
-            text: 'Never place a signature field over pricing or date text. Use zoom to position the field on the signature line only — overlapping terms can create disputes later.',
+            text: 'Never place a signature field over pricing or date text. Use zoom to position the field on the signature line only, overlapping terms can create disputes later.',
             asset: 'ui',
         },
     },
@@ -284,12 +284,12 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign audit trail showing document sent, viewed, signed events with timestamps on Binding-Agreement.pdf',
-            caption: 'The CubSign audit trail records who signed and when — supporting the integrity of electronically signed agreements.',
+            caption: 'The CubSign audit trail records who signed and when, supporting the integrity of electronically signed agreements.',
         },
         cubsignHelps: [
             'CubSign captures the essential elements courts and businesses expect: a clear action to sign, association of the signature with the document, and a record of when the signing occurred.',
             'Recipient links are sent to specific email addresses, tying each signature to an identifiable party. Combined with timestamps in the audit trail, this supports enforceability in most commercial contexts.',
-            'Laws vary by jurisdiction and document type. CubSign provides the technical record — consult qualified counsel for regulated industries or high-stakes transactions.',
+            'Laws vary by jurisdiction and document type. CubSign provides the technical record, consult qualified counsel for regulated industries or high-stakes transactions.',
         ],
         cubsignFeatures: [
             'Explicit complete/sign actions in the editor',
@@ -311,11 +311,11 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign Security Center page with HTTPS active indicator and document protection summary',
-            caption: 'Visit cubsign.com/security for CubSign’s full security overview — HTTPS, encryption, authentication, and disclosure policy.',
+            caption: 'Visit cubsign.com/security for CubSign’s full security overview. HTTPS, encryption, authentication, and disclosure policy.',
         },
         cubsignHelps: [
             'CubSign is served exclusively over HTTPS. Bookmark cubsign.com/sign and verify the padlock icon before uploading sensitive contracts.',
-            'Only add recipients who should see the document. Each person receives their own link — do not share links in public channels.',
+            'Only add recipients who should see the document. Each person receives their own link. Do not share links in public channels.',
             'Review the activity log on important documents monthly. Unexpected view events before sending can indicate a forwarded link.',
         ],
         cubsignFeatures: [
@@ -334,15 +334,15 @@ export const BLOG_ASSET_META = {
     'request-signatures-from-multiple-recipients': {
         workflow: {
             alt: 'CubSign multi-recipient workflow: add two or more signers, assign fields per person, track all statuses',
-            caption: 'Request signatures from multiple people in one CubSign document — assign fields per recipient and track everyone’s status.',
+            caption: 'Request signatures from multiple people in one CubSign document, assign fields per recipient and track everyone’s status.',
         },
         ui: {
             alt: 'CubSign editor with two recipients and color-coded signature field assignments',
-            caption: 'Each recipient in CubSign has a color in the editor — assign signature fields to the correct signer before sending.',
+            caption: 'Each recipient in CubSign has a color in the editor, assign signature fields to the correct signer before sending.',
         },
         cubsignHelps: [
             'Add every required signer in the CubSign editor before placing fields. Each recipient gets a color code so you can assign signature, initials, and date fields to the right person.',
-            'CubSign sends each recipient their own secure link. They sign independently — you do not need to route a single PDF sequentially by email.',
+            'CubSign sends each recipient their own secure link. They sign independently. You do not need to route a single PDF sequentially by email.',
             'The workspace shows per-recipient status. Follow up only with people still marked pending, not the entire group.',
         ],
         cubsignFeatures: [
@@ -365,12 +365,12 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign phone interface with rotate for drawing callout and sign document button',
-            caption: 'CubSign on mobile — rotate your phone, zoom into signature blocks, and use typed signatures when drawing is unclear.',
+            caption: 'CubSign on mobile, rotate your phone, zoom into signature blocks, and use typed signatures when drawing is unclear.',
         },
         cubsignHelps: [
-            'CubSign’s mobile editor supports the same field types as desktop. Open your signing link on cellular data or Wi‑Fi — both use HTTPS encryption.',
+            'CubSign’s mobile editor supports the same field types as desktop. Open your signing link on cellular data or Wi‑Fi, both use HTTPS encryption.',
             'Enable screen rotation lock off temporarily while drawing. A steady landscape canvas beats a cramped portrait scribble every time.',
-            'For field reports and dense tables, pinch-zoom before signing. You are confirming specific rows — make sure you can read them.',
+            'For field reports and dense tables, pinch-zoom before signing. You are confirming specific rows, make sure you can read them.',
         ],
         cubsignFeatures: [
             'Responsive editor layout',
@@ -392,7 +392,7 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign upload page welcoming Early Access users with free Upload PDF button',
-            caption: 'Early Access users get full CubSign features at $0 — upload, sign, send, and store documents while we refine the platform.',
+            caption: 'Early Access users get full CubSign features at $0: upload, sign, send, and store documents while we refine the platform.',
         },
         cubsignHelps: [
             'CubSign Early Access gives you unlimited self-signing, signature requests, recipients, and downloads at no charge while we collect feedback and harden the platform.',
@@ -415,14 +415,14 @@ export const BLOG_ASSET_META = {
     'what-is-an-audit-trail': {
         workflow: {
             alt: 'CubSign audit trail workflow: document sent, recipient viewed, signed, and downloaded with timestamps',
-            caption: 'A CubSign audit trail logs each document event — sent, viewed, signed, downloaded — with timestamps and participant details.',
+            caption: 'A CubSign audit trail logs each document event, sent, viewed, signed, downloaded with timestamps and participant details.',
         },
         ui: {
             alt: 'CubSign document activity log showing sent, viewed, signed, and downloaded events with timestamps',
             caption: 'View the full activity timeline on any document in your CubSign workspace.',
         },
         cubsignHelps: [
-            'Every CubSign document records key events automatically. You do not configure logging — it is part of every send and sign flow.',
+            'Every CubSign document records key events automatically. You do not configure logging. It is part of every send and sign flow.',
             'When a client asks “did they sign yet?”, open the document in your workspace instead of searching email. The audit trail shows viewed and signed timestamps.',
             'For compliance conversations, export the signed PDF and reference the activity history. Together they demonstrate who acted and when.',
         ],
@@ -442,16 +442,16 @@ export const BLOG_ASSET_META = {
     'how-to-create-a-reusable-signature': {
         workflow: {
             alt: 'CubSign reusable signature workflow: draw once in editor, save style, apply quickly on next document',
-            caption: 'Create a signature once in CubSign and reuse it across documents — draw, type, or upload your preferred style.',
+            caption: 'Create a signature once in CubSign and reuse it across documents, draw, type, or upload your preferred style.',
         },
         ui: {
             alt: 'CubSign signature panel showing Draw and Type options with signature canvas',
-            caption: 'The CubSign signature panel lets you draw on canvas, type your name, or upload an image — reuse your choice on the next document.',
+            caption: 'The CubSign signature panel lets you draw on canvas, type your name, or upload an image, reuse your choice on the next document.',
         },
         cubsignHelps: [
-            'In the CubSign editor, open the signature panel and create your mark once — draw, type, or upload. Your session remembers it for subsequent fields on the same document.',
+            'In the CubSign editor, open the signature panel and create your mark once, draw, type, or upload. Your session remembers it for subsequent fields on the same document.',
             'With a CubSign account, your signing workflow stays consistent across sessions. Use the same typed signature for formal documents and drawn for informal ones.',
-            'Save a PNG of your signature locally if you prefer the upload option — CubSign accepts standard image formats in the signature panel.',
+            'Save a PNG of your signature locally if you prefer the upload option. CubSign accepts standard image formats in the signature panel.',
         ],
         cubsignFeatures: [
             'Draw signature on canvas',
@@ -469,7 +469,7 @@ export const BLOG_ASSET_META = {
     'draw-vs-type-your-signature': {
         workflow: {
             alt: 'CubSign draw versus type signature workflow comparing draw canvas, typed name, and upload image options',
-            caption: 'CubSign supports draw, type, and upload — choose based on document formality and the device you are using.',
+            caption: 'CubSign supports draw, type, and upload. Choose based on document formality and the device you are using.',
         },
         ui: {
             alt: 'CubSign editor side-by-side Draw and Type signature panels',
@@ -478,7 +478,7 @@ export const BLOG_ASSET_META = {
         cubsignHelps: [
             'CubSign does not force one signature style. Draw for a personal touch on informal agreements; type when legibility at small sizes matters; upload when you already have a scanned signature on file.',
             'On desktop with a mouse, drawing can look shaky. Typed signatures often read better on contracts that will be archived for years.',
-            'Recipients signing via CubSign links get the same three options — choose what produces the clearest mark on your device.',
+            'Recipients signing via CubSign links get the same three options. Choose what produces the clearest mark on your device.',
         ],
         cubsignFeatures: [
             'Draw, type, and upload in one panel',
@@ -500,7 +500,7 @@ export const BLOG_ASSET_META = {
         },
         ui: {
             alt: 'CubSign request signature interface with Mutual-NDA.pdf and recipient email fields',
-            caption: 'Send a mutual NDA through CubSign — add both parties as recipients and track who has signed.',
+            caption: 'Send a mutual NDA through CubSign, add both parties as recipients and track who has signed.',
         },
         cubsignHelps: [
             'Upload your standard mutual NDA to CubSign, add both parties as recipients, and place signature fields on the signature blocks. Send before sharing sensitive pitch materials.',
@@ -516,7 +516,7 @@ export const BLOG_ASSET_META = {
         ],
         callout: {
             title: 'Startup checklist',
-            text: 'Before sharing your deck, confirm the NDA is fully signed by all parties in CubSign — not just sent. Check workspace status shows Signed for every recipient.',
+            text: 'Before sharing your deck, confirm the NDA is fully signed by all parties in CubSign, not just sent. Check workspace status shows Signed for every recipient.',
             asset: 'ui',
         },
     },
@@ -532,7 +532,7 @@ export const BLOG_ASSET_META = {
         cubsignHelps: [
             'Freelancers use CubSign to send statements of work and service agreements without printing. Clients sign from email links; you countersign and download the executed PDF.',
             'Build a template for your standard contract with signature and date fields pre-placed. New clients mean a new recipient email, not rebuilding the PDF layout.',
-            'Keep every signed SOW in your workspace folder structure or download to your project archive — either way, you have proof of scope agreement before work begins.',
+            'Keep every signed SOW in your workspace folder structure or download to your project archive, either way, you have proof of scope agreement before work begins.',
         ],
         cubsignFeatures: [
             'Client signing without an account',

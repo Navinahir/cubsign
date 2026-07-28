@@ -2,7 +2,7 @@
 
 /**
  * Blog post metadata for server-side features (sitemap, RSS, etc.).
- * Keep in sync with resources/js/constants/blog.js — run: node scripts/generate-blog-content.mjs
+ * Keep in sync with resources/js/constants/blog.js, run: node scripts/generate-blog-content.mjs
  */
 return [
 
@@ -12,7 +12,7 @@ return [
             'published_at' => '2025-12-02',
             'updated_at' => '2026-07-17',
             'title' => 'How to Sign a PDF Online',
-            'excerpt' => 'Learn how to upload, sign, and download a PDF in your browser with CubSign—no printing, scanning, or desktop software required.',
+            'excerpt' => 'Learn how to upload, sign, and download a PDF in your browser with CubSign without printing, scanning, or desktop software required.',
         ],
         [
             'slug' => 'electronic-signature-vs-digital-signature',
@@ -26,7 +26,7 @@ return [
             'published_at' => '2025-12-18',
             'updated_at' => '2026-07-17',
             'title' => 'How Secure Are Electronic Signatures?',
-            'excerpt' => 'Security is more than a padlock icon. Here is how electronic signatures protect documents—and what you should still verify as a signer or sender.',
+            'excerpt' => 'Security is more than a padlock icon. Here is how electronic signatures protect documents and what you should still verify as a signer or sender.',
         ],
         [
             'slug' => 'how-small-businesses-save-time-using-esignatures',
@@ -54,7 +54,7 @@ return [
             'published_at' => '2026-01-28',
             'updated_at' => '2026-07-17',
             'title' => 'How to Request Digital Signatures',
-            'excerpt' => 'Send a PDF for signature, assign recipients, and track completion—without forcing every signer to create an account first.',
+            'excerpt' => 'Send a PDF for signature, assign recipients, and track completion without forcing every signer to create an account first.',
         ],
         [
             'slug' => 'benefits-of-paperless-workflows',
@@ -75,7 +75,7 @@ return [
             'published_at' => '2026-02-18',
             'updated_at' => '2026-07-17',
             'title' => 'Common Mistakes When Signing PDFs',
-            'excerpt' => 'Avoid the errors that delay deals or create weak records—from signing the wrong version to skipping a required initial block.',
+            'excerpt' => 'Avoid the errors that delay deals or create weak records, from signing the wrong version to skipping a required initial block.',
         ],
         [
             'slug' => 'are-electronic-signatures-legally-binding',
@@ -103,7 +103,7 @@ return [
             'published_at' => '2026-04-12',
             'updated_at' => '2026-07-17',
             'title' => '5 Tips for Signing PDFs on Your Phone',
-            'excerpt' => 'Quick, high-impact tips for a cleaner mobile signing experience—from orientation to downloading the finished file.',
+            'excerpt' => 'Quick, high-impact tips for a cleaner mobile signing experience, from orientation to downloading the finished file.',
         ],
         [
             'slug' => 'introducing-cubsign-early-access',
@@ -145,7 +145,7 @@ return [
             'published_at' => '2026-04-20',
             'updated_at' => '2026-07-17',
             'title' => 'Freelancer Contract Signing Checklist',
-            'excerpt' => 'A concise checklist freelancers can run before signing client PDFs—so scope, payment, and IP terms are never a surprise.',
+            'excerpt' => 'A concise checklist freelancers can run before signing client PDFs, so scope, payment, and IP terms are never a surprise.',
         ],
     ],
 

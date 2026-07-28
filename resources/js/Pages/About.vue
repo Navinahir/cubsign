@@ -100,7 +100,7 @@ const plannedMilestones = aboutTimeline.filter((item) => item.status === 'planne
                             </p>
                             <p class="text-sm leading-relaxed text-gray-600 sm:text-base">
                                 CubSign was created to simplify secure document signing. We focused on a clear browser-based workflow:
-                                upload a PDF, add your signature, and download the finished file — or send it to others for signature.
+                                upload a PDF, add your signature, and download the finished file or send it to others for signature.
                             </p>
                             <p class="text-sm leading-relaxed text-gray-600 sm:text-base">
                                 Many existing tools felt expensive, overly complex, or locked behind enterprise sales. CubSign is built
@@ -199,7 +199,7 @@ const plannedMilestones = aboutTimeline.filter((item) => item.status === 'planne
                     <SectionHeader
                         eyebrow="Why CubSign"
                         title="Why choose CubSign"
-                        description="A focused signing experience built for speed, clarity, and trust — not feature bloat."
+                        description="A focused signing experience built for speed, clarity, and trust, not feature bloat."
                         compact
                     />
                 </ScrollReveal>
@@ -271,7 +271,7 @@ const plannedMilestones = aboutTimeline.filter((item) => item.status === 'planne
                     <SectionHeader
                         eyebrow="Technology"
                         title="Built for the modern web"
-                        description="CubSign runs on practical, production-ready foundations — explained without the jargon."
+                        description="CubSign runs on practical, production-ready foundations, explained without the jargon."
                         compact
                     />
                 </ScrollReveal>

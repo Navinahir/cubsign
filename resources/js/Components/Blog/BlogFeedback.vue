@@ -62,7 +62,7 @@ onMounted(() => {
         </template>
 
         <template v-else>
-            <p class="text-sm font-semibold text-gray-900">Thanks — we can help</p>
+            <p class="text-sm font-semibold text-gray-900">Thanks. We can help</p>
             <p class="mt-1 text-sm text-gray-500">
                 Email
                 <a :href="`mailto:${SUPPORT_EMAIL}`" class="font-medium text-blue-600 hover:underline">{{ SUPPORT_EMAIL }}</a>
