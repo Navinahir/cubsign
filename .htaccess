@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Serve ads.txt from the public folder
+    RewriteRule ^ads\.txt$ public/ads.txt [L]
+     RewriteRule ^robots\.txt$ public/robots.txt [L]
+
+    RewriteCond %{REQUEST_URI} !^/build/
+    RewriteCond %{REQUEST_URI} !^/storage/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
