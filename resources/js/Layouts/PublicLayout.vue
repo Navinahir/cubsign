@@ -12,6 +12,7 @@ const user = computed(() => page.props.auth?.user ?? null);
 const navLinks = computed(() => {
     const links = [
         { label: 'Features', routeName: 'features' },
+        { label: 'Pricing', routeName: 'pricing' },
         { label: 'Upload PDF', routeName: 'sign.index', highlight: true },
         { label: 'About', routeName: 'about' },
         { label: 'Help', routeName: 'help-center' },
@@ -141,7 +142,7 @@ function navLinkClass(link, mobile = false) {
 
                 <div class="mt-10 border-t border-gray-800 pt-5 space-y-2">
                     <p class="text-xs text-gray-500">&copy; {{ new Date().getFullYear() }} CubSign</p>
-                    <p class="text-[11px] text-gray-600">A partner product by AppArrow Technologies</p>
+                    <p class="text-[11px] text-gray-600">Built by Cubiz Infotech</p>
                 </div>
             </div>
         </footer>

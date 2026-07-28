@@ -377,6 +377,7 @@ export const pricingComparison = [
 export const footerLinks = {
     product: [
         { label: 'Features', routeName: 'features' },
+        { label: 'Pricing', routeName: 'pricing' },
         { label: 'Upload PDF', routeName: 'sign.index' },
         { label: 'FAQ', routeName: 'faq' },
     ],
@@ -393,7 +394,6 @@ export const footerLinks = {
     resources: [
         { label: 'Help Center', routeName: 'help-center' },
         { label: 'Security Center', routeName: 'security' },
-        { label: 'Blog', routeName: 'blog' },
         { label: 'RSS Feed', href: '/rss.xml', sameTab: true },
         { label: 'Sitemap', href: '/sitemap.xml', sameTab: true },
     ],
