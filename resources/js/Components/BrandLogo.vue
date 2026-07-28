@@ -1,5 +1,5 @@
 <script setup>
-import CubArrowLogoSvg from '@/Components/CubArrowLogoSvg.vue';
+import CubSignLogoSvg from '@/Components/CubSignLogoSvg.vue';
 
 defineProps({
     variant: {
@@ -11,5 +11,5 @@ defineProps({
 </script>
 
 <template>
-    <CubArrowLogoSvg :variant="variant" />
+    <CubSignLogoSvg :variant="variant" />
 </template>

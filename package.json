@@ -8,7 +8,8 @@
         "generate:blog-covers": "node scripts/generate-blog-covers.mjs",
         "generate:blog-assets": "node scripts/generate-blog-assets.mjs",
         "generate:blog": "node scripts/generate-blog-content.mjs && npm run generate:blog-covers && npm run generate:blog-assets",
-        "generate:og": "node scripts/generate-default-og.mjs"
+        "generate:og": "node scripts/generate-default-og.mjs",
+        "generate:brand": "node scripts/generate-brand-assets.mjs"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0.0",
@@ -21,6 +22,7 @@
         "postcss": "^8.4.31",
         "sharp": "^0.34.5",
         "tailwindcss": "^3.2.1",
+        "to-ico": "^1.1.5",
         "vite": "^8.0.0",
         "vue": "^3.4.0"
     },

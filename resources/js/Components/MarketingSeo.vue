@@ -68,7 +68,7 @@ const orgJsonLd = computed(() => {
         '@type': 'Organization',
         name: 'CubSign',
         url: appUrl.value,
-        logo: `${appUrl.value}/favicon.svg`,
+        logo: `${appUrl.value}/logo.svg`,
     };
 
     if (props.aboutOrganization) {
@@ -96,7 +96,7 @@ const articleJsonLd = computed(() => {
         description: props.article.excerpt,
         author: { '@type': 'Person', name: props.article.author.name },
         datePublished: props.article.publishedAt,
-        publisher: { '@type': 'Organization', name: 'CubSign', logo: { '@type': 'ImageObject', url: `${appUrl.value}/favicon.svg` } },
+        publisher: { '@type': 'Organization', name: 'CubSign', logo: { '@type': 'ImageObject', url: `${appUrl.value}/logo.svg` } },
         mainEntityOfPage: canonicalUrl.value,
     };
     if (props.article.updatedAt) {
