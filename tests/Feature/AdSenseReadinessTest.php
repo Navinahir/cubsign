@@ -135,6 +135,14 @@ class AdSenseReadinessTest extends TestCase
         $this->assertStringNotContainsString('Disallow: /sign$', $robots);
     }
 
+    public function test_default_og_image_exists(): void
+    {
+        $path = public_path('images/og/default-og.png');
+
+        $this->assertFileExists($path);
+        $this->assertGreaterThan(10_000, filesize($path));
+    }
+
     /** @return array<int, string> */
     private function vueFilesIn(string $directory): array
     {

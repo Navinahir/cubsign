@@ -7,7 +7,8 @@
         "dev": "vite",
         "generate:blog-covers": "node scripts/generate-blog-covers.mjs",
         "generate:blog-assets": "node scripts/generate-blog-assets.mjs",
-        "generate:blog": "node scripts/generate-blog-content.mjs && npm run generate:blog-covers && npm run generate:blog-assets"
+        "generate:blog": "node scripts/generate-blog-content.mjs && npm run generate:blog-covers && npm run generate:blog-assets",
+        "generate:og": "node scripts/generate-default-og.mjs"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0.0",

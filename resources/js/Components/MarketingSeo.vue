@@ -1,6 +1,13 @@
 <script setup>
 import { computed } from 'vue';
 import { Head, usePage } from '@inertiajs/vue3';
+import {
+    BLOG_OG_HEIGHT,
+    BLOG_OG_WIDTH,
+    DEFAULT_OG_HEIGHT,
+    DEFAULT_OG_IMAGE,
+    DEFAULT_OG_WIDTH,
+} from '@/constants/og';
 
 const props = defineProps({
     title: { type: String, required: true },
@@ -22,11 +29,11 @@ const ogImage = computed(() => {
     if (img) {
         return img.startsWith('http') ? img : `${appUrl.value}${img}`;
     }
-    return `${appUrl.value}/favicon.svg`;
+    return `${appUrl.value}${DEFAULT_OG_IMAGE}`;
 });
 
-const ogImageWidth = computed(() => (props.article?.coverImage ? 1200 : undefined));
-const ogImageHeight = computed(() => (props.article?.coverImage ? 675 : undefined));
+const ogImageWidth = computed(() => (props.article?.coverImage ? BLOG_OG_WIDTH : DEFAULT_OG_WIDTH));
+const ogImageHeight = computed(() => (props.article?.coverImage ? BLOG_OG_HEIGHT : DEFAULT_OG_HEIGHT));
 
 const faqJsonLd = computed(() => {
     if (!props.faqSchema.length) return null;
