@@ -65,7 +65,7 @@ const seoArticle = computed(() => {
         publishedAt: article.value.updatedAt,
         updatedAt: article.value.updatedAt,
         keywords: article.value.keywords,
-        author: { name: 'CubSign Support' },
+        author: { name: 'CubSign Product & Engineering Team' },
     };
 });
 
@@ -220,6 +220,10 @@ onUnmounted(() => observer?.disconnect());
                                 />
                                 <HelpCopyLink />
                             </div>
+                            <p class="mt-3 text-xs text-gray-500">
+                                Written by the
+                                <Link :href="route('about')" class="font-medium text-blue-600 hover:text-blue-700">CubSign Product &amp; Engineering Team</Link>.
+                            </p>
                         </header>
 
                         <article class="pt-2">

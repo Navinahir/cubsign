@@ -419,7 +419,7 @@ export function uiIllustration(slug) {
     const v = articleVariants[slug] ?? articleVariants['how-to-sign-a-pdf-online'];
     const builder = sceneBuilders[v.scene] ?? sceneUpload;
     const inner = builder(v.accent, v.pdf);
-    return wrapAssetSvg(inner, `CubSign interface screenshot for ${slug.replace(/-/g, ' ')}`);
+    return wrapAssetSvg(inner, `Illustrated CubSign editor workflow for ${slug.replace(/-/g, ' ')}`);
 }
 
 export const articleAssetIllustrations = {};

@@ -118,7 +118,7 @@ function formatSize(bytes) {
 
                             <h2 class="text-center text-base font-bold text-gray-900">Your free signing session has already been used</h2>
                             <p class="mt-2 text-center text-sm leading-relaxed text-gray-500">
-                                Create a free account to continue signing unlimited documents.
+                                Create a free account to continue signing PDFs and to use storage, templates, and send-for-signature.
                             </p>
 
                             <div class="mt-5 space-y-2.5">
@@ -314,8 +314,8 @@ function formatSize(bytes) {
                             <div class="flex items-start gap-3">
                                 <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</div>
                                 <div class="pt-0.5">
-                                    <p class="text-sm font-semibold text-gray-900">Open PDF</p>
-                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-500">Drop or browse for any PDF up to 25 MB.</p>
+                                    <p class="text-sm font-semibold text-gray-900">Upload PDF</p>
+                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-500">PDF only, up to 25 MB. Opens the CubSign editor.</p>
                                 </div>
                             </div>
 
@@ -324,8 +324,8 @@ function formatSize(bytes) {
                             <div class="flex items-start gap-3">
                                 <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">2</div>
                                 <div class="pt-0.5">
-                                    <p class="text-sm font-semibold text-gray-400">Create Signature</p>
-                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-400">Draw, type, or upload your signature.</p>
+                                    <p class="text-sm font-semibold text-gray-400">Add signature</p>
+                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-400">Draw, type, or upload an image, then place fields on the page.</p>
                                 </div>
                             </div>
 
@@ -335,10 +335,22 @@ function formatSize(bytes) {
                                 <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">3</div>
                                 <div class="pt-0.5">
                                     <p class="text-sm font-semibold text-gray-400">Download</p>
-                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-400">Your signed PDF is ready in seconds.</p>
+                                    <p class="mt-0.5 text-xs leading-relaxed text-gray-400">Save the signed PDF. Account users can also send for signature.</p>
                                 </div>
                             </div>
 
+                        </div>
+
+                        <div class="mt-8 space-y-3 rounded-xl border border-gray-100 bg-gray-50 p-3.5 text-xs leading-relaxed text-gray-500">
+                            <p><span class="font-semibold text-gray-700">Account:</span> Not required for one guest self-sign session. Create a free account to continue and to send documents.</p>
+                            <p><span class="font-semibold text-gray-700">Issues?</span> Wrong file type, over 25 MB, or a corrupted PDF are the most common upload errors.</p>
+                            <p>
+                                <Link href="/help-center/how-to-upload-a-pdf" class="font-medium text-blue-600 hover:text-blue-700">Upload help</Link>
+                                ·
+                                <Link href="/help-center/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">Signing guide</Link>
+                                ·
+                                <Link href="/help-center/troubleshooting-upload-errors" class="font-medium text-blue-600 hover:text-blue-700">Troubleshooting</Link>
+                            </p>
                         </div>
 
                         <!-- Submit button in right panel (secondary location) -->
@@ -361,7 +373,7 @@ function formatSize(bytes) {
                                 <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                                 </svg>
-                                No account required
+                                Guest self-sign: one session
                             </div>
                             <div class="flex items-center gap-2 text-xs text-gray-400">
                                 <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -373,8 +385,13 @@ function formatSize(bytes) {
                                 <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                                 </svg>
-                                Encrypted in transit and at rest
+                                HTTPS in transit · private storage
                             </div>
+                            <p class="pt-1 text-[11px] text-gray-400">
+                                <Link :href="route('security')" class="text-blue-600 hover:text-blue-700">Security Center</Link>
+                                ·
+                                <Link :href="route('help-center')" class="text-blue-600 hover:text-blue-700">Help Center</Link>
+                            </p>
                         </div>
                     </div>
 

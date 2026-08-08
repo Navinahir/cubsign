@@ -56,7 +56,7 @@ class SitemapTest extends TestCase
             '<loc>https://cubsign.com/blog/introducing-cubsign-early-access</loc>',
             $content,
         );
-        $this->assertStringContainsString('<lastmod>2026-06-01</lastmod>', $content);
+        $this->assertStringContainsString('<lastmod>2026-08-08</lastmod>', $content);
     }
 
     public function test_sitemap_includes_help_center_articles(): void
@@ -74,7 +74,7 @@ class SitemapTest extends TestCase
             '<loc>https://cubsign.com/help-center/contact-support</loc>',
             $content,
         );
-        $this->assertStringContainsString('<lastmod>2026-06-15</lastmod>', $content);
+        $this->assertStringContainsString('<lastmod>2026-08-08</lastmod>', $content);
     }
 
     public function test_sitemap_excludes_private_routes(): void

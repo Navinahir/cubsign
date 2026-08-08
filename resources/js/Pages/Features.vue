@@ -17,12 +17,17 @@ import {
     Briefcase,
 } from '@lucide/vue';
 import { featuresShowcases } from '@/constants/featuresPage';
+
+function featureLinkHref(link) {
+    if (link.href) return link.href;
+    return route(link.routeName);
+}
 </script>
 
 <template>
     <MarketingSeo
         title="Features — CubSign | Free PDF Signing"
-        description="Self-sign PDFs, request signatures, use templates, track documents, and keep audit trails. Free during early access."
+        description="Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work — with real product limits."
         path="/features"
     />
 
@@ -34,12 +39,17 @@ import { featuresShowcases } from '@/constants/featuresPage';
                 CubSign features
             </h1>
             <p class="mt-4 max-w-2xl text-base leading-relaxed text-gray-600 sm:text-lg">
-                Sign PDFs yourself, request signatures from others, reuse templates, and keep a clear record of what happened. Free during Early Access.
+                Each section explains what the feature does, why it matters, how you use it, and what to expect. Free during Early Access. Visuals below are product illustrations of the CubSign workflow, not third-party screenshots.
+            </p>
+            <p class="mt-4 text-sm text-gray-500">
+                Prefer to start immediately?
+                <Link :href="route('sign.index')" class="font-medium text-blue-600 hover:text-blue-700">Upload a PDF</Link>
+                ·
+                <Link :href="route('help-center')" class="font-medium text-blue-600 hover:text-blue-700">Help Center</Link>
             </p>
         </div>
     </section>
 
-    <!-- Core features -->
     <section
             v-for="(feature, index) in featuresShowcases"
             :key="feature.id"
@@ -53,7 +63,7 @@ import { featuresShowcases } from '@/constants/featuresPage';
             <div class="mx-auto max-w-6xl">
                 <div
                     :class="[
-                        'grid items-center gap-6 lg:grid-cols-2 lg:gap-10',
+                        'grid items-start gap-6 lg:grid-cols-2 lg:gap-10',
                         index % 2 === 1 ? 'lg:[&>*:first-child]:order-2' : '',
                     ]"
                 >
@@ -73,6 +83,7 @@ import { featuresShowcases } from '@/constants/featuresPage';
                             <FeaturesAuditIllustration v-else-if="feature.mockup === 'audit'" />
                             <FeaturesSecureStorageIllustration v-else-if="feature.mockup === 'storage'" />
                             <FeaturesTrackingIllustration v-else-if="feature.mockup === 'tracking'" />
+                            <p class="mt-3 text-xs text-gray-400">Illustrated CubSign workflow</p>
                         </div>
                     </ScrollReveal>
 
@@ -84,7 +95,25 @@ import { featuresShowcases } from '@/constants/featuresPage';
                             <p class="mt-2 text-sm leading-relaxed text-gray-500 sm:text-base">
                                 {{ feature.description }}
                             </p>
-                            <ul class="mt-4 space-y-2">
+
+                            <div class="mt-5 space-y-4 text-sm text-gray-700">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">Why it matters</h3>
+                                    <p class="mt-1 leading-relaxed text-gray-600">{{ feature.whyItMatters }}</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">How you use it</h3>
+                                    <ol class="mt-2 list-decimal space-y-1.5 pl-5 text-gray-600">
+                                        <li v-for="step in feature.howToUse" :key="step">{{ step }}</li>
+                                    </ol>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900">What to expect</h3>
+                                    <p class="mt-1 leading-relaxed text-gray-600">{{ feature.expect }}</p>
+                                </div>
+                            </div>
+
+                            <ul class="mt-5 space-y-2">
                                 <li
                                     v-for="bullet in feature.bullets"
                                     :key="bullet"
@@ -96,30 +125,34 @@ import { featuresShowcases } from '@/constants/featuresPage';
                                     {{ bullet }}
                                 </li>
                             </ul>
-                            <Link
-                                :href="route('sign.index')"
-                                class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700"
-                            >
-                                Try it now
-                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </Link>
+
+                            <div class="mt-5 flex flex-wrap gap-x-4 gap-y-2">
+                                <Link
+                                    v-for="link in feature.links"
+                                    :key="link.label"
+                                    :href="featureLinkHref(link)"
+                                    class="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700"
+                                >
+                                    {{ link.label }}
+                                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </Link>
+                            </div>
                         </div>
                     </ScrollReveal>
                 </div>
             </div>
         </section>
 
-        <!-- Designed for every workflow -->
         <section class="bg-white px-4 py-10 sm:px-6 lg:px-8 lg:py-12" aria-labelledby="audience-heading">
             <div class="mx-auto max-w-6xl">
                 <ScrollReveal>
                     <h2 id="audience-heading" class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                        Designed for every workflow
+                        Practical audiences
                     </h2>
                     <p class="mt-2 max-w-xl text-sm text-gray-500">
-                        Whether you work alone or with a team, CubSign fits how you handle documents.
+                        Example workflows CubSign supports today — not customer logos or testimonials.
                     </p>
                 </ScrollReveal>
 
@@ -130,7 +163,7 @@ import { featuresShowcases } from '@/constants/featuresPage';
                                 <PenSquare :size="18" :stroke-width="2" color="white" aria-hidden="true" />
                             </div>
                             <h3 class="text-sm font-bold text-gray-900">Freelancers</h3>
-                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Sign client contracts and send proposals without the back-and-forth.</p>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Self-sign client contracts or send a PDF for the client’s signature and download the result.</p>
                         </div>
                     </ScrollReveal>
 
@@ -139,8 +172,8 @@ import { featuresShowcases } from '@/constants/featuresPage';
                             <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none">
                                 <Building2 :size="18" :stroke-width="2" color="white" aria-hidden="true" />
                             </div>
-                            <h3 class="text-sm font-bold text-gray-900">Small Business</h3>
-                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Handle agreements, invoices, and vendor forms in one place.</p>
+                            <h3 class="text-sm font-bold text-gray-900">Small business</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Store vendor forms in the workspace and track who has signed.</p>
                         </div>
                     </ScrollReveal>
 
@@ -149,8 +182,8 @@ import { featuresShowcases } from '@/constants/featuresPage';
                             <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-slate-600 to-gray-800 shadow-sm transition-transform group-hover:scale-105 motion-reduce:transform-none">
                                 <Scale :size="18" :stroke-width="2" color="white" aria-hidden="true" />
                             </div>
-                            <h3 class="text-sm font-bold text-gray-900">Legal Teams</h3>
-                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Send NDAs and agreements with a clear record of who signed.</p>
+                            <h3 class="text-sm font-bold text-gray-900">Legal ops</h3>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Send NDAs with activity history for invitations and signature events.</p>
                         </div>
                     </ScrollReveal>
 
@@ -160,7 +193,7 @@ import { featuresShowcases } from '@/constants/featuresPage';
                                 <Users :size="18" :stroke-width="2" color="white" aria-hidden="true" />
                             </div>
                             <h3 class="text-sm font-bold text-gray-900">HR</h3>
-                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Get offer letters and onboarding paperwork signed before day one.</p>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Collect signed offer letters before day one using email invitation links.</p>
                         </div>
                     </ScrollReveal>
 
@@ -170,7 +203,7 @@ import { featuresShowcases } from '@/constants/featuresPage';
                                 <TrendingUp :size="18" :stroke-width="2" color="white" aria-hidden="true" />
                             </div>
                             <h3 class="text-sm font-bold text-gray-900">Sales</h3>
-                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Close deals faster with quotes and contracts signed online.</p>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Close quotes and short contracts with sequential multi-recipient signing.</p>
                         </div>
                     </ScrollReveal>
 
@@ -180,7 +213,7 @@ import { featuresShowcases } from '@/constants/featuresPage';
                                 <Briefcase :size="18" :stroke-width="2" color="white" aria-hidden="true" />
                             </div>
                             <h3 class="text-sm font-bold text-gray-900">Operations</h3>
-                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Keep vendor agreements and internal forms organized and tracked.</p>
+                            <p class="mt-1 text-xs leading-relaxed text-gray-500">Reuse templates for recurring internal forms and keep status visible.</p>
                         </div>
                     </ScrollReveal>
                 </div>

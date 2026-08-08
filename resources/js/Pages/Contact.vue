@@ -69,7 +69,8 @@ function handleSubmit() {
                             <textarea id="message" v-model="form.message" rows="5" class="mt-1.5 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
                             <p v-if="errors.message" class="mt-1 text-xs text-red-500">{{ errors.message }}</p>
                         </div>
-                        <button type="submit" class="marketing-btn-ripple mt-6 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700">Send Message</button>
+                        <button type="submit" class="marketing-btn-ripple mt-6 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700">Open email draft</button>
+                        <p class="mt-3 text-xs text-gray-400">This form opens your email app with a pre-filled message to {{ SUPPORT_EMAIL }}. It does not submit to a CubSign server.</p>
                     </form>
                 </ScrollReveal>
 

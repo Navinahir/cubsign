@@ -37,7 +37,7 @@ const plannedMilestones = aboutTimeline.filter((item) => item.status === 'planne
 <template>
     <MarketingSeo
         title="About CubSign — Our Mission, Values & Story"
-        description="CubSign is a browser-based PDF signing platform built to make secure eSignatures simple and accessible. Learn about our mission, values, and product roadmap."
+        description="CubSign is a browser-based PDF signing product from Cubiz Infotech. Learn why we built it, what the product does today, and what is planned."
         path="/about"
         :faq-schema="aboutFaqs"
         :breadcrumb-schema="breadcrumbSchema"

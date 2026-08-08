@@ -17,23 +17,23 @@ const categories = [
         items: [
             {
                 question: 'What is CubSign?',
-                answer: 'CubSign is a web-based PDF signing platform that lets you sign documents yourself or send them to others for signature. It\'s designed to be fast, secure, and simple, with no software installation required.',
+                answer: 'CubSign is a browser-based PDF signing product. Upload a PDF, place a signature (draw, type, or upload an image), download the signed file, or send it to others for signature. No software installation required.',
             },
             {
                 question: 'Do I need to create an account?',
-                answer: 'You can sign a PDF without an account. Creating an account unlocks document storage, sending for signature, templates, and your signing history.',
+                answer: 'You can complete one self-sign session without an account. Creating a free account unlocks continued signing, document storage, templates, send-for-signature, and activity history.',
             },
             {
                 question: 'Is CubSign free to use?',
-                answer: 'Yes. CubSign is completely free during early access. No credit card is required to get started.',
+                answer: 'Yes. CubSign is free during Early Access. No credit card is required.',
             },
             {
                 question: 'Why is CubSign free?',
-                answer: 'We are currently in Early Access and collecting feedback from users before introducing paid plans.',
+                answer: 'We are in Early Access and collecting feedback on real signing workflows before introducing paid plans. No plans or prices are published yet.',
             },
             {
                 question: 'What file formats are supported?',
-                answer: 'CubSign supports PDF files. Upload standard PDF documents up to 25 MB.',
+                answer: 'CubSign accepts PDF files only, up to 25 MB per upload.',
             },
         ],
     },
@@ -42,19 +42,19 @@ const categories = [
         items: [
             {
                 question: 'How do I sign a document?',
-                answer: 'Upload your PDF, place your signature on the required fields using our drag-and-drop editor, and download the signed copy. The entire process takes under a minute.',
+                answer: 'Go to Upload PDF, choose a PDF, open the editor, place fields (signature, initials, name, text, date, or checkbox), create your signature, then download. Account holders can also send the document for others to sign.',
             },
             {
                 question: 'What types of signatures are supported?',
-                answer: 'You can draw your signature on a canvas, type it in a handwriting-style font, or upload an existing signature image. All methods produce a legally valid signature.',
+                answer: 'Draw on a canvas, type in a signature-style font, or upload a signature image. The signature applies to the current document session; CubSign does not offer a permanent cross-document signature vault.',
             },
             {
                 question: 'How do I send a document for someone else to sign?',
-                answer: 'Upload your document, add the recipient\'s email address, place the signature fields, and click Send. Your recipient will receive a secure email with a link to review and sign the document.',
+                answer: 'Sign in, upload or open a PDF, add recipient email addresses, place fields for each signer, and send. Each recipient gets a unique email link and can sign without a CubSign account.',
             },
             {
                 question: 'Do recipients need a CubSign account to sign?',
-                answer: 'No. Recipients receive a secure signing link by email and can sign without creating an account. This makes it easy for clients, partners, or anyone to sign without friction.',
+                answer: 'No. Recipients open a unique signing link from email and complete their fields without registering.',
             },
         ],
     },
@@ -63,19 +63,19 @@ const categories = [
         items: [
             {
                 question: 'Are my documents secure?',
-                answer: 'Yes. All documents are stored securely with industry-standard encryption. Access is restricted to authorized users only, and all data is transmitted over HTTPS.',
+                answer: 'Traffic uses HTTPS. Account documents are stored on private server storage with access limited to owners and invited recipients. See the Security Center for authentication, passwords, and disclosure. CubSign does not claim AES-256 encryption at rest.',
             },
             {
                 question: 'Are CubSign signatures legally binding?',
-                answer: 'CubSign produces electronic signatures that comply with widely accepted e-signature standards. Each signed document includes a full audit trail with timestamps and IP addresses to support legal validity.',
+                answer: 'Electronic signatures are widely recognized when parties intend to sign and consent to transact electronically. CubSign helps you capture signatures and related activity for sent documents. You remain responsible for whether an e-signature is appropriate for your document and jurisdiction. CubSign does not provide legal advice.',
             },
             {
-                question: 'What is the audit trail?',
-                answer: 'Every action on a document is logged, including who viewed it, who signed it, and when. The audit trail includes timestamps and IP addresses, making your documents verifiable and legally defensible.',
+                question: 'What is the activity history (audit trail)?',
+                answer: 'For documents you send, CubSign logs key events such as invitations, recipient signatures, and completion, with timestamps in your workspace. The user-facing activity history does not claim page-view logging or IP addresses.',
             },
             {
                 question: 'Can I delete my documents?',
-                answer: 'Yes. You can delete any document from your workspace at any time. Deleted documents are permanently removed from our servers.',
+                answer: 'Yes. Account holders can delete documents from the workspace. Deletion follows the Privacy Policy.',
             },
         ],
     },
@@ -83,20 +83,20 @@ const categories = [
         title: 'Early Access & Pricing',
         items: [
             {
-                question: 'What\'s included during early access?',
-                answer: 'Early access includes unlimited signatures, unlimited recipients, unlimited downloads, secure cloud storage, audit history, and full PDF signing, all at no cost.',
+                question: "What's included during early access?",
+                answer: 'Self-sign, guest one-session signing, account storage, templates, multi-recipient send, activity history, and PDF downloads — all free. Limits: PDF only, 25 MB, guest one session.',
             },
             {
                 question: 'Will CubSign always be free?',
-                answer: 'CubSign is free during early access while we validate the product. Paid plans may be introduced later, and early access users will be notified well in advance.',
+                answer: 'CubSign is free during Early Access. Paid plans may come later with advance notice. There is no billing today and nothing to cancel.',
             },
             {
                 question: 'When will paid plans be available?',
-                answer: 'Paid plans will be introduced after early access ends. We will notify all users in advance and offer preferential options to early adopters.',
+                answer: 'No launch date is published. Account holders will be notified before any paid plans begin.',
             },
             {
                 question: 'Do I need a credit card?',
-                answer: 'No. CubSign early access requires no credit card. Create a free account and start signing immediately.',
+                answer: 'No. Early Access requires no credit card.',
             },
         ],
     },
@@ -134,7 +134,7 @@ function isOpen(categoryIndex, itemIndex) {
 <template>
     <MarketingSeo
         title="FAQ — CubSign | Free PDF Signing Help"
-        description="Answers to common questions about CubSign, including free early access, PDF signing, security, sending for signature, and more."
+        description="Answers about CubSign PDF signing, guest vs account limits, security, activity history, and free Early Access."
         path="/faq"
         :faq-schema="faqSchema"
     />
@@ -149,8 +149,11 @@ function isOpen(categoryIndex, itemIndex) {
                     Frequently asked questions
                 </h1>
                 <p class="mt-5 text-lg text-gray-500">
-                    Everything you need to know about CubSign. Can't find your answer?
-                    <a href="mailto:support@cubsign.com" class="text-blue-600 hover:underline">Contact support.</a>
+                    Product answers for how CubSign works today.
+                    Prefer step-by-step guides?
+                    <Link :href="route('help-center')" class="text-blue-600 hover:underline">Open the Help Center</Link>
+                    or
+                    <Link :href="route('security')" class="text-blue-600 hover:underline">Security Center</Link>.
                 </p>
             </div>
         </section>
@@ -213,7 +216,7 @@ function isOpen(categoryIndex, itemIndex) {
             <div class="mx-auto max-w-xl">
                 <h2 class="text-2xl font-bold text-gray-900">Still have questions?</h2>
                 <p class="mt-3 text-gray-500">
-                    Reach out to our support team. We are happy to help.
+                    Browse product guides or email the CubSign team.
                 </p>
                 <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                     <Link :href="route('help-center')" :class="[btnPrimary, 'w-full sm:w-auto']">

@@ -29,46 +29,46 @@ export const cardClass =
     'rounded-2xl border border-gray-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md';
 
 export const floatingTrustItems = [
-    'Secure PDF Signing',
-    'No Credit Card Required',
-    'Free During Early Access',
+    'PDF signing in the browser',
+    'No credit card required',
+    'Free during Early Access',
 ];
 
 export const credibilityCards = [
     {
-        title: 'Security',
-        description: 'HTTPS encryption in transit and secure cloud storage for every document you upload.',
+        title: 'HTTPS in transit',
+        description: 'Uploads, signing sessions, and downloads travel over HTTPS so documents are encrypted while moving between your browser and CubSign.',
         icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
     },
     {
-        title: 'Audit Trail',
-        description: 'Every view, sign, and send event is logged with timestamps for legal defensibility.',
+        title: 'Activity history',
+        description: 'Sent documents log key events such as invitations, recipient signatures, and completion with timestamps in your workspace.',
         icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
     },
     {
-        title: 'Document Tracking',
-        description: 'See who has signed, who is pending, and when each document was completed.',
+        title: 'Document tracking',
+        description: 'See who has signed, who is still pending, and when a multi-recipient document was completed.',
         icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
     },
     {
-        title: 'Legally Binding Signatures',
-        description: 'Electronic signatures with identity evidence that meet widely accepted e-sign standards.',
+        title: 'Electronic signatures',
+        description: 'Draw, type, or upload a signature and place it on the PDF. You remain responsible for using e-signatures appropriately for your documents and jurisdiction.',
         icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
     },
     {
-        title: 'Email Notifications',
-        description: 'Recipients get secure signing links. You are notified the moment documents are completed.',
+        title: 'Email invitations',
+        description: 'Recipients get a unique signing link by email. They can sign without creating a CubSign account.',
         icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
     },
 ];
 
 export const journeySteps = [
-    { title: 'Upload', description: 'Drop your PDF and start instantly.' },
-    { title: 'Prepare', description: 'Add fields, dates, and text boxes.' },
-    { title: 'Sign', description: 'Draw, type, or upload your signature.' },
-    { title: 'Send', description: 'Invite recipients with secure email links.' },
-    { title: 'Track', description: 'Monitor who signed and who is pending.' },
-    { title: 'Complete', description: 'Download the fully signed PDF.' },
+    { title: 'Upload', description: 'Choose a PDF up to 25 MB.' },
+    { title: 'Prepare', description: 'Add signature, initials, name, text, date, or checkbox fields.' },
+    { title: 'Sign', description: 'Draw, type, or upload your signature image.' },
+    { title: 'Send', description: 'Invite recipients with unique email links (account required).' },
+    { title: 'Track', description: 'Watch pending and signed status in your workspace.' },
+    { title: 'Download', description: 'Save the finished signed PDF.' },
 ];
 
 export const APP_VERSION = '0.13.2';
@@ -250,126 +250,130 @@ export const aboutTimeline = [
 export const aboutFaqs = [
     {
         question: 'What is CubSign?',
-        answer: 'CubSign is an online PDF signing platform. You can upload a PDF, add your signature in the browser, download the signed file, or send documents to others for signature without printing or installing software.',
+        answer: 'CubSign is an online PDF signing product. Upload a PDF in your browser, place a signature (draw, type, or upload an image), then download the signed file or send it to others for signature. No software install required.',
     },
     {
         question: 'Who builds CubSign?',
-        answer: 'CubSign is built by Cubiz Infotech, a focused product team improving the platform during Early Access based on real user feedback.',
+        answer: 'CubSign is built by Cubiz Infotech. The Product & Engineering team ships the signing editor, workspace, and public site, and improves the product during Early Access from real user feedback.',
     },
     {
         question: 'Why was CubSign created?',
-        answer: 'We built CubSign to end the print-sign-scan cycle. Many e-signature tools felt expensive or overly complex for everyday contracts, so we focused on a simple, secure workflow anyone can use.',
+        answer: 'Printing, signing, scanning, and emailing PDFs is slow for everyday agreements. CubSign was built so freelancers, small teams, and growing businesses can finish that workflow in the browser without enterprise complexity.',
     },
     {
         question: 'Is CubSign free?',
-        answer: 'Yes. CubSign is free during Early Access. You can upload, sign, send for signature, and download PDFs without a credit card.',
+        answer: 'Yes. CubSign is free during Early Access. No credit card is required. Guest users can complete one self-sign session; a free account unlocks storage, templates, and send-for-signature.',
     },
     {
         question: 'Do I need to create an account?',
-        answer: 'Not for basic self-signing. You can upload a PDF, sign it, and download the result without an account. Creating an account unlocks document storage and send-for-signature workflows.',
+        answer: 'Not for a single self-sign session. Upload, sign, and download without registering. Create a free account for document storage, templates, multi-recipient sends, and continued signing after the guest limit.',
     },
     {
         question: 'Are electronic signatures on CubSign legally valid?',
-        answer: 'Electronic signatures are widely recognized under modern e-signature laws when parties intend to sign. CubSign helps you capture signatures digitally; you remain responsible for using them appropriately for your documents and jurisdiction.',
+        answer: 'Electronic signatures are widely recognized when parties intend to sign and consent to transact electronically. CubSign captures signatures and related activity for sent documents; you remain responsible for fitness for your documents and jurisdiction.',
     },
     {
         question: 'How does CubSign keep documents secure?',
-        answer: 'Documents are transmitted over HTTPS and stored with industry-standard cloud security practices. Access is limited to authorized users and invited recipients.',
+        answer: 'Documents travel over HTTPS. Files are stored on private server storage with access limited to owners and invited recipients. Passwords are hashed. Details are on the Security Center and Privacy Policy.',
     },
     {
         question: 'Does CubSign work on mobile devices?',
-        answer: 'Yes. CubSign runs in modern browsers on desktop, tablet, and mobile, so you can sign on the device you already use.',
+        answer: 'Yes. CubSign runs in modern browsers on desktop, tablet, and phone, including drawing a signature on a touch screen.',
     },
     {
         question: 'Do I need to install any software?',
-        answer: 'No. CubSign is entirely browser-based. Open the site, upload your PDF, and start signing, nothing to download or update.',
+        answer: 'No. CubSign is browser-based. Open the site, upload your PDF, and start signing.',
     },
     {
         question: 'How can I contact the CubSign team?',
-        answer: 'Visit the Contact page or email support@cubsign.com. We are a small team and read every message during Early Access.',
+        answer: 'Visit the Contact page or email support@cubsign.com. During Early Access we read every message.',
     },
 ];
 
 export const socialStats = [
     { value: 'Free', label: 'During Early Access' },
-    { value: 'Secure', label: 'Encrypted documents' },
-    { value: 'Simple', label: 'Works on mobile' },
+    { value: 'HTTPS', label: 'Encrypted in transit' },
+    { value: 'Browser', label: 'Desktop and mobile' },
 ];
 
-export const customerLogos = [
-    { name: 'Freelancers', initials: 'FL' },
-    { name: 'Agencies', initials: 'AG' },
-    { name: 'HR Teams', initials: 'HR' },
-    { name: 'Legal', initials: 'LG' },
-    { name: 'Real Estate', initials: 'RE' },
-    { name: 'Startups', initials: 'ST' },
+/** Audience labels for homepage use cases — not customer logos or testimonials. */
+export const audienceUseCases = [
+    { name: 'Freelancers', initials: 'FL', example: 'Client contracts and invoices' },
+    { name: 'Agencies', initials: 'AG', example: 'Proposals and vendor forms' },
+    { name: 'HR', initials: 'HR', example: 'Offer letters and onboarding PDFs' },
+    { name: 'Legal ops', initials: 'LG', example: 'NDAs and agreements' },
+    { name: 'Real estate', initials: 'RE', example: 'Listing and closing paperwork' },
+    { name: 'Startups', initials: 'ST', example: 'Founder and contractor docs' },
 ];
+
+/** @deprecated Prefer audienceUseCases — kept for any remaining imports. */
+export const customerLogos = audienceUseCases;
 
 export const heroTrustBadges = [
-    'No Account Required',
-    'Secure PDF Signing',
-    'Legally Valid',
-    'Free During Early Access',
+    'Guest self-sign available',
+    'PDF up to 25 MB',
+    'HTTPS in transit',
+    'Free during Early Access',
 ];
 
 export const homeComparisonCubsign = [
-    'No account required',
-    'Unlimited signatures',
-    'Unlimited documents',
-    'Multiple recipients',
-    'Secure cloud storage',
-    'Audit trail',
-    'Early Access Free',
+    'Guest self-sign without an account',
+    'Account storage for signed PDFs',
+    'Send to multiple recipients',
+    'Draw, type, or upload a signature',
+    'Private document storage with access controls',
+    'Activity history on sent documents',
+    'Free during Early Access',
 ];
 
 export const homeComparisonOthers = [
-    'Monthly subscription',
-    'Signature limits',
-    'Account required',
-    'Hidden pricing',
-    'Feature restrictions',
+    'Paid subscription required',
+    'Signature or envelope limits',
+    'Account required to start',
+    'Complex enterprise setup',
+    'Print-sign-scan workflow',
 ];
 
 export const pricingTrustBadges = [
-    'Unlimited Signatures',
-    'Unlimited Documents',
-    'No Credit Card',
+    'Account signing included',
+    'Send for signature included',
+    'No credit card',
     'Free Early Access',
 ];
 
 export const homeFaqs = [
     {
         question: 'Is CubSign free to use?',
-        answer: 'Yes. CubSign is completely free during early access. You can upload, sign, send for signature, and download PDFs without any charge or credit card required.',
+        answer: 'Yes. CubSign is free during Early Access. No credit card is required. Guest users can complete one self-sign session without an account; a free account unlocks storage, templates, and send-for-signature.',
     },
     {
-        question: 'Why is CubSign free?',
-        answer: 'We are currently in Early Access and collecting feedback from users before introducing paid plans.',
+        question: 'What happens after I upload a PDF?',
+        answer: 'CubSign opens the signing editor. You place fields (signature, initials, name, text, date, or checkbox), create a signature by drawing, typing, or uploading an image, then download the signed PDF or, with an account, send it to recipients.',
     },
     {
         question: 'Do I need to create an account to sign?',
-        answer: 'No. You can upload a PDF, add your signature and download the signed document without creating an account. An account unlocks document storage and sending for signature.',
+        answer: 'Not for a single self-sign session. You can upload a PDF, sign it, and download the result without registering. After that guest session, create a free account to continue. An account also unlocks document storage, templates, and email invitations.',
     },
     {
-        question: 'Are my documents secure?',
-        answer: 'All documents are stored with industry-standard encryption. Access is restricted to authorised users only, and all data is transmitted over HTTPS.',
+        question: 'How does CubSign protect documents?',
+        answer: 'Traffic uses HTTPS. Stored files live on private server storage with access limited to the document owner and invited recipients. Read the Security Center for details on authentication, passwords, and responsible disclosure.',
     },
     {
         question: 'Can I sign documents on mobile?',
-        answer: 'Yes. CubSign works in any modern browser on desktop, tablet, and mobile.',
+        answer: 'Yes. CubSign runs in modern browsers on desktop, tablet, and phone. You can draw a signature with a finger or stylus on touch devices.',
     },
 ];
 
 export const homePricingComparison = [
-    { feature: 'Unlimited signatures', cubsign: true, others: false },
+    { feature: 'Guest self-sign (one session)', cubsign: true, others: false },
     { feature: 'No credit card required', cubsign: true, others: false },
     { feature: 'Free during Early Access', cubsign: true, others: false },
 ];
 
 export const pricingComparison = [
-    { feature: 'Unlimited signatures', cubsign: true, others: false },
+    { feature: 'Guest self-sign available', cubsign: true, others: false },
     { feature: 'No credit card required', cubsign: true, others: false },
-    { feature: 'Audit trail', cubsign: true, others: true },
+    { feature: 'Activity history on sent docs', cubsign: true, others: true },
     { feature: 'Multi-recipient signing', cubsign: true, others: true },
     { feature: 'Free during Early Access', cubsign: true, others: false },
 ];

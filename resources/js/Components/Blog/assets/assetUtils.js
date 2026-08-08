@@ -14,7 +14,7 @@ export function getBlogAssetAlt(slug, asset, fallbackTitle = '') {
         return `CubSign workflow diagram: ${label}`;
     }
     if (asset === 'ui') {
-        return `CubSign product interface showing ${label}`;
+        return `Illustrated CubSign signing interface for ${label}`;
     }
     return `CubSign illustration for ${label}`;
 }

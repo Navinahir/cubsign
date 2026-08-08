@@ -1,5 +1,5 @@
 <script setup>
-import { socialStats, customerLogos } from '@/constants/marketing';
+import { audienceUseCases, socialStats } from '@/constants/marketing';
 
 defineProps({
     compact: { type: Boolean, default: false },
@@ -16,11 +16,19 @@ defineProps({
         </div>
 
         <div :class="compact ? 'mb-10' : 'mb-14'">
-            <p class="mb-5 text-center text-xs font-semibold uppercase tracking-widest text-gray-400">Built for teams of every size</p>
+            <p class="mb-5 text-center text-xs font-semibold uppercase tracking-widest text-gray-400">Example audiences (not customer logos)</p>
             <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-                <div v-for="logo in customerLogos" :key="logo.name" class="flex items-center gap-2 rounded-xl border border-gray-100/80 bg-white px-3.5 py-2 shadow-sm shadow-gray-100/60" :aria-label="logo.name">
-                    <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 text-[9px] font-bold text-gray-600">{{ logo.initials }}</div>
-                    <span class="text-xs font-medium text-gray-600 sm:text-sm">{{ logo.name }}</span>
+                <div
+                    v-for="item in audienceUseCases"
+                    :key="item.name"
+                    class="flex max-w-xs items-center gap-2 rounded-xl border border-gray-100/80 bg-white px-3.5 py-2 shadow-sm shadow-gray-100/60"
+                    :aria-label="`${item.name}: ${item.example}`"
+                >
+                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-50 text-[9px] font-bold text-gray-600">{{ item.initials }}</div>
+                    <div class="min-w-0 text-left">
+                        <span class="block text-xs font-medium text-gray-700 sm:text-sm">{{ item.name }}</span>
+                        <span class="block truncate text-[11px] text-gray-400">{{ item.example }}</span>
+                    </div>
                 </div>
             </div>
         </div>

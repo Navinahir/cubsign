@@ -56,7 +56,7 @@ const sections = [
 
             <section id="security" class="mt-12 scroll-mt-28">
                 <h2 class="text-xl font-bold text-gray-900">Security</h2>
-                <p class="mt-4 text-base leading-relaxed text-gray-600">AES-256 encryption at rest, TLS 1.3 in transit, and access controls protect your documents. See our <Link :href="route('terms')" class="text-blue-600 hover:text-blue-700">Terms of Service</Link> for full details.</p>
+                <p class="mt-4 text-base leading-relaxed text-gray-600">Documents are transmitted over HTTPS. Stored files live on private server storage with access limited to document owners and invited recipients. CubSign does not claim AES-256 encryption at rest in this policy. See the <Link :href="route('security')" class="text-blue-600 hover:text-blue-700">Security Center</Link> and <Link :href="route('terms')" class="text-blue-600 hover:text-blue-700">Terms of Service</Link> for related details.</p>
             </section>
 
             <section id="third-party" class="mt-12 scroll-mt-28">

@@ -27,12 +27,12 @@ defineProps({
                     </div>
 
                     <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
-                        Securely upload and
-                        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent"> sign</span> your PDF online
+                        Upload and
+                        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent"> sign</span> PDFs in your browser
                     </h1>
 
                     <p class="mt-5 max-w-lg text-lg leading-relaxed text-gray-600">
-                        Add your signature and download the finished document in seconds. No printing, no scanning.
+                        CubSign is a PDF signing product for everyday agreements. Add a drawn, typed, or uploaded signature, then download the file — or send it for others to sign with a free account.
                     </p>
 
                     <div class="mt-10">

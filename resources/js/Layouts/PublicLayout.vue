@@ -125,7 +125,7 @@ function navLinkClass(link, mobile = false) {
                         <Link :href="route('home')" class="inline-flex transition-opacity hover:opacity-90">
                             <BrandLogo variant="footer" />
                         </Link>
-                        <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">Simple PDF signing.</p>
+                        <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">Browser-based PDF signing: upload, sign, download, or send for signature.</p>
                     </div>
 
                     <div v-for="group in footerGroups" :key="group.key">

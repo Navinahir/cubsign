@@ -238,7 +238,10 @@ onUnmounted(() => observer?.disconnect());
                                 </div>
                                 <div>
                                     <p class="font-semibold text-gray-900">{{ blogAuthor.name }}</p>
-                                    <p class="mt-1 text-sm leading-relaxed text-gray-600">{{ blogAuthor.bio }}</p>
+                                    <p class="mt-1 text-sm leading-relaxed text-gray-600">
+                                        {{ blogAuthor.bio }}
+                                        <Link :href="route('about')" class="font-medium text-blue-600 hover:text-blue-700">About CubSign</Link>
+                                    </p>
                                 </div>
                             </div>
 

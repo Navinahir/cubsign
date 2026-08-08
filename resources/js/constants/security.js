@@ -4,7 +4,7 @@ export const securityArticleMeta = {
     title: 'CubSign Security Center',
     excerpt:
         'How CubSign protects your documents and account: HTTPS, encryption in transit, secure document handling, authentication options, and responsible disclosure.',
-    author: { name: 'CubSign Team' },
+    author: { name: 'CubSign Product & Engineering Team' },
     publishedAt: '2025-12-01',
     updatedAt: '2026-07-27',
     keywords: [
@@ -53,14 +53,14 @@ export const securitySections = [
         description: 'How uploaded PDFs are stored, accessed, and removed.',
         icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
         paragraphs: [
-            'When you upload a PDF to CubSign, the file is stored on secure cloud infrastructure with access limited to authorized users and invited recipients. Document owners control who can view or sign each file.',
-            'You can delete documents from your workspace at any time. Deleted documents are removed from active storage as described in our Privacy Policy.',
+            'When you upload a PDF to CubSign with an account, the file is stored on private server storage (or an optional configured cloud disk) with access limited to authorized users and invited recipients. Document owners control who can sign each file.',
+            'You can delete documents from your workspace at any time. Deleted documents are removed from active storage as described in our Privacy Policy. CubSign does not claim AES-256 or other specific at-rest encryption algorithms for stored PDFs.',
         ],
         bullets: [
             'Documents are accessible only to the account owner and invited recipients',
             'Signing links are unique per recipient and tied to a specific document',
             'Workspace owners can delete documents when they are no longer needed',
-            'Activity events (views, signatures) are logged for audit purposes',
+            'Sent documents log activity such as invitations, recipient signatures, and completion',
         ],
     },
     {
