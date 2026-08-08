@@ -112,6 +112,22 @@ export const blogPosts = [
                 text: "CubSign lets you sign a PDF entirely in your browser: upload a file up to 25 MB, place fields in the editor, add your signature, and download the finished document. No printer, scanner, or desktop app required. Guest users get one self-sign session; a free account adds storage, templates, and the ability to send documents to other signers.",
             },
             {
+                type: "product-screenshot",
+                key: "signed-pdf-download",
+            },
+            {
+                type: "product-screenshot",
+                key: "signature-placement",
+            },
+            {
+                type: "product-screenshot",
+                key: "signing-editor",
+            },
+            {
+                type: "product-screenshot",
+                key: "pdf-upload",
+            },
+            {
                 type: "p",
                 text: "This guide walks through the exact CubSign flow on cubsign.com/sign—from upload through field placement to download—so you can complete a real agreement in minutes.",
             },
@@ -242,7 +258,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "Next: How to Request Digital Signatures for sending to others, or How to Sign PDFs on Mobile for phone-specific tips.",
-            }
+            },
         ],
         faq: [
             {
@@ -312,6 +328,11 @@ export const blogPosts = [
                 text: "This article explains the practical difference in plain language, shows when each one actually applies, and then connects both to how CubSign supports everyday electronic signing for freelancers, small businesses, and teams that need speed without unnecessary technical overhead.",
             },
             {
+                type: "product-screenshot",
+                key: "signing-editor",
+                caption: "CubSign captures electronic signatures in the browser editor.",
+            },
+            {
                 type: "figure",
                 slug: "electronic-signature-vs-digital-signature",
                 asset: "workflow",
@@ -354,13 +375,6 @@ export const blogPosts = [
                     "Either way, preserve the final PDF plus the signing activity as your evidence package.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "electronic-signature-vs-digital-signature",
@@ -668,13 +682,6 @@ export const blogPosts = [
                     "Confirm you can download and archive the final PDF as your own independent record.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "how-secure-are-electronic-signatures",
@@ -936,6 +943,10 @@ export const blogPosts = [
                 text: "For a small business, time is the scarcest resource of all, and paperwork quietly consumes far more of it than most owners realize. Every printed quote, mailed contract, and re-scanned signature page adds hours that never appear on an invoice. Electronic signatures compress that overhead into minutes.",
             },
             {
+                type: "product-screenshot",
+                key: "signature-placement",
+            },
+            {
                 type: "p",
                 text: "This article maps the specific places where small teams reclaim hours each week, from client quotes to vendor onboarding, and shows how to turn those savings into a measurable advantage using CubSign rather than a vague promise of \"going digital.\"",
             },
@@ -982,13 +993,6 @@ export const blogPosts = [
                     "Measure turnaround time before and after adoption to prove the return in hard numbers.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "how-small-businesses-save-time-using-esignatures",
@@ -1004,6 +1008,10 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "Ready to try it? Open the Upload PDF page and sign your first document in under a minute.",
+            },
+            {
+                type: "product-screenshot",
+                key: "pdf-upload",
             },
             {
                 type: "h2",
@@ -1252,6 +1260,10 @@ export const blogPosts = [
                 text: "This guide is a practical checklist for preparing, reviewing, and signing contracts electronically without missing the details that cause disputes. It applies whether you are countersigning a client agreement or sending your own contract out for signature.",
             },
             {
+                type: "product-screenshot",
+                key: "signature-placement",
+            },
+            {
                 type: "figure",
                 slug: "best-practices-for-signing-contracts-online",
                 asset: "workflow",
@@ -1294,13 +1306,6 @@ export const blogPosts = [
                     "Download the executed PDF and archive it in the deal folder the same day.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "best-practices-for-signing-contracts-online",
@@ -1328,6 +1333,10 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "Name your downloaded file with the counterparty and date (for example, Acme-MSA-2026-07-27-signed.pdf) so your workspace and local folders stay searchable.",
+            },
+            {
+                type: "product-screenshot",
+                key: "signed-pdf-download",
             },
             {
                 type: "p",
@@ -1606,13 +1615,6 @@ export const blogPosts = [
                     "Archive the final file in a restricted location and remove stray copies elsewhere.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "how-to-protect-pdf-documents",
@@ -1972,7 +1974,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "CubSign signature requests: account required, upload PDF, add recipients, assign fields, send, track invitations and signatures in workspace, download when complete. For three or more signers, see Request Signatures from Multiple Recipients.",
-            }
+            },
         ],
         faq: [
             {
@@ -2082,13 +2084,6 @@ export const blogPosts = [
                     "Retire the paper version once the digital flow proves reliable.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "benefits-of-paperless-workflows",
@@ -2348,8 +2343,17 @@ export const blogPosts = [
                 text: "CubSign runs in mobile browsers—no app install. Open cubsign.com/sign or a recipient signing link on iOS or Android, upload or open the PDF, place fields, and download the signed file. The same field types (signature, initials, name, text, date, checkbox) and 25 MB limit apply as on desktop.",
             },
             {
+                type: "product-screenshot",
+                key: "signing-editor",
+                caption: "CubSign editor in the browser — usable on phones and tablets.",
+            },
+            {
                 type: "p",
                 text: "Mobile works well when you adjust for screen size: landscape for drawing, pinch-zoom for placement, typed signatures on very small fields.",
+            },
+            {
+                type: "product-screenshot",
+                key: "draw-signature",
             },
             {
                 type: "figure",
@@ -2422,7 +2426,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "CubSign mobile signing: browser-based, landscape + zoom + typed signatures for best results, download right away. No persistent saved signature across sessions—recreate draw/type/upload each time you sign a new PDF.",
-            }
+            },
         ],
         faq: [
             {
@@ -2532,13 +2536,6 @@ export const blogPosts = [
                     "Download and archive the completed file the moment you finish.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "common-mistakes-when-signing-pdfs",
@@ -2844,13 +2841,6 @@ export const blogPosts = [
                     "Escalate any document with special formalities to qualified counsel first.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "are-electronic-signatures-legally-binding",
@@ -3216,7 +3206,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "CubSign document security: HTTPS in transit, private workspace storage with access limited to you and invited signers, activity events for invitations and signatures. Pair that with strong account hygiene and careful recipient verification.",
-            }
+            },
         ],
         faq: [
             {
@@ -3380,7 +3370,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "Multi-recipient signing in CubSign: one PDF, all recipients added upfront, fields assigned per person, optional signing order, one completed download. Start with How to Request Digital Signatures if single-recipient requests are new to you.",
-            }
+            },
         ],
         faq: [
             {
@@ -3489,12 +3479,6 @@ export const blogPosts = [
                     "Download the document the instant it is complete so it lands in device storage.",
                 ],
             },
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "mobile-pdf-signing-tips",
@@ -3836,7 +3820,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "CubSign Early Access: free PDF signing in the browser, guest self-sign or account for storage and requests, honest security (HTTPS + private storage + access controls). Start at cubsign.com/sign and help us build the signing tool you actually need.",
-            }
+            },
         ],
         faq: [
             {
@@ -3994,7 +3978,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "CubSign audit trail (user-facing): invitations sent, recipients signed, document completed—with timestamps in your workspace. Pair that record with the downloaded PDF for a complete signing file.",
-            }
+            },
         ],
         faq: [
             {
@@ -4056,6 +4040,18 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "Search engines often ask how to create a reusable signature—but CubSign works differently than tools with a saved signature library. In CubSign, you draw, type, or upload a signature image each time you start a new document or signing session. Within that session, the same mark can fill multiple signature fields on the same PDF.",
+            },
+            {
+                type: "product-screenshot",
+                key: "upload-signature",
+            },
+            {
+                type: "product-screenshot",
+                key: "type-signature",
+            },
+            {
+                type: "product-screenshot",
+                key: "draw-signature",
             },
             {
                 type: "p",
@@ -4147,7 +4143,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "CubSign: draw, type, or upload per signing session; reuse the mark across fields on the same PDF only. For draw vs type guidance, see Draw vs Type Your Signature.",
-            }
+            },
         ],
         faq: [
             {
@@ -4209,6 +4205,18 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "CubSign gives you three ways to fill a signature field: draw on the canvas, type your name in a signature-style font, or upload a PNG/JPG from your device. All three are valid for the current signing session—CubSign does not save a persistent signature library across documents.",
+            },
+            {
+                type: "product-screenshot",
+                key: "upload-signature",
+            },
+            {
+                type: "product-screenshot",
+                key: "type-signature",
+            },
+            {
+                type: "product-screenshot",
+                key: "draw-signature",
             },
             {
                 type: "p",
@@ -4294,7 +4302,7 @@ export const blogPosts = [
             {
                 type: "p",
                 text: "Draw for personal touch on a good input device; type for clarity on mobile and formal PDFs; upload when you have an approved image file. All apply to the current CubSign session only. See How to Sign a PDF Online for the full upload-to-download flow.",
-            }
+            },
         ],
         faq: [
             {
@@ -4404,13 +4412,6 @@ export const blogPosts = [
                     "Store the executed NDA where fundraising and sales teams can find it.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "nda-signing-guide-for-startups",
@@ -4716,13 +4717,6 @@ export const blogPosts = [
                     "Sign, then download the completed copy to your records the same day.",
                 ],
             },
-            
-            
-            
-            
-            
-            
-            
             {
                 type: "figure",
                 slug: "freelancer-contract-signing-checklist",

@@ -40,6 +40,12 @@ export function normalizeBlogBlocks(blocks) {
             continue;
         }
 
+        if (block.type === 'product-screenshot') {
+            if (!hasMarketingText(block.key)) continue;
+            normalized.push({ ...block });
+            continue;
+        }
+
         if (block.type === 'callout') {
             if (!hasMarketingText(block.text)) continue;
             normalized.push({ ...block });

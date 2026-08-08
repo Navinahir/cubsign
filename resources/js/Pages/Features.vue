@@ -3,6 +3,7 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import ScrollReveal from '@/Components/Marketing/ScrollReveal.vue';
 import ProductMockup from '@/Components/Marketing/ProductMockup.vue';
+import ProductScreenshot from '@/Components/Marketing/ProductScreenshot.vue';
 import FeaturesTemplatesIllustration from '@/Components/Marketing/Features/FeaturesTemplatesIllustration.vue';
 import FeaturesAuditIllustration from '@/Components/Marketing/Features/FeaturesAuditIllustration.vue';
 import FeaturesSecureStorageIllustration from '@/Components/Marketing/Features/FeaturesSecureStorageIllustration.vue';
@@ -16,7 +17,11 @@ import {
     TrendingUp,
     Briefcase,
 } from '@lucide/vue';
-import { featuresShowcases } from '@/constants/featuresPage';
+import {
+    featuresShowcases,
+    signatureMethodShots,
+    workflowShots,
+} from '@/constants/featuresPage';
 
 function featureLinkHref(link) {
     if (link.href) return link.href;
@@ -27,7 +32,7 @@ function featureLinkHref(link) {
 <template>
     <MarketingSeo
         title="Features — CubSign | Free PDF Signing"
-        description="Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work — with real product limits."
+        description="Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work — with real product screenshots."
         path="/features"
     />
 
@@ -39,13 +44,70 @@ function featureLinkHref(link) {
                 CubSign features
             </h1>
             <p class="mt-4 max-w-2xl text-base leading-relaxed text-gray-600 sm:text-lg">
-                Each section explains what the feature does, why it matters, how you use it, and what to expect. Free during Early Access. Visuals below are product illustrations of the CubSign workflow, not third-party screenshots.
+                Each section explains what the feature does, why it matters, how you use it, and what to expect. Where shown, screenshots are from the real CubSign application. Other visuals are labeled illustrations for features without a captured UI shot yet.
             </p>
             <p class="mt-4 text-sm text-gray-500">
                 Prefer to start immediately?
                 <Link :href="route('sign.index')" class="font-medium text-blue-600 hover:text-blue-700">Upload a PDF</Link>
                 ·
                 <Link :href="route('help-center')" class="font-medium text-blue-600 hover:text-blue-700">Help Center</Link>
+            </p>
+        </div>
+    </section>
+
+    <!-- PDF signing workflow with real screenshots -->
+    <section class="bg-gray-50/70 px-4 py-10 sm:px-6 lg:px-8 lg:py-12" aria-labelledby="workflow-shots-heading">
+        <div class="mx-auto max-w-6xl">
+            <ScrollReveal>
+                <h2 id="workflow-shots-heading" class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                    PDF signing workflow
+                </h2>
+                <p class="mt-2 max-w-2xl text-sm text-gray-500">
+                    Upload → place your signature → download. Screenshots from the live CubSign product.
+                </p>
+            </ScrollReveal>
+            <div class="mt-8 grid gap-6 lg:grid-cols-3">
+                <ScrollReveal
+                    v-for="(item, index) in workflowShots"
+                    :key="item.key"
+                    :delay="index * 40"
+                >
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-600">{{ item.label }}</p>
+                    <ProductScreenshot :shot-key="item.key" compact />
+                </ScrollReveal>
+            </div>
+            <p class="mt-6 text-sm text-gray-500">
+                Step-by-step guide:
+                <Link href="/help-center/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">How to sign a PDF online</Link>
+            </p>
+        </div>
+    </section>
+
+    <!-- Signature methods -->
+    <section class="bg-white px-4 py-10 sm:px-6 lg:px-8 lg:py-12" aria-labelledby="sig-methods-heading">
+        <div class="mx-auto max-w-6xl">
+            <ScrollReveal>
+                <h2 id="sig-methods-heading" class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                    Multiple signature methods
+                </h2>
+                <p class="mt-2 max-w-2xl text-sm text-gray-500">
+                    Draw, type, or upload your signature in the CubSign editor for the current document session.
+                </p>
+            </ScrollReveal>
+            <div class="mt-8 grid gap-6 lg:grid-cols-3">
+                <ScrollReveal
+                    v-for="(item, index) in signatureMethodShots"
+                    :key="item.key"
+                    :delay="index * 40"
+                >
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-600">{{ item.label }}</p>
+                    <ProductScreenshot :shot-key="item.key" compact />
+                </ScrollReveal>
+            </div>
+            <p class="mt-6 text-sm text-gray-500">
+                <Link href="/help-center/draw-vs-type-signature" class="font-medium text-blue-600 hover:text-blue-700">Draw vs type vs upload</Link>
+                ·
+                <Link :href="route('sign.index')" class="font-medium text-blue-600 hover:text-blue-700">Try it on Upload PDF</Link>
             </p>
         </div>
     </section>
@@ -69,21 +131,28 @@ function featureLinkHref(link) {
                 >
                     <ScrollReveal :direction="index % 2 === 0 ? 'left' : 'right'">
                         <div class="relative max-w-md lg:max-w-none">
-                            <ProductMockup
-                                v-if="feature.mockup === 'signature'"
-                                variant="signature"
-                                size="compact"
+                            <ProductScreenshot
+                                v-if="feature.screenshot"
+                                :shot-key="feature.screenshot"
+                                compact
                             />
-                            <ProductMockup
-                                v-else-if="feature.mockup === 'request'"
-                                variant="request"
-                                size="compact"
-                            />
-                            <FeaturesTemplatesIllustration v-else-if="feature.mockup === 'templates'" />
-                            <FeaturesAuditIllustration v-else-if="feature.mockup === 'audit'" />
-                            <FeaturesSecureStorageIllustration v-else-if="feature.mockup === 'storage'" />
-                            <FeaturesTrackingIllustration v-else-if="feature.mockup === 'tracking'" />
-                            <p class="mt-3 text-xs text-gray-400">Illustrated CubSign workflow</p>
+                            <template v-else>
+                                <ProductMockup
+                                    v-if="feature.mockup === 'signature'"
+                                    variant="signature"
+                                    size="compact"
+                                />
+                                <ProductMockup
+                                    v-else-if="feature.mockup === 'request'"
+                                    variant="request"
+                                    size="compact"
+                                />
+                                <FeaturesTemplatesIllustration v-else-if="feature.mockup === 'templates'" />
+                                <FeaturesAuditIllustration v-else-if="feature.mockup === 'audit'" />
+                                <FeaturesSecureStorageIllustration v-else-if="feature.mockup === 'storage'" />
+                                <FeaturesTrackingIllustration v-else-if="feature.mockup === 'tracking'" />
+                                <p class="mt-3 text-xs text-gray-400">Illustrated CubSign workflow (not a live screenshot)</p>
+                            </template>
                         </div>
                     </ScrollReveal>
 

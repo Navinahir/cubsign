@@ -47,62 +47,62 @@ export const helpCategories = [
 
 export const helpArticles = [
     {
-        "slug": "what-is-cubsign",
-        "title": "What Is CubSign?",
-        "excerpt": "CubSign is a browser-based PDF signing tool: upload a PDF, place fields, sign yourself or send for signature, and download the finished file.",
-        "category": "Getting Started",
-        "categorySlug": "getting-started",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "what-is-cubsign",
+        title: "What Is CubSign?",
+        excerpt: "CubSign is a browser-based PDF signing tool: upload a PDF, place fields, sign yourself or send for signature, and download the finished file.",
+        category: "Getting Started",
+        categorySlug: "getting-started",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Getting Started",
             "Overview",
         ],
-        "keywords": [
+        keywords: [
             "what is cubsign",
             "online pdf signing",
             "electronic signature platform",
             "sign pdf in browser",
         ],
-        "metaTitle": "What Is CubSign? Online PDF Signing Explained | CubSign",
-        "metaDescription": "Learn what CubSign does today: PDF-only uploads, guest self-sign, draw/type/upload signatures, workspace storage, templates, and send-for-signature links.",
-        "related": [
+        metaTitle: "What Is CubSign? Online PDF Signing Explained | CubSign",
+        metaDescription: "Learn what CubSign does today: PDF-only uploads, guest self-sign, draw/type/upload signatures, workspace storage, templates, and send-for-signature links.",
+        related: [
             "create-your-cubsign-account",
             "how-to-sign-a-pdf-online",
             "how-to-upload-a-pdf",
             "electronic-signature-legality",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Is CubSign free to use?",
-                "answer": "Yes. CubSign is free during Early Access. You can upload, sign, and send PDFs without a credit card.",
+                question: "Is CubSign free to use?",
+                answer: "Yes. CubSign is free during Early Access. You can upload, sign, and send PDFs without a credit card.",
             },
             {
-                "question": "Do I need to install anything?",
-                "answer": "No. CubSign runs in a modern web browser on desktop and mobile. There is no app or plugin to install.",
+                question: "Do I need to install anything?",
+                answer: "No. CubSign runs in a modern web browser on desktop and mobile. There is no app or plugin to install.",
             },
             {
-                "question": "Can I sign without an account?",
-                "answer": "Yes, for one guest self-sign session. After that, create a free account to keep signing, store documents, use templates, and send PDFs to others.",
+                question: "Can I sign without an account?",
+                answer: "Yes, for one guest self-sign session. After that, create a free account to keep signing, store documents, use templates, and send PDFs to others.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "CubSign is a web app for signing PDF documents. You upload a PDF (up to 25 MB), place fields on the pages, sign the document yourself or send it to others, and download the completed PDF. Everything runs in your browser — no desktop software or browser plugin required.",
+                type: "p",
+                text: "CubSign is a web app for signing PDF documents. You upload a PDF (up to 25 MB), place fields on the pages, sign the document yourself or send it to others, and download the completed PDF. Everything runs in your browser — no desktop software or browser plugin required.",
             },
             {
-                "type": "p",
-                "text": "If you normally print a form, sign it, scan it, and email a blurry copy back, CubSign replaces that loop with one file and one workflow. Start from the Upload PDF page with a low-risk document if you want to try it immediately.",
+                type: "p",
+                text: "If you normally print a form, sign it, scan it, and email a blurry copy back, CubSign replaces that loop with one file and one workflow. Start from the Upload PDF page with a low-risk document if you want to try it immediately.",
             },
             {
-                "type": "h2",
-                "text": "What CubSign supports today",
+                type: "h2",
+                text: "What CubSign supports today",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "PDF documents only, maximum 25 MB per upload.",
                     "Field types: signature, initials, name, text, date, and checkbox.",
                     "Signature input: draw on a canvas, type your name, or upload a PNG/JPG image.",
@@ -112,92 +112,92 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Typical workflows",
+                type: "h2",
+                text: "Typical workflows",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Self-sign: upload → place fields → sign → download.",
                     "Send for signature: upload → add recipients and fields → send → track completion → download.",
                     "Reuse a template: save field layout once, start new documents from it in your workspace.",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Who it fits",
+                type: "h2",
+                text: "Who it fits",
             },
             {
-                "type": "p",
-                "text": "Freelancers closing client agreements, small teams collecting signatures from vendors or partners, and anyone who wants a faster alternative to print-and-scan. CubSign focuses on straightforward PDF signing rather than enterprise contract lifecycle management.",
+                type: "p",
+                text: "Freelancers closing client agreements, small teams collecting signatures from vendors or partners, and anyone who wants a faster alternative to print-and-scan. CubSign focuses on straightforward PDF signing rather than enterprise contract lifecycle management.",
             },
             {
-                "type": "tip",
-                "text": "New here? Read How to Sign a PDF Online for the full click path, then Create Your CubSign Account if you will sign more than once or need to send documents to others.",
+                type: "tip",
+                text: "New here? Read How to Sign a PDF Online for the full click path, then Create Your CubSign Account if you will sign more than once or need to send documents to others.",
             },
             {
-                "type": "note",
-                "text": "CubSign is free during Early Access while we improve the product. No credit card is required. See the Features page for a concise list of what is available now.",
+                type: "note",
+                text: "CubSign is free during Early Access while we improve the product. No credit card is required. See the Features page for a concise list of what is available now.",
             },
             {
-                "type": "p",
-                "text": "For legal context around electronic signatures, read Electronic Signature Legality — it is educational, not legal advice. For security details, see Secure Storage and Document Privacy in this Help Center, or visit the Security page on cubsign.com.",
+                type: "p",
+                text: "For legal context around electronic signatures, read Electronic Signature Legality — it is educational, not legal advice. For security details, see Secure Storage and Document Privacy in this Help Center, or visit the Security page on cubsign.com.",
             },
         ],
     },
     {
-        "slug": "create-your-cubsign-account",
-        "title": "Create Your CubSign Account",
-        "excerpt": "Create a free CubSign account to store documents, use templates, and send PDFs for signature after your one guest self-sign session.",
-        "category": "Getting Started",
-        "categorySlug": "getting-started",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "create-your-cubsign-account",
+        title: "Create Your CubSign Account",
+        excerpt: "Create a free CubSign account to store documents, use templates, and send PDFs for signature after your one guest self-sign session.",
+        category: "Getting Started",
+        categorySlug: "getting-started",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Account",
             "Getting Started",
         ],
-        "keywords": [
+        keywords: [
             "create cubsign account",
             "sign up cubsign",
             "free esignature account",
             "register cubsign",
         ],
-        "metaTitle": "Create Your CubSign Account (Free) | CubSign",
-        "metaDescription": "Register with email or Google to unlock CubSign workspace storage, templates, send-for-signature, and email verification for full access.",
-        "related": [
+        metaTitle: "Create Your CubSign Account (Free) | CubSign",
+        metaDescription: "Register with email or Google to unlock CubSign workspace storage, templates, send-for-signature, and email verification for full access.",
+        related: [
             "what-is-cubsign",
             "email-verification",
             "google-login",
             "how-to-sign-a-pdf-online",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Does creating an account cost anything?",
-                "answer": "No. Registration is free during Early Access, and no credit card is required.",
+                question: "Does creating an account cost anything?",
+                answer: "No. Registration is free during Early Access, and no credit card is required.",
             },
             {
-                "question": "Can I register with Google?",
-                "answer": "Yes. Choose Continue with Google to sign in without a separate CubSign password. See the Google Login article.",
+                question: "Can I register with Google?",
+                answer: "Yes. Choose Continue with Google to sign in without a separate CubSign password. See the Google Login article.",
             },
             {
-                "question": "What if I already signed as a guest?",
-                "answer": "Guest sessions are not tied to an account and are limited to one self-sign flow. Create an account to continue signing and to save documents in your workspace.",
+                question: "What if I already signed as a guest?",
+                answer: "Guest sessions are not tied to an account and are limited to one self-sign flow. Create an account to continue signing and to save documents in your workspace.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "You can complete one self-sign session as a guest without registering. A free account is required afterward if you want to keep signing, and it unlocks the features most people need beyond a single one-off signature.",
+                type: "p",
+                text: "You can complete one self-sign session as a guest without registering. A free account is required afterward if you want to keep signing, and it unlocks the features most people need beyond a single one-off signature.",
             },
             {
-                "type": "h2",
-                "text": "What an account adds",
+                type: "h2",
+                text: "What an account adds",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Document storage and status in your workspace.",
                     "Templates to reuse field layouts on new PDFs.",
                     "Send-for-signature: email unique signing links to recipients.",
@@ -206,16 +206,16 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "p",
-                "text": "CubSign does not maintain a persistent signature library across documents. During a signing session, your drawn, typed, or uploaded signature can be reused on multiple fields in that same document — but it is not saved as a standalone asset for every future PDF.",
+                type: "p",
+                text: "CubSign does not maintain a persistent signature library across documents. During a signing session, your drawn, typed, or uploaded signature can be reused on multiple fields in that same document — but it is not saved as a standalone asset for every future PDF.",
             },
             {
-                "type": "h2",
-                "text": "Registration steps",
+                type: "h2",
+                text: "Registration steps",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Click Get Started Free or Register on cubsign.com.",
                     "Choose email and password, or Continue with Google.",
                     "Complete the form and submit.",
@@ -224,96 +224,101 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "tip",
-                "text": "Use a work email for business documents so notifications and executed files stay with the role, not a personal inbox you might leave behind.",
+                type: "tip",
+                text: "Use a work email for business documents so notifications and executed files stay with the role, not a personal inbox you might leave behind.",
             },
             {
-                "type": "h2",
-                "text": "Early Access pricing",
+                type: "h2",
+                text: "Early Access pricing",
             },
             {
-                "type": "p",
-                "text": "During Early Access, account registration, signing, storage, templates, and send-for-signature are free. No credit card is required.",
+                type: "p",
+                text: "During Early Access, account registration, signing, storage, templates, and send-for-signature are free. No credit card is required.",
             },
             {
-                "type": "h2",
-                "text": "Avoid duplicate accounts",
+                type: "h2",
+                text: "Avoid duplicate accounts",
             },
             {
-                "type": "p",
-                "text": "Pick one login method and stick with it. Registering with email and later signing in with Google using a different address creates separate workspaces. If you need to link methods on the same email, contact support before switching.",
+                type: "p",
+                text: "Pick one login method and stick with it. Registering with email and later signing in with Google using a different address creates separate workspaces. If you need to link methods on the same email, contact support before switching.",
             },
             {
-                "type": "note",
-                "text": "Passwords are stored hashed. Google Login delegates authentication to Google — CubSign receives basic profile details, not Gmail or Drive access. See Google Login and Secure Storage for more.",
+                type: "note",
+                text: "Passwords are stored hashed. Google Login delegates authentication to Google — CubSign receives basic profile details, not Gmail or Drive access. See Google Login and Secure Storage for more.",
             },
         ],
     },
     {
-        "slug": "mobile-support",
-        "title": "Mobile Support",
-        "excerpt": "Sign PDFs on phones and tablets in Safari or Chrome — no app install, with practical tips for touch signing and uploads.",
-        "category": "Getting Started",
-        "categorySlug": "getting-started",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "mobile-support",
+        title: "Mobile Support",
+        excerpt: "Sign PDFs on phones and tablets in Safari or Chrome — no app install, with practical tips for touch signing and uploads.",
+        category: "Getting Started",
+        categorySlug: "getting-started",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Mobile",
             "Browsers",
         ],
-        "keywords": [
+        keywords: [
             "sign pdf on mobile",
             "cubsign mobile",
             "sign document on phone",
             "mobile pdf signing",
         ],
-        "metaTitle": "Mobile Support: Sign PDFs on Your Phone | CubSign",
-        "metaDescription": "Learn how to upload and sign PDFs on phones and tablets with CubSign, plus tips for signatures, uploads, and downloads on small screens.",
-        "related": [
+        metaTitle: "Mobile Support: Sign PDFs on Your Phone | CubSign",
+        metaDescription: "Learn how to upload and sign PDFs on phones and tablets with CubSign, plus tips for signatures, uploads, and downloads on small screens.",
+        related: [
             "browser-compatibility",
             "draw-vs-type-signature",
             "how-to-sign-a-pdf-online",
             "troubleshooting-upload-errors",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Do I need an app to sign on mobile?",
-                "answer": "No. Open cubsign.com in Safari (iOS) or Chrome (Android). CubSign is a web app, not a native app.",
+                question: "Do I need an app to sign on mobile?",
+                answer: "No. Open cubsign.com in Safari (iOS) or Chrome (Android). CubSign is a web app, not a native app.",
             },
             {
-                "question": "Why does signing fail inside my email app?",
-                "answer": "In-app browsers often block uploads or downloads. Tap Open in Safari or Open in Chrome and retry.",
+                question: "Why does signing fail inside my email app?",
+                answer: "In-app browsers often block uploads or downloads. Tap Open in Safari or Open in Chrome and retry.",
             },
             {
-                "question": "Draw or type on a phone?",
-                "answer": "Both work. Landscape helps when drawing; typed signatures are often cleaner on small screens.",
+                question: "Draw or type on a phone?",
+                answer: "Both work. Landscape helps when drawing; typed signatures are often cleaner on small screens.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "CubSign works on phones and tablets through your mobile browser. Upload a PDF (up to 25 MB), place fields with pinch-to-zoom, sign with draw/type/upload, and download the result — the same core flow as desktop.",
+                type: "p",
+                text: "CubSign works on phones and tablets through your mobile browser. Upload a PDF (up to 25 MB), place fields with pinch-to-zoom, sign with draw/type/upload, and download the result — the same core flow as desktop.",
             },
             {
-                "type": "h2",
-                "text": "Recommended browsers",
+                type: "product-screenshot",
+                key: "signing-editor",
+                caption: "CubSign signing editor — works in modern mobile browsers.",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "h2",
+                text: "Recommended browsers",
+            },
+            {
+                type: "ul",
+                items: [
                     "iOS: Safari (latest).",
                     "Android: Chrome (latest).",
                     "Avoid signing inside email or social in-app browsers when possible.",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Signing on a small screen",
+                type: "h2",
+                text: "Signing on a small screen",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Open the Upload PDF page in your full browser.",
                     "Upload from Files, Photos, or a cloud drive.",
                     "Zoom in before placing signature, initials, date, or text fields.",
@@ -322,76 +327,76 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Recipient links on mobile",
+                type: "h2",
+                text: "Recipient links on mobile",
             },
             {
-                "type": "p",
-                "text": "When someone sends you a document, the email link opens the recipient signing page at /r/{token}. Recipients do not need a CubSign account. If the page misbehaves, open the link in Safari or Chrome instead of the mail app’s built-in browser.",
+                type: "p",
+                text: "When someone sends you a document, the email link opens the recipient signing page at /r/{token}. Recipients do not need a CubSign account. If the page misbehaves, open the link in Safari or Chrome instead of the mail app’s built-in browser.",
             },
             {
-                "type": "tip",
-                "text": "On a shaky connection, wait for the upload progress to finish before placing fields. Large scans near the 25 MB limit need a stable Wi‑Fi or strong cellular signal.",
+                type: "tip",
+                text: "On a shaky connection, wait for the upload progress to finish before placing fields. Large scans near the 25 MB limit need a stable Wi‑Fi or strong cellular signal.",
             },
             {
-                "type": "note",
-                "text": "For browser-specific fixes, see Browser Compatibility. For upload failures, see Troubleshooting Upload Errors.",
+                type: "note",
+                text: "For browser-specific fixes, see Browser Compatibility. For upload failures, see Troubleshooting Upload Errors.",
             },
         ],
     },
     {
-        "slug": "browser-compatibility",
-        "title": "Browser Compatibility",
-        "excerpt": "See which browsers CubSign supports and how to fix a signing editor that looks broken.",
-        "category": "Getting Started",
-        "categorySlug": "getting-started",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "browser-compatibility",
+        title: "Browser Compatibility",
+        excerpt: "See which browsers CubSign supports and how to fix a signing editor that looks broken.",
+        category: "Getting Started",
+        categorySlug: "getting-started",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Browsers",
             "Compatibility",
         ],
-        "keywords": [
+        keywords: [
             "cubsign browser support",
             "supported browsers",
             "pdf editor browser",
             "signing editor not loading",
         ],
-        "metaTitle": "Supported Browsers for CubSign | CubSign",
-        "metaDescription": "Find out which browsers CubSign supports for uploading, signing, and downloading PDFs, plus fixes for a broken editor.",
-        "related": [
+        metaTitle: "Supported Browsers for CubSign | CubSign",
+        metaDescription: "Find out which browsers CubSign supports for uploading, signing, and downloading PDFs, plus fixes for a broken editor.",
+        related: [
             "mobile-support",
             "troubleshooting-upload-errors",
             "how-to-sign-a-pdf-online",
             "maximum-upload-size",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Which browser works best with CubSign?",
-                "answer": "Any current version of Chrome, Firefox, Edge, or Safari works well. Keeping the browser updated prevents most editor and upload issues.",
+                question: "Which browser works best with CubSign?",
+                answer: "Any current version of Chrome, Firefox, Edge, or Safari works well. Keeping the browser updated prevents most editor and upload issues.",
             },
             {
-                "question": "Why is the signing editor blank?",
-                "answer": "A blank editor usually means an outdated browser, a blocking extension, or stale cached assets. Refresh, update, disable extensions, or clear the cache.",
+                question: "Why is the signing editor blank?",
+                answer: "A blank editor usually means an outdated browser, a blocking extension, or stale cached assets. Refresh, update, disable extensions, or clear the cache.",
             },
             {
-                "question": "Is Internet Explorer supported?",
-                "answer": "No. Internet Explorer is not supported. Please use a modern browser such as Chrome, Firefox, Edge, or Safari.",
+                question: "Is Internet Explorer supported?",
+                answer: "No. Internet Explorer is not supported. Please use a modern browser such as Chrome, Firefox, Edge, or Safari.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "CubSign targets modern browsers with support for file upload, HTML canvas (for drawn signatures), and PDF rendering. If the editor looks blank or uploads stall, your browser is the first thing to check.",
+                type: "p",
+                text: "CubSign targets modern browsers with support for file upload, HTML canvas (for drawn signatures), and PDF rendering. If the editor looks blank or uploads stall, your browser is the first thing to check.",
             },
             {
-                "type": "h2",
-                "text": "Supported browsers",
+                type: "h2",
+                text: "Supported browsers",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Google Chrome — latest two major versions.",
                     "Mozilla Firefox — latest two major versions.",
                     "Microsoft Edge — latest two major versions.",
@@ -399,24 +404,24 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Not supported",
+                type: "h2",
+                text: "Not supported",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Internet Explorer.",
                     "Very outdated browser versions.",
                     "Some in-app browsers inside email or social apps (limited file access).",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Fix a broken editor",
+                type: "h2",
+                text: "Fix a broken editor",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Hard-refresh the page or open a private/incognito window.",
                     "Update the browser to the latest version.",
                     "Temporarily disable extensions that block scripts, ads, or trackers.",
@@ -425,96 +430,100 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "tip",
-                "text": "Corporate laptops sometimes block scripts by policy. If nothing works on a work machine, try a personal device or ask IT to allow cubsign.com.",
+                type: "tip",
+                text: "Corporate laptops sometimes block scripts by policy. If nothing works on a work machine, try a personal device or ask IT to allow cubsign.com.",
             },
             {
-                "type": "p",
-                "text": "Upload-specific errors may be file type or size (PDF only, 25 MB max) rather than browser issues. See Troubleshooting Upload Errors before contacting support.",
+                type: "p",
+                text: "Upload-specific errors may be file type or size (PDF only, 25 MB max) rather than browser issues. See Troubleshooting Upload Errors before contacting support.",
             },
         ],
     },
     {
-        "slug": "how-to-upload-a-pdf",
-        "title": "How to Upload a PDF",
-        "excerpt": "Upload a PDF up to 25 MB from desktop or mobile and open the CubSign signing editor.",
-        "category": "Uploading PDFs",
-        "categorySlug": "uploading-pdfs",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "how-to-upload-a-pdf",
+        title: "How to Upload a PDF",
+        excerpt: "Upload a PDF up to 25 MB from desktop or mobile and open the CubSign signing editor.",
+        category: "Uploading PDFs",
+        categorySlug: "uploading-pdfs",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Upload",
             "PDF",
         ],
-        "keywords": [
+        keywords: [
             "upload pdf to cubsign",
             "how to upload pdf",
             "add pdf for signing",
             "pdf upload steps",
         ],
-        "metaTitle": "How to Upload a PDF to CubSign | CubSign",
-        "metaDescription": "A clear, step-by-step guide to uploading a PDF to CubSign from desktop or mobile, plus tips to avoid failed uploads.",
-        "related": [
+        metaTitle: "How to Upload a PDF to CubSign | CubSign",
+        metaDescription: "A clear, step-by-step guide to uploading a PDF to CubSign from desktop or mobile, plus tips to avoid failed uploads.",
+        related: [
             "supported-file-types",
             "maximum-upload-size",
             "troubleshooting-upload-errors",
             "how-to-sign-a-pdf-online",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "How do I upload a PDF?",
-                "answer": "Open the Upload PDF page, drag your file onto the drop zone or click to browse, and wait for the editor to open.",
+                question: "How do I upload a PDF?",
+                answer: "Open the Upload PDF page, drag your file onto the drop zone or click to browse, and wait for the editor to open.",
             },
             {
-                "question": "Can I upload from my phone?",
-                "answer": "Yes. Tap the upload area and pick a PDF from Files, Photos, or cloud storage. Use a stable connection for larger files.",
+                question: "Can I upload from my phone?",
+                answer: "Yes. Tap the upload area and pick a PDF from Files, Photos, or cloud storage. Use a stable connection for larger files.",
             },
             {
-                "question": "What if upload keeps failing?",
-                "answer": "Confirm the file is a real PDF under 25 MB and not password-protected. See Troubleshooting Upload Errors.",
+                question: "What if upload keeps failing?",
+                answer: "Confirm the file is a real PDF under 25 MB and not password-protected. See Troubleshooting Upload Errors.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "CubSign accepts standard PDF files up to 25 MB. Upload is the entry point to the signing editor — where you place fields, sign, send to recipients, or download.",
+                type: "p",
+                text: "CubSign accepts standard PDF files up to 25 MB. Upload is the entry point to the signing editor — where you place fields, sign, send to recipients, or download.",
             },
             {
-                "type": "h2",
-                "text": "Upload from desktop",
+                type: "h2",
+                text: "Upload from desktop",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "product-screenshot",
+                key: "pdf-upload",
+            },
+            {
+                type: "ol",
+                items: [
                     "Go to the Upload PDF page (Sign PDF in the navigation).",
                     "Drag a .pdf onto the drop zone, or click to browse.",
                     "Wait for the upload to finish — the editor opens automatically.",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Upload from mobile",
+                type: "h2",
+                text: "Upload from mobile",
             },
             {
-                "type": "p",
-                "text": "Tap the upload area and select a PDF from your device or cloud drive. Use Safari on iOS or Chrome on Android for the fewest surprises. See Mobile Support if the file picker or download step fails.",
+                type: "p",
+                text: "Tap the upload area and select a PDF from your device or cloud drive. Use Safari on iOS or Chrome on Android for the fewest surprises. See Mobile Support if the file picker or download step fails.",
             },
             {
-                "type": "h2",
-                "text": "After upload",
+                type: "h2",
+                text: "After upload",
             },
             {
-                "type": "p",
-                "text": "The PDF is stored for your signing session. Signed-in users also get a workspace copy they can return to later. You can add signature, initials, name, text, date, and checkbox fields, then self-sign or configure recipients and send.",
+                type: "p",
+                text: "The PDF is stored for your signing session. Signed-in users also get a workspace copy they can return to later. You can add signature, initials, name, text, date, and checkbox fields, then self-sign or configure recipients and send.",
             },
             {
-                "type": "h2",
-                "text": "Before you upload — quick checks",
+                type: "h2",
+                text: "Before you upload — quick checks",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "File extension is .pdf and it opens correctly in a PDF viewer.",
                     "Size is 25 MB or less (see Maximum Upload Size).",
                     "Password protection is removed.",
@@ -522,79 +531,79 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "tip",
-                "text": "Text-based PDFs render faster and produce cleaner signed output than heavy color scans. Compress large scans before uploading.",
+                type: "tip",
+                text: "Text-based PDFs render faster and produce cleaner signed output than heavy color scans. Compress large scans before uploading.",
             },
             {
-                "type": "note",
-                "text": "Word, Excel, and image files are not accepted as documents. Export to PDF first — see Supported File Types.",
+                type: "note",
+                text: "Word, Excel, and image files are not accepted as documents. Export to PDF first — see Supported File Types.",
             },
         ],
     },
     {
-        "slug": "supported-file-types",
-        "title": "Supported File Types",
-        "excerpt": "CubSign accepts PDF documents only. Convert Word, Excel, or images to PDF before uploading.",
-        "category": "Uploading PDFs",
-        "categorySlug": "uploading-pdfs",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "supported-file-types",
+        title: "Supported File Types",
+        excerpt: "CubSign accepts PDF documents only. Convert Word, Excel, or images to PDF before uploading.",
+        category: "Uploading PDFs",
+        categorySlug: "uploading-pdfs",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Upload",
             "PDF",
             "Formats",
         ],
-        "keywords": [
+        keywords: [
             "cubsign file types",
             "supported formats",
             "convert to pdf",
             "pdf only upload",
         ],
-        "metaTitle": "Supported File Types for Uploads | CubSign",
-        "metaDescription": "Understand which file types CubSign accepts for signing, why PDF is required, and how to convert Word, Excel, and images to PDF.",
-        "related": [
+        metaTitle: "Supported File Types for Uploads | CubSign",
+        metaDescription: "Understand which file types CubSign accepts for signing, why PDF is required, and how to convert Word, Excel, and images to PDF.",
+        related: [
             "how-to-upload-a-pdf",
             "maximum-upload-size",
             "troubleshooting-upload-errors",
             "upload-your-signature-image",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "What file types can I upload?",
-                "answer": "PDF (.pdf) only, up to 25 MB. Convert other formats before uploading.",
+                question: "What file types can I upload?",
+                answer: "PDF (.pdf) only, up to 25 MB. Convert other formats before uploading.",
             },
             {
-                "question": "Can I upload Word?",
-                "answer": "Not directly. Use Save as PDF or Export to PDF in Word, then upload the result.",
+                question: "Can I upload Word?",
+                answer: "Not directly. Use Save as PDF or Export to PDF in Word, then upload the result.",
             },
             {
-                "question": "Can I upload an image as the document?",
-                "answer": "No for the main document. You can upload PNG or JPG when creating a signature image — see Upload Your Signature Image.",
+                question: "Can I upload an image as the document?",
+                answer: "No for the main document. You can upload PNG or JPG when creating a signature image — see Upload Your Signature Image.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "CubSign is built around PDF because the format preserves layout across devices — important when you are about to sign. The upload endpoint accepts .pdf files only.",
+                type: "p",
+                text: "CubSign is built around PDF because the format preserves layout across devices — important when you are about to sign. The upload endpoint accepts .pdf files only.",
             },
             {
-                "type": "h2",
-                "text": "Accepted",
+                type: "h2",
+                text: "Accepted",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "PDF (.pdf) — maximum 25 MB per file.",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Not accepted as the document",
+                type: "h2",
+                text: "Not accepted as the document",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Microsoft Word (.doc, .docx), Excel, PowerPoint.",
                     "Standalone JPG, PNG, or TIFF used as the main file.",
                     "Password-protected or encrypted PDFs CubSign cannot parse.",
@@ -602,12 +611,12 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Convert to PDF",
+                type: "h2",
+                text: "Convert to PDF",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Open the source file in its native app (Word, Google Docs, LibreOffice, etc.).",
                     "Choose File → Save as PDF or Export to PDF.",
                     "Open the exported file in a viewer to confirm pages and layout.",
@@ -615,88 +624,88 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Signature images are separate",
+                type: "h2",
+                text: "Signature images are separate",
             },
             {
-                "type": "p",
-                "text": "When signing, you can upload a PNG or JPG as your signature mark inside the editor. That is different from uploading an image file as the document itself.",
+                type: "p",
+                text: "When signing, you can upload a PNG or JPG as your signature mark inside the editor. That is different from uploading an image file as the document itself.",
             },
             {
-                "type": "tip",
-                "text": "Renaming contract.docx to contract.pdf does not convert it. The upload will fail or the editor cannot render it. Always export properly.",
+                type: "tip",
+                text: "Renaming contract.docx to contract.pdf does not convert it. The upload will fail or the editor cannot render it. Always export properly.",
             },
             {
-                "type": "note",
-                "text": "Convert sensitive files on a machine you trust. Prefer local Save as PDF over unknown online converters when confidentiality matters.",
+                type: "note",
+                text: "Convert sensitive files on a machine you trust. Prefer local Save as PDF over unknown online converters when confidentiality matters.",
             },
         ],
     },
     {
-        "slug": "maximum-upload-size",
-        "title": "Maximum Upload Size",
-        "excerpt": "CubSign accepts PDF uploads up to 25 MB. Here is how to shrink files that exceed the limit.",
-        "category": "Uploading PDFs",
-        "categorySlug": "uploading-pdfs",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "maximum-upload-size",
+        title: "Maximum Upload Size",
+        excerpt: "CubSign accepts PDF uploads up to 25 MB. Here is how to shrink files that exceed the limit.",
+        category: "Uploading PDFs",
+        categorySlug: "uploading-pdfs",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Upload",
             "Limits",
         ],
-        "keywords": [
+        keywords: [
             "pdf upload size limit",
             "25 mb pdf",
             "compress pdf",
             "reduce pdf file size",
         ],
-        "metaTitle": "Maximum PDF Upload Size (25 MB) | CubSign",
-        "metaDescription": "Learn about the 25 MB CubSign upload limit and practical ways to compress or split large PDFs so they upload successfully.",
-        "related": [
+        metaTitle: "Maximum PDF Upload Size (25 MB) | CubSign",
+        metaDescription: "Learn about the 25 MB CubSign upload limit and practical ways to compress or split large PDFs so they upload successfully.",
+        related: [
             "how-to-upload-a-pdf",
             "supported-file-types",
             "troubleshooting-upload-errors",
             "browser-compatibility",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "What is the maximum upload size?",
-                "answer": "25 MB per PDF. Most contracts and forms are much smaller.",
+                question: "What is the maximum upload size?",
+                answer: "25 MB per PDF. Most contracts and forms are much smaller.",
             },
             {
-                "question": "How do I reduce file size?",
-                "answer": "Compress the PDF, lower scan DPI (150–200 is usually enough), remove oversized embedded images, or split into separate files when the workflow allows.",
+                question: "How do I reduce file size?",
+                answer: "Compress the PDF, lower scan DPI (150–200 is usually enough), remove oversized embedded images, or split into separate files when the workflow allows.",
             },
             {
-                "question": "Upload failed but the file is small?",
-                "answer": "Network drops, VPNs, browser extensions, or password-protected PDFs can cause failures unrelated to size. See Troubleshooting Upload Errors.",
+                question: "Upload failed but the file is small?",
+                answer: "Network drops, VPNs, browser extensions, or password-protected PDFs can cause failures unrelated to size. See Troubleshooting Upload Errors.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "The 25 MB limit keeps uploads reliable on mobile networks and prevents oversized scans from slowing the signing editor. Typical text contracts are well under 1 MB; problems usually come from high-resolution color scans or embedded photos.",
+                type: "p",
+                text: "The 25 MB limit keeps uploads reliable on mobile networks and prevents oversized scans from slowing the signing editor. Typical text contracts are well under 1 MB; problems usually come from high-resolution color scans or embedded photos.",
             },
             {
-                "type": "h2",
-                "text": "Why files grow large",
+                type: "h2",
+                text: "Why files grow large",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "600 DPI color scans of multi-page documents.",
                     "Full-resolution photos embedded in the PDF.",
                     "Scanned packets where every page is a bitmap instead of text.",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Shrink a PDF",
+                type: "h2",
+                text: "Shrink a PDF",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Re-scan at 150–200 DPI, black and white when color is not needed.",
                     "Run a trusted desktop compressor or re-export from the source app at lower image quality.",
                     "Remove pages you do not need to sign.",
@@ -705,68 +714,88 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "tip",
-                "text": "After compressing, open the PDF and confirm signature lines and fine print are still readable before you place fields.",
+                type: "tip",
+                text: "After compressing, open the PDF and confirm signature lines and fine print are still readable before you place fields.",
             },
             {
-                "type": "p",
-                "text": "A failure on a 5 MB file is often a network or browser issue, not the size cap. Retry on stable Wi‑Fi, try a private window, or switch browsers before assuming the file is too large.",
+                type: "p",
+                text: "A failure on a 5 MB file is often a network or browser issue, not the size cap. Retry on stable Wi‑Fi, try a private window, or switch browsers before assuming the file is too large.",
             },
         ],
     },
     {
-        "slug": "how-to-sign-a-pdf-online",
-        "title": "How to Sign a PDF Online",
-        "excerpt": "Upload a PDF, place fields, create your signature, and download the signed file — or send it to others for signature.",
-        "category": "Signing Documents",
-        "categorySlug": "signing-documents",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "how-to-sign-a-pdf-online",
+        title: "How to Sign a PDF Online",
+        excerpt: "Upload a PDF, place fields, create your signature, and download the signed file — or send it to others for signature.",
+        category: "Signing Documents",
+        categorySlug: "signing-documents",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Signing",
             "Tutorial",
         ],
-        "keywords": [
+        keywords: [
             "sign pdf online",
             "how to sign a pdf",
             "esign pdf",
             "add signature to pdf",
         ],
-        "metaTitle": "How to Sign a PDF Online in Minutes | CubSign",
-        "metaDescription": "A complete step-by-step guide to signing a PDF online with CubSign: upload, place fields, create a signature, review, and download.",
-        "related": [
+        metaTitle: "How to Sign a PDF Online in Minutes | CubSign",
+        metaDescription: "A complete step-by-step guide to signing a PDF online with CubSign: upload, place fields, create a signature, review, and download.",
+        related: [
             "how-to-upload-a-pdf",
             "draw-vs-type-signature",
             "download-signed-pdf",
             "share-documents",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Do I need an account?",
-                "answer": "No for your first guest self-sign session. A free account is required to continue signing afterward and to send documents to others.",
+                question: "Do I need an account?",
+                answer: "No for your first guest self-sign session. A free account is required to continue signing afterward and to send documents to others.",
             },
             {
-                "question": "How long does signing take?",
-                "answer": "A simple one-signature PDF often takes under a minute once you are familiar with the editor.",
+                question: "How long does signing take?",
+                answer: "A simple one-signature PDF often takes under a minute once you are familiar with the editor.",
             },
             {
-                "question": "Can I sign on my phone?",
-                "answer": "Yes. See Mobile Support for touch and browser tips.",
+                question: "Can I sign on my phone?",
+                answer: "Yes. See Mobile Support for touch and browser tips.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "CubSign signs PDFs in the browser: upload, place fields, apply your signature, review, and download. No printing or scanning required.",
+                type: "p",
+                text: "CubSign signs PDFs in the browser: upload, place fields, apply your signature, review, and download. No printing or scanning required.",
             },
             {
-                "type": "h2",
-                "text": "Step-by-step: self-sign",
+                type: "product-screenshot",
+                key: "signed-pdf-download",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "product-screenshot",
+                key: "signature-placement",
+            },
+            {
+                type: "product-screenshot",
+                key: "draw-signature",
+            },
+            {
+                type: "product-screenshot",
+                key: "signing-editor",
+            },
+            {
+                type: "product-screenshot",
+                key: "pdf-upload",
+            },
+            {
+                type: "h2",
+                text: "Step-by-step: self-sign",
+            },
+            {
+                type: "ol",
+                items: [
                     "Upload a PDF (max 25 MB) from the Upload PDF page.",
                     "Select a field type: signature, initials, name, text, date, or checkbox.",
                     "Click on the page to place each field where it belongs.",
@@ -775,181 +804,197 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Three signature methods",
+                type: "h2",
+                text: "Three signature methods",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Draw — handwriting on a canvas (mouse, trackpad, or finger).",
                     "Type — your name rendered in a handwriting-style font.",
                     "Upload — place an existing PNG or JPG signature image.",
                 ],
             },
             {
-                "type": "p",
-                "text": "Within one signing session, the signature you create can be applied to multiple fields on the same document. CubSign does not store a cross-document signature library.",
+                type: "p",
+                text: "Within one signing session, the signature you create can be applied to multiple fields on the same document. CubSign does not store a cross-document signature library.",
             },
             {
-                "type": "h2",
-                "text": "Guest vs account",
+                type: "h2",
+                text: "Guest vs account",
             },
             {
-                "type": "p",
-                "text": "Guests can complete one self-sign session without registering. Create a free account to sign again, save documents, use templates, and send PDFs to recipients via email links. Recipients sign at /r/{token} without an account.",
+                type: "p",
+                text: "Guests can complete one self-sign session without registering. Create a free account to sign again, save documents, use templates, and send PDFs to recipients via email links. Recipients sign at /r/{token} without an account.",
             },
             {
-                "type": "tip",
-                "text": "Scroll every page before finishing. A signature records agreement to the text as shown — it does not fix typos you missed.",
+                type: "tip",
+                text: "Scroll every page before finishing. A signature records agreement to the text as shown — it does not fix typos you missed.",
             },
             {
-                "type": "note",
-                "text": "To collect signatures from others, see Share Documents. For legal background (not advice), see Electronic Signature Legality.",
+                type: "note",
+                text: "To collect signatures from others, see Share Documents. For legal background (not advice), see Electronic Signature Legality.",
             },
         ],
     },
     {
-        "slug": "draw-vs-type-signature",
-        "title": "Draw vs Type Signature",
-        "excerpt": "Compare drawing and typing your signature so you can pick the best option for each document.",
-        "category": "Signing Documents",
-        "categorySlug": "signing-documents",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "draw-vs-type-signature",
+        title: "Draw vs Type Signature",
+        excerpt: "Compare drawing and typing your signature so you can pick the best option for each document.",
+        category: "Signing Documents",
+        categorySlug: "signing-documents",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Signature",
             "Draw",
             "Type",
         ],
-        "keywords": [
+        keywords: [
             "draw vs type signature",
             "handwritten signature online",
             "typed signature",
             "signature style",
         ],
-        "metaTitle": "Draw vs Type Signature: Which to Use | CubSign",
-        "metaDescription": "Compare drawing and typing your electronic signature in CubSign, including when each option looks and works best.",
-        "related": [
+        metaTitle: "Draw vs Type Signature: Which to Use | CubSign",
+        metaDescription: "Compare drawing and typing your electronic signature in CubSign, including when each option looks and works best.",
+        related: [
             "upload-your-signature-image",
             "how-to-sign-a-pdf-online",
             "electronic-signature-legality",
             "mobile-support",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Is a drawn signature more legal than a typed one?",
-                "answer": "No. Both drawn and typed signatures are valid electronic signatures when you intend to sign. The method is a matter of appearance and comfort.",
+                question: "Is a drawn signature more legal than a typed one?",
+                answer: "No. Both drawn and typed signatures are valid electronic signatures when you intend to sign. The method is a matter of appearance and comfort.",
             },
             {
-                "question": "Which should I use on my phone?",
-                "answer": "Drawing works well in landscape, but typing is often cleaner on small screens. Try both and keep whichever reads best.",
+                question: "Which should I use on my phone?",
+                answer: "Drawing works well in landscape, but typing is often cleaner on small screens. Try both and keep whichever reads best.",
             },
             {
-                "question": "Can I use an existing signature image instead?",
-                "answer": "Yes. If you already have a signature PNG or JPG, see Upload Your Signature Image to use it directly.",
+                question: "Can I use an existing signature image instead?",
+                answer: "Yes. If you already have a signature PNG or JPG, see Upload Your Signature Image to use it directly.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "CubSign offers draw and type (plus upload image) when you fill a signature or initials field. Both are valid electronic signatures when you intend to sign — the choice is about appearance and device, not legality.",
+                type: "p",
+                text: "CubSign offers draw and type (plus upload image) when you fill a signature or initials field. Both are valid electronic signatures when you intend to sign — the choice is about appearance and device, not legality.",
             },
             {
-                "type": "h2",
-                "text": "Draw",
+                type: "product-screenshot",
+                key: "upload-signature",
             },
             {
-                "type": "p",
-                "text": "Use a mouse, trackpad, or finger on the canvas. Closest to pen-on-paper. Works well on tablets; on phones, rotate to landscape for more room.",
+                type: "product-screenshot",
+                key: "type-signature",
             },
             {
-                "type": "h2",
-                "text": "Type",
+                type: "product-screenshot",
+                key: "draw-signature",
             },
             {
-                "type": "p",
-                "text": "Enter your name and pick a font. Fast, legible at small sizes, and often the best option on desktop without a stylus or on cramped phone screens.",
+                type: "h2",
+                text: "Draw",
             },
             {
-                "type": "h2",
-                "text": "When to pick which",
+                type: "p",
+                text: "Use a mouse, trackpad, or finger on the canvas. Closest to pen-on-paper. Works well on tablets; on phones, rotate to landscape for more room.",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "h2",
+                text: "Type",
+            },
+            {
+                type: "p",
+                text: "Enter your name and pick a font. Fast, legible at small sizes, and often the best option on desktop without a stylus or on cramped phone screens.",
+            },
+            {
+                type: "h2",
+                text: "When to pick which",
+            },
+            {
+                type: "ul",
+                items: [
                     "Draw: you want a handwritten look and have enough space to write cleanly.",
                     "Type: speed and readability matter more than freehand appearance.",
                     "Upload: you already have an approved signature image file.",
                 ],
             },
             {
-                "type": "tip",
-                "text": "Preview the signature at the actual field size before applying. A large canvas scribble can look unreadable when shrunk onto a signature line.",
+                type: "tip",
+                text: "Preview the signature at the actual field size before applying. A large canvas scribble can look unreadable when shrunk onto a signature line.",
             },
             {
-                "type": "p",
-                "text": "During the session, CubSign remembers your signature for reuse on other fields in the same document. Starting a new document means creating or uploading the mark again. See Upload Your Signature Image for the upload path.",
+                type: "p",
+                text: "During the session, CubSign remembers your signature for reuse on other fields in the same document. Starting a new document means creating or uploading the mark again. See Upload Your Signature Image for the upload path.",
             },
             {
-                "type": "note",
-                "text": "Neither method is inherently “more legal” than the other. See Electronic Signature Legality for general framework information — not legal advice.",
+                type: "note",
+                text: "Neither method is inherently “more legal” than the other. See Electronic Signature Legality for general framework information — not legal advice.",
             },
         ],
     },
     {
-        "slug": "upload-your-signature-image",
-        "title": "Upload Your Signature Image",
-        "excerpt": "Use an existing signature PNG or JPG instead of drawing or typing, and place it on your PDF.",
-        "category": "Signing Documents",
-        "categorySlug": "signing-documents",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "upload-your-signature-image",
+        title: "Upload Your Signature Image",
+        excerpt: "Use an existing signature PNG or JPG instead of drawing or typing, and place it on your PDF.",
+        category: "Signing Documents",
+        categorySlug: "signing-documents",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Signature",
             "Upload",
         ],
-        "keywords": [
+        keywords: [
             "upload signature image",
             "signature png",
             "use signature image pdf",
             "add signature picture",
         ],
-        "metaTitle": "Upload Your Signature Image | CubSign",
-        "metaDescription": "Learn how to upload a signature PNG or JPG in CubSign and place it cleanly on your PDF, with image quality and privacy tips.",
-        "related": [
+        metaTitle: "Upload Your Signature Image | CubSign",
+        metaDescription: "Learn how to upload a signature PNG or JPG in CubSign and place it cleanly on your PDF, with image quality and privacy tips.",
+        related: [
             "draw-vs-type-signature",
             "how-to-sign-a-pdf-online",
             "mobile-support",
             "document-privacy",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "What format works best?",
-                "answer": "PNG with a transparent background is ideal. A high-contrast, tightly cropped JPG also works.",
+                question: "What format works best?",
+                answer: "PNG with a transparent background is ideal. A high-contrast, tightly cropped JPG also works.",
             },
             {
-                "question": "Why does my signature look boxed in?",
-                "answer": "The image likely has a solid background. Use transparency or crop tightly around the ink.",
+                question: "Why does my signature look boxed in?",
+                answer: "The image likely has a solid background. Use transparency or crop tightly around the ink.",
             },
             {
-                "question": "Is my image saved forever in CubSign?",
-                "answer": "It is used in your current signing session. CubSign does not offer a persistent signature library across all future documents.",
+                question: "Is my image saved forever in CubSign?",
+                answer: "It is used in your current signing session. CubSign does not offer a persistent signature library across all future documents.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "If you already have a scanned or designed signature, upload it in the signing editor instead of drawing or typing. The image is placed on signature or initials fields like any other mark.",
+                type: "p",
+                text: "If you already have a scanned or designed signature, upload it in the signing editor instead of drawing or typing. The image is placed on signature or initials fields like any other mark.",
             },
             {
-                "type": "h2",
-                "text": "Upload steps",
+                type: "product-screenshot",
+                key: "upload-signature",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "h2",
+                text: "Upload steps",
+            },
+            {
+                type: "ol",
+                items: [
                     "Open a document in the signing editor.",
                     "Select a signature or initials field, or create your mark from the signature panel.",
                     "Choose Upload and pick a PNG or JPG.",
@@ -957,12 +1002,12 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Image quality tips",
+                type: "h2",
+                text: "Image quality tips",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "High contrast ink on white or transparent background.",
                     "Crop close to the signature — extra margins make it appear tiny in the field.",
                     "Avoid blurry phone photos with shadows.",
@@ -970,72 +1015,76 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Session reuse only",
+                type: "h2",
+                text: "Session reuse only",
             },
             {
-                "type": "p",
-                "text": "Once uploaded, the image can be reused on multiple fields during that signing session. It is not stored as a permanent personal signature vault for every future PDF. Each new document workflow starts fresh unless you upload the file again.",
+                type: "p",
+                text: "Once uploaded, the image can be reused on multiple fields during that signing session. It is not stored as a permanent personal signature vault for every future PDF. Each new document workflow starts fresh unless you upload the file again.",
             },
             {
-                "type": "note",
-                "text": "Treat signature image files like sensitive assets. Do not share your CubSign login — someone with account access could send documents on your behalf.",
+                type: "note",
+                text: "Treat signature image files like sensitive assets. Do not share your CubSign login — someone with account access could send documents on your behalf.",
             },
         ],
     },
     {
-        "slug": "download-signed-pdf",
-        "title": "Download Signed PDF",
-        "excerpt": "Save the final signed PDF to your device after completing a signature, and find it later in your workspace.",
-        "category": "Signing Documents",
-        "categorySlug": "signing-documents",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "download-signed-pdf",
+        title: "Download Signed PDF",
+        excerpt: "Save the final signed PDF to your device after completing a signature, and find it later in your workspace.",
+        category: "Signing Documents",
+        categorySlug: "signing-documents",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Download",
             "Signed PDF",
         ],
-        "keywords": [
+        keywords: [
             "download signed pdf",
             "save signed document",
             "get signed copy",
             "export signed pdf",
         ],
-        "metaTitle": "How to Download a Signed PDF | CubSign",
-        "metaDescription": "Learn how to download your signed PDF after signing, retrieve it from your workspace, and understand what the file contains.",
-        "related": [
+        metaTitle: "How to Download a Signed PDF | CubSign",
+        metaDescription: "Learn how to download your signed PDF after signing, retrieve it from your workspace, and understand what the file contains.",
+        related: [
             "how-to-sign-a-pdf-online",
             "share-documents",
             "audit-trail",
             "delete-documents",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "How do I download after signing?",
-                "answer": "Complete all fields, finish the flow, and click Download on the completion screen.",
+                question: "How do I download after signing?",
+                answer: "Complete all fields, finish the flow, and click Download on the completion screen.",
             },
             {
-                "question": "Can I download later?",
-                "answer": "Signed-in users can download again from Documents in the workspace. Guests must download during the session — there is no saved copy afterward.",
+                question: "Can I download later?",
+                answer: "Signed-in users can download again from Documents in the workspace. Guests must download during the session — there is no saved copy afterward.",
             },
             {
-                "question": "What is in the file?",
-                "answer": "The PDF with applied signatures and field values from the session. Activity events are tracked separately in your workspace — see Audit Trail.",
+                question: "What is in the file?",
+                answer: "The PDF with applied signatures and field values from the session. Activity events are tracked separately in your workspace — see Audit Trail.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "When signing completes, CubSign generates a PDF with your signatures and field values embedded. Download is how you keep the portable record.",
+                type: "p",
+                text: "When signing completes, CubSign generates a PDF with your signatures and field values embedded. Download is how you keep the portable record.",
             },
             {
-                "type": "h2",
-                "text": "Download right after signing",
+                type: "product-screenshot",
+                key: "signed-pdf-download",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "h2",
+                text: "Download right after signing",
+            },
+            {
+                type: "ol",
+                items: [
                     "Complete every assigned signature, initials, and form field.",
                     "Finish the signing flow.",
                     "Click Download on the completion screen.",
@@ -1043,88 +1092,88 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Download from workspace",
+                type: "h2",
+                text: "Download from workspace",
             },
             {
-                "type": "p",
-                "text": "If you are signed in, open Documents, select the file, and download again anytime — useful when a colleague needs a copy months later.",
+                type: "p",
+                text: "If you are signed in, open Documents, select the file, and download again anytime — useful when a colleague needs a copy months later.",
             },
             {
-                "type": "h2",
-                "text": "Guest sessions",
+                type: "h2",
+                text: "Guest sessions",
             },
             {
-                "type": "p",
-                "text": "Guest self-sign does not save the document to an account. Download before closing the tab — there is no second chance from a workspace.",
+                type: "p",
+                text: "Guest self-sign does not save the document to an account. Download before closing the tab — there is no second chance from a workspace.",
             },
             {
-                "type": "h2",
-                "text": "Multi-recipient documents",
+                type: "h2",
+                text: "Multi-recipient documents",
             },
             {
-                "type": "p",
-                "text": "When you send for signature, the final merged PDF is available after all recipients sign and PDF generation succeeds. If generation fails, the document stays incomplete and a signed_pdf_failed event appears in activity — contact support if that happens.",
+                type: "p",
+                text: "When you send for signature, the final merged PDF is available after all recipients sign and PDF generation succeeds. If generation fails, the document stays incomplete and a signed_pdf_failed event appears in activity — contact support if that happens.",
             },
             {
-                "type": "tip",
-                "text": "Name downloads predictably: counterpart, document type, date — e.g. Acme-NDA-2026-08-08.pdf.",
+                type: "tip",
+                text: "Name downloads predictably: counterpart, document type, date — e.g. Acme-NDA-2026-08-08.pdf.",
             },
         ],
     },
     {
-        "slug": "share-documents",
-        "title": "Share Documents",
-        "excerpt": "Send a PDF for signature by email. Recipients sign at a unique /r/{token} link without a CubSign account.",
-        "category": "Signing Documents",
-        "categorySlug": "signing-documents",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "share-documents",
+        title: "Share Documents",
+        excerpt: "Send a PDF for signature by email. Recipients sign at a unique /r/{token} link without a CubSign account.",
+        category: "Signing Documents",
+        categorySlug: "signing-documents",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Share",
             "Recipients",
         ],
-        "keywords": [
+        keywords: [
             "send pdf for signature",
             "request signature",
             "share document to sign",
             "collect signatures",
         ],
-        "metaTitle": "How to Share Documents for Signature | CubSign",
-        "metaDescription": "Learn how to send a PDF for signature with CubSign, assign recipients, and track completion. Recipients sign from a secure link.",
-        "related": [
+        metaTitle: "How to Share Documents for Signature | CubSign",
+        metaDescription: "Learn how to send a PDF for signature with CubSign, assign recipients, and track completion. Recipients sign from a secure link.",
+        related: [
             "how-to-sign-a-pdf-online",
             "audit-trail",
             "document-privacy",
             "download-signed-pdf",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Do recipients need an account?",
-                "answer": "No. They open the email link, review the PDF, and sign at /r/{token}.",
+                question: "Do recipients need an account?",
+                answer: "No. They open the email link, review the PDF, and sign at /r/{token}.",
             },
             {
-                "question": "How do I track progress?",
-                "answer": "Check document status and activity in your workspace. You receive notifications as recipients complete their fields.",
+                question: "How do I track progress?",
+                answer: "Check document status and activity in your workspace. You receive notifications as recipients complete their fields.",
             },
             {
-                "question": "Multiple signers?",
-                "answer": "Add a field for each person, assign fields to the correct recipient email, and send once.",
+                question: "Multiple signers?",
+                answer: "Add a field for each person, assign fields to the correct recipient email, and send once.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Send-for-signature requires a CubSign account. You upload a PDF, place fields, add recipient emails, and CubSign sends each person a unique signing link.",
+                type: "p",
+                text: "Send-for-signature requires a CubSign account. You upload a PDF, place fields, add recipient emails, and CubSign sends each person a unique signing link.",
             },
             {
-                "type": "h2",
-                "text": "Send workflow",
+                type: "h2",
+                text: "Send workflow",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Upload a PDF and open the editor (account required).",
                     "Switch to request-signatures mode and add recipients by email.",
                     "Place signature, initials, name, text, date, or checkbox fields.",
@@ -1134,84 +1183,84 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "What recipients see",
+                type: "h2",
+                text: "What recipients see",
             },
             {
-                "type": "p",
-                "text": "Recipients open the link, review the PDF in the browser, complete their assigned fields using draw, type, or upload, and submit. No CubSign registration step.",
+                type: "p",
+                text: "Recipients open the link, review the PDF in the browser, complete their assigned fields using draw, type, or upload, and submit. No CubSign registration step.",
             },
             {
-                "type": "h2",
-                "text": "Activity you can track",
+                type: "h2",
+                text: "Activity you can track",
             },
             {
-                "type": "p",
-                "text": "Your workspace records events such as recipient_notified, recipient_signed, document_completed, and signed_pdf_failed if PDF generation fails. CubSign does not log “document viewed” events in this activity timeline.",
+                type: "p",
+                text: "Your workspace records events such as recipient_notified, recipient_signed, document_completed, and signed_pdf_failed if PDF generation fails. CubSign does not log “document viewed” events in this activity timeline.",
             },
             {
-                "type": "tip",
-                "text": "Double-check recipient emails before sending. A typo sends the contract to the wrong inbox with no way to unsend.",
+                type: "tip",
+                text: "Double-check recipient emails before sending. A typo sends the contract to the wrong inbox with no way to unsend.",
             },
             {
-                "type": "note",
-                "text": "For privacy expectations when sharing, read Document Privacy. For what each activity event means, see Audit Trail.",
+                type: "note",
+                text: "For privacy expectations when sharing, read Document Privacy. For what each activity event means, see Audit Trail.",
             },
         ],
     },
     {
-        "slug": "delete-documents",
-        "title": "Delete Documents",
-        "excerpt": "Remove documents from your CubSign workspace when you no longer need them, safely and deliberately.",
-        "category": "Account",
-        "categorySlug": "account",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "delete-documents",
+        title: "Delete Documents",
+        excerpt: "Remove documents from your CubSign workspace when you no longer need them, safely and deliberately.",
+        category: "Account",
+        categorySlug: "account",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Documents",
             "Privacy",
         ],
-        "keywords": [
+        keywords: [
             "delete cubsign document",
             "remove document",
             "clean up workspace",
             "delete signed pdf",
         ],
-        "metaTitle": "How to Delete Documents in CubSign | CubSign",
-        "metaDescription": "Learn how to delete documents from your CubSign workspace, what deletion means, and what to check before you remove a file.",
-        "related": [
+        metaTitle: "How to Delete Documents in CubSign | CubSign",
+        metaDescription: "Learn how to delete documents from your CubSign workspace, what deletion means, and what to check before you remove a file.",
+        related: [
             "document-privacy",
             "secure-storage",
             "download-signed-pdf",
             "contact-support",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "How do I delete a document in CubSign?",
-                "answer": "Sign in, open Documents, find the file, open its actions, choose Delete, and confirm. You can Archive instead for a softer cleanup.",
+                question: "How do I delete a document in CubSign?",
+                answer: "Sign in, open Documents, find the file, open its actions, choose Delete, and confirm. You can Archive instead for a softer cleanup.",
             },
             {
-                "question": "Can I recover a deleted document?",
-                "answer": "Treat deletion as permanent. Download a final signed copy before deleting, and use Archive if you might need the file later.",
+                question: "Can I recover a deleted document?",
+                answer: "Treat deletion as permanent. Download a final signed copy before deleting, and use Archive if you might need the file later.",
             },
             {
-                "question": "What happens to recipients if I delete a shared document?",
-                "answer": "If a signing request was already sent, recipients may lose access once the document is deleted. Confirm no active request depends on it first.",
+                question: "What happens to recipients if I delete a shared document?",
+                answer: "If a signing request was already sent, recipients may lose access once the document is deleted. Confirm no active request depends on it first.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Signed-in users can remove documents from the workspace when they are no longer needed. Deletion is intentional — treat it as permanent for the CubSign copy.",
+                type: "p",
+                text: "Signed-in users can remove documents from the workspace when they are no longer needed. Deletion is intentional — treat it as permanent for the CubSign copy.",
             },
             {
-                "type": "h2",
-                "text": "Delete or archive",
+                type: "h2",
+                text: "Delete or archive",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Open Documents in your workspace.",
                     "Select the file and open its actions menu.",
                     "Choose Delete, or Archive to hide it from active lists without the same urgency.",
@@ -1219,80 +1268,80 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Before you delete",
+                type: "h2",
+                text: "Before you delete",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Download the signed PDF if you need a local copy — see Download Signed PDF.",
                     "Confirm no recipient still needs an open signing link.",
                     "Verify you picked the correct file among similarly named documents.",
                 ],
             },
             {
-                "type": "p",
-                "text": "Deleting removes the document from your CubSign workspace. Copies you already downloaded, forwarded by email, or filed elsewhere are unaffected. Pending recipients may lose access to signing links once the document is removed.",
+                type: "p",
+                text: "Deleting removes the document from your CubSign workspace. Copies you already downloaded, forwarded by email, or filed elsewhere are unaffected. Pending recipients may lose access to signing links once the document is removed.",
             },
             {
-                "type": "note",
-                "text": "For retention and privacy policy details, see Document Privacy and the Privacy Policy on cubsign.com.",
+                type: "note",
+                text: "For retention and privacy policy details, see Document Privacy and the Privacy Policy on cubsign.com.",
             },
         ],
     },
     {
-        "slug": "email-verification",
-        "title": "Email Verification",
-        "excerpt": "Verify your email address to unlock the full CubSign workspace and receive signing notifications.",
-        "category": "Account",
-        "categorySlug": "account",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 3,
-        "tags": [
+        slug: "email-verification",
+        title: "Email Verification",
+        excerpt: "Verify your email address to unlock the full CubSign workspace and receive signing notifications.",
+        category: "Account",
+        categorySlug: "account",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 3,
+        tags: [
             "Account",
             "Email",
         ],
-        "keywords": [
+        keywords: [
             "verify email cubsign",
             "email verification",
             "confirm email address",
             "verification email not received",
         ],
-        "metaTitle": "Email Verification in CubSign | CubSign",
-        "metaDescription": "Learn how CubSign email verification works, why it matters, and what to do if the verification email does not arrive.",
-        "related": [
+        metaTitle: "Email Verification in CubSign | CubSign",
+        metaDescription: "Learn how CubSign email verification works, why it matters, and what to do if the verification email does not arrive.",
+        related: [
             "create-your-cubsign-account",
             "google-login",
             "reset-password",
             "contact-support",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Why does CubSign need to verify my email?",
-                "answer": "Verification confirms account ownership, enables signing notifications, and prevents someone else from creating an account with your address.",
+                question: "Why does CubSign need to verify my email?",
+                answer: "Verification confirms account ownership, enables signing notifications, and prevents someone else from creating an account with your address.",
             },
             {
-                "question": "The verification email never arrived, what do I do?",
-                "answer": "Check spam and promotions folders, confirm you typed the address correctly, and request a new verification email. Allowlist cubsign.com if your provider filters unknown senders.",
+                question: "The verification email never arrived, what do I do?",
+                answer: "Check spam and promotions folders, confirm you typed the address correctly, and request a new verification email. Allowlist cubsign.com if your provider filters unknown senders.",
             },
             {
-                "question": "Do Google Login users need to verify email?",
-                "answer": "Generally no. Google Login authenticates through Google, so a separate verification step is typically unnecessary.",
+                question: "Do Google Login users need to verify email?",
+                answer: "Generally no. Google Login authenticates through Google, so a separate verification step is typically unnecessary.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Email verification confirms you control the address on your CubSign account. It is required before full workspace access — uploading to your library, templates, and send-for-signature.",
+                type: "p",
+                text: "Email verification confirms you control the address on your CubSign account. It is required before full workspace access — uploading to your library, templates, and send-for-signature.",
             },
             {
-                "type": "h2",
-                "text": "Verify your address",
+                type: "h2",
+                text: "Verify your address",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Register with email and password.",
                     "Open the verification email from CubSign.",
                     "Click the link to confirm.",
@@ -1300,12 +1349,12 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Email not arriving?",
+                type: "h2",
+                text: "Email not arriving?",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Check spam, junk, and promotions folders.",
                     "Confirm the address you typed at registration.",
                     "Request a new verification email from the in-app prompt.",
@@ -1313,69 +1362,69 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "p",
-                "text": "Google Login users typically skip separate CubSign verification because Google already authenticated the email. See Google Login.",
+                type: "p",
+                text: "Google Login users typically skip separate CubSign verification because Google already authenticated the email. See Google Login.",
             },
             {
-                "type": "note",
-                "text": "Do not forward verification links. They prove inbox control. If you receive verification mail for an account you did not create, ignore the link and contact support.",
+                type: "note",
+                text: "Do not forward verification links. They prove inbox control. If you receive verification mail for an account you did not create, ignore the link and contact support.",
             },
         ],
     },
     {
-        "slug": "google-login",
-        "title": "Google Login",
-        "excerpt": "Sign in to CubSign quickly and securely with your Google account, with no separate password to manage.",
-        "category": "Account",
-        "categorySlug": "account",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "google-login",
+        title: "Google Login",
+        excerpt: "Sign in to CubSign quickly and securely with your Google account, with no separate password to manage.",
+        category: "Account",
+        categorySlug: "account",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Account",
             "Google",
             "Login",
         ],
-        "keywords": [
+        keywords: [
             "google login cubsign",
             "sign in with google",
             "continue with google",
             "google sso",
         ],
-        "metaTitle": "Sign In with Google Login | CubSign",
-        "metaDescription": "Learn how to use Google Login with CubSign, what data CubSign receives, and how to switch between Google and email sign-in.",
-        "related": [
+        metaTitle: "Sign In with Google Login | CubSign",
+        metaDescription: "Learn how to use Google Login with CubSign, what data CubSign receives, and how to switch between Google and email sign-in.",
+        related: [
             "create-your-cubsign-account",
             "email-verification",
             "reset-password",
             "secure-storage",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Does Google Login give CubSign access to my Gmail or Drive?",
-                "answer": "No. CubSign uses Google only for authentication basics like your name and email. It does not access your Gmail content or Drive files.",
+                question: "Does Google Login give CubSign access to my Gmail or Drive?",
+                answer: "No. CubSign uses Google only for authentication basics like your name and email. It does not access your Gmail content or Drive files.",
             },
             {
-                "question": "Can I switch from email login to Google Login?",
-                "answer": "Use the same email consistently. If you registered with email and password, contact support before linking a Google account to avoid duplicate profiles.",
+                question: "Can I switch from email login to Google Login?",
+                answer: "Use the same email consistently. If you registered with email and password, contact support before linking a Google account to avoid duplicate profiles.",
             },
             {
-                "question": "What if I forget which Google account I used?",
-                "answer": "Try the addresses you commonly use. If you still cannot access your account, reach out from the Contact page for help.",
+                question: "What if I forget which Google account I used?",
+                answer: "Try the addresses you commonly use. If you still cannot access your account, reach out from the Contact page for help.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Continue with Google to register or sign in without a separate CubSign password. Authentication is handled by Google; CubSign receives basic profile information needed for your account.",
+                type: "p",
+                text: "Continue with Google to register or sign in without a separate CubSign password. Authentication is handled by Google; CubSign receives basic profile information needed for your account.",
             },
             {
-                "type": "h2",
-                "text": "Sign in with Google",
+                type: "h2",
+                text: "Sign in with Google",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Open Login or Register on cubsign.com.",
                     "Click Continue with Google.",
                     "Pick the Google account and approve access.",
@@ -1383,80 +1432,80 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "What CubSign receives",
+                type: "h2",
+                text: "What CubSign receives",
             },
             {
-                "type": "p",
-                "text": "Name and email for account identity — not Gmail content, Drive files, or contacts. This is sign-in only.",
+                type: "p",
+                text: "Name and email for account identity — not Gmail content, Drive files, or contacts. This is sign-in only.",
             },
             {
-                "type": "h2",
-                "text": "One account, one method",
+                type: "h2",
+                text: "One account, one method",
             },
             {
-                "type": "p",
-                "text": "Using the same email for password registration and Google Login on different occasions can create duplicate workspaces. Contact support before linking if you already registered with a password and want to switch.",
+                type: "p",
+                text: "Using the same email for password registration and Google Login on different occasions can create duplicate workspaces. Contact support before linking if you already registered with a password and want to switch.",
             },
             {
-                "type": "tip",
-                "text": "Secure your Google account with two-factor authentication. CubSign access follows Google session security.",
+                type: "tip",
+                text: "Secure your Google account with two-factor authentication. CubSign access follows Google session security.",
             },
         ],
     },
     {
-        "slug": "reset-password",
-        "title": "Reset Password",
-        "excerpt": "Recover access to your CubSign account if you forgot your password, using a secure reset link.",
-        "category": "Account",
-        "categorySlug": "account",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "reset-password",
+        title: "Reset Password",
+        excerpt: "Recover access to your CubSign account if you forgot your password, using a secure reset link.",
+        category: "Account",
+        categorySlug: "account",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Account",
             "Password",
         ],
-        "keywords": [
+        keywords: [
             "reset cubsign password",
             "forgot password",
             "change password",
             "password recovery",
         ],
-        "metaTitle": "How to Reset Your Password | CubSign",
-        "metaDescription": "Step-by-step guide to resetting your CubSign password with a secure link, plus password tips and the Google Login alternative.",
-        "related": [
+        metaTitle: "How to Reset Your Password | CubSign",
+        metaDescription: "Step-by-step guide to resetting your CubSign password with a secure link, plus password tips and the Google Login alternative.",
+        related: [
             "google-login",
             "email-verification",
             "create-your-cubsign-account",
             "contact-support",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "How do I reset my CubSign password?",
-                "answer": "On the Login page choose Forgot password, enter your email, open the reset email, click the secure link, and set a new password.",
+                question: "How do I reset my CubSign password?",
+                answer: "On the Login page choose Forgot password, enter your email, open the reset email, click the secure link, and set a new password.",
             },
             {
-                "question": "The reset link stopped working, why?",
-                "answer": "Reset links expire for security. Request a new link from the Forgot password prompt and use it promptly.",
+                question: "The reset link stopped working, why?",
+                answer: "Reset links expire for security. Request a new link from the Forgot password prompt and use it promptly.",
             },
             {
-                "question": "I use Google Login, do I need a password?",
-                "answer": "No. Google Login users do not need a CubSign password. Just choose Continue with Google on the login page.",
+                question: "I use Google Login, do I need a password?",
+                answer: "No. Google Login users do not need a CubSign password. Just choose Continue with Google on the login page.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Email-and-password accounts can reset via a time-limited link sent to the registered address. CubSign stores passwords hashed — we cannot read your current password.",
+                type: "p",
+                text: "Email-and-password accounts can reset via a time-limited link sent to the registered address. CubSign stores passwords hashed — we cannot read your current password.",
             },
             {
-                "type": "h2",
-                "text": "Reset steps",
+                type: "h2",
+                text: "Reset steps",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "On Login, click Forgot password.",
                     "Enter the email on your CubSign account.",
                     "Open the reset email and click the link promptly — links expire.",
@@ -1464,100 +1513,100 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Google Login users",
+                type: "h2",
+                text: "Google Login users",
             },
             {
-                "type": "p",
-                "text": "No CubSign password exists for pure Google Login accounts. Use Continue with Google instead of the reset flow.",
+                type: "p",
+                text: "No CubSign password exists for pure Google Login accounts. Use Continue with Google instead of the reset flow.",
             },
             {
-                "type": "h2",
-                "text": "Security notes",
+                type: "h2",
+                text: "Security notes",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Reset emails should arrive only after you request one.",
                     "Use the official cubsign.com link — not third-party lookalikes.",
                     "Never share a reset link; anyone with it can change your password.",
                 ],
             },
             {
-                "type": "note",
-                "text": "If reset mail never arrives, check spam and confirm the account email. See Email Verification and Contact Support.",
+                type: "note",
+                text: "If reset mail never arrives, check spam and confirm the account email. See Email Verification and Contact Support.",
             },
         ],
     },
     {
-        "slug": "secure-storage",
-        "title": "Secure Storage",
-        "excerpt": "How CubSign protects PDFs in transit with HTTPS and limits access to stored files — without overstating encryption claims.",
-        "category": "Security",
-        "categorySlug": "security",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "secure-storage",
+        title: "Secure Storage",
+        excerpt: "How CubSign protects PDFs in transit with HTTPS and limits access to stored files — without overstating encryption claims.",
+        category: "Security",
+        categorySlug: "security",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Security",
             "Encryption",
         ],
-        "keywords": [
+        keywords: [
             "cubsign secure storage",
             "pdf storage security",
             "https document signing",
             "data security",
         ],
-        "metaTitle": "Secure Storage: How CubSign Protects Documents | CubSign",
-        "metaDescription": "CubSign uses HTTPS for uploads and signing, stores PDFs on private infrastructure with access controls, and hashes passwords. Learn what we do and do not claim.",
-        "related": [
+        metaTitle: "Secure Storage: How CubSign Protects Documents | CubSign",
+        metaDescription: "CubSign uses HTTPS for uploads and signing, stores PDFs on private infrastructure with access controls, and hashes passwords. Learn what we do and do not claim.",
+        related: [
             "document-privacy",
             "audit-trail",
             "delete-documents",
             "electronic-signature-legality",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Is my PDF encrypted in transit?",
-                "answer": "Yes. Connections to CubSign use HTTPS (TLS), including uploads, signing sessions, and downloads.",
+                question: "Is my PDF encrypted in transit?",
+                answer: "Yes. Connections to CubSign use HTTPS (TLS), including uploads, signing sessions, and downloads.",
             },
             {
-                "question": "Does CubSign use AES-256 encryption at rest?",
-                "answer": "We do not claim AES-256 or bank-level encryption at rest. PDFs are stored on private server storage with access controls limited to authorized account holders and valid signing links.",
+                question: "Does CubSign use AES-256 encryption at rest?",
+                answer: "We do not claim AES-256 or bank-level encryption at rest. PDFs are stored on private server storage with access controls limited to authorized account holders and valid signing links.",
             },
             {
-                "question": "What can I do on my side?",
-                "answer": "Use a strong unique password or Google Login, verify recipient emails, avoid shared public computers, and delete documents you no longer need.",
+                question: "What can I do on my side?",
+                answer: "Use a strong unique password or Google Login, verify recipient emails, avoid shared public computers, and delete documents you no longer need.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Security in CubSign spans the connection, stored files, and who can open them. This article describes what the product actually does today — without marketing claims we cannot substantiate.",
+                type: "p",
+                text: "Security in CubSign spans the connection, stored files, and who can open them. This article describes what the product actually does today — without marketing claims we cannot substantiate.",
             },
             {
-                "type": "h2",
-                "text": "HTTPS in transit",
+                type: "h2",
+                text: "HTTPS in transit",
             },
             {
-                "type": "p",
-                "text": "All traffic between your browser and CubSign uses HTTPS with modern TLS. That protects PDF uploads, signing actions, workspace pages, and recipient sessions at /r/{token} from casual network interception.",
+                type: "p",
+                text: "All traffic between your browser and CubSign uses HTTPS with modern TLS. That protects PDF uploads, signing actions, workspace pages, and recipient sessions at /r/{token} from casual network interception.",
             },
             {
-                "type": "h2",
-                "text": "Storage and access controls",
+                type: "h2",
+                text: "Storage and access controls",
             },
             {
-                "type": "p",
-                "text": "Uploaded PDFs are stored on private server infrastructure — not in public buckets. Access is restricted to the document owner (when signed in) and recipients who hold valid signing links for that workflow. CubSign does not describe stored files as “AES-256 encrypted at rest” or “bank-level” secured.",
+                type: "p",
+                text: "Uploaded PDFs are stored on private server infrastructure — not in public buckets. Access is restricted to the document owner (when signed in) and recipients who hold valid signing links for that workflow. CubSign does not describe stored files as “AES-256 encrypted at rest” or “bank-level” secured.",
             },
             {
-                "type": "h2",
-                "text": "Account security",
+                type: "h2",
+                text: "Account security",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Passwords are hashed — not stored in plain text.",
                     "Google OAuth is available as an alternative to password login.",
                     "Email verification is required for full workspace access.",
@@ -1565,20 +1614,20 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Signing links",
+                type: "h2",
+                text: "Signing links",
             },
             {
-                "type": "p",
-                "text": "Each recipient receives a unique tokenized link. Links are scoped to a specific document and recipient — not open public URLs. Still, treat links like credentials: send only to intended signers.",
+                type: "p",
+                text: "Each recipient receives a unique tokenized link. Links are scoped to a specific document and recipient — not open public URLs. Still, treat links like credentials: send only to intended signers.",
             },
             {
-                "type": "h2",
-                "text": "Your responsibilities",
+                type: "h2",
+                text: "Your responsibilities",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Protect your login — password manager or Google 2FA.",
                     "Download signed PDFs to access-controlled storage you manage.",
                     "Verify recipient email addresses before sending contracts.",
@@ -1586,84 +1635,84 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "note",
-                "text": "For broader security documentation, visit the Security page on cubsign.com. For privacy and who can see files, read Document Privacy.",
+                type: "note",
+                text: "For broader security documentation, visit the Security page on cubsign.com. For privacy and who can see files, read Document Privacy.",
             },
         ],
     },
     {
-        "slug": "document-privacy",
-        "title": "Document Privacy",
-        "excerpt": "Who can see your documents and how CubSign keeps uploaded files private by default.",
-        "category": "Security",
-        "categorySlug": "security",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "document-privacy",
+        title: "Document Privacy",
+        excerpt: "Who can see your documents and how CubSign keeps uploaded files private by default.",
+        category: "Security",
+        categorySlug: "security",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Privacy",
             "Security",
         ],
-        "keywords": [
+        keywords: [
             "document privacy",
             "private pdf",
             "who can see my documents",
             "cubsign privacy",
         ],
-        "metaTitle": "Document Privacy in CubSign | CubSign",
-        "metaDescription": "Understand how CubSign keeps documents private, who can access them, what staff can see, and how to control your own privacy.",
-        "related": [
+        metaTitle: "Document Privacy in CubSign | CubSign",
+        metaDescription: "Understand how CubSign keeps documents private, who can access them, what staff can see, and how to control your own privacy.",
+        related: [
             "secure-storage",
             "share-documents",
             "delete-documents",
             "audit-trail",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Are documents public?",
-                "answer": "No. Documents are private by default — not listed in search engines. Only you and invited recipients with valid links can access them.",
+                question: "Are documents public?",
+                answer: "No. Documents are private by default — not listed in search engines. Only you and invited recipients with valid links can access them.",
             },
             {
-                "question": "Can CubSign staff read my PDFs?",
-                "answer": "Staff access is limited to legitimate support needs you initiate. We do not sell document contents or use them for advertising.",
+                question: "Can CubSign staff read my PDFs?",
+                answer: "Staff access is limited to legitimate support needs you initiate. We do not sell document contents or use them for advertising.",
             },
             {
-                "question": "How do I reduce exposure?",
-                "answer": "Share narrowly, verify emails, download what you need, and delete finished documents from your workspace.",
+                question: "How do I reduce exposure?",
+                answer: "Share narrowly, verify emails, download what you need, and delete finished documents from your workspace.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Documents you upload are private by default. CubSign does not publish them or index them for public search. Access flows through your account or recipient signing links.",
+                type: "p",
+                text: "Documents you upload are private by default. CubSign does not publish them or index them for public search. Access flows through your account or recipient signing links.",
             },
             {
-                "type": "h2",
-                "text": "Who can access a file",
+                type: "h2",
+                text: "Who can access a file",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "You, when authenticated in your workspace.",
                     "Recipients you invite — via unique /r/{token} links tied to their email.",
                     "Guest upload sessions you start yourself, for that session only.",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Staff access",
+                type: "h2",
+                text: "Staff access",
             },
             {
-                "type": "p",
-                "text": "CubSign staff may access account or document metadata when investigating a support issue you report. Routine browsing of customer PDFs is not part of the product model. See the Privacy Policy on cubsign.com for retention details.",
+                type: "p",
+                text: "CubSign staff may access account or document metadata when investigating a support issue you report. Routine browsing of customer PDFs is not part of the product model. See the Privacy Policy on cubsign.com for retention details.",
             },
             {
-                "type": "h2",
-                "text": "Controls you have",
+                type: "h2",
+                text: "Controls you have",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Send only to people who must sign — see Share Documents.",
                     "Delete or archive documents when a matter closes — see Delete Documents.",
                     "Keep your login credentials private.",
@@ -1671,68 +1720,68 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "p",
-                "text": "HTTPS protects data in transit. Stored files rely on private infrastructure and access controls — see Secure Storage for an honest description of what we claim (and do not claim) about at-rest protection.",
+                type: "p",
+                text: "HTTPS protects data in transit. Stored files rely on private infrastructure and access controls — see Secure Storage for an honest description of what we claim (and do not claim) about at-rest protection.",
             },
             {
-                "type": "note",
-                "text": "The workspace activity timeline records signing events (sent, notified, signed, completed) — not casual page views. See Audit Trail.",
+                type: "note",
+                text: "The workspace activity timeline records signing events (sent, notified, signed, completed) — not casual page views. See Audit Trail.",
             },
         ],
     },
     {
-        "slug": "audit-trail",
-        "title": "Audit Trail",
-        "excerpt": "CubSign logs signing events in your workspace — sent, notified, signed, completed, and generation failures — not page views or IP addresses in the UI.",
-        "category": "Security",
-        "categorySlug": "security",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "audit-trail",
+        title: "Audit Trail",
+        excerpt: "CubSign logs signing events in your workspace — sent, notified, signed, completed, and generation failures — not page views or IP addresses in the UI.",
+        category: "Security",
+        categorySlug: "security",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Audit",
             "Compliance",
         ],
-        "keywords": [
+        keywords: [
             "audit trail",
             "signing history",
             "document audit log",
             "esignature evidence",
         ],
-        "metaTitle": "What Is an Audit Trail in CubSign? | CubSign",
-        "metaDescription": "See which DocumentActivity events CubSign records: recipient_notified, recipient_signed, document_completed, signed_pdf_failed — and where to find them.",
-        "related": [
+        metaTitle: "What Is an Audit Trail in CubSign? | CubSign",
+        metaDescription: "See which DocumentActivity events CubSign records: recipient_notified, recipient_signed, document_completed, signed_pdf_failed — and where to find them.",
+        related: [
             "electronic-signature-legality",
             "secure-storage",
             "download-signed-pdf",
             "share-documents",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "What events does CubSign record?",
-                "answer": "Events include document creation, send preparation, recipient_notified, recipient_signed, document_completed, and signed_pdf_failed when PDF generation fails. View/open events are not logged in this timeline.",
+                question: "What events does CubSign record?",
+                answer: "Events include document creation, send preparation, recipient_notified, recipient_signed, document_completed, and signed_pdf_failed when PDF generation fails. View/open events are not logged in this timeline.",
             },
             {
-                "question": "Where do I see activity?",
-                "answer": "Open a document in your workspace to view its activity timeline. Keep downloaded signed PDFs for long-term records.",
+                question: "Where do I see activity?",
+                answer: "Open a document in your workspace to view its activity timeline. Keep downloaded signed PDFs for long-term records.",
             },
             {
-                "question": "Does the audit trail show IP addresses?",
-                "answer": "The workspace activity UI shows event types, recipient names, and timestamps — not IP addresses. Internal session data may exist for operations, but it is not presented as a user-facing audit field.",
+                question: "Does the audit trail show IP addresses?",
+                answer: "The workspace activity UI shows event types, recipient names, and timestamps — not IP addresses. Internal session data may exist for operations, but it is not presented as a user-facing audit field.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "CubSign maintains a DocumentActivity timeline on documents in your workspace. It answers “what happened during this signing workflow?” — not “every time someone opened a page.”",
+                type: "p",
+                text: "CubSign maintains a DocumentActivity timeline on documents in your workspace. It answers “what happened during this signing workflow?” — not “every time someone opened a page.”",
             },
             {
-                "type": "h2",
-                "text": "Events you will see",
+                type: "h2",
+                text: "Events you will see",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Document created — when the file enters your workspace.",
                     "Sent / requests prepared — when a send-for-signature workflow is initiated.",
                     "recipient_notified — recipient was emailed a signing link (logged after successful send).",
@@ -1742,100 +1791,100 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "What is not in this timeline",
+                type: "h2",
+                text: "What is not in this timeline",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "“Document viewed” or per-page open events.",
                     "IP addresses displayed to document owners.",
                     "A guarantee of legal enforceability — see Electronic Signature Legality.",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Why keep activity and the PDF together",
+                type: "h2",
+                text: "Why keep activity and the PDF together",
             },
             {
-                "type": "p",
-                "text": "The signed PDF is the primary artifact. The activity timeline adds context — who was notified, who signed, when completion happened. For disputes or internal reviews, store both the downloaded PDF and a note of the completion date.",
+                type: "p",
+                text: "The signed PDF is the primary artifact. The activity timeline adds context — who was notified, who signed, when completion happened. For disputes or internal reviews, store both the downloaded PDF and a note of the completion date.",
             },
             {
-                "type": "tip",
-                "text": "If you see signed_pdf_failed, the document may still show partial signatures but no final merged file. Retry or contact support with the document name and time of the error.",
+                type: "tip",
+                text: "If you see signed_pdf_failed, the document may still show partial signatures but no final merged file. Retry or contact support with the document name and time of the error.",
             },
             {
-                "type": "note",
-                "text": "Activity supports accountability but does not replace legal advice or jurisdiction-specific requirements.",
+                type: "note",
+                text: "Activity supports accountability but does not replace legal advice or jurisdiction-specific requirements.",
             },
         ],
     },
     {
-        "slug": "electronic-signature-legality",
-        "title": "Electronic Signature Legality",
-        "excerpt": "General background on ESIGN, UETA, and eIDAS — plus honest limits on what CubSign guarantees.",
-        "category": "Security",
-        "categorySlug": "security",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "electronic-signature-legality",
+        title: "Electronic Signature Legality",
+        excerpt: "General background on ESIGN, UETA, and eIDAS — plus honest limits on what CubSign guarantees.",
+        category: "Security",
+        categorySlug: "security",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Legal",
             "eSign",
         ],
-        "keywords": [
+        keywords: [
             "electronic signature legality",
             "are esignatures legal",
             "esign act ueta",
             "eidas signature",
         ],
-        "metaTitle": "Are Electronic Signatures Legal? | CubSign",
-        "metaDescription": "Educational overview of electronic signature frameworks. CubSign provides signing tools and activity records — not legal advice or outcome guarantees.",
-        "related": [
+        metaTitle: "Are Electronic Signatures Legal? | CubSign",
+        metaDescription: "Educational overview of electronic signature frameworks. CubSign provides signing tools and activity records — not legal advice or outcome guarantees.",
+        related: [
             "audit-trail",
             "draw-vs-type-signature",
             "secure-storage",
             "what-is-cubsign",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Are electronic signatures legally binding?",
-                "answer": "Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met — but outcomes depend on document type and jurisdiction. This is not legal advice.",
+                question: "Are electronic signatures legally binding?",
+                answer: "Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met — but outcomes depend on document type and jurisdiction. This is not legal advice.",
             },
             {
-                "question": "What does CubSign provide?",
-                "answer": "A browser signing workflow, applied signatures on PDFs, and workspace activity events. It does not provide qualified certificates or legal determinations.",
+                question: "What does CubSign provide?",
+                answer: "A browser signing workflow, applied signatures on PDFs, and workspace activity events. It does not provide qualified certificates or legal determinations.",
             },
             {
-                "question": "Documents that may need special handling?",
-                "answer": "Wills, some real-estate transfers, notarized instruments, and regulated industries may require wet ink, witnesses, or specific platforms. Consult counsel.",
+                question: "Documents that may need special handling?",
+                answer: "Wills, some real-estate transfers, notarized instruments, and regulated industries may require wet ink, witnesses, or specific platforms. Consult counsel.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Electronic signatures are widely used for commercial PDFs — NDAs, offer letters, vendor agreements, and similar. CubSign is a tool for creating and collecting those signatures, not a law firm or compliance certifier.",
+                type: "p",
+                text: "Electronic signatures are widely used for commercial PDFs — NDAs, offer letters, vendor agreements, and similar. CubSign is a tool for creating and collecting those signatures, not a law firm or compliance certifier.",
             },
             {
-                "type": "h2",
-                "text": "Common frameworks (high level)",
+                type: "h2",
+                text: "Common frameworks (high level)",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "United States: ESIGN Act (federal) and UETA (state adoption).",
                     "European Union: eIDAS — tiers from simple to qualified electronic signatures.",
                     "Other countries: local e-signature laws vary.",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Themes courts and regulators often look for",
+                type: "h2",
+                text: "Themes courts and regulators often look for",
             },
             {
-                "type": "ol",
-                "items": [
+                type: "ol",
+                items: [
                     "Intent — the signer meant to sign this document.",
                     "Consent — parties agreed to conduct business electronically when required.",
                     "Association — the signature links to the specific record signed.",
@@ -1843,12 +1892,12 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "What CubSign does not guarantee",
+                type: "h2",
+                text: "What CubSign does not guarantee",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "That every document you sign is legally enforceable in your jurisdiction.",
                     "That draw, type, or upload methods differ in legal weight — intent matters more than appearance.",
                     "Qualified or advanced electronic signature status under eIDAS.",
@@ -1856,12 +1905,12 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Practical habits",
+                type: "h2",
+                text: "Practical habits",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Sign the final PDF version everyone agreed to.",
                     "Keep the downloaded signed file and note completion date.",
                     "Use send-for-signature so each party signs the same document instance.",
@@ -1869,65 +1918,65 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "note",
-                "text": "This Help Center article is educational only — not legal advice. Read Audit Trail for what CubSign records, and Secure Storage for how files are handled.",
+                type: "note",
+                text: "This Help Center article is educational only — not legal advice. Read Audit Trail for what CubSign records, and Secure Storage for how files are handled.",
             },
         ],
     },
     {
-        "slug": "troubleshooting-upload-errors",
-        "title": "Troubleshooting Upload Errors",
-        "excerpt": "Fix common PDF upload failures, file type, size, network, and browser issues and get back to signing.",
-        "category": "Troubleshooting",
-        "categorySlug": "troubleshooting",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "troubleshooting-upload-errors",
+        title: "Troubleshooting Upload Errors",
+        excerpt: "Fix common PDF upload failures, file type, size, network, and browser issues and get back to signing.",
+        category: "Troubleshooting",
+        categorySlug: "troubleshooting",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Upload",
             "Errors",
             "Fix",
         ],
-        "keywords": [
+        keywords: [
             "pdf upload error",
             "upload failed cubsign",
             "fix upload problem",
             "file too large error",
         ],
-        "metaTitle": "Troubleshooting PDF Upload Errors | CubSign",
-        "metaDescription": "Work through common CubSign upload errors, invalid file type, size limits, network issues, and browser restrictions with clear fixes.",
-        "related": [
+        metaTitle: "Troubleshooting PDF Upload Errors | CubSign",
+        metaDescription: "Work through common CubSign upload errors, invalid file type, size limits, network issues, and browser restrictions with clear fixes.",
+        related: [
             "maximum-upload-size",
             "supported-file-types",
             "browser-compatibility",
             "contact-support",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "Why does CubSign say my file is too large?",
-                "answer": "The upload limit is 25 MB. Compress the PDF, lower scan resolution, or split it, then upload again. See Maximum Upload Size.",
+                question: "Why does CubSign say my file is too large?",
+                answer: "The upload limit is 25 MB. Compress the PDF, lower scan resolution, or split it, then upload again. See Maximum Upload Size.",
             },
             {
-                "question": "I get an invalid file type error, what is wrong?",
-                "answer": "The file is likely not a real PDF. Export or Save as PDF from your source app instead of renaming a Word or image file.",
+                question: "I get an invalid file type error, what is wrong?",
+                answer: "The file is likely not a real PDF. Export or Save as PDF from your source app instead of renaming a Word or image file.",
             },
             {
-                "question": "My upload keeps failing with a network error. What now?",
-                "answer": "Retry on a stable connection, disable VPN or ad blockers, and try a supported browser in a private window. If it persists, contact support with the details.",
+                question: "My upload keeps failing with a network error. What now?",
+                answer: "Retry on a stable connection, disable VPN or ad blockers, and try a supported browser in a private window. If it persists, contact support with the details.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "Upload failures almost always trace to file format, size, network, or browser environment. Walk through the checks below before contacting support.",
+                type: "p",
+                text: "Upload failures almost always trace to file format, size, network, or browser environment. Walk through the checks below before contacting support.",
             },
             {
-                "type": "h2",
-                "text": "60-second checklist",
+                type: "h2",
+                text: "60-second checklist",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Real PDF? Open it in a viewer — renaming .docx to .pdf fails.",
                     "Under 25 MB? Compress scans if not.",
                     "Unlocked? Remove password protection.",
@@ -1937,12 +1986,12 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Error → likely cause",
+                type: "h2",
+                text: "Error → likely cause",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "File too large — compress, re-scan at lower DPI, or split pages.",
                     "Invalid file type — export a proper PDF from the source application.",
                     "Network error / upload failed — connection drop or corporate proxy; retry elsewhere.",
@@ -1950,87 +1999,87 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Mobile-specific",
+                type: "h2",
+                text: "Mobile-specific",
             },
             {
-                "type": "p",
-                "text": "If upload works on desktop but not phone, open cubsign.com in full Safari or Chrome — not the in-app browser from email. See Mobile Support.",
+                type: "p",
+                text: "If upload works on desktop but not phone, open cubsign.com in full Safari or Chrome — not the in-app browser from email. See Mobile Support.",
             },
             {
-                "type": "h2",
-                "text": "Still failing?",
+                type: "h2",
+                text: "Still failing?",
             },
             {
-                "type": "p",
-                "text": "Note the exact error text, browser, device, file size, and whether the PDF opens locally. Email support@cubsign.com or use the Contact page. See Contact Support for the full list of useful details.",
+                type: "p",
+                text: "Note the exact error text, browser, device, file size, and whether the PDF opens locally. Email support@cubsign.com or use the Contact page. See Contact Support for the full list of useful details.",
             },
         ],
     },
     {
-        "slug": "contact-support",
-        "title": "Contact Support",
-        "excerpt": "Reach the CubSign team when you need help beyond the Help Center, and learn what details to include.",
-        "category": "Troubleshooting",
-        "categorySlug": "troubleshooting",
-        "updatedAt": "2026-08-08",
-        "lastReviewed": "2026-08-08",
-        "readingTime": 2,
-        "tags": [
+        slug: "contact-support",
+        title: "Contact Support",
+        excerpt: "Reach the CubSign team when you need help beyond the Help Center, and learn what details to include.",
+        category: "Troubleshooting",
+        categorySlug: "troubleshooting",
+        updatedAt: "2026-08-08",
+        lastReviewed: "2026-08-08",
+        readingTime: 2,
+        tags: [
             "Support",
             "Contact",
         ],
-        "keywords": [
+        keywords: [
             "contact cubsign support",
             "get help cubsign",
             "support email",
             "report a problem",
         ],
-        "metaTitle": "How to Contact CubSign Support | CubSign",
-        "metaDescription": "Learn how to contact CubSign support, what details to include for a fast response, and how to help us reproduce your issue.",
-        "related": [
+        metaTitle: "How to Contact CubSign Support | CubSign",
+        metaDescription: "Learn how to contact CubSign support, what details to include for a fast response, and how to help us reproduce your issue.",
+        related: [
             "troubleshooting-upload-errors",
             "email-verification",
             "reset-password",
             "browser-compatibility",
         ],
-        "faq": [
+        faq: [
             {
-                "question": "How do I contact CubSign support?",
-                "answer": "Email support@cubsign.com or use the Contact page. Include the error message, browser, device, and what you were trying to do.",
+                question: "How do I contact CubSign support?",
+                answer: "Email support@cubsign.com or use the Contact page. Include the error message, browser, device, and what you were trying to do.",
             },
             {
-                "question": "What details should I include in a support request?",
-                "answer": "A short description of the problem, screenshots or the exact error, your browser and device, and whether you are signed in or a guest.",
+                question: "What details should I include in a support request?",
+                answer: "A short description of the problem, screenshots or the exact error, your browser and device, and whether you are signed in or a guest.",
             },
             {
-                "question": "How fast will I get a response?",
-                "answer": "We respond as quickly as possible during Early Access. Providing clear details up front helps us resolve your issue faster.",
+                question: "How fast will I get a response?",
+                answer: "We respond as quickly as possible during Early Access. Providing clear details up front helps us resolve your issue faster.",
             },
         ],
-        "content": [
+        content: [
             {
-                "type": "p",
-                "text": "When Help Center articles do not solve your issue, reach CubSign support with enough detail to reproduce the problem — especially for upload, signing, or account access bugs.",
+                type: "p",
+                text: "When Help Center articles do not solve your issue, reach CubSign support with enough detail to reproduce the problem — especially for upload, signing, or account access bugs.",
             },
             {
-                "type": "h2",
-                "text": "Contact channels",
+                type: "h2",
+                text: "Contact channels",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Email: support@cubsign.com",
                     "Web: Contact page on cubsign.com",
                 ],
             },
             {
-                "type": "h2",
-                "text": "Include in your message",
+                type: "h2",
+                text: "Include in your message",
             },
             {
-                "type": "ul",
-                "items": [
+                type: "ul",
+                items: [
                     "Account email (if signed in) or note that you are a guest.",
                     "What you were doing — upload, self-sign, recipient sign, download, send.",
                     "Exact error message or screenshot (redact sensitive contract text).",
@@ -2040,20 +2089,20 @@ export const helpArticles = [
                 ],
             },
             {
-                "type": "h2",
-                "text": "Try self-service first",
+                type: "h2",
+                text: "Try self-service first",
             },
             {
-                "type": "p",
-                "text": "Upload problems: Troubleshooting Upload Errors and Maximum Upload Size. Account access: Reset Password and Email Verification. Browser glitches: Browser Compatibility.",
+                type: "p",
+                text: "Upload problems: Troubleshooting Upload Errors and Maximum Upload Size. Account access: Reset Password and Email Verification. Browser glitches: Browser Compatibility.",
             },
             {
-                "type": "tip",
-                "text": "One issue per email thread keeps resolution faster than combining unrelated questions.",
+                type: "tip",
+                text: "One issue per email thread keeps resolution faster than combining unrelated questions.",
             },
             {
-                "type": "note",
-                "text": "CubSign is in Early Access — we respond as quickly as we can. Clear reports help us fix product issues that affect other users too.",
+                type: "note",
+                text: "CubSign is in Early Access — we respond as quickly as we can. Clear reports help us fix product issues that affect other users too.",
             },
         ],
     },

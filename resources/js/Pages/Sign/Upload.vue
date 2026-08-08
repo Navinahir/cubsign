@@ -3,6 +3,14 @@ import { ref, computed, onMounted } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
+import ProductScreenshot from '@/Components/Marketing/ProductScreenshot.vue';
+
+const workflowPreview = [
+    { key: 'pdf-upload', step: '1', title: 'Upload your PDF' },
+    { key: 'draw-signature', step: '2', title: 'Add your signature' },
+    { key: 'signature-placement', step: '3', title: 'Position it on the page' },
+    { key: 'signed-pdf-download', step: '4', title: 'Download the signed PDF' },
+];
 
 const props = defineProps({
     guestCompleted: { type: Boolean, default: false },
@@ -85,10 +93,10 @@ function formatSize(bytes) {
     />
     <SignLayout :step="1">
         <h1 class="sr-only">Sign a PDF online</h1>
-        <div class="flex h-full flex-col overflow-hidden">
+        <div class="flex min-h-0 flex-1 flex-col">
 
-            <!-- ─── Workspace row ─────────────────────────────── -->
-            <div class="flex min-h-0 flex-1 overflow-hidden">
+            <!-- ─── Workspace row (primary upload UI) ─────────── -->
+            <div class="flex min-h-[calc(100vh-8.5rem)] flex-1 flex-col overflow-hidden md:min-h-0 md:flex-row">
 
                 <!-- ─── Center workspace / drop zone ─────────── -->
                 <div
@@ -440,6 +448,37 @@ function formatSize(bytes) {
 
                 </div>
             </div>
+
+            <!-- Supporting workflow visuals (does not replace the upload UI) -->
+            <section
+                class="shrink-0 border-t border-gray-200 bg-white px-4 py-10 sm:px-6 lg:px-8"
+                aria-labelledby="sign-how-it-works"
+            >
+                <div class="mx-auto max-w-6xl">
+                    <h2 id="sign-how-it-works" class="text-lg font-bold text-gray-900 sm:text-xl">
+                        How signing works
+                    </h2>
+                    <p class="mt-2 max-w-2xl text-sm text-gray-500">
+                        Real CubSign screenshots of the guest self-sign flow. Use the upload area above to start with your own PDF.
+                    </p>
+                    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <div v-for="item in workflowPreview" :key="item.key">
+                            <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-600">
+                                Step {{ item.step }} · {{ item.title }}
+                            </p>
+                            <ProductScreenshot :shot-key="item.key" compact />
+                        </div>
+                    </div>
+                    <p class="mt-6 text-sm text-gray-500">
+                        Need more detail?
+                        <Link href="/help-center/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">Help Center guide</Link>
+                        ·
+                        <Link href="/blog/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">Blog walkthrough</Link>
+                        ·
+                        <Link :href="route('features')" class="font-medium text-blue-600 hover:text-blue-700">Features</Link>
+                    </p>
+                </div>
+            </section>
 
         </div>
     </SignLayout>

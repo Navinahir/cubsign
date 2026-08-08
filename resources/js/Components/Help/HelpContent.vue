@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import ProductScreenshot from '@/Components/Marketing/ProductScreenshot.vue';
 import { blogHeadingAnchors, normalizeBlogBlocks } from '@/utils/marketingContent';
 import { linkifyHelpText } from '@/constants/help';
 
@@ -137,6 +138,12 @@ function segments(text) {
                     </template>
                 </p>
             </aside>
+            <ProductScreenshot
+                v-else-if="block.type === 'product-screenshot'"
+                :shot-key="block.key"
+                :caption="block.caption || ''"
+                :alt="block.alt || ''"
+            />
         </template>
     </div>
 </template>

@@ -1,0 +1,45 @@
+{
+  "capturedAt": "2026-08-08T07:21:26.756Z",
+  "baseUrl": "http://127.0.0.1:8765",
+  "shots": [
+    {
+      "name": "pdf-upload",
+      "webp": "/images/product/pdf-upload.webp",
+      "png": "/images/product/pdf-upload.png"
+    },
+    {
+      "name": "signing-editor",
+      "webp": "/images/product/signing-editor.webp",
+      "png": "/images/product/signing-editor.png"
+    },
+    {
+      "name": "draw-signature",
+      "webp": "/images/product/draw-signature.webp",
+      "png": "/images/product/draw-signature.png"
+    },
+    {
+      "name": "type-signature",
+      "webp": "/images/product/type-signature.webp",
+      "png": "/images/product/type-signature.png"
+    },
+    {
+      "name": "upload-signature",
+      "webp": "/images/product/upload-signature.webp",
+      "png": "/images/product/upload-signature.png"
+    },
+    {
+      "name": "signature-placement",
+      "webp": "/images/product/signature-placement.webp",
+      "png": "/images/product/signature-placement.png"
+    },
+    {
+      "name": "signed-pdf-download",
+      "webp": "/images/product/signed-pdf-download.webp",
+      "png": "/images/product/signed-pdf-download.png"
+    }
+  ],
+  "skipped": [
+    "send-signature — requires authenticated verified account + recipient send flow",
+    "activity-history — requires authenticated workspace document with activity events"
+  ]
+}

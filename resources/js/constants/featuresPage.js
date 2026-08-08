@@ -28,6 +28,7 @@ export const featuresShowcases = [
             { label: 'Signing guide on the blog', href: '/blog/how-to-sign-a-pdf-online' },
         ],
         mockup: 'signature',
+        screenshot: 'signing-editor',
     },
     {
         id: 'request-signatures',
@@ -56,6 +57,7 @@ export const featuresShowcases = [
             { label: 'Request signatures guide', href: '/blog/how-to-request-digital-signatures' },
         ],
         mockup: 'request',
+        screenshot: null,
     },
     {
         id: 'templates',
@@ -83,6 +85,7 @@ export const featuresShowcases = [
             { label: 'What is CubSign?', href: '/help-center/what-is-cubsign' },
         ],
         mockup: 'templates',
+        screenshot: null,
     },
     {
         id: 'audit-trail',
@@ -112,6 +115,7 @@ export const featuresShowcases = [
             { label: 'Security Center', routeName: 'security' },
         ],
         mockup: 'audit',
+        screenshot: null,
     },
     {
         id: 'secure-storage',
@@ -141,6 +145,7 @@ export const featuresShowcases = [
             { label: 'Privacy Policy', routeName: 'privacy' },
         ],
         mockup: 'storage',
+        screenshot: null,
     },
     {
         id: 'document-tracking',
@@ -169,5 +174,19 @@ export const featuresShowcases = [
             { label: 'Help Center', routeName: 'help-center' },
         ],
         mockup: 'tracking',
+        screenshot: null,
     },
+];
+
+/** Real product screenshots for the signature methods feature strip. */
+export const signatureMethodShots = [
+    { key: 'draw-signature', label: 'Draw' },
+    { key: 'type-signature', label: 'Type' },
+    { key: 'upload-signature', label: 'Upload image' },
+];
+
+export const workflowShots = [
+    { key: 'pdf-upload', label: '1. Upload' },
+    { key: 'signature-placement', label: '2. Place signature' },
+    { key: 'signed-pdf-download', label: '3. Download' },
 ];
