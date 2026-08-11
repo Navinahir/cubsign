@@ -332,10 +332,10 @@ function formatSize(bytes) {
                                 </li>
                             </ul>
                             <Link
-                                :href="route('help-center')"
+                                href="/help-center/how-to-sign-a-pdf-online"
                                 class="mt-4 inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
                             >
-                                Help Center
+                                CubSign signing guide
                                 <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
@@ -388,9 +388,9 @@ function formatSize(bytes) {
 
                 <p class="mt-8 text-sm text-gray-500">
                     Need more detail?
-                    <Link href="/help-center/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">Help Center guide</Link>
+                    <Link href="/help-center/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">CubSign signing steps</Link>
                     ·
-                    <Link href="/blog/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">Blog walkthrough</Link>
+                    <Link href="/blog/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">Tips before you sign</Link>
                     ·
                     <Link :href="route('features')" class="font-medium text-blue-600 hover:text-blue-700">Features</Link>
                 </p>

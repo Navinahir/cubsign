@@ -172,11 +172,11 @@ return [
         ],
         [
             'slug' => 'how-to-sign-a-pdf-online',
-            'updated_at' => '2026-08-08',
+            'updated_at' => '2026-08-11',
             'title' => 'How to Sign a PDF Online',
             'excerpt' => 'Upload a PDF, place fields, create your signature, and download the signed file — or send it to others for signature.',
-            'meta_title' => 'How to Sign a PDF Online in Minutes | CubSign',
-            'meta_description' => 'A complete step-by-step guide to signing a PDF online with CubSign: upload, place fields, create a signature, review, and download.',
+            'meta_title' => 'How to Sign a PDF in CubSign | CubSign',
+            'meta_description' => 'Learn how to sign a PDF in CubSign: upload your document, add your signature, place it on the page, and download the signed file.',
             'author' => 'CubSign Product & Engineering Team',
             'faq' => [
             [

@@ -337,7 +337,14 @@ onUnmounted(() => observer?.disconnect());
                                 <p class="font-semibold text-gray-900">Resources</p>
                                 <ul class="mt-3 space-y-2 text-gray-600">
                                     <li>
-                                        <Link :href="route('help-center')" class="hover:text-blue-600">Help Center</Link>
+                                        <Link
+                                            v-if="post.slug === 'how-to-sign-a-pdf-online'"
+                                            :href="route('help-center.show', 'how-to-sign-a-pdf-online')"
+                                            class="hover:text-blue-600"
+                                        >
+                                            Full CubSign step-by-step guide
+                                        </Link>
+                                        <Link v-else :href="route('help-center')" class="hover:text-blue-600">Help Center</Link>
                                     </li>
                                     <li>
                                         <Link :href="route('features')" class="hover:text-blue-600">Features</Link>

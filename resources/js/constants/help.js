@@ -729,8 +729,8 @@ export const helpArticles = [
         excerpt: "Upload a PDF, place fields, create your signature, and download the signed file — or send it to others for signature.",
         category: "Signing Documents",
         categorySlug: "signing-documents",
-        updatedAt: "2026-08-08",
-        lastReviewed: "2026-08-08",
+        updatedAt: "2026-08-11",
+        lastReviewed: "2026-08-11",
         readingTime: 2,
         tags: [
             "Signing",
@@ -742,8 +742,8 @@ export const helpArticles = [
             "esign pdf",
             "add signature to pdf",
         ],
-        metaTitle: "How to Sign a PDF Online in Minutes | CubSign",
-        metaDescription: "A complete step-by-step guide to signing a PDF online with CubSign: upload, place fields, create a signature, review, and download.",
+        metaTitle: "How to Sign a PDF in CubSign | CubSign",
+        metaDescription: "Learn how to sign a PDF in CubSign: upload your document, add your signature, place it on the page, and download the signed file.",
         related: [
             "how-to-upload-a-pdf",
             "draw-vs-type-signature",
@@ -767,19 +767,11 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "CubSign signs PDFs in the browser: upload, place fields, apply your signature, review, and download. No printing or scanning required.",
+                text: "Learn how to sign a PDF in CubSign by uploading your document, adding your signature, placing it on the page, and downloading the signed file. Start signing from the Upload PDF page when you are ready to follow along.",
             },
             {
                 type: "product-screenshot",
-                key: "signed-pdf-download",
-            },
-            {
-                type: "product-screenshot",
-                key: "signature-placement",
-            },
-            {
-                type: "product-screenshot",
-                key: "draw-signature",
+                key: "pdf-upload",
             },
             {
                 type: "product-screenshot",
@@ -787,7 +779,15 @@ export const helpArticles = [
             },
             {
                 type: "product-screenshot",
-                key: "pdf-upload",
+                key: "draw-signature",
+            },
+            {
+                type: "product-screenshot",
+                key: "signature-placement",
+            },
+            {
+                type: "product-screenshot",
+                key: "signed-pdf-download",
             },
             {
                 type: "h2",
@@ -2274,6 +2274,7 @@ export function linkifyHelpText(text, currentSlug = null) {
         { title: 'Features page', kind: 'route', routeName: 'features' },
         { title: 'Upload PDF page', kind: 'route', routeName: 'sign.index' },
         { title: 'Upload PDF', kind: 'route', routeName: 'sign.index' },
+        { title: 'Start signing', kind: 'route', routeName: 'sign.index' },
         { title: 'Contact page', kind: 'route', routeName: 'contact' },
         { title: 'CubSign Blog', kind: 'route', routeName: 'blog' },
     ].sort((a, b) => b.title.length - a.title.length);

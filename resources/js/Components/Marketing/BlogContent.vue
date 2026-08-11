@@ -16,6 +16,13 @@ const renderBlocks = computed(() => blogHeadingAnchors(normalizeBlogBlocks(props
 function segments(text) {
     return linkifyBlogText(text, props.currentSlug);
 }
+
+function segmentHref(seg) {
+    if (seg.type === 'blog') return route('blog.show', seg.slug);
+    if (seg.type === 'help') return route('help-center.show', seg.slug);
+    if (seg.type === 'route') return route(seg.routeName);
+    return null;
+}
 </script>
 
 <template>
@@ -24,15 +31,8 @@ function segments(text) {
             <p v-if="block.type === 'p'" class="mb-5 text-base leading-relaxed text-gray-600">
                 <template v-for="(seg, segIndex) in segments(block.text)" :key="segIndex">
                     <Link
-                        v-if="seg.type === 'blog'"
-                        :href="route('blog.show', seg.slug)"
-                        class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
-                    >
-                        {{ seg.value }}
-                    </Link>
-                    <Link
-                        v-else-if="seg.type === 'route'"
-                        :href="route(seg.routeName)"
+                        v-if="segmentHref(seg)"
+                        :href="segmentHref(seg)"
                         class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
                     >
                         {{ seg.value }}
@@ -51,15 +51,8 @@ function segments(text) {
                 <li v-for="(item, itemIndex) in block.items" :key="itemIndex">
                     <template v-for="(seg, segIndex) in segments(item)" :key="segIndex">
                         <Link
-                            v-if="seg.type === 'blog'"
-                            :href="route('blog.show', seg.slug)"
-                            class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
-                        >
-                            {{ seg.value }}
-                        </Link>
-                        <Link
-                            v-else-if="seg.type === 'route'"
-                            :href="route(seg.routeName)"
+                            v-if="segmentHref(seg)"
+                            :href="segmentHref(seg)"
                             class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
                         >
                             {{ seg.value }}
@@ -72,15 +65,8 @@ function segments(text) {
                 <li v-for="(item, itemIndex) in block.items" :key="itemIndex">
                     <template v-for="(seg, segIndex) in segments(item)" :key="segIndex">
                         <Link
-                            v-if="seg.type === 'blog'"
-                            :href="route('blog.show', seg.slug)"
-                            class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
-                        >
-                            {{ seg.value }}
-                        </Link>
-                        <Link
-                            v-else-if="seg.type === 'route'"
-                            :href="route(seg.routeName)"
+                            v-if="segmentHref(seg)"
+                            :href="segmentHref(seg)"
                             class="font-medium text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
                         >
                             {{ seg.value }}
@@ -97,15 +83,8 @@ function segments(text) {
                 <p>
                     <template v-for="(seg, segIndex) in segments(block.text)" :key="segIndex">
                         <Link
-                            v-if="seg.type === 'blog'"
-                            :href="route('blog.show', seg.slug)"
-                            class="font-medium text-emerald-800 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-950"
-                        >
-                            {{ seg.value }}
-                        </Link>
-                        <Link
-                            v-else-if="seg.type === 'route'"
-                            :href="route(seg.routeName)"
+                            v-if="segmentHref(seg)"
+                            :href="segmentHref(seg)"
                             class="font-medium text-emerald-800 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-950"
                         >
                             {{ seg.value }}
@@ -122,15 +101,8 @@ function segments(text) {
                 <p>
                     <template v-for="(seg, segIndex) in segments(block.text)" :key="segIndex">
                         <Link
-                            v-if="seg.type === 'blog'"
-                            :href="route('blog.show', seg.slug)"
-                            class="font-medium text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-950"
-                        >
-                            {{ seg.value }}
-                        </Link>
-                        <Link
-                            v-else-if="seg.type === 'route'"
-                            :href="route(seg.routeName)"
+                            v-if="segmentHref(seg)"
+                            :href="segmentHref(seg)"
                             class="font-medium text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-950"
                         >
                             {{ seg.value }}
@@ -165,15 +137,8 @@ function segments(text) {
                         <p class="mt-2 text-sm leading-relaxed text-blue-950">
                             <template v-for="(seg, segIndex) in segments(block.text)" :key="segIndex">
                                 <Link
-                                    v-if="seg.type === 'blog'"
-                                    :href="route('blog.show', seg.slug)"
-                                    class="font-medium text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-950"
-                                >
-                                    {{ seg.value }}
-                                </Link>
-                                <Link
-                                    v-else-if="seg.type === 'route'"
-                                    :href="route(seg.routeName)"
+                                    v-if="segmentHref(seg)"
+                                    :href="segmentHref(seg)"
                                     class="font-medium text-blue-800 underline decoration-blue-300 underline-offset-2 hover:text-blue-950"
                                 >
                                     {{ seg.value }}

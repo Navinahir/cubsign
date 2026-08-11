@@ -50,5 +50,7 @@ class SignUploadClarityTest extends TestCase
             'Upload a PDF, draw, type, or upload your signature, place it on the page, then download the signed file.',
             $source,
         );
+        $this->assertStringContainsString('CubSign signing steps', $source);
+        $this->assertStringContainsString('/help-center/how-to-sign-a-pdf-online', $source);
     }
 }
