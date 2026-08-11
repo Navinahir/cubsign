@@ -5,6 +5,15 @@
 
     RewriteEngine On
 
+    # Preferred canonical host when this directory is the document root.
+    RewriteCond %{HTTP_HOST} ^www\.cubsign\.com$ [NC]
+    RewriteCond %{HTTPS} =on [OR]
+    RewriteCond %{HTTP:X-Forwarded-Proto} =https
+    RewriteRule ^ https://cubsign.com%{REQUEST_URI} [L,R=301]
+
+    RewriteCond %{HTTP_HOST} ^www\.cubsign\.com$ [NC]
+    RewriteRule ^ http://cubsign.com%{REQUEST_URI} [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

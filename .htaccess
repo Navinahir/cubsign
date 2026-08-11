@@ -1,10 +1,40 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Serve ads.txt from the public folder
-    RewriteRule ^ads\.txt$ public/ads.txt [L]
-     RewriteRule ^robots\.txt$ public/robots.txt [L]
+    # ------------------------------------------------------------------
+    # Hostinger / Apache: document root is the project root (not public/).
+    # Preferred canonical host: https://cubsign.com (non-www).
+    # HTTP → HTTPS remains handled by Hostinger CDN (do not replace it).
+    # ------------------------------------------------------------------
 
+    # 1) www → apex (301). Preserve path and query string.
+    RewriteCond %{HTTP_HOST} ^www\.cubsign\.com$ [NC]
+    RewriteCond %{HTTPS} =on [OR]
+    RewriteCond %{HTTP:X-Forwarded-Proto} =https
+    RewriteRule ^ https://cubsign.com%{REQUEST_URI} [L,R=301]
+
+    RewriteCond %{HTTP_HOST} ^www\.cubsign\.com$ [NC]
+    RewriteRule ^ http://cubsign.com%{REQUEST_URI} [L,R=301]
+
+    # 2) Trailing slash → slashless (301) for non-directory URLs.
+    #    Skip real directories at docroot and under public/ (images, build, storage, …).
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} ^(.+)/$
+    RewriteCond %{DOCUMENT_ROOT}/public%1 !-d
+    RewriteRule ^ %1 [L,R=301]
+
+    # 3) Serve static files from Laravel public/ when not present at docroot.
+    #    Fixes /logo.svg, /apple-touch-icon.png, and other public assets.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
+    RewriteRule ^ public%{REQUEST_URI} [L]
+
+    # Explicit aliases (kept for clarity / older Hostinger setups)
+    RewriteRule ^ads\.txt$ public/ads.txt [L]
+    RewriteRule ^robots\.txt$ public/robots.txt [L]
+
+    # 4) Front controller — skip when /build or /storage are served from docroot copies
     RewriteCond %{REQUEST_URI} !^/build/
     RewriteCond %{REQUEST_URI} !^/storage/
     RewriteCond %{REQUEST_FILENAME} !-f
