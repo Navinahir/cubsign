@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Blog post metadata for server-side features (sitemap, RSS, etc.).
+ * Blog post metadata for server-side features (sitemap, RSS, SEO head).
  * Keep in sync with resources/js/constants/blog.js, run: node scripts/generate-blog-content.mjs
+ * Or sync SEO fields only: node scripts/sync-seo-php-from-js.mjs
  */
 return [
 
@@ -13,6 +14,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'How to Sign a PDF Online',
             'excerpt' => 'Learn how to upload, sign, and download a PDF in your browser with CubSign without printing, scanning, or desktop software required.',
+            'meta_title' => 'How to Sign a PDF Online in Minutes | CubSign',
+            'meta_description' => 'Step-by-step guide to signing a PDF online with CubSign. Upload your file, place a signature, and download a signed PDF securely.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'electronic-signature-vs-digital-signature',
@@ -20,6 +24,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Electronic Signature vs Digital Signature',
             'excerpt' => 'Electronic and digital signatures are related but not identical. Learn the difference, when each applies, and how CubSign fits everyday signing needs.',
+            'meta_title' => 'Electronic Signature vs Digital Signature Explained | CubSign',
+            'meta_description' => 'Clear comparison of electronic signatures and digital signatures, plus practical guidance for everyday PDF signing with CubSign.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'how-secure-are-electronic-signatures',
@@ -27,6 +34,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'How Secure Are Electronic Signatures?',
             'excerpt' => 'Security is more than a padlock icon. Here is how electronic signatures protect documents and what you should still verify as a signer or sender.',
+            'meta_title' => 'How Secure Are Electronic Signatures? | CubSign',
+            'meta_description' => 'Learn how encryption, access controls, and audit trails make electronic signatures secure and how CubSign protects your PDFs.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'how-small-businesses-save-time-using-esignatures',
@@ -34,6 +44,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'How Small Businesses Save Time Using eSignatures',
             'excerpt' => 'From quotes to vendor forms, electronic signatures remove days of delay. See where small teams reclaim hours every week with CubSign.',
+            'meta_title' => 'How Small Businesses Save Time with eSignatures | CubSign',
+            'meta_description' => 'Practical ways freelancers and small teams use electronic signatures to close deals faster and cut admin time with CubSign.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'best-practices-for-signing-contracts-online',
@@ -41,6 +54,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Best Practices for Signing Contracts Online',
             'excerpt' => 'A practical checklist for preparing, reviewing, and signing contracts electronically without missing critical details.',
+            'meta_title' => 'Best Practices for Signing Contracts Online | CubSign',
+            'meta_description' => 'Follow these best practices to review, sign, and archive contracts online with fewer errors and stronger records.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'how-to-protect-pdf-documents',
@@ -48,6 +64,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'How to Protect PDF Documents',
             'excerpt' => 'Reduce accidental exposure of sensitive PDFs with smarter sharing habits, access controls, and secure signing workflows.',
+            'meta_title' => 'How to Protect PDF Documents | CubSign',
+            'meta_description' => 'Learn practical ways to protect PDF documents during sharing and signing, from access control to private storage with access controls.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'how-to-request-digital-signatures',
@@ -55,6 +74,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'How to Request Digital Signatures',
             'excerpt' => 'Send a PDF for signature, assign recipients, and track completion without forcing every signer to create an account first.',
+            'meta_title' => 'How to Request Digital Signatures | CubSign',
+            'meta_description' => 'Step-by-step guidance for requesting signatures on a PDF, notifying recipients, and tracking who still needs to sign.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'benefits-of-paperless-workflows',
@@ -62,6 +84,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Benefits of Paperless Workflows',
             'excerpt' => 'Going paperless is not just about the planet. It improves speed, searchability, and audit readiness for document-heavy teams.',
+            'meta_title' => 'Benefits of Paperless Workflows | CubSign',
+            'meta_description' => 'Discover how paperless document workflows speed up signing, reduce clutter, and improve record-keeping with CubSign.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'how-to-sign-pdfs-on-mobile',
@@ -69,6 +94,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'How to Sign PDFs on Mobile',
             'excerpt' => 'Sign documents from your phone without sacrificing clarity. Practical tips for placement, drawing, and downloading on small screens.',
+            'meta_title' => 'How to Sign PDFs on Mobile | CubSign',
+            'meta_description' => 'Mobile-friendly tips for signing PDFs in your browser with CubSign, placement, signatures, and downloads on the go.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'common-mistakes-when-signing-pdfs',
@@ -76,6 +104,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Common Mistakes When Signing PDFs',
             'excerpt' => 'Avoid the errors that delay deals or create weak records, from signing the wrong version to skipping a required initial block.',
+            'meta_title' => 'Common Mistakes When Signing PDFs | CubSign',
+            'meta_description' => 'Fix the most common PDF signing mistakes before they slow down contracts or create confusion later.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'are-electronic-signatures-legally-binding',
@@ -83,13 +114,19 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Are Electronic Signatures Legally Binding?',
             'excerpt' => 'Electronic signatures are widely recognized, but validity still depends on intent, consent, and record quality. Here is the practical view.',
+            'meta_title' => 'Are Electronic Signatures Legally Binding? | CubSign',
+            'meta_description' => 'Understand when electronic signatures are legally binding, what evidence helps, and how CubSign supports trustworthy records.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'securing-your-documents-with-cubsign',
             'published_at' => '2026-02-18',
             'updated_at' => '2026-08-08',
             'title' => 'How CubSign Protects Your Documents',
-            'excerpt' => 'A plain-language look at encryption, access control, and privacy practices that safeguard PDFs inside CubSign.',
+            'excerpt' => 'A plain-language look at HTTPS, access control, and privacy practices that safeguard PDFs inside CubSign.',
+            'meta_title' => 'How CubSign Protects Your Documents | CubSign',
+            'meta_description' => 'See how CubSign uses HTTPS, private storage with access controls, and access controls to protect the PDFs you upload and sign.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'request-signatures-from-multiple-recipients',
@@ -97,6 +134,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Request Signatures from Multiple Recipients',
             'excerpt' => 'Coordinate multi-party signing without spreadsheet chaos. Assign fields, notify recipients, and track progress in one place.',
+            'meta_title' => 'Request Signatures from Multiple Recipients | CubSign',
+            'meta_description' => 'Learn how to collect signatures from multiple people on one PDF and track who has finished signing.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'mobile-pdf-signing-tips',
@@ -104,6 +144,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => '5 Tips for Signing PDFs on Your Phone',
             'excerpt' => 'Quick, high-impact tips for a cleaner mobile signing experience, from orientation to downloading the finished file.',
+            'meta_title' => '5 Tips for Signing PDFs on Your Phone | CubSign',
+            'meta_description' => 'Five practical tips to sign PDFs on mobile with CubSign: orientation, zoom, signature style, review, and download.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'introducing-cubsign-early-access',
@@ -111,6 +154,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Introducing CubSign Early Access',
             'excerpt' => 'CubSign is open for early users: sign PDFs online for free while we refine the product with your feedback.',
+            'meta_title' => 'Introducing CubSign Early Access | CubSign',
+            'meta_description' => 'CubSign Early Access is live. Sign PDFs online for free, request signatures, and help shape the product roadmap.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'what-is-an-audit-trail',
@@ -118,13 +164,19 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'What Is an Audit Trail in Document Signing?',
             'excerpt' => 'An audit trail records who did what and when during a signing workflow. Learn why it matters for trust and dispute readiness.',
+            'meta_title' => 'What Is an Audit Trail in Document Signing? | CubSign',
+            'meta_description' => 'Understand audit trails for e-signatures: the events they capture and why they strengthen your signed PDF records.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'how-to-create-a-reusable-signature',
             'published_at' => '2026-03-20',
             'updated_at' => '2026-08-08',
-            'title' => 'How to Create a Reusable Signature',
-            'excerpt' => 'Save time on recurring documents by creating a signature you can apply consistently across PDFs in CubSign.',
+            'title' => 'How to Create Your Signature in CubSign',
+            'excerpt' => 'Draw, type, or upload a signature in the CubSign editor for your current document. How per-session signatures work—without a persistent saved signature library.',
+            'meta_title' => 'How to Create Your Signature in CubSign | CubSign',
+            'meta_description' => 'Create a signature in CubSign by drawing, typing, or uploading an image for the current session. Apply it across fields on the same PDF.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'draw-vs-type-your-signature',
@@ -132,6 +184,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Draw vs Type Your Signature',
             'excerpt' => 'Both drawn and typed signatures can indicate intent. Compare the trade-offs so you pick the right style for each document.',
+            'meta_title' => 'Draw vs Type Your Signature | CubSign',
+            'meta_description' => 'Compare drawing and typing your electronic signature in CubSign, including when each option looks and works best.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'nda-signing-guide-for-startups',
@@ -139,6 +194,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'NDA Signing Guide for Startups',
             'excerpt' => 'Move faster on partnerships without losing control of confidentiality. A startup-friendly guide to signing NDAs online.',
+            'meta_title' => 'NDA Signing Guide for Startups | CubSign',
+            'meta_description' => 'How startups can prepare, send, and sign NDAs electronically with clearer records and less email friction.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
         [
             'slug' => 'freelancer-contract-signing-checklist',
@@ -146,6 +204,9 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Freelancer Contract Signing Checklist',
             'excerpt' => 'A concise checklist freelancers can run before signing client PDFs, so scope, payment, and IP terms are never a surprise.',
+            'meta_title' => 'Freelancer Contract Signing Checklist | CubSign',
+            'meta_description' => 'Use this freelancer checklist before you sign a client PDF: scope, payment, IP, and signing hygiene with CubSign.',
+            'author' => 'CubSign Product & Engineering Team',
         ],
     ],
 

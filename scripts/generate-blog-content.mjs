@@ -2361,6 +2361,9 @@ const phpPosts = exportPosts
             'updated_at' => ${phpStr(p.updatedAt)},
             'title' => ${phpStr(p.title)},
             'excerpt' => ${phpStr(p.excerpt)},
+            'meta_title' => ${phpStr(p.metaTitle)},
+            'meta_description' => ${phpStr(p.metaDescription)},
+            'author' => ${phpStr(p.author?.name ?? 'CubSign Team')},
         ]`,
     )
     .join(',\n');
@@ -2368,8 +2371,9 @@ const phpPosts = exportPosts
 const phpFile = `<?php
 
 /**
- * Blog post metadata for server-side features (sitemap, RSS, etc.).
+ * Blog post metadata for server-side features (sitemap, RSS, SEO head).
  * Keep in sync with resources/js/constants/blog.js, run: node scripts/generate-blog-content.mjs
+ * Or sync SEO fields only: node scripts/sync-seo-php-from-js.mjs
  */
 return [
 

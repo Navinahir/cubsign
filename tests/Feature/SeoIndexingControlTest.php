@@ -18,7 +18,7 @@ class SeoIndexingControlTest extends TestCase
     {
         $response = $this->get($uri);
         $response->assertStatus($status);
-        $response->assertSee('<meta name="robots" content="'.$expected.'">', false);
+        $response->assertSee('<meta head-key="robots" name="robots" content="'.$expected.'">', false);
     }
 
     private function assertInertiaRobotsProp(string $uri, string $expected): void
@@ -85,7 +85,7 @@ class SeoIndexingControlTest extends TestCase
         $response = $this->get('/this-page-definitely-does-not-exist-seo');
 
         $response->assertStatus(404);
-        $response->assertSee('<meta name="robots" content="'.SeoRobots::NOINDEX.'">', false);
+        $response->assertSee('<meta head-key="robots" name="robots" content="'.SeoRobots::NOINDEX.'">', false);
         $response->assertDontSee('rel="canonical"', false);
         $response->assertDontSee('head-key="canonical"', false);
     }

@@ -4,12 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'CubSign') }}</title>
+        @include('partials.seo-head')
 
-        <meta name="description" content="Upload your PDF and sign it online in seconds. Add your signature and download the finished document. No account required.">
-        <meta name="robots" content="{{ \App\Support\SeoRobots::forBlade($page ?? [], request()) }}">
-        <meta property="og:site_name" content="CubSign">
-        <meta name="twitter:card" content="summary_large_image">
+        <meta head-key="robots" name="robots" content="{{ \App\Support\SeoRobots::forBlade($page ?? [], request()) }}">
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">

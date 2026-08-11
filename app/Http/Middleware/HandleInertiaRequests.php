@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\SeoMeta;
 use App\Support\SeoRobots;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -43,9 +44,10 @@ class HandleInertiaRequests extends Middleware
                 'url' => config('app.url'),
                 'name' => config('app.name'),
             ],
-            'seo' => [
+            'seo' => array_filter([
                 'robots' => SeoRobots::forRequest($request),
-            ],
+                ...(SeoMeta::forRequest($request) ?? []),
+            ], static fn ($value) => $value !== null),
         ];
     }
 }

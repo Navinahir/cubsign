@@ -8,6 +8,8 @@
         "generate:blog-covers": "node scripts/generate-blog-covers.mjs",
         "generate:blog-assets": "node scripts/generate-blog-assets.mjs",
         "generate:blog": "node scripts/generate-blog-content.mjs && npm run generate:blog-covers && npm run generate:blog-assets",
+        "generate:help": "node scripts/generate-help-content.mjs",
+        "sync:seo-php": "node scripts/sync-seo-php-from-js.mjs",
         "generate:og": "node scripts/generate-default-og.mjs",
         "generate:brand": "node scripts/generate-brand-assets.mjs"
     },
