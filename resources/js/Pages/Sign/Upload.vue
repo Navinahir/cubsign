@@ -95,11 +95,18 @@ function formatSize(bytes) {
         path="/sign"
     />
     <SignLayout :step="1">
-        <h1 class="sr-only">Sign a PDF online</h1>
-
         <!-- ─── Upload workspace ─────────────────────────────── -->
         <section class="border-b border-gray-200 bg-[#f4f5f7]">
             <div class="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+                <header class="mb-6 max-w-2xl">
+                    <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                        Sign a PDF Online
+                    </h1>
+                    <p class="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
+                        Upload a PDF, draw, type, or upload your signature, place it on the page, then download the signed file.
+                    </p>
+                </header>
+
                 <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
 
                     <!-- Main upload area -->

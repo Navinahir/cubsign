@@ -5,6 +5,7 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import SecuritySectionNav from '@/Components/Security/SecuritySectionNav.vue';
 import {
+    securityArticleMeta,
     securitySections,
     securityFaqs,
     securityRelatedLinks,
@@ -14,6 +15,12 @@ import { SUPPORT_EMAIL, btnPrimary, btnSecondary } from '@/constants/marketing';
 const openFaq = ref(null);
 const activeSlug = ref(securitySections[0]?.slug ?? '');
 const mobileNavOpen = ref(false);
+
+const lastUpdatedLabel = new Date(securityArticleMeta.updatedAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+});
 
 const breadcrumbSchema = [
     { name: 'Home', url: '/' },
@@ -91,7 +98,7 @@ onUnmounted(() => sectionObserver?.disconnect());
                     How CubSign protects your documents, account, and signing workflows, explained clearly, without jargon.
                 </p>
                 <p class="mt-4 text-sm text-gray-500">
-                    Last updated {{ new Date(securityArticleMeta.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) }}
+                    Last updated {{ lastUpdatedLabel }}
                 </p>
             </div>
         </section>
