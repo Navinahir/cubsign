@@ -153,7 +153,7 @@ const resourceLinks = [
                         <SectionHeader
                             eyebrow="Use cases"
                             title="Who CubSign is for"
-                            description="Practical situations where a browser PDF signature is enough — without enterprise setup."
+                            description="Practical situations where a browser PDF signature is enough without enterprise setup."
                         />
                     </ScrollReveal>
                     <div class="grid gap-4 sm:grid-cols-2">

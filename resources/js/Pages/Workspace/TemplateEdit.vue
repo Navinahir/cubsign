@@ -898,7 +898,7 @@ function updateSelectedFieldRequired(value) {
                     <!-- Section: Align (visible when a field is selected) -->
                     <div v-if="selectedField" class="border-b border-gray-100 px-4 py-3">
                         <p class="mb-2.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                            Align — <span class="capitalize">{{ selectedField.type }}</span>
+                            Align: <span class="capitalize">{{ selectedField.type }}</span>
                         </p>
                         <div class="grid grid-cols-3 gap-1">
                             <button

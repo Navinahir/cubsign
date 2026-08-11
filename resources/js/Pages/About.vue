@@ -324,7 +324,7 @@ const plannedMilestones = aboutTimeline.filter((item) => item.status === 'planne
                 <ScrollReveal>
                     <SectionHeader
                         eyebrow="Roadmap"
-                        title="What we have shipped — and what is next"
+                        title="What we have shipped, and what is next"
                         description="Completed milestones reflect features available today. Planned items are future goals, clearly marked."
                         compact
                     />

@@ -20,7 +20,7 @@ const included = [
     { title: 'Templates', detail: 'Reuse prepared field layouts for documents you send often.' },
     { title: 'Workspace storage', detail: 'Keep account documents private with owner and recipient access controls.' },
     { title: 'Activity history', detail: 'See invitation, signature, and completion events on sent documents.' },
-    { title: 'Desktop and mobile', detail: 'Use CubSign in a modern browser — no software to install.' },
+    { title: 'Desktop and mobile', detail: 'Use CubSign in a modern browser with no software to install.' },
 ];
 
 const guestVsAccount = [
@@ -137,7 +137,7 @@ function toggleFaq(index) {
             <div class="mx-auto max-w-4xl">
                 <h2 class="text-center text-2xl font-bold text-gray-900">What is included</h2>
                 <p class="mx-auto mt-2 max-w-2xl text-center text-sm text-gray-500">
-                    Honest scope of the current CubSign product — not a future roadmap promise.
+                    Honest scope of the current CubSign product, not a future roadmap promise.
                 </p>
                 <ul class="mt-10 grid gap-4 sm:grid-cols-2">
                     <li
@@ -193,7 +193,7 @@ function toggleFaq(index) {
             <div class="mx-auto max-w-2xl">
                 <div class="mb-10 text-center">
                     <h2 class="text-2xl font-bold text-gray-900">Pricing questions</h2>
-                    <p class="mt-2 text-sm text-gray-500">About Early Access — not invented plan comparisons.</p>
+                    <p class="mt-2 text-sm text-gray-500">About Early Access, not invented plan comparisons.</p>
                 </div>
 
                 <div class="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white shadow-sm">

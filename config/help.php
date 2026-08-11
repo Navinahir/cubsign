@@ -59,7 +59,7 @@ return [
             'slug' => 'mobile-support',
             'updated_at' => '2026-08-11',
             'title' => 'Mobile Support',
-            'excerpt' => 'Sign PDFs on phones and tablets in Safari or Chrome — no app install, with practical tips for touch signing and uploads.',
+            'excerpt' => 'Sign PDFs on phones and tablets in Safari or Chrome with no app install, with practical tips for touch signing and uploads.',
             'meta_title' => 'Mobile Support: Sign PDFs on Your Phone | CubSign',
             'meta_description' => 'Learn how to upload and sign PDFs on phones and tablets with CubSign, plus tips for signatures, uploads, and downloads on small screens.',
             'author' => 'CubSign Product & Engineering Team',
@@ -143,7 +143,7 @@ return [
             ],
             [
                 'question' => 'Can I upload an image as the document?',
-                'answer' => 'No for the main document. You can upload PNG or JPG when creating a signature image — see Upload Your Signature Image.',
+                'answer' => 'No for the main document. You can upload PNG or JPG when creating a signature image. See Upload Your Signature Image.',
             ],
         ],
         ],
@@ -174,7 +174,7 @@ return [
             'slug' => 'how-to-sign-a-pdf-online',
             'updated_at' => '2026-08-11',
             'title' => 'How to Sign a PDF Online',
-            'excerpt' => 'Upload a PDF, place fields, create your signature, and download the signed file — or send it to others for signature.',
+            'excerpt' => 'Upload a PDF, place fields, create your signature, and download the signed file, or send it to others for signature.',
             'meta_title' => 'How to Sign a PDF in CubSign | CubSign',
             'meta_description' => 'Learn how to sign a PDF in CubSign: upload your document, add your signature, place it on the page, and download the signed file.',
             'author' => 'CubSign Product & Engineering Team',
@@ -254,11 +254,11 @@ return [
             ],
             [
                 'question' => 'Can I download later?',
-                'answer' => 'Signed-in users can download again from Documents in the workspace. Guests must download during the session — there is no saved copy afterward.',
+                'answer' => 'Signed-in users can download again from Documents in the workspace. Guests must download during the session. There is no saved copy afterward.',
             ],
             [
                 'question' => 'What is in the file?',
-                'answer' => 'The PDF with applied signatures and field values from the session. Activity events are tracked separately in your workspace — see Audit Trail.',
+                'answer' => 'The PDF with applied signatures and field values from the session. Activity events are tracked separately in your workspace. See Audit Trail.',
             ],
         ],
         ],
@@ -381,7 +381,7 @@ return [
             'slug' => 'secure-storage',
             'updated_at' => '2026-08-08',
             'title' => 'Secure Storage',
-            'excerpt' => 'How CubSign protects PDFs in transit with HTTPS and limits access to stored files — without overstating encryption claims.',
+            'excerpt' => 'How CubSign protects PDFs in transit with HTTPS and limits access to stored files without overstating encryption claims.',
             'meta_title' => 'Secure Storage: How CubSign Protects Documents | CubSign',
             'meta_description' => 'CubSign uses HTTPS for uploads and signing, stores PDFs on private infrastructure with access controls, and hashes passwords. Learn what we do and do not claim.',
             'author' => 'CubSign Product & Engineering Team',
@@ -411,7 +411,7 @@ return [
             'faq' => [
             [
                 'question' => 'Are documents public?',
-                'answer' => 'No. Documents are private by default — not listed in search engines. Only you and invited recipients with valid links can access them.',
+                'answer' => 'No. Documents are private by default, not listed in search engines. Only you and invited recipients with valid links can access them.',
             ],
             [
                 'question' => 'Can CubSign staff read my PDFs?',
@@ -427,9 +427,9 @@ return [
             'slug' => 'audit-trail',
             'updated_at' => '2026-08-08',
             'title' => 'Audit Trail',
-            'excerpt' => 'CubSign logs signing events in your workspace — sent, notified, signed, completed, and generation failures — not page views or IP addresses in the UI.',
+            'excerpt' => 'CubSign logs signing events in your workspace (sent, notified, signed, completed, and generation failures), not page views or IP addresses in the UI.',
             'meta_title' => 'What Is an Audit Trail in CubSign? | CubSign',
-            'meta_description' => 'See which DocumentActivity events CubSign records: recipient_notified, recipient_signed, document_completed, signed_pdf_failed — and where to find them.',
+            'meta_description' => 'See which DocumentActivity events CubSign records: recipient_notified, recipient_signed, document_completed, signed_pdf_failed, and where to find them.',
             'author' => 'CubSign Product & Engineering Team',
             'faq' => [
             [
@@ -442,7 +442,7 @@ return [
             ],
             [
                 'question' => 'Does the audit trail show IP addresses?',
-                'answer' => 'The workspace activity UI shows event types, recipient names, and timestamps — not IP addresses. Internal session data may exist for operations, but it is not presented as a user-facing audit field.',
+                'answer' => 'The workspace activity UI shows event types, recipient names, and timestamps, not IP addresses. Internal session data may exist for operations, but it is not presented as a user-facing audit field.',
             ],
         ],
         ],
@@ -450,14 +450,14 @@ return [
             'slug' => 'electronic-signature-legality',
             'updated_at' => '2026-08-08',
             'title' => 'Electronic Signature Legality',
-            'excerpt' => 'General background on ESIGN, UETA, and eIDAS — plus honest limits on what CubSign guarantees.',
+            'excerpt' => 'General background on ESIGN, UETA, and eIDAS, plus honest limits on what CubSign guarantees.',
             'meta_title' => 'Are Electronic Signatures Legal? | CubSign',
-            'meta_description' => 'Educational overview of electronic signature frameworks. CubSign provides signing tools and activity records — not legal advice or outcome guarantees.',
+            'meta_description' => 'Educational overview of electronic signature frameworks. CubSign provides signing tools and activity records, not legal advice or outcome guarantees.',
             'author' => 'CubSign Product & Engineering Team',
             'faq' => [
             [
                 'question' => 'Are electronic signatures legally binding?',
-                'answer' => 'Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met — but outcomes depend on document type and jurisdiction. This is not legal advice.',
+                'answer' => 'Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met, but outcomes depend on document type and jurisdiction. This is not legal advice.',
             ],
             [
                 'question' => 'What does CubSign provide?',

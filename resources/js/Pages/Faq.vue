@@ -84,7 +84,7 @@ const categories = [
         items: [
             {
                 question: "What's included during early access?",
-                answer: 'Self-sign, guest one-session signing, account storage, templates, multi-recipient send, activity history, and PDF downloads — all free. Limits: PDF only, 25 MB, guest one session.',
+                answer: 'Self-sign, guest one-session signing, account storage, templates, multi-recipient send, activity history, and PDF downloads are all free. Limits: PDF only, 25 MB, guest one session.',
             },
             {
                 question: 'Will CubSign always be free?',

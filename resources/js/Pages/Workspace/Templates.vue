@@ -250,7 +250,7 @@ function formatDate(value) {
                                 ? 'cursor-not-allowed bg-gray-100 text-gray-400'
                                 : 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]',
                         ]"
-                        :title="tpl.pdf_missing ? 'PDF file missing — open template to replace it' : 'Use this template'"
+                        :title="tpl.pdf_missing ? 'PDF file missing. Open template to replace it' : 'Use this template'"
                         @click="useTemplate(tpl)"
                     >
                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

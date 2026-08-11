@@ -106,7 +106,7 @@ function formatDateTime(value) {
                 <p class="text-sm font-semibold text-red-800">PDF file missing</p>
                 <p class="mt-0.5 text-xs text-red-700">
                     The PDF for this template no longer exists on the server (likely cleared during a deploy or reset).
-                    Upload a replacement PDF below — your template name will be kept, but field placements will be cleared.
+                    Upload a replacement PDF below. Your template name will be kept, but field placements will be cleared.
                 </p>
                 <form class="mt-3 flex items-center gap-3" @submit.prevent="submitReplacePdf">
                     <input
@@ -185,7 +185,7 @@ function formatDateTime(value) {
                                     ? 'cursor-not-allowed text-gray-400'
                                     : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700',
                             ]"
-                            :title="template.pdf_missing ? 'PDF file is missing — replace it first' : ''"
+                            :title="template.pdf_missing ? 'PDF file is missing. Replace it first' : ''"
                             @click="!template.pdf_missing && useTemplate()"
                         >
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

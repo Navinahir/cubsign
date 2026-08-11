@@ -40,7 +40,7 @@ export const featuresShowcases = [
         howToUse: [
             'Sign in and upload (or open) a PDF',
             'Add recipients by email and place fields for each signer',
-            'Send invitations — recipients open their unique link',
+            'Send invitations. Recipients open their unique link',
             'Track pending and signed status until everyone finishes',
         ],
         expect: 'Recipients sign in order as configured. When complete, you can download the finished PDF from your workspace.',
@@ -65,7 +65,7 @@ export const featuresShowcases = [
         description:
             'Save documents you send often as templates so fields stay positioned for the next send. Available for signed-in users.',
         whyItMatters:
-            'Contracts, NDAs, and onboarding forms often use the same layout — templates avoid rebuilding fields every time.',
+            'Contracts, NDAs, and onboarding forms often use the same layout. Templates avoid rebuilding fields every time.',
         howToUse: [
             'Create or open a document with fields placed where you need them',
             'Save it as a template from your workspace',

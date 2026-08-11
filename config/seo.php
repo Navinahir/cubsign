@@ -23,7 +23,7 @@ return [
         ],
         '/features' => [
             'title' => 'Features — CubSign | Free PDF Signing',
-            'description' => 'Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work — with real product screenshots.',
+            'description' => 'Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work, with real product screenshots.',
             'type' => 'website',
         ],
         '/sign' => [
@@ -212,7 +212,7 @@ return [
             ],
             [
                 'question' => 'Are electronic signatures legally binding?',
-                'answer' => 'They are often recognized under ESIGN, UETA, and eIDAS when requirements are met — but outcomes vary by document and jurisdiction. CubSign provides tools and activity records, not legal advice.',
+                'answer' => 'They are often recognized under ESIGN, UETA, and eIDAS when requirements are met, but outcomes vary by document and jurisdiction. CubSign provides tools and activity records, not legal advice.',
             ],
             [
                 'question' => 'How do I reset my password?',
@@ -308,7 +308,7 @@ return [
             ],
             [
                 'question' => "What's included during early access?",
-                'answer' => 'Self-sign, guest one-session signing, account storage, templates, multi-recipient send, activity history, and PDF downloads — all free. Limits: PDF only, 25 MB, guest one session.',
+                'answer' => 'Self-sign, guest one-session signing, account storage, templates, multi-recipient send, activity history, and PDF downloads are all free. Limits: PDF only, 25 MB, guest one session.',
             ],
             [
                 'question' => 'Will CubSign always be free?',

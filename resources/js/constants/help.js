@@ -90,7 +90,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "CubSign is a web app for signing PDF documents. You upload a PDF (up to 25 MB), place fields on the pages, sign the document yourself or send it to others, and download the completed PDF. Everything runs in your browser — no desktop software or browser plugin required.",
+                text: "CubSign is a web app for signing PDF documents. You upload a PDF (up to 25 MB), place fields on the pages, sign the document yourself or send it to others, and download the completed PDF. Everything runs in your browser with no desktop software or browser plugin required.",
             },
             {
                 type: "p",
@@ -141,7 +141,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "For legal context around electronic signatures, read Electronic Signature Legality — it is educational, not legal advice. For security details, see Secure Storage and Document Privacy in this Help Center, or visit the Security page on cubsign.com.",
+                text: "For legal context around electronic signatures, read Electronic Signature Legality. It is educational, not legal advice. For security details, see Secure Storage and Document Privacy in this Help Center, or visit the Security page on cubsign.com.",
             },
         ],
     },
@@ -207,7 +207,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "CubSign does not maintain a persistent signature library across documents. During a signing session, your drawn, typed, or uploaded signature can be reused on multiple fields in that same document — but it is not saved as a standalone asset for every future PDF.",
+                text: "CubSign does not maintain a persistent signature library across documents. During a signing session, your drawn, typed, or uploaded signature can be reused on multiple fields in that same document, but it is not saved as a standalone asset for every future PDF.",
             },
             {
                 type: "h2",
@@ -245,14 +245,14 @@ export const helpArticles = [
             },
             {
                 type: "note",
-                text: "Passwords are stored hashed. Google Login delegates authentication to Google — CubSign receives basic profile details, not Gmail or Drive access. See Google Login and Secure Storage for more.",
+                text: "Passwords are stored hashed. Google Login delegates authentication to Google. CubSign receives basic profile details, not Gmail or Drive access. See Google Login and Secure Storage for more.",
             },
         ],
     },
     {
         slug: "mobile-support",
         title: "Mobile Support",
-        excerpt: "Sign PDFs on phones and tablets in Safari or Chrome — no app install, with practical tips for touch signing and uploads.",
+        excerpt: "Sign PDFs on phones and tablets in Safari or Chrome with no app install, with practical tips for touch signing and uploads.",
         category: "Getting Started",
         categorySlug: "getting-started",
         updatedAt: "2026-08-11",
@@ -293,12 +293,12 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "CubSign works on phones and tablets through your mobile browser. Upload a PDF (up to 25 MB), place fields with pinch-to-zoom, sign with draw/type/upload, and download the result — the same core flow as desktop. Start signing from the Upload PDF page when you are ready.",
+                text: "CubSign works on phones and tablets through your mobile browser. Upload a PDF (up to 25 MB), place fields with pinch-to-zoom, sign with draw/type/upload, and download the result, using the same core flow as desktop. Start signing from the Upload PDF page when you are ready.",
             },
             {
                 type: "product-screenshot",
                 key: "signing-editor",
-                caption: "CubSign signing editor — works in modern mobile browsers.",
+                caption: "CubSign signing editor that works in modern mobile browsers.",
             },
             {
                 type: "h2",
@@ -323,7 +323,7 @@ export const helpArticles = [
                     "Upload from Files, Photos, or a cloud drive.",
                     "Zoom in before placing signature, initials, date, or text fields.",
                     "Rotate to landscape when drawing a signature.",
-                    "Finish and download immediately — especially important for guest sessions.",
+                    "Finish and download immediately, especially important for guest sessions.",
                 ],
             },
             {
@@ -397,10 +397,10 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "Google Chrome — latest two major versions.",
-                    "Mozilla Firefox — latest two major versions.",
-                    "Microsoft Edge — latest two major versions.",
-                    "Apple Safari — latest two major versions (macOS and iOS).",
+                    "Google Chrome: latest two major versions.",
+                    "Mozilla Firefox: latest two major versions.",
+                    "Microsoft Edge: latest two major versions.",
+                    "Apple Safari: latest two major versions (macOS and iOS).",
                 ],
             },
             {
@@ -483,7 +483,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "CubSign accepts standard PDF files up to 25 MB. Upload is the entry point to the signing editor — where you place fields, sign, send to recipients, or download.",
+                text: "CubSign accepts standard PDF files up to 25 MB. Upload is the entry point to the signing editor, where you place fields, sign, send to recipients, or download.",
             },
             {
                 type: "h2",
@@ -498,7 +498,7 @@ export const helpArticles = [
                 items: [
                     "Go to the Upload PDF page (Sign PDF in the navigation).",
                     "Drag a .pdf onto the drop zone, or click to browse.",
-                    "Wait for the upload to finish — the editor opens automatically.",
+                    "Wait for the upload to finish. The editor opens automatically.",
                 ],
             },
             {
@@ -519,7 +519,7 @@ export const helpArticles = [
             },
             {
                 type: "h2",
-                text: "Before you upload — quick checks",
+                text: "Before you upload: quick checks",
             },
             {
                 type: "ul",
@@ -536,7 +536,7 @@ export const helpArticles = [
             },
             {
                 type: "note",
-                text: "Word, Excel, and image files are not accepted as documents. Export to PDF first — see Supported File Types.",
+                text: "Word, Excel, and image files are not accepted as documents. Export to PDF first. See Supported File Types.",
             },
         ],
     },
@@ -579,13 +579,13 @@ export const helpArticles = [
             },
             {
                 question: "Can I upload an image as the document?",
-                answer: "No for the main document. You can upload PNG or JPG when creating a signature image — see Upload Your Signature Image.",
+                answer: "No for the main document. You can upload PNG or JPG when creating a signature image. See Upload Your Signature Image.",
             },
         ],
         content: [
             {
                 type: "p",
-                text: "CubSign is built around PDF because the format preserves layout across devices — important when you are about to sign. The upload endpoint accepts .pdf files only.",
+                text: "CubSign is built around PDF because the format preserves layout across devices, which is important when you are about to sign. The upload endpoint accepts .pdf files only.",
             },
             {
                 type: "h2",
@@ -594,7 +594,7 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "PDF (.pdf) — maximum 25 MB per file.",
+                    "PDF (.pdf): maximum 25 MB per file.",
                 ],
             },
             {
@@ -726,7 +726,7 @@ export const helpArticles = [
     {
         slug: "how-to-sign-a-pdf-online",
         title: "How to Sign a PDF Online",
-        excerpt: "Upload a PDF, place fields, create your signature, and download the signed file — or send it to others for signature.",
+        excerpt: "Upload a PDF, place fields, create your signature, and download the signed file, or send it to others for signature.",
         category: "Signing Documents",
         categorySlug: "signing-documents",
         updatedAt: "2026-08-11",
@@ -799,7 +799,7 @@ export const helpArticles = [
                     "Upload a PDF (max 25 MB) from the Upload PDF page.",
                     "Select a field type: signature, initials, name, text, date, or checkbox.",
                     "Click on the page to place each field where it belongs.",
-                    "Create your signature — draw, type, or upload an image.",
+                    "Create your signature: draw, type, or upload an image.",
                     "Fill every required field, finish the flow, and download the signed PDF.",
                 ],
             },
@@ -810,9 +810,9 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "Draw — handwriting on a canvas (mouse, trackpad, or finger).",
-                    "Type — your name rendered in a handwriting-style font.",
-                    "Upload — place an existing PNG or JPG signature image.",
+                    "Draw: handwriting on a canvas (mouse, trackpad, or finger).",
+                    "Type: your name rendered in a handwriting-style font.",
+                    "Upload: place an existing PNG or JPG signature image.",
                 ],
             },
             {
@@ -829,7 +829,7 @@ export const helpArticles = [
             },
             {
                 type: "tip",
-                text: "Scroll every page before finishing. A signature records agreement to the text as shown — it does not fix typos you missed.",
+                text: "Scroll every page before finishing. A signature records agreement to the text as shown. It does not fix typos you missed.",
             },
             {
                 type: "note",
@@ -882,7 +882,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "CubSign offers draw and type (plus upload image) when you fill a signature or initials field. Both are valid electronic signatures when you intend to sign — the choice is about appearance and device, not legality.",
+                text: "CubSign offers draw and type (plus upload image) when you fill a signature or initials field. Both are valid electronic signatures when you intend to sign. The choice is about appearance and device, not legality.",
             },
             {
                 type: "product-screenshot",
@@ -934,7 +934,7 @@ export const helpArticles = [
             },
             {
                 type: "note",
-                text: "Neither method is inherently “more legal” than the other. See Electronic Signature Legality for general framework information — not legal advice.",
+                text: "Neither method is inherently “more legal” than the other. See Electronic Signature Legality for general framework information, not legal advice.",
             },
         ],
     },
@@ -1009,7 +1009,7 @@ export const helpArticles = [
                 type: "ul",
                 items: [
                     "High contrast ink on white or transparent background.",
-                    "Crop close to the signature — extra margins make it appear tiny in the field.",
+                    "Crop close to the signature. Extra margins make it appear tiny in the field.",
                     "Avoid blurry phone photos with shadows.",
                     "Prefer PNG when you need transparency over the PDF page.",
                 ],
@@ -1024,7 +1024,7 @@ export const helpArticles = [
             },
             {
                 type: "note",
-                text: "Treat signature image files like sensitive assets. Do not share your CubSign login — someone with account access could send documents on your behalf.",
+                text: "Treat signature image files like sensitive assets. Do not share your CubSign login. Someone with account access could send documents on your behalf.",
             },
         ],
     },
@@ -1062,11 +1062,11 @@ export const helpArticles = [
             },
             {
                 question: "Can I download later?",
-                answer: "Signed-in users can download again from Documents in the workspace. Guests must download during the session — there is no saved copy afterward.",
+                answer: "Signed-in users can download again from Documents in the workspace. Guests must download during the session. There is no saved copy afterward.",
             },
             {
                 question: "What is in the file?",
-                answer: "The PDF with applied signatures and field values from the session. Activity events are tracked separately in your workspace — see Audit Trail.",
+                answer: "The PDF with applied signatures and field values from the session. Activity events are tracked separately in your workspace. See Audit Trail.",
             },
         ],
         content: [
@@ -1097,7 +1097,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "If you are signed in, open Documents, select the file, and download again anytime — useful when a colleague needs a copy months later.",
+                text: "If you are signed in, open Documents, select the file, and download again anytime, which is useful when a colleague needs a copy months later.",
             },
             {
                 type: "h2",
@@ -1105,7 +1105,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "Guest self-sign does not save the document to an account. Download before closing the tab — there is no second chance from a workspace.",
+                text: "Guest self-sign does not save the document to an account. Download before closing the tab. There is no second chance from a workspace.",
             },
             {
                 type: "h2",
@@ -1113,11 +1113,11 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "When you send for signature, the final merged PDF is available after all recipients sign and PDF generation succeeds. If generation fails, the document stays incomplete and a signed_pdf_failed event appears in activity — contact support if that happens.",
+                text: "When you send for signature, the final merged PDF is available after all recipients sign and PDF generation succeeds. If generation fails, the document stays incomplete and a signed_pdf_failed event appears in activity. Contact support if that happens.",
             },
             {
                 type: "tip",
-                text: "Name downloads predictably: counterpart, document type, date — e.g. Acme-NDA-2026-08-08.pdf.",
+                text: "Name downloads predictably: counterpart, document type, and date (e.g. Acme-NDA-2026-08-08.pdf).",
             },
         ],
     },
@@ -1178,7 +1178,7 @@ export const helpArticles = [
                     "Switch to request-signatures mode and add recipients by email.",
                     "Place signature, initials, name, text, date, or checkbox fields.",
                     "Assign each field to the correct recipient.",
-                    "Send — recipients receive email with a link to /r/{token}.",
+                    "Send: recipients receive email with a link to /r/{token}.",
                     "Monitor activity until document_completed, then download the PDF.",
                 ],
             },
@@ -1252,7 +1252,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "Signed-in users can remove documents from the workspace when they are no longer needed. Deletion is intentional — treat it as permanent for the CubSign copy.",
+                text: "Signed-in users can remove documents from the workspace when they are no longer needed. Deletion is intentional. Treat it as permanent for the CubSign copy.",
             },
             {
                 type: "h2",
@@ -1274,7 +1274,7 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "Download the signed PDF if you need a local copy — see Download Signed PDF.",
+                    "Download the signed PDF if you need a local copy. See Download Signed PDF.",
                     "Confirm no recipient still needs an open signing link.",
                     "Verify you picked the correct file among similarly named documents.",
                 ],
@@ -1333,7 +1333,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "Email verification confirms you control the address on your CubSign account. It is required before full workspace access — uploading to your library, templates, and send-for-signature.",
+                text: "Email verification confirms you control the address on your CubSign account. It is required before full workspace access: uploading to your library, templates, and send-for-signature.",
             },
             {
                 type: "h2",
@@ -1358,7 +1358,7 @@ export const helpArticles = [
                     "Check spam, junk, and promotions folders.",
                     "Confirm the address you typed at registration.",
                     "Request a new verification email from the in-app prompt.",
-                    "Allowlist mail from cubsign.com — corporate filters often block new senders.",
+                    "Allowlist mail from cubsign.com. Corporate filters often block new senders.",
                 ],
             },
             {
@@ -1437,7 +1437,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "Name and email for account identity — not Gmail content, Drive files, or contacts. This is sign-in only.",
+                text: "Name and email for account identity, not Gmail content, Drive files, or contacts. This is sign-in only.",
             },
             {
                 type: "h2",
@@ -1497,7 +1497,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "Email-and-password accounts can reset via a time-limited link sent to the registered address. CubSign stores passwords hashed — we cannot read your current password.",
+                text: "Email-and-password accounts can reset via a time-limited link sent to the registered address. CubSign stores passwords hashed. We cannot read your current password.",
             },
             {
                 type: "h2",
@@ -1508,7 +1508,7 @@ export const helpArticles = [
                 items: [
                     "On Login, click Forgot password.",
                     "Enter the email on your CubSign account.",
-                    "Open the reset email and click the link promptly — links expire.",
+                    "Open the reset email and click the link promptly. Links expire.",
                     "Set a new unique password and sign in.",
                 ],
             },
@@ -1528,7 +1528,7 @@ export const helpArticles = [
                 type: "ul",
                 items: [
                     "Reset emails should arrive only after you request one.",
-                    "Use the official cubsign.com link — not third-party lookalikes.",
+                    "Use the official cubsign.com link, not third-party lookalikes.",
                     "Never share a reset link; anyone with it can change your password.",
                 ],
             },
@@ -1541,7 +1541,7 @@ export const helpArticles = [
     {
         slug: "secure-storage",
         title: "Secure Storage",
-        excerpt: "How CubSign protects PDFs in transit with HTTPS and limits access to stored files — without overstating encryption claims.",
+        excerpt: "How CubSign protects PDFs in transit with HTTPS and limits access to stored files without overstating encryption claims.",
         category: "Security",
         categorySlug: "security",
         updatedAt: "2026-08-08",
@@ -1582,7 +1582,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "Security in CubSign spans the connection, stored files, and who can open them. This article describes what the product actually does today — without marketing claims we cannot substantiate.",
+                text: "Security in CubSign spans the connection, stored files, and who can open them. This article describes what the product actually does today, without marketing claims we cannot substantiate.",
             },
             {
                 type: "h2",
@@ -1598,7 +1598,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "Uploaded PDFs are stored on private server infrastructure — not in public buckets. Access is restricted to the document owner (when signed in) and recipients who hold valid signing links for that workflow. CubSign does not describe stored files as “AES-256 encrypted at rest” or “bank-level” secured.",
+                text: "Uploaded PDFs are stored on private server infrastructure, not in public buckets. Access is restricted to the document owner (when signed in) and recipients who hold valid signing links for that workflow. CubSign does not describe stored files as “AES-256 encrypted at rest” or “bank-level” secured.",
             },
             {
                 type: "h2",
@@ -1607,7 +1607,7 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "Passwords are hashed — not stored in plain text.",
+                    "Passwords are hashed, not stored in plain text.",
                     "Google OAuth is available as an alternative to password login.",
                     "Email verification is required for full workspace access.",
                     "You can delete documents from your workspace when finished.",
@@ -1619,7 +1619,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "Each recipient receives a unique tokenized link. Links are scoped to a specific document and recipient — not open public URLs. Still, treat links like credentials: send only to intended signers.",
+                text: "Each recipient receives a unique tokenized link. Links are scoped to a specific document and recipient, not open public URLs. Still, treat links like credentials: send only to intended signers.",
             },
             {
                 type: "h2",
@@ -1628,7 +1628,7 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "Protect your login — password manager or Google 2FA.",
+                    "Protect your login: password manager or Google 2FA.",
                     "Download signed PDFs to access-controlled storage you manage.",
                     "Verify recipient email addresses before sending contracts.",
                     "Sign out on shared devices after use.",
@@ -1670,7 +1670,7 @@ export const helpArticles = [
         faq: [
             {
                 question: "Are documents public?",
-                answer: "No. Documents are private by default — not listed in search engines. Only you and invited recipients with valid links can access them.",
+                answer: "No. Documents are private by default, not listed in search engines. Only you and invited recipients with valid links can access them.",
             },
             {
                 question: "Can CubSign staff read my PDFs?",
@@ -1694,7 +1694,7 @@ export const helpArticles = [
                 type: "ul",
                 items: [
                     "You, when authenticated in your workspace.",
-                    "Recipients you invite — via unique /r/{token} links tied to their email.",
+                    "Recipients you invite via unique /r/{token} links tied to their email.",
                     "Guest upload sessions you start yourself, for that session only.",
                 ],
             },
@@ -1713,26 +1713,26 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "Send only to people who must sign — see Share Documents.",
-                    "Delete or archive documents when a matter closes — see Delete Documents.",
+                    "Send only to people who must sign. See Share Documents.",
+                    "Delete or archive documents when a matter closes. See Delete Documents.",
                     "Keep your login credentials private.",
                     "Download executed PDFs to systems your organization controls.",
                 ],
             },
             {
                 type: "p",
-                text: "HTTPS protects data in transit. Stored files rely on private infrastructure and access controls — see Secure Storage for an honest description of what we claim (and do not claim) about at-rest protection.",
+                text: "HTTPS protects data in transit. Stored files rely on private infrastructure and access controls. See Secure Storage for an honest description of what we claim (and do not claim) about at-rest protection.",
             },
             {
                 type: "note",
-                text: "The workspace activity timeline records signing events (sent, notified, signed, completed) — not casual page views. See Audit Trail.",
+                text: "The workspace activity timeline records signing events (sent, notified, signed, completed), not casual page views. See Audit Trail.",
             },
         ],
     },
     {
         slug: "audit-trail",
         title: "Audit Trail",
-        excerpt: "CubSign logs signing events in your workspace — sent, notified, signed, completed, and generation failures — not page views or IP addresses in the UI.",
+        excerpt: "CubSign logs signing events in your workspace (sent, notified, signed, completed, and generation failures), not page views or IP addresses in the UI.",
         category: "Security",
         categorySlug: "security",
         updatedAt: "2026-08-08",
@@ -1749,7 +1749,7 @@ export const helpArticles = [
             "esignature evidence",
         ],
         metaTitle: "What Is an Audit Trail in CubSign? | CubSign",
-        metaDescription: "See which DocumentActivity events CubSign records: recipient_notified, recipient_signed, document_completed, signed_pdf_failed — and where to find them.",
+        metaDescription: "See which DocumentActivity events CubSign records: recipient_notified, recipient_signed, document_completed, signed_pdf_failed, and where to find them.",
         related: [
             "electronic-signature-legality",
             "secure-storage",
@@ -1767,13 +1767,13 @@ export const helpArticles = [
             },
             {
                 question: "Does the audit trail show IP addresses?",
-                answer: "The workspace activity UI shows event types, recipient names, and timestamps — not IP addresses. Internal session data may exist for operations, but it is not presented as a user-facing audit field.",
+                answer: "The workspace activity UI shows event types, recipient names, and timestamps, not IP addresses. Internal session data may exist for operations, but it is not presented as a user-facing audit field.",
             },
         ],
         content: [
             {
                 type: "p",
-                text: "CubSign maintains a DocumentActivity timeline on documents in your workspace. It answers “what happened during this signing workflow?” — not “every time someone opened a page.”",
+                text: "CubSign maintains a DocumentActivity timeline on documents in your workspace. It answers “what happened during this signing workflow?”, not “every time someone opened a page.”",
             },
             {
                 type: "h2",
@@ -1782,12 +1782,12 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "Document created — when the file enters your workspace.",
-                    "Sent / requests prepared — when a send-for-signature workflow is initiated.",
-                    "recipient_notified — recipient was emailed a signing link (logged after successful send).",
-                    "recipient_signed — a recipient completed their assigned fields.",
-                    "document_completed — all signatures collected and the merged signed PDF generated successfully.",
-                    "signed_pdf_failed — PDF generation failed; the document is not marked completed.",
+                    "Document created: when the file enters your workspace.",
+                    "Sent / requests prepared: when a send-for-signature workflow is initiated.",
+                    "recipient_notified: recipient was emailed a signing link (logged after successful send).",
+                    "recipient_signed: a recipient completed their assigned fields.",
+                    "document_completed: all signatures collected and the merged signed PDF generated successfully.",
+                    "signed_pdf_failed: PDF generation failed; the document is not marked completed.",
                 ],
             },
             {
@@ -1799,7 +1799,7 @@ export const helpArticles = [
                 items: [
                     "“Document viewed” or per-page open events.",
                     "IP addresses displayed to document owners.",
-                    "A guarantee of legal enforceability — see Electronic Signature Legality.",
+                    "A guarantee of legal enforceability. See Electronic Signature Legality.",
                 ],
             },
             {
@@ -1808,7 +1808,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "The signed PDF is the primary artifact. The activity timeline adds context — who was notified, who signed, when completion happened. For disputes or internal reviews, store both the downloaded PDF and a note of the completion date.",
+                text: "The signed PDF is the primary artifact. The activity timeline adds context: who was notified, who signed, when completion happened. For disputes or internal reviews, store both the downloaded PDF and a note of the completion date.",
             },
             {
                 type: "tip",
@@ -1823,7 +1823,7 @@ export const helpArticles = [
     {
         slug: "electronic-signature-legality",
         title: "Electronic Signature Legality",
-        excerpt: "General background on ESIGN, UETA, and eIDAS — plus honest limits on what CubSign guarantees.",
+        excerpt: "General background on ESIGN, UETA, and eIDAS, plus honest limits on what CubSign guarantees.",
         category: "Security",
         categorySlug: "security",
         updatedAt: "2026-08-08",
@@ -1840,7 +1840,7 @@ export const helpArticles = [
             "eidas signature",
         ],
         metaTitle: "Are Electronic Signatures Legal? | CubSign",
-        metaDescription: "Educational overview of electronic signature frameworks. CubSign provides signing tools and activity records — not legal advice or outcome guarantees.",
+        metaDescription: "Educational overview of electronic signature frameworks. CubSign provides signing tools and activity records, not legal advice or outcome guarantees.",
         related: [
             "audit-trail",
             "draw-vs-type-signature",
@@ -1850,7 +1850,7 @@ export const helpArticles = [
         faq: [
             {
                 question: "Are electronic signatures legally binding?",
-                answer: "Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met — but outcomes depend on document type and jurisdiction. This is not legal advice.",
+                answer: "Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met, but outcomes depend on document type and jurisdiction. This is not legal advice.",
             },
             {
                 question: "What does CubSign provide?",
@@ -1864,7 +1864,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "Electronic signatures are widely used for commercial PDFs — NDAs, offer letters, vendor agreements, and similar. CubSign is a tool for creating and collecting those signatures, not a law firm or compliance certifier.",
+                text: "Electronic signatures are widely used for commercial PDFs: NDAs, offer letters, vendor agreements, and similar. CubSign is a tool for creating and collecting those signatures, not a law firm or compliance certifier.",
             },
             {
                 type: "h2",
@@ -1874,7 +1874,7 @@ export const helpArticles = [
                 type: "ul",
                 items: [
                     "United States: ESIGN Act (federal) and UETA (state adoption).",
-                    "European Union: eIDAS — tiers from simple to qualified electronic signatures.",
+                    "European Union: eIDAS, with tiers from simple to qualified electronic signatures.",
                     "Other countries: local e-signature laws vary.",
                 ],
             },
@@ -1885,10 +1885,10 @@ export const helpArticles = [
             {
                 type: "ol",
                 items: [
-                    "Intent — the signer meant to sign this document.",
-                    "Consent — parties agreed to conduct business electronically when required.",
-                    "Association — the signature links to the specific record signed.",
-                    "Integrity — a reliable process and record (PDF plus activity timeline).",
+                    "Intent: the signer meant to sign this document.",
+                    "Consent: parties agreed to conduct business electronically when required.",
+                    "Association: the signature links to the specific record signed.",
+                    "Integrity: a reliable process and record (PDF plus activity timeline).",
                 ],
             },
             {
@@ -1899,7 +1899,7 @@ export const helpArticles = [
                 type: "ul",
                 items: [
                     "That every document you sign is legally enforceable in your jurisdiction.",
-                    "That draw, type, or upload methods differ in legal weight — intent matters more than appearance.",
+                    "That draw, type, or upload methods differ in legal weight. Intent matters more than appearance.",
                     "Qualified or advanced electronic signature status under eIDAS.",
                     "Replacement for lawyers on high-stakes or regulated transactions.",
                 ],
@@ -1919,7 +1919,7 @@ export const helpArticles = [
             },
             {
                 type: "note",
-                text: "This Help Center article is educational only — not legal advice. Read Audit Trail for what CubSign records, and Secure Storage for how files are handled.",
+                text: "This Help Center article is educational only, not legal advice. Read Audit Trail for what CubSign records, and Secure Storage for how files are handled.",
             },
         ],
     },
@@ -1977,10 +1977,10 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "Real PDF? Open it in a viewer — renaming .docx to .pdf fails.",
+                    "Real PDF? Open it in a viewer. Renaming .docx to .pdf fails.",
                     "Under 25 MB? Compress scans if not.",
                     "Unlocked? Remove password protection.",
-                    "Supported browser? Chrome, Firefox, Edge, or Safari — latest version.",
+                    "Supported browser? Chrome, Firefox, Edge, or Safari: latest version.",
                     "Private window? Rules out many extension conflicts.",
                     "Stable network? Retry off VPN or weak cellular.",
                 ],
@@ -1992,10 +1992,10 @@ export const helpArticles = [
             {
                 type: "ul",
                 items: [
-                    "File too large — compress, re-scan at lower DPI, or split pages.",
-                    "Invalid file type — export a proper PDF from the source application.",
-                    "Network error / upload failed — connection drop or corporate proxy; retry elsewhere.",
-                    "Cannot open PDF — often password-protected or corrupted; re-export from source.",
+                    "File too large: compress, re-scan at lower DPI, or split pages.",
+                    "Invalid file type: export a proper PDF from the source application.",
+                    "Network error / upload failed: connection drop or corporate proxy; retry elsewhere.",
+                    "Cannot open PDF: often password-protected or corrupted; re-export from source.",
                 ],
             },
             {
@@ -2004,7 +2004,7 @@ export const helpArticles = [
             },
             {
                 type: "p",
-                text: "If upload works on desktop but not phone, open cubsign.com in full Safari or Chrome — not the in-app browser from email. See Mobile Support.",
+                text: "If upload works on desktop but not phone, open cubsign.com in full Safari or Chrome, not the in-app browser from email. See Mobile Support.",
             },
             {
                 type: "h2",
@@ -2060,7 +2060,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "When Help Center articles do not solve your issue, reach CubSign support with enough detail to reproduce the problem — especially for upload, signing, or account access bugs.",
+                text: "When Help Center articles do not solve your issue, reach CubSign support with enough detail to reproduce the problem, especially for upload, signing, or account access bugs.",
             },
             {
                 type: "h2",
@@ -2081,9 +2081,9 @@ export const helpArticles = [
                 type: "ul",
                 items: [
                     "Account email (if signed in) or note that you are a guest.",
-                    "What you were doing — upload, self-sign, recipient sign, download, send.",
+                    "What you were doing: upload, self-sign, recipient sign, download, send.",
                     "Exact error message or screenshot (redact sensitive contract text).",
-                    "Browser and device — e.g. Chrome 128 on Windows 11, Safari on iPhone 15.",
+                    "Browser and device (e.g. Chrome 128 on Windows 11, Safari on iPhone 15).",
                     "PDF size and whether it opens locally.",
                     "Approximate date and time of the issue.",
                 ],
@@ -2102,7 +2102,7 @@ export const helpArticles = [
             },
             {
                 type: "note",
-                text: "CubSign is in Early Access — we respond as quickly as we can. Clear reports help us fix product issues that affect other users too.",
+                text: "CubSign is in Early Access. We respond as quickly as we can. Clear reports help us fix product issues that affect other users too.",
             },
         ],
     },
@@ -2123,7 +2123,7 @@ export const helpFaqs = [
     },
     {
         "question": "Are electronic signatures legally binding?",
-        "answer": "They are often recognized under ESIGN, UETA, and eIDAS when requirements are met — but outcomes vary by document and jurisdiction. CubSign provides tools and activity records, not legal advice.",
+        "answer": "They are often recognized under ESIGN, UETA, and eIDAS when requirements are met, but outcomes vary by document and jurisdiction. CubSign provides tools and activity records, not legal advice.",
     },
     {
         "question": "How do I reset my password?",

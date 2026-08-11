@@ -50,7 +50,7 @@ class SeoInitialHtmlTest extends TestCase
         $this->assertInitialSeo(
             $html,
             title: 'Features — CubSign | Free PDF Signing',
-            description: 'Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work — with real product screenshots.',
+            description: 'Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work, with real product screenshots.',
             canonical: 'https://cubsign.com/features',
             ogType: 'website',
         );

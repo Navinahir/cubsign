@@ -11,7 +11,7 @@ export function getBlogCoverWebp(slug) {
 }
 
 export function getBlogCoverAlt(title) {
-    return title ? `${title} — article cover illustration` : 'Article cover illustration';
+    return title ? `${title}: article cover illustration` : 'Article cover illustration';
 }
 
 export function withBlogCoverMeta(post) {

@@ -218,7 +218,7 @@ async function fitWidth() {
             </Link>
             <div class="text-center">
                 <p class="truncate text-sm font-semibold text-gray-900">{{ template.name }}</p>
-                <p class="text-[10px] text-gray-400">Structural preview — placeholders only</p>
+                <p class="text-[10px] text-gray-400">Structural preview: placeholders only</p>
             </div>
             <Link
                 :href="route('templates.edit', template.id)"

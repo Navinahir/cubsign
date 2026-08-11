@@ -59,7 +59,7 @@ function activityLabel(activity) {
     const m = activity.meta ?? {};
     switch (activity.event) {
         case 'created':              return 'Document created';
-        case 'sent':                 return `Requests prepared — ${m.recipient_count ?? 0} recipient${m.recipient_count === 1 ? '' : 's'}`;
+        case 'sent':                 return `Requests prepared: ${m.recipient_count ?? 0} recipient${m.recipient_count === 1 ? '' : 's'}`;
         case 'recipient_signed':     return `${m.name ?? 'Recipient'} signed`;
         case 'recipient_notified':   return `${m.name ?? 'Recipient'} notified`;
         case 'document_completed':   return 'Document completed';

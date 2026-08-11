@@ -32,7 +32,7 @@ defineProps({
                     </h1>
 
                     <p class="mt-5 max-w-lg text-lg leading-relaxed text-gray-600">
-                        CubSign is a PDF signing product for everyday agreements. Add a drawn, typed, or uploaded signature, then download the file — or send it for others to sign with a free account.
+                        CubSign is a PDF signing product for everyday agreements. Add a drawn, typed, or uploaded signature, then download the file, or send it for others to sign with a free account.
                     </p>
 
                     <div class="mt-10">

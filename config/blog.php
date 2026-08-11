@@ -13,7 +13,7 @@ return [
             'published_at' => '2025-12-02',
             'updated_at' => '2026-08-11',
             'title' => 'How to Sign a PDF Online',
-            'excerpt' => 'Prepare before you upload, avoid common signing mistakes, and learn when browser-based PDF signing helps—plus a short CubSign example with links to the full product guide.',
+            'excerpt' => 'Prepare before you upload, avoid common signing mistakes, and learn when browser-based PDF signing helps, plus a short CubSign example with links to the full product guide.',
             'meta_title' => 'How to Sign a PDF Online: Tips & Common Mistakes | CubSign',
             'meta_description' => 'Practical guidance for signing a PDF online: what to prepare before you upload, common mistakes to avoid, mobile tips, and when browser signing helps.',
             'author' => 'CubSign Product & Engineering Team',
@@ -344,7 +344,7 @@ return [
             'faq' => [
             [
                 'question' => 'Does CubSign encrypt my documents?',
-                'answer' => 'Documents are protected in transit over HTTPS. Stored workspace PDFs use private storage with access limited to your account and invited recipients—not open public links.',
+                'answer' => 'Documents are protected in transit over HTTPS. Stored workspace PDFs use private storage with access limited to your account and invited recipients, not open public links.',
             ],
             [
                 'question' => 'Who can access a document I upload?',
@@ -468,7 +468,7 @@ return [
             ],
             [
                 'question' => 'How does an audit trail help in a dispute?',
-                'answer' => 'It establishes timing, delivery, and completion—answering when invitations were sent and when each recipient signed—questions memory alone cannot reliably resolve.',
+                'answer' => 'It establishes timing, delivery, and completion, answering when invitations were sent and when each recipient signed: questions memory alone cannot reliably resolve.',
             ],
             [
                 'question' => 'Does CubSign record an audit trail?',
@@ -481,7 +481,7 @@ return [
             'published_at' => '2026-03-20',
             'updated_at' => '2026-08-08',
             'title' => 'How to Create Your Signature in CubSign',
-            'excerpt' => 'Draw, type, or upload a signature in the CubSign editor for your current document. How per-session signatures work—without a persistent saved signature library.',
+            'excerpt' => 'Draw, type, or upload a signature in the CubSign editor for your current document. How per-session signatures work without a persistent saved signature library.',
             'meta_title' => 'How to Create Your Signature in CubSign | CubSign',
             'meta_description' => 'Create a signature in CubSign by drawing, typing, or uploading an image for the current session. Apply it across fields on the same PDF.',
             'author' => 'CubSign Product & Engineering Team',
@@ -497,7 +497,7 @@ return [
             ],
             [
                 'question' => 'How do I get a consistent look across documents?',
-                'answer' => 'Use the same method each time—often typed signatures or uploading the same PNG file at the start of each new CubSign session.',
+                'answer' => 'Use the same method each time: often typed signatures or uploading the same PNG file at the start of each new CubSign session.',
             ],
             [
                 'question' => 'What if my legal name changes?',

@@ -32,7 +32,7 @@ function featureLinkHref(link) {
 <template>
     <MarketingSeo
         title="Features — CubSign | Free PDF Signing"
-        description="Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work — with real product screenshots."
+        description="Learn how CubSign self-sign, request signatures, templates, activity history, private storage, and document tracking work, with real product screenshots."
         path="/features"
     />
 
@@ -221,7 +221,7 @@ function featureLinkHref(link) {
                         Practical audiences
                     </h2>
                     <p class="mt-2 max-w-xl text-sm text-gray-500">
-                        Example workflows CubSign supports today — not customer logos or testimonials.
+                        Example workflows CubSign supports today, not customer logos or testimonials.
                     </p>
                 </ScrollReveal>
 
