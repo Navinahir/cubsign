@@ -1839,8 +1839,8 @@ export const helpArticles = [
             "esign act ueta",
             "eidas signature",
         ],
-        metaTitle: "Are Electronic Signatures Legal? | CubSign",
-        metaDescription: "Educational overview of electronic signature frameworks. CubSign provides signing tools and activity records, not legal advice or outcome guarantees.",
+        metaTitle: "Electronic Signature Legality & CubSign | CubSign",
+        metaDescription: "What CubSign provides for electronic signatures, general legal considerations, and clear limits: no legal advice and no guarantee of enforceability.",
         related: [
             "audit-trail",
             "draw-vs-type-signature",
@@ -1850,7 +1850,7 @@ export const helpArticles = [
         faq: [
             {
                 question: "Are electronic signatures legally binding?",
-                answer: "Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met, but outcomes depend on document type and jurisdiction. This is not legal advice.",
+                answer: "Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met, but outcomes depend on document type and jurisdiction. CubSign provides tools and activity records, not legal advice or enforceability guarantees.",
             },
             {
                 question: "What does CubSign provide?",
@@ -1916,6 +1916,10 @@ export const helpArticles = [
                     "Use send-for-signature so each party signs the same document instance.",
                     "Escalate unusual document types to qualified counsel.",
                 ],
+            },
+            {
+                type: "p",
+                text: "For how CubSign protects documents in transit and storage, visit the Security Center. Read our broader guide to electronic-signature validity for educational context beyond this product page.",
             },
             {
                 type: "note",
@@ -2123,7 +2127,9 @@ export const helpFaqs = [
     },
     {
         "question": "Are electronic signatures legally binding?",
-        "answer": "They are often recognized under ESIGN, UETA, and eIDAS when requirements are met, but outcomes vary by document and jurisdiction. CubSign provides tools and activity records, not legal advice.",
+        "answer": "They are often recognized under ESIGN, UETA, and eIDAS when requirements are met, but outcomes vary by document and jurisdiction. CubSign provides tools and activity records, not legal advice or enforceability guarantees.",
+        "moreHelpSlug": "electronic-signature-legality",
+        "moreHelpLabel": "Learn how CubSign approaches electronic-signature legality",
     },
     {
         "question": "How do I reset my password?",
@@ -2271,12 +2277,23 @@ export function linkifyHelpText(text, currentSlug = null) {
             .filter((a) => a.slug !== currentSlug)
             .map((a) => ({ title: a.title, kind: 'help', slug: a.slug })),
         {
+            title: 'Read our broader guide to electronic-signature validity',
+            kind: 'blog',
+            slug: 'are-electronic-signatures-legally-binding',
+        },
+        {
+            title: 'Are Electronic Signatures Legally Binding?',
+            kind: 'blog',
+            slug: 'are-electronic-signatures-legally-binding',
+        },
+        {
             title: 'More mobile signing tips',
             kind: 'blog',
             slug: 'how-to-sign-pdfs-on-mobile',
         },
         { title: 'Help Center', kind: 'route', routeName: 'help-center' },
         { title: 'Features page', kind: 'route', routeName: 'features' },
+        { title: 'Security Center', kind: 'route', routeName: 'security' },
         { title: 'Upload PDF page', kind: 'route', routeName: 'sign.index' },
         { title: 'Upload PDF', kind: 'route', routeName: 'sign.index' },
         { title: 'Start signing', kind: 'route', routeName: 'sign.index' },

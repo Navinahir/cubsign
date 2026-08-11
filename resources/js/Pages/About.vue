@@ -30,6 +30,11 @@ const breadcrumbSchema = [
     { name: 'About', url: '/about' },
 ];
 
+const aboutFaqSchema = aboutFaqs.map((item) => ({
+    question: item.question,
+    answer: item.moreHelpLabel ? `${item.answer} ${item.moreHelpLabel}.` : item.answer,
+}));
+
 const completedMilestones = aboutTimeline.filter((item) => item.status === 'completed');
 const plannedMilestones = aboutTimeline.filter((item) => item.status === 'planned');
 </script>
@@ -39,7 +44,7 @@ const plannedMilestones = aboutTimeline.filter((item) => item.status === 'planne
         title="About CubSign — Our Mission, Values & Story"
         description="CubSign is a browser-based PDF signing product from Cubiz Infotech. Learn why we built it, what the product does today, and what is planned."
         path="/about"
-        :faq-schema="aboutFaqs"
+        :faq-schema="aboutFaqSchema"
         :breadcrumb-schema="breadcrumbSchema"
         about-organization
     />

@@ -69,7 +69,12 @@ const categorySections = computed(() =>
 
 const popularArticles = computed(() => getPopularArticles(6));
 const recentlyUpdated = computed(() => getRecentlyUpdatedArticles(5));
-const faqSchema = computed(() => helpFaqs);
+const faqSchema = computed(() =>
+    helpFaqs.map((item) => ({
+        question: item.question,
+        answer: item.moreHelpLabel ? `${item.answer} ${item.moreHelpLabel}.` : item.answer,
+    })),
+);
 
 function toggleFaq(index) {
     openFaq.value = openFaq.value === index ? null : index;
@@ -327,6 +332,13 @@ onUnmounted(() => categoryObserver?.disconnect());
                                     </button>
                                     <div v-show="openFaq === index" class="px-5 pb-5 text-sm leading-relaxed text-gray-500 sm:px-6">
                                         {{ item.answer }}
+                                        <Link
+                                            v-if="item.moreHelpSlug"
+                                            :href="route('help-center.show', item.moreHelpSlug)"
+                                            class="mt-2 block font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                                        >
+                                            {{ item.moreHelpLabel }}
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

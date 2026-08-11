@@ -270,7 +270,9 @@ export const aboutFaqs = [
     },
     {
         question: 'Are electronic signatures on CubSign legally valid?',
-        answer: 'Electronic signatures are widely recognized when parties intend to sign and consent to transact electronically. CubSign captures signatures and related activity for sent documents; you remain responsible for fitness for your documents and jurisdiction.',
+        answer: 'Electronic signatures are often recognized when parties intend to sign and consent to transact electronically, but outcomes depend on document type and jurisdiction. CubSign captures signatures and related activity for sent documents; you remain responsible for fitness for your documents and jurisdiction. CubSign does not provide legal advice or guarantee enforceability.',
+        moreHelpSlug: 'electronic-signature-legality',
+        moreHelpLabel: 'Learn how CubSign approaches electronic-signature legality',
     },
     {
         question: 'How does CubSign keep documents secure?',

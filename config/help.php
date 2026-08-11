@@ -451,13 +451,13 @@ return [
             'updated_at' => '2026-08-08',
             'title' => 'Electronic Signature Legality',
             'excerpt' => 'General background on ESIGN, UETA, and eIDAS, plus honest limits on what CubSign guarantees.',
-            'meta_title' => 'Are Electronic Signatures Legal? | CubSign',
-            'meta_description' => 'Educational overview of electronic signature frameworks. CubSign provides signing tools and activity records, not legal advice or outcome guarantees.',
+            'meta_title' => 'Electronic Signature Legality & CubSign | CubSign',
+            'meta_description' => 'What CubSign provides for electronic signatures, general legal considerations, and clear limits: no legal advice and no guarantee of enforceability.',
             'author' => 'CubSign Product & Engineering Team',
             'faq' => [
             [
                 'question' => 'Are electronic signatures legally binding?',
-                'answer' => 'Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met, but outcomes depend on document type and jurisdiction. This is not legal advice.',
+                'answer' => 'Often yes under frameworks like ESIGN, UETA, and eIDAS when intent and consent requirements are met, but outcomes depend on document type and jurisdiction. CubSign provides tools and activity records, not legal advice or enforceability guarantees.',
             ],
             [
                 'question' => 'What does CubSign provide?',

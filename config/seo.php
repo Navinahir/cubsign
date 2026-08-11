@@ -144,7 +144,7 @@ return [
             ],
             [
                 'question' => 'Are electronic signatures on CubSign legally valid?',
-                'answer' => 'Electronic signatures are widely recognized when parties intend to sign and consent to transact electronically. CubSign captures signatures and related activity for sent documents; you remain responsible for fitness for your documents and jurisdiction.',
+                'answer' => 'Electronic signatures are often recognized when parties intend to sign and consent to transact electronically, but outcomes depend on document type and jurisdiction. CubSign captures signatures and related activity for sent documents; you remain responsible for fitness for your documents and jurisdiction. CubSign does not provide legal advice or guarantee enforceability. Learn how CubSign approaches electronic-signature legality.',
             ],
             [
                 'question' => 'How does CubSign keep documents secure?',
@@ -212,7 +212,7 @@ return [
             ],
             [
                 'question' => 'Are electronic signatures legally binding?',
-                'answer' => 'They are often recognized under ESIGN, UETA, and eIDAS when requirements are met, but outcomes vary by document and jurisdiction. CubSign provides tools and activity records, not legal advice.',
+                'answer' => 'They are often recognized under ESIGN, UETA, and eIDAS when requirements are met, but outcomes vary by document and jurisdiction. CubSign provides tools and activity records, not legal advice or enforceability guarantees. Learn how CubSign approaches electronic-signature legality.',
             ],
             [
                 'question' => 'How do I reset my password?',
@@ -296,7 +296,7 @@ return [
             ],
             [
                 'question' => 'Are CubSign signatures legally binding?',
-                'answer' => 'Electronic signatures are widely recognized when parties intend to sign and consent to transact electronically. CubSign helps you capture signatures and related activity for sent documents. You remain responsible for whether an e-signature is appropriate for your document and jurisdiction. CubSign does not provide legal advice.',
+                'answer' => 'Electronic signatures are often recognized when parties intend to sign and consent to transact electronically, but outcomes depend on document type and jurisdiction. CubSign helps you capture signatures and related activity for sent documents. You remain responsible for whether an e-signature is appropriate for your document and jurisdiction. CubSign does not provide legal advice or guarantee enforceability. Learn how CubSign approaches electronic-signature legality.',
             ],
             [
                 'question' => 'What is the activity history (audit trail)?',

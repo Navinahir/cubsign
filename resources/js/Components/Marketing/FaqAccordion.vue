@@ -79,6 +79,13 @@ function toggleFaq(index) {
                 >
                     <div v-show="openFaq === index" class="overflow-hidden px-6 pb-6 text-sm leading-relaxed text-gray-500">
                         {{ faq.answer }}
+                        <Link
+                            v-if="faq.moreHelpSlug"
+                            :href="route('help-center.show', faq.moreHelpSlug)"
+                            class="mt-2 block font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                        >
+                            {{ faq.moreHelpLabel }}
+                        </Link>
                     </div>
                 </Transition>
             </div>

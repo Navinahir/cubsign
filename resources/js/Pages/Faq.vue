@@ -67,7 +67,9 @@ const categories = [
             },
             {
                 question: 'Are CubSign signatures legally binding?',
-                answer: 'Electronic signatures are widely recognized when parties intend to sign and consent to transact electronically. CubSign helps you capture signatures and related activity for sent documents. You remain responsible for whether an e-signature is appropriate for your document and jurisdiction. CubSign does not provide legal advice.',
+                answer: 'Electronic signatures are often recognized when parties intend to sign and consent to transact electronically, but outcomes depend on document type and jurisdiction. CubSign helps you capture signatures and related activity for sent documents. You remain responsible for whether an e-signature is appropriate for your document and jurisdiction. CubSign does not provide legal advice or guarantee enforceability.',
+                moreHelpSlug: 'electronic-signature-legality',
+                moreHelpLabel: 'Learn how CubSign approaches electronic-signature legality',
             },
             {
                 question: 'What is the activity history (audit trail)?',
@@ -116,7 +118,14 @@ const filteredCategories = computed(() => {
 });
 
 const faqSchema = computed(() =>
-    categories.flatMap((category) => category.items),
+    categories.flatMap((category) =>
+        category.items.map((item) => ({
+            question: item.question,
+            answer: item.moreHelpLabel
+                ? `${item.answer} ${item.moreHelpLabel}.`
+                : item.answer,
+        })),
+    ),
 );
 
 const breadcrumbSchema = [
@@ -209,6 +218,13 @@ function isOpen(categoryIndex, itemIndex) {
                             >
                                 <div v-if="isOpen(categoryIndex, itemIndex)" class="px-6 pb-5 text-sm leading-relaxed text-gray-500">
                                     {{ item.answer }}
+                                    <Link
+                                        v-if="item.moreHelpSlug"
+                                        :href="route('help-center.show', item.moreHelpSlug)"
+                                        class="mt-2 block font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                                    >
+                                        {{ item.moreHelpLabel }}
+                                    </Link>
                                 </div>
                             </Transition>
                         </div>
