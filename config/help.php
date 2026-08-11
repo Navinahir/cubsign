@@ -57,7 +57,7 @@ return [
         ],
         [
             'slug' => 'mobile-support',
-            'updated_at' => '2026-08-08',
+            'updated_at' => '2026-08-11',
             'title' => 'Mobile Support',
             'excerpt' => 'Sign PDFs on phones and tablets in Safari or Chrome — no app install, with practical tips for touch signing and uploads.',
             'meta_title' => 'Mobile Support: Sign PDFs on Your Phone | CubSign',

@@ -255,8 +255,8 @@ export const helpArticles = [
         excerpt: "Sign PDFs on phones and tablets in Safari or Chrome — no app install, with practical tips for touch signing and uploads.",
         category: "Getting Started",
         categorySlug: "getting-started",
-        updatedAt: "2026-08-08",
-        lastReviewed: "2026-08-08",
+        updatedAt: "2026-08-11",
+        lastReviewed: "2026-08-11",
         readingTime: 2,
         tags: [
             "Mobile",
@@ -293,7 +293,7 @@ export const helpArticles = [
         content: [
             {
                 type: "p",
-                text: "CubSign works on phones and tablets through your mobile browser. Upload a PDF (up to 25 MB), place fields with pinch-to-zoom, sign with draw/type/upload, and download the result — the same core flow as desktop.",
+                text: "CubSign works on phones and tablets through your mobile browser. Upload a PDF (up to 25 MB), place fields with pinch-to-zoom, sign with draw/type/upload, and download the result — the same core flow as desktop. Start signing from the Upload PDF page when you are ready.",
             },
             {
                 type: "product-screenshot",
@@ -340,7 +340,7 @@ export const helpArticles = [
             },
             {
                 type: "note",
-                text: "For browser-specific fixes, see Browser Compatibility. For upload failures, see Troubleshooting Upload Errors.",
+                text: "For browser-specific fixes, see Browser Compatibility. For upload failures, see Troubleshooting Upload Errors. For broader preparation and small-screen habits, see More mobile signing tips.",
             },
         ],
     },
@@ -2270,6 +2270,11 @@ export function linkifyHelpText(text, currentSlug = null) {
         ...helpArticles
             .filter((a) => a.slug !== currentSlug)
             .map((a) => ({ title: a.title, kind: 'help', slug: a.slug })),
+        {
+            title: 'More mobile signing tips',
+            kind: 'blog',
+            slug: 'how-to-sign-pdfs-on-mobile',
+        },
         { title: 'Help Center', kind: 'route', routeName: 'help-center' },
         { title: 'Features page', kind: 'route', routeName: 'features' },
         { title: 'Upload PDF page', kind: 'route', routeName: 'sign.index' },
@@ -2292,6 +2297,7 @@ export function linkifyHelpText(text, currentSlug = null) {
             const dest = byTitle[part];
             if (!dest) return { type: 'text', value: part };
             if (dest.kind === 'route') return { type: 'route', value: part, routeName: dest.routeName };
+            if (dest.kind === 'blog') return { type: 'blog', value: part, slug: dest.slug };
             return { type: 'link', value: part, slug: dest.slug };
         });
 }

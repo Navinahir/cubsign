@@ -344,6 +344,13 @@ onUnmounted(() => observer?.disconnect());
                                         >
                                             Full CubSign step-by-step guide
                                         </Link>
+                                        <Link
+                                            v-else-if="post.slug === 'how-to-sign-pdfs-on-mobile'"
+                                            :href="route('help-center.show', 'mobile-support')"
+                                            class="hover:text-blue-600"
+                                        >
+                                            Full CubSign mobile guide
+                                        </Link>
                                         <Link v-else :href="route('help-center')" class="hover:text-blue-600">Help Center</Link>
                                     </li>
                                     <li>

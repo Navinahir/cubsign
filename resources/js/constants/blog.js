@@ -2296,11 +2296,11 @@ export const blogPosts = [
     {
         slug: "how-to-sign-pdfs-on-mobile",
         title: "How to Sign PDFs on Mobile",
-        excerpt: "Sign documents from your phone without sacrificing clarity. Practical tips for placement, drawing, and downloading on small screens.",
+        excerpt: "Practical guidance for signing PDFs on a phone or tablet: prepare the file, avoid common mobile mistakes, and download safely.",
         category: "Guides",
         categorySlug: "guides",
         publishedAt: "2026-02-11",
-        updatedAt: "2026-08-08",
+        updatedAt: "2026-08-11",
         lastReviewed: "2026-07-27",
         tags: [
             "Mobile",
@@ -2315,7 +2315,7 @@ export const blogPosts = [
         popular: true,
         heroGradient: "from-amber-500 to-orange-600",
         metaTitle: "How to Sign PDFs on Mobile | CubSign",
-        metaDescription: "Mobile-friendly tips for signing PDFs in your browser with CubSign, placement, signatures, and downloads on the go.",
+        metaDescription: "Tips for signing PDFs on a phone or tablet: prepare your file, place fields carefully, avoid common mobile mistakes, and save the finished PDF safely.",
         author: {
             name: "CubSign Product & Engineering Team",
             role: "Product & Engineering",
@@ -2327,59 +2327,61 @@ export const blogPosts = [
         content: [
             {
                 type: "p",
-                text: "CubSign runs in mobile browsers—no app install. Open cubsign.com/sign or a recipient signing link on iOS or Android, upload or open the PDF, place fields, and download the signed file. The same field types (signature, initials, name, text, date, checkbox) and 25 MB limit apply as on desktop.",
-            },
-            {
-                type: "product-screenshot",
-                key: "signing-editor",
-                caption: "CubSign editor in the browser — usable on phones and tablets.",
+                text: "Signing a PDF on a phone or tablet is often the fastest way to finish an agreement when you are away from a desk. The challenge is the same almost everywhere: a contract designed for a full page has to fit on a small screen, so placement, signature clarity, and saving the finished file need a little more care than on a laptop.",
             },
             {
                 type: "p",
-                text: "Mobile works well when you adjust for screen size: landscape for drawing, pinch-zoom for placement, typed signatures on very small fields.",
-            },
-            {
-                type: "product-screenshot",
-                key: "draw-signature",
+                text: "This guide covers what to prepare before you sign on mobile, practical tips for small screens, common mistakes, and basic privacy considerations. CubSign is one browser-based option you can use as an example; for CubSign-specific browsers and product steps, see the full CubSign mobile guide.",
             },
             {
                 type: "figure",
                 slug: "how-to-sign-pdfs-on-mobile",
                 asset: "workflow",
-                alt: "CubSign mobile signing in browser",
-                caption: "Open CubSign in your phone browser, rotate to landscape for drawing, download when finished.",
+                alt: "Mobile PDF signing workflow: prepare file, zoom to place signature, download finished PDF",
+                caption: "On mobile, prepare the PDF, zoom before placing fields, then download the signed file promptly.",
                 variant: "diagram",
             },
             {
                 type: "h2",
-                text: "Mobile signing steps",
-            },
-            {
-                type: "ol",
-                items: [
-                    "Open the signing link or cubsign.com/sign in Safari, Chrome, or Firefox—not a cramped in-app browser if you can avoid it.",
-                    "Rotate to landscape before drawing a signature.",
-                    "Pinch-zoom to the signature line before placing or dragging a field.",
-                    "Prefer typed signature if finger-drawing looks uneven.",
-                    "Scroll every page at readable zoom before completing.",
-                    "Download immediately—the signed PDF saves to your device downloads.",
-                ],
-            },
-            {
-                type: "figure",
-                slug: "how-to-sign-pdfs-on-mobile",
-                asset: "ui",
-                alt: "CubSign on phone showing PDF and sign button",
-                caption: "CubSign mobile editor: same upload, field, and download flow as desktop.",
-                variant: "screenshot",
-            },
-            {
-                type: "h2",
-                text: "Recipient links on mobile",
+                text: "Before you sign on a phone",
             },
             {
                 type: "p",
-                text: "Signature request emails open the same mobile editor. Recipients draw, type, or upload a signature for that session—no account needed. HTTPS protects the session in transit.",
+                text: "Use a final, unlocked PDF. Export from Word or Docs if needed, and remove any open password so a browser editor can open the file. Confirm names, dates, amounts, and any exhibit pages that need initials while you can still read them comfortably—checking dense clauses is harder after you zoom into a signature line.",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Prefer a real PDF over a renamed Word file.",
+                    "Unlock password protection before uploading.",
+                    "Know whether you are self-signing or opening a recipient link from email.",
+                    "Use a full browser (Safari or Chrome) rather than a cramped in-app browser when you can.",
+                ],
+            },
+            {
+                type: "h2",
+                text: "When mobile signing is useful",
+            },
+            {
+                type: "p",
+                text: "Mobile signing helps when a signature is the only thing delaying a deal—approving a form while traveling, countersigning a proposal between meetings, or finishing an NDA from home. It is less ideal when the PDF is dense multi-column text you cannot read well on a small display, or when a counterparty requires wet ink or a desktop-only process.",
+            },
+            {
+                type: "h2",
+                text: "Example: signing with CubSign on mobile",
+            },
+            {
+                type: "p",
+                text: "In CubSign, the mobile loop is short: open the site in a mobile browser, upload the PDF, choose a signature method (draw, type, or upload), place fields on the page, then complete and download. For browsers, recipient links, and the full product walkthrough, read the full CubSign mobile guide. When you are ready to try it, Start signing a PDF.",
+            },
+            {
+                type: "product-screenshot",
+                key: "signing-editor",
+                caption: "A browser signing editor on a phone or tablet — zoom before placing fields.",
+            },
+            {
+                type: "product-screenshot",
+                key: "draw-signature",
             },
             {
                 type: "h2",
@@ -2388,15 +2390,38 @@ export const blogPosts = [
             {
                 type: "ul",
                 items: [
-                    "Landscape + slow strokes for drawn signatures.",
-                    "Typed name for fields smaller than a thumb width.",
-                    "Stable Wi‑Fi or cellular—not public Wi‑Fi for sensitive contracts.",
-                    "Screen lock on your device before saving confidential PDFs locally.",
+                    "Rotate to landscape and draw slowly for handwritten signatures.",
+                    "Pinch-zoom to the signature line before placing or dragging a field.",
+                    "Prefer a typed signature when finger drawing looks uneven on tiny fields.",
+                    "Scroll every page at a readable zoom before finishing.",
+                    "Download immediately so the signed PDF lands in device storage.",
                 ],
             },
             {
                 type: "tip",
-                text: "Create your signature once per document session. If the first draw attempt looks bad, clear and retry—or switch to type instead of fighting the touch canvas.",
+                text: "If the first draw attempt looks jagged, clear and retry—or switch to type instead of fighting a cramped touch canvas.",
+            },
+            {
+                type: "h2",
+                text: "Common mobile mistakes",
+            },
+            {
+                type: "ul",
+                items: [
+                    "Signing a draft or password-locked file.",
+                    "Placing fields without zooming, so they miss the printed line.",
+                    "Leaving an illegible scribble when a typed mark would read clearly.",
+                    "Closing the tab before downloading the finished PDF.",
+                    "Signing sensitive contracts on open public Wi‑Fi when a private network is available.",
+                ],
+            },
+            {
+                type: "h2",
+                text: "Privacy and device considerations",
+            },
+            {
+                type: "p",
+                text: "Prefer a trusted network (cellular or private Wi‑Fi) for sensitive documents, keep a screen lock on your device, and avoid signing confidential PDFs on a borrowed phone. Platform security practices such as HTTPS in transit are described in the Security Center—mobile convenience does not replace basic device and network hygiene.",
             },
             {
                 type: "h2",
@@ -2404,7 +2429,7 @@ export const blogPosts = [
             },
             {
                 type: "p",
-                text: "Guest: one self-sign session, download when done. Account: signed documents also appear in your workspace for later access from any device.",
+                text: "If you only need one self-sign session, guest mode is enough: upload, sign, and download. An account is useful when you want the signed file in a workspace you can reopen later from any device, or when you send documents for others to sign.",
             },
             {
                 type: "h2",
@@ -2412,13 +2437,13 @@ export const blogPosts = [
             },
             {
                 type: "p",
-                text: "CubSign mobile signing: browser-based, landscape + zoom + typed signatures for best results, download right away. No persistent saved signature across sessions—recreate draw/type/upload each time you sign a new PDF.",
+                text: "Mobile PDF signing works well when the file is final, you zoom before placing fields, you choose a clear signature style, and you download promptly. Use this article for preparation and tips; use the full CubSign mobile guide for CubSign product details, or Start signing a PDF when you are ready.",
             },
         ],
         faq: [
             {
                 question: "Do I need an app to sign on mobile?",
-                answer: "No. CubSign runs in your mobile browser, so you can sign on a phone or tablet without installing anything.",
+                answer: "Many browser-based tools work without a native app. For CubSign-specific browsers and product steps, see the full CubSign mobile guide.",
             },
             {
                 question: "How do I get a clean signature on a small screen?",
@@ -2426,11 +2451,11 @@ export const blogPosts = [
             },
             {
                 question: "Is it safe to sign on my phone?",
-                answer: "Yes, when you use a trusted network and a locked device. Prefer cellular or a private network over public Wi-Fi for sensitive documents.",
+                answer: "Use a trusted network and a locked device. Prefer cellular or a private network over public Wi-Fi for sensitive documents. See the Security Center for how CubSign protects documents in transit and storage.",
             },
             {
                 question: "Where does the signed file go on mobile?",
-                answer: "You download it to your device, so save it immediately after finishing. If you signed while logged in, a copy is also in your CubSign workspace.",
+                answer: "You typically download it to your device, so save it immediately after finishing. If you signed while logged into a tool with workspace storage, a copy may also appear there for later access.",
             },
         ],
         related: [
@@ -5068,9 +5093,15 @@ export function linkifyBlogText(text, currentSlug = null) {
             kind: 'help',
             slug: 'how-to-sign-a-pdf-online',
         },
+        {
+            title: 'full CubSign mobile guide',
+            kind: 'help',
+            slug: 'mobile-support',
+        },
         { title: 'Help Center', kind: 'route', routeName: 'help-center' },
         { title: 'CubSign Help Center', kind: 'route', routeName: 'help-center' },
         { title: 'Features page', kind: 'route', routeName: 'features' },
+        { title: 'Security Center', kind: 'route', routeName: 'security' },
         { title: 'Upload PDF page', kind: 'route', routeName: 'sign.index' },
         { title: 'Upload PDF', kind: 'route', routeName: 'sign.index' },
         { title: 'Start signing a PDF', kind: 'route', routeName: 'sign.index' },

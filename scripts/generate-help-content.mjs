@@ -266,10 +266,10 @@ add(
         related: ['browser-compatibility', 'draw-vs-type-signature', 'how-to-sign-a-pdf-online', 'troubleshooting-upload-errors'],
     },
     [
-        p('CubSign is a web app, which means you can upload and sign PDFs from a phone or tablet without installing a native application. If your device has a modern browser and an internet connection, it can sign documents.'),
+        p('CubSign is a web app, which means you can upload and sign PDFs from a phone or tablet without installing a native application. If your device has a modern browser and an internet connection, it can sign documents. Start signing from the Upload PDF page when you are ready.'),
         p('Mobile signing is genuinely useful: approve a contract from the train, sign an onboarding form on the couch, or countersign a proposal while traveling. The experience is designed for touch, but a few habits make it noticeably smoother.'),
         h2('Why it matters'),
-        p('Work does not wait for you to reach a desktop. When a signature is the only thing between you and a closed deal, being able to finish from a phone removes hours or days of delay. Mobile support also helps recipients who receive your signing links. Many of them will open the document on a phone first, so a mobile-friendly flow keeps your agreements moving. The fewer barriers a signer hits on their device, the faster documents come back completed, which matters most when you are collecting signatures from busy clients or partners on the go.'),
+        p('Work does not wait for you to reach a desktop. When a signature is the only thing between you and a closed deal, being able to finish from a phone removes hours or days of delay. Mobile support also helps recipients who receive your signing links. Many of them will open the document on a phone first, so a mobile-friendly flow keeps your agreements moving.'),
         h2('Step-by-step: sign on a phone'),
         ol(
             'Open the Upload PDF page in Safari (iOS) or Chrome (Android).',
@@ -293,14 +293,14 @@ add(
             'Trying to place fields without zooming in on dense pages.',
             'Uploading on a weak connection, which can interrupt large files.',
         ),
-        note('If a link opens inside an in-app browser and something fails, tap the menu and choose Open in Safari or Open in Chrome, then try again in the full browser.'),
+        note('If a link opens inside an in-app browser and something fails, tap the menu and choose Open in Safari or Open in Chrome, then try again in the full browser. For broader preparation and small-screen habits, see More mobile signing tips.'),
         h2('Summary'),
         p('CubSign works on phones and tablets through the browser, so you can sign anywhere. Use a modern browser, a stable connection, landscape orientation for drawing, and download the finished file right away. If uploads or the editor misbehave on mobile, check Browser Compatibility and Troubleshooting Upload Errors, or reach us from the Contact page.'),
     ],
     [
-        { question: 'Do I need to install an app to sign on mobile?', answer: 'No. CubSign runs in your mobile browser. Use the latest Safari on iOS or Chrome on Android for the best experience.' },
-        { question: 'Why does signing fail inside my email app?', answer: 'Some in-app browsers restrict uploads and downloads. Open the link in your full Safari or Chrome browser and try again.' },
-        { question: 'What is the cleanest way to sign on a small screen?', answer: 'Rotate to landscape when drawing, or use the Type signature option for consistent, legible results on tiny screens.' },
+        { question: 'Do I need an app to sign on mobile?', answer: 'No. Open cubsign.com in Safari (iOS) or Chrome (Android). CubSign is a web app, not a native app.' },
+        { question: 'Why does signing fail inside my email app?', answer: 'In-app browsers often block uploads or downloads. Tap Open in Safari or Open in Chrome and retry.' },
+        { question: 'Draw or type on a phone?', answer: 'Both work. Landscape helps when drawing; typed signatures are often cleaner on small screens.' },
     ],
 );
 

@@ -247,17 +247,17 @@ return [
         [
             'slug' => 'how-to-sign-pdfs-on-mobile',
             'published_at' => '2026-02-11',
-            'updated_at' => '2026-08-08',
+            'updated_at' => '2026-08-11',
             'title' => 'How to Sign PDFs on Mobile',
-            'excerpt' => 'Sign documents from your phone without sacrificing clarity. Practical tips for placement, drawing, and downloading on small screens.',
+            'excerpt' => 'Practical guidance for signing PDFs on a phone or tablet: prepare the file, avoid common mobile mistakes, and download safely.',
             'meta_title' => 'How to Sign PDFs on Mobile | CubSign',
-            'meta_description' => 'Mobile-friendly tips for signing PDFs in your browser with CubSign, placement, signatures, and downloads on the go.',
+            'meta_description' => 'Tips for signing PDFs on a phone or tablet: prepare your file, place fields carefully, avoid common mobile mistakes, and save the finished PDF safely.',
             'author' => 'CubSign Product & Engineering Team',
             'cover_image' => '/images/blog/covers/how-to-sign-pdfs-on-mobile.png',
             'faq' => [
             [
                 'question' => 'Do I need an app to sign on mobile?',
-                'answer' => 'No. CubSign runs in your mobile browser, so you can sign on a phone or tablet without installing anything.',
+                'answer' => 'Many browser-based tools work without a native app. For CubSign-specific browsers and product steps, see the full CubSign mobile guide.',
             ],
             [
                 'question' => 'How do I get a clean signature on a small screen?',
@@ -265,11 +265,11 @@ return [
             ],
             [
                 'question' => 'Is it safe to sign on my phone?',
-                'answer' => 'Yes, when you use a trusted network and a locked device. Prefer cellular or a private network over public Wi-Fi for sensitive documents.',
+                'answer' => 'Use a trusted network and a locked device. Prefer cellular or a private network over public Wi-Fi for sensitive documents. See the Security Center for how CubSign protects documents in transit and storage.',
             ],
             [
                 'question' => 'Where does the signed file go on mobile?',
-                'answer' => 'You download it to your device, so save it immediately after finishing. If you signed while logged in, a copy is also in your CubSign workspace.',
+                'answer' => 'You typically download it to your device, so save it immediately after finishing. If you signed while logged into a tool with workspace storage, a copy may also appear there for later access.',
             ],
         ],
         ],
