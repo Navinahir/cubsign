@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import SignatureField from '@/Components/SignatureField.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
+import SeoRobotsHead from '@/Components/SeoRobotsHead.vue';
 
 const props = defineProps({
     token:         { type: String,  required: true },
@@ -99,6 +100,7 @@ async function finishSigning() {
 
 <template>
     <div class="flex h-screen flex-col bg-gray-50">
+        <SeoRobotsHead />
 
         <!-- Header -->
         <header class="shrink-0 border-b border-gray-200 bg-white">

@@ -84,6 +84,7 @@ class SeoInfrastructureTest extends TestCase
         $this->assertStringContainsString('Disallow: /profile', $robots);
         $this->assertStringContainsString('Disallow: /sign/', $robots);
         $this->assertStringContainsString('Disallow: /r/', $robots);
+        $this->assertStringContainsString('Disallow: /up', $robots);
         $this->assertStringContainsString('Allow: /', $robots);
         $this->assertStringContainsString('Sitemap: https://cubsign.com/sitemap.xml', $robots);
         $this->assertStringNotContainsString('Disallow: /sign$', $robots);

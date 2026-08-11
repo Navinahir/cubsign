@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\SeoRobots;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -41,6 +42,9 @@ class HandleInertiaRequests extends Middleware
                 'isLocal' => app()->environment('local'),
                 'url' => config('app.url'),
                 'name' => config('app.name'),
+            ],
+            'seo' => [
+                'robots' => SeoRobots::forRequest($request),
             ],
         ];
     }

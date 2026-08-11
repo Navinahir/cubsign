@@ -7,7 +7,7 @@
         <title inertia>{{ config('app.name', 'CubSign') }}</title>
 
         <meta name="description" content="Upload your PDF and sign it online in seconds. Add your signature and download the finished document. No account required.">
-        <meta name="robots" content="index, follow">
+        <meta name="robots" content="{{ \App\Support\SeoRobots::forBlade($page ?? [], request()) }}">
         <meta property="og:site_name" content="CubSign">
         <meta name="twitter:card" content="summary_large_image">
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">

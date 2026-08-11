@@ -2,6 +2,7 @@
 import { Link } from '@inertiajs/vue3';
 import DevNav from '@/Components/DevNav.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
+import SeoRobotsHead from '@/Components/SeoRobotsHead.vue';
 
 const props = defineProps({
     step: {
@@ -20,6 +21,7 @@ const steps = [
 
 <template>
     <div class="flex h-screen flex-col overflow-hidden bg-gray-50">
+        <SeoRobotsHead />
 
         <!-- Top bar -->
         <header class="border-b border-gray-200 bg-white">

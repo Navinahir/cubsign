@@ -147,10 +147,11 @@ const websiteJsonLd = computed(() => JSON.stringify({
         <meta head-key="twitter:description" name="twitter:description" :content="description" />
         <meta head-key="twitter:image" name="twitter:image" :content="ogImage" />
 
-        <script head-key="org-schema" type="application/ld+json" v-html="orgJsonLd" />
-        <script v-if="path === '/'" head-key="website-schema" type="application/ld+json" v-html="websiteJsonLd" />
-        <script v-if="faqJsonLd" head-key="faq-schema" type="application/ld+json" v-html="faqJsonLd" />
-        <script v-if="breadcrumbJsonLd" head-key="breadcrumb-schema" type="application/ld+json" v-html="breadcrumbJsonLd" />
-        <script v-if="articleJsonLd" head-key="article-schema" type="application/ld+json" v-html="articleJsonLd" />
+        <!-- Use <component :is="'script'"> so Vue does not treat JSON-LD as a side-effect <script> in the template -->
+        <component :is="'script'" head-key="org-schema" type="application/ld+json" v-html="orgJsonLd" />
+        <component v-if="path === '/'" :is="'script'" head-key="website-schema" type="application/ld+json" v-html="websiteJsonLd" />
+        <component v-if="faqJsonLd" :is="'script'" head-key="faq-schema" type="application/ld+json" v-html="faqJsonLd" />
+        <component v-if="breadcrumbJsonLd" :is="'script'" head-key="breadcrumb-schema" type="application/ld+json" v-html="breadcrumbJsonLd" />
+        <component v-if="articleJsonLd" :is="'script'" head-key="article-schema" type="application/ld+json" v-html="articleJsonLd" />
     </Head>
 </template>

@@ -5,6 +5,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import DevNav from '@/Components/DevNav.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
+import SeoRobotsHead from '@/Components/SeoRobotsHead.vue';
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
@@ -53,6 +54,7 @@ const initials = computed(() => {
 
 <template>
     <div class="flex h-screen bg-gray-50 overflow-hidden">
+        <SeoRobotsHead />
         <!-- Mobile backdrop -->
         <Transition
             enter-active-class="transition-opacity duration-200"

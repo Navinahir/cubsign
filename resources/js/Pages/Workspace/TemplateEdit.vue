@@ -13,6 +13,7 @@ import EditorPlacementHelper from '@/Components/Editor/EditorPlacementHelper.vue
 import EditorEmptyState from '@/Components/Editor/EditorEmptyState.vue';
 import EditorDocumentInfo from '@/Components/Editor/EditorDocumentInfo.vue';
 import TemplateFieldPlaceholder from '@/Components/Editor/TemplateFieldPlaceholder.vue';
+import SeoRobotsHead from '@/Components/SeoRobotsHead.vue';
 
 const { getDocument, GlobalWorkerOptions } = pdfjsLib;
 GlobalWorkerOptions.workerSrc = workerUrl;
@@ -611,6 +612,7 @@ function updateSelectedFieldRequired(value) {
 <template>
     <!-- Full-page layout — no WorkspaceLayout so editor fills the viewport -->
     <div class="flex h-screen flex-col overflow-hidden bg-gray-200">
+        <SeoRobotsHead />
 
         <!-- ── TOP BAR ──────────────────────────────────────────────────────── -->
         <header class="flex h-12 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 shadow-sm md:px-4">

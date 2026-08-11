@@ -1,10 +1,12 @@
 <script setup>
 import BrandLogo from '@/Components/BrandLogo.vue';
+import SeoRobotsHead from '@/Components/SeoRobotsHead.vue';
 import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
     <div class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-slate-50 via-gray-50 to-slate-100 px-4 py-10 sm:py-14">
+        <SeoRobotsHead />
         <div class="w-full max-w-[480px]">
             <Link
                 :href="route('home')"

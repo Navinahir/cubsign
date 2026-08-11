@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import DevNav from '@/Components/DevNav.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
+import SeoRobotsHead from '@/Components/SeoRobotsHead.vue';
 import { footerLinks } from '@/constants/marketing';
 
 const mobileOpen = ref(false);
@@ -70,6 +71,7 @@ function navLinkClass(link, mobile = false) {
 
 <template>
     <div class="flex min-h-screen flex-col bg-white">
+        <SeoRobotsHead />
         <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 items-center justify-between">

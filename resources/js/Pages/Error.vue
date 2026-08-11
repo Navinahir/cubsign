@@ -1,16 +1,12 @@
 <script setup>
 import { computed } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import MarketingSeo from '@/Components/MarketingSeo.vue';
 import { btnPrimary, btnSecondary } from '@/constants/marketing';
 
 const props = defineProps({
     status: { type: Number, default: 404 },
 });
-
-const page = usePage();
-const seoPath = computed(() => page.url.split('?')[0] || '/');
 
 const title = computed(() => {
     if (props.status === 403) return 'Access denied';
@@ -28,11 +24,10 @@ const description = computed(() => {
 </script>
 
 <template>
-    <MarketingSeo
-        :title="`${title} — CubSign`"
-        :description="description"
-        :path="seoPath"
-    />
+    <Head :title="`${title} — CubSign`">
+        <meta head-key="description" name="description" :content="description" />
+        <meta head-key="robots" name="robots" content="noindex, nofollow" />
+    </Head>
 
     <PublicLayout>
         <section class="marketing-section">

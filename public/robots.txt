@@ -8,5 +8,6 @@ Disallow: /templates
 Disallow: /profile
 Disallow: /sign/
 Disallow: /r/
+Disallow: /up
 
 Sitemap: https://cubsign.com/sitemap.xml
