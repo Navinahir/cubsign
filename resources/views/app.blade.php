@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         @include('partials.seo-head')
+        @include('partials.seo-schema')
 
         <meta head-key="robots" name="robots" content="{{ \App\Support\SeoRobots::forBlade($page ?? [], request()) }}">
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">

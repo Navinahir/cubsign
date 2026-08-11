@@ -37,28 +37,37 @@ class SeoMeta
         }
 
         if ($request->routeIs('blog.show')) {
-            return self::forBlogPost((string) $request->route('slug'));
+            $meta = self::forBlogPost((string) $request->route('slug'));
+        } elseif ($request->routeIs('help-center.show')) {
+            $meta = self::forHelpArticle((string) $request->route('slug'));
+        } else {
+            $path = self::requestPath($request);
+            $page = config('seo.pages.'.$path);
+
+            if (! is_array($page)) {
+                return null;
+            }
+
+            $meta = self::buildPayload(
+                title: (string) $page['title'],
+                description: (string) $page['description'],
+                path: $path,
+                type: (string) ($page['type'] ?? 'website'),
+                article: is_array($page['article'] ?? null) ? $page['article'] : null,
+                coverImage: null,
+            );
         }
 
-        if ($request->routeIs('help-center.show')) {
-            return self::forHelpArticle((string) $request->route('slug'));
-        }
-
-        $path = self::requestPath($request);
-        $page = config('seo.pages.'.$path);
-
-        if (! is_array($page)) {
+        if ($meta === null) {
             return null;
         }
 
-        return self::buildPayload(
-            title: (string) $page['title'],
-            description: (string) $page['description'],
-            path: $path,
-            type: (string) ($page['type'] ?? 'website'),
-            article: is_array($page['article'] ?? null) ? $page['article'] : null,
-            coverImage: null,
-        );
+        $schemas = SeoSchema::forMeta($meta, $request);
+        if ($schemas !== []) {
+            $meta['schemas'] = $schemas;
+        }
+
+        return $meta;
     }
 
     /**
@@ -80,7 +89,6 @@ class SeoMeta
             return null;
         }
 
-        // Match MarketingSeo today: blog posts do not pass coverImage, so OG uses the default image.
         return self::buildPayload(
             title: $title,
             description: $description,
@@ -91,6 +99,7 @@ class SeoMeta
                 'updated_at' => $post['updated_at'] ?? null,
                 'author' => $post['author'] ?? 'CubSign Team',
             ],
+            // Keep OG on the default image (matches prior MarketingSeo). Cover is used in Article JSON-LD.
             coverImage: null,
         );
     }
@@ -122,7 +131,7 @@ class SeoMeta
             path: '/help-center/'.$slug,
             type: 'article',
             article: [
-                'published_at' => $updatedAt,
+                // No genuine published date for Help articles.
                 'updated_at' => $updatedAt,
                 'author' => $article['author'] ?? 'CubSign Product & Engineering Team',
             ],

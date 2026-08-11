@@ -119,6 +119,11 @@ const faqSchema = computed(() =>
     categories.flatMap((category) => category.items),
 );
 
+const breadcrumbSchema = [
+    { name: 'Home', url: '/' },
+    { name: 'FAQ', url: '/faq' },
+];
+
 const openItem = ref(null);
 
 function toggle(categoryIndex, itemIndex) {
@@ -137,6 +142,7 @@ function isOpen(categoryIndex, itemIndex) {
         description="Answers about CubSign PDF signing, guest vs account limits, security, activity history, and free Early Access."
         path="/faq"
         :faq-schema="faqSchema"
+        :breadcrumb-schema="breadcrumbSchema"
     />
 
     <PublicLayout>

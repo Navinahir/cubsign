@@ -2353,9 +2353,26 @@ function phpStr(value) {
     return `'${String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
 }
 
+function phpFaqs(faq) {
+    if (!Array.isArray(faq) || faq.length === 0) {
+        return '[]';
+    }
+    const rows = faq
+        .filter((item) => item?.question && item?.answer)
+        .map(
+            (item) => `            [
+                'question' => ${phpStr(item.question)},
+                'answer' => ${phpStr(item.answer)},
+            ]`,
+        )
+        .join(',\n');
+    return `[\n${rows},\n        ]`;
+}
+
 const phpPosts = exportPosts
-    .map(
-        (p) => `        [
+    .map((p) => {
+        const cover = `/images/blog/covers/${p.slug}.png`;
+        return `        [
             'slug' => ${phpStr(p.slug)},
             'published_at' => ${phpStr(p.publishedAt)},
             'updated_at' => ${phpStr(p.updatedAt)},
@@ -2364,14 +2381,16 @@ const phpPosts = exportPosts
             'meta_title' => ${phpStr(p.metaTitle)},
             'meta_description' => ${phpStr(p.metaDescription)},
             'author' => ${phpStr(p.author?.name ?? 'CubSign Team')},
-        ]`,
-    )
+            'cover_image' => ${phpStr(cover)},
+            'faq' => ${phpFaqs(p.faq)},
+        ]`;
+    })
     .join(',\n');
 
 const phpFile = `<?php
 
 /**
- * Blog post metadata for server-side features (sitemap, RSS, SEO head).
+ * Blog post metadata for server-side features (sitemap, RSS, SEO head, JSON-LD).
  * Keep in sync with resources/js/constants/blog.js, run: node scripts/generate-blog-content.mjs
  * Or sync SEO fields only: node scripts/sync-seo-php-from-js.mjs
  */

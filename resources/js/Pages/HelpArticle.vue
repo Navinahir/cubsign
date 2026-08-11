@@ -52,7 +52,6 @@ const breadcrumbSchema = computed(() => {
     return [
         { name: 'Home', url: '/' },
         { name: 'Help Center', url: '/help-center' },
-        { name: article.value.category, url: `/help-center#category-${article.value.categorySlug}` },
         { name: article.value.title, url: `/help-center/${article.value.slug}` },
     ];
 });
@@ -62,7 +61,6 @@ const seoArticle = computed(() => {
     return {
         title: article.value.title,
         excerpt: article.value.excerpt,
-        publishedAt: article.value.updatedAt,
         updatedAt: article.value.updatedAt,
         keywords: article.value.keywords,
         author: { name: 'CubSign Product & Engineering Team' },

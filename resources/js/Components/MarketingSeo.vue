@@ -33,6 +33,8 @@ const serverSeo = computed(() => {
     return seo;
 });
 
+const serverSchemas = computed(() => serverSeo.value?.schemas ?? null);
+
 const resolvedTitle = computed(() => serverSeo.value?.title ?? props.title);
 const resolvedDescription = computed(() => serverSeo.value?.description ?? props.description);
 const resolvedPath = computed(() => serverSeo.value?.path ?? props.path);
@@ -67,7 +69,14 @@ const ogImageHeight = computed(() => {
     return props.article?.coverImage ? BLOG_OG_HEIGHT : DEFAULT_OG_HEIGHT;
 });
 
+function stringifySchema(schema) {
+    return schema ? JSON.stringify(schema) : null;
+}
+
 const faqJsonLd = computed(() => {
+    if (serverSchemas.value?.faq) {
+        return stringifySchema(serverSchemas.value.faq);
+    }
     if (!props.faqSchema.length) return null;
     return JSON.stringify({
         '@context': 'https://schema.org',
@@ -81,20 +90,30 @@ const faqJsonLd = computed(() => {
 });
 
 const breadcrumbJsonLd = computed(() => {
-    if (!props.breadcrumbSchema.length) return null;
+    if (serverSchemas.value?.breadcrumb) {
+        return stringifySchema(serverSchemas.value.breadcrumb);
+    }
+    const crumbs = props.breadcrumbSchema.filter((item) => item.name && item.url);
+    if (!crumbs.length) return null;
     return JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
-        itemListElement: props.breadcrumbSchema.map((item, index) => ({
+        itemListElement: crumbs.map((item, index) => ({
             '@type': 'ListItem',
             position: index + 1,
             name: item.name,
-            item: item.url ? `${appUrl.value}${item.url}` : undefined,
+            item: item.url.startsWith('http') ? item.url : `${appUrl.value}${item.url}`,
         })),
     });
 });
 
 const orgJsonLd = computed(() => {
+    if (serverSchemas.value) {
+        return stringifySchema(serverSchemas.value.organization ?? null);
+    }
+    if (resolvedPath.value !== '/' && resolvedPath.value !== '/about') {
+        return null;
+    }
     const base = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
@@ -102,12 +121,10 @@ const orgJsonLd = computed(() => {
         url: appUrl.value,
         logo: `${appUrl.value}/logo.svg`,
     };
-
-    if (props.aboutOrganization) {
+    if (props.aboutOrganization || resolvedPath.value === '/about') {
         return JSON.stringify({
             ...base,
             description: 'CubSign is a browser-based PDF signing platform built to simplify secure electronic signatures for individuals and small teams.',
-            foundingDate: '2025',
             email: 'support@cubsign.com',
             parentOrganization: {
                 '@type': 'Organization',
@@ -115,11 +132,13 @@ const orgJsonLd = computed(() => {
             },
         });
     }
-
     return JSON.stringify(base);
 });
 
 const articleJsonLd = computed(() => {
+    if (serverSchemas.value) {
+        return stringifySchema(serverSchemas.value.article ?? null);
+    }
     if (!props.article) return null;
     const payload = {
         '@context': 'https://schema.org',
@@ -127,10 +146,12 @@ const articleJsonLd = computed(() => {
         headline: props.article.title,
         description: props.article.excerpt,
         author: { '@type': 'Person', name: props.article.author.name },
-        datePublished: props.article.publishedAt,
         publisher: { '@type': 'Organization', name: 'CubSign', logo: { '@type': 'ImageObject', url: `${appUrl.value}/logo.svg` } },
         mainEntityOfPage: canonicalUrl.value,
     };
+    if (props.article.publishedAt) {
+        payload.datePublished = props.article.publishedAt;
+    }
     if (props.article.updatedAt) {
         payload.dateModified = props.article.updatedAt;
     }
@@ -143,18 +164,24 @@ const articleJsonLd = computed(() => {
     return JSON.stringify(payload);
 });
 
-const websiteJsonLd = computed(() => JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'CubSign',
-    url: appUrl.value,
-    description: 'Free online PDF signing platform',
-    potentialAction: {
-        '@type': 'SearchAction',
-        target: `${appUrl.value}${props.searchTarget || '/help-center?q={search_term_string}'}`,
-        'query-input': 'required name=search_term_string',
-    },
-}));
+const websiteJsonLd = computed(() => {
+    if (serverSchemas.value) {
+        return stringifySchema(serverSchemas.value.website ?? null);
+    }
+    if (resolvedPath.value !== '/') return null;
+    return JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'CubSign',
+        url: appUrl.value,
+        description: 'Free online PDF signing platform',
+        potentialAction: {
+            '@type': 'SearchAction',
+            target: `${appUrl.value}${props.searchTarget || '/help-center?q={search_term_string}'}`,
+            'query-input': 'required name=search_term_string',
+        },
+    });
+});
 </script>
 
 <template>
@@ -180,8 +207,8 @@ const websiteJsonLd = computed(() => JSON.stringify({
         <meta head-key="twitter:image" name="twitter:image" :content="ogImage" />
 
         <!-- Use <component :is="'script'"> so Vue does not treat JSON-LD as a side-effect <script> in the template -->
-        <component :is="'script'" head-key="org-schema" type="application/ld+json" v-html="orgJsonLd" />
-        <component v-if="resolvedPath === '/'" :is="'script'" head-key="website-schema" type="application/ld+json" v-html="websiteJsonLd" />
+        <component v-if="orgJsonLd" :is="'script'" head-key="org-schema" type="application/ld+json" v-html="orgJsonLd" />
+        <component v-if="websiteJsonLd" :is="'script'" head-key="website-schema" type="application/ld+json" v-html="websiteJsonLd" />
         <component v-if="faqJsonLd" :is="'script'" head-key="faq-schema" type="application/ld+json" v-html="faqJsonLd" />
         <component v-if="breadcrumbJsonLd" :is="'script'" head-key="breadcrumb-schema" type="application/ld+json" v-html="breadcrumbJsonLd" />
         <component v-if="articleJsonLd" :is="'script'" head-key="article-schema" type="application/ld+json" v-html="articleJsonLd" />

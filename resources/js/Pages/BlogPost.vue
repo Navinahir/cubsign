@@ -50,7 +50,6 @@ const breadcrumbSchema = computed(() => {
     return [
         { name: 'Home', url: '/' },
         { name: 'Blog', url: '/blog' },
-        { name: post.value.category, url: `/blog?category=${encodeURIComponent(post.value.category)}` },
         { name: post.value.title, url: `/blog/${post.value.slug}` },
     ];
 });

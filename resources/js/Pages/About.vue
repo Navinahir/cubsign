@@ -27,7 +27,7 @@ import {
 
 const breadcrumbSchema = [
     { name: 'Home', url: '/' },
-    { name: 'About' },
+    { name: 'About', url: '/about' },
 ];
 
 const completedMilestones = aboutTimeline.filter((item) => item.status === 'completed');

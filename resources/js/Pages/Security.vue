@@ -5,7 +5,6 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import SecuritySectionNav from '@/Components/Security/SecuritySectionNav.vue';
 import {
-    securityArticleMeta,
     securitySections,
     securityFaqs,
     securityRelatedLinks,
@@ -18,7 +17,7 @@ const mobileNavOpen = ref(false);
 
 const breadcrumbSchema = [
     { name: 'Home', url: '/' },
-    { name: 'Security Center' },
+    { name: 'Security', url: '/security' },
 ];
 
 function toggleFaq(index) {
@@ -74,8 +73,6 @@ onUnmounted(() => sectionObserver?.disconnect());
         title="Security Center — CubSign | Document & Account Protection"
         description="Learn how CubSign protects your PDFs and account: HTTPS, encryption in transit, secure document handling, authentication, Google sign-in, and responsible disclosure."
         path="/security"
-        type="article"
-        :article="securityArticleMeta"
         :faq-schema="securityFaqs"
         :breadcrumb-schema="breadcrumbSchema"
     />
