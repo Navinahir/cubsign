@@ -57,9 +57,12 @@ function startTimer() {
 const submit = () => {
     form.post(route('verification.send'), {
         preserveScroll: true,
-        onSuccess: () => {
-            countdown.value = 60;
-            startTimer();
+        onSuccess: (visit) => {
+            const status = visit.props.status ?? visit.props.flash?.status;
+            if (status === 'verification-link-sent') {
+                countdown.value = 60;
+                startTimer();
+            }
         },
     });
 };
@@ -90,7 +93,7 @@ const submit = () => {
             v-if="verificationLinkSent"
             class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700"
         >
-            A new verification link has been sent to your email address.
+            Verification email sent. Please check your inbox.
         </div>
 
         <InputError class="mb-4" :message="resendError" />

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 
 class EmailVerificationNotificationController extends Controller
@@ -44,7 +45,20 @@ class EmailVerificationNotificationController extends Controller
             ]);
         }
 
-        $user->sendEmailVerificationNotification();
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $e) {
+            report($e);
+
+            Log::channel('cubsign')->error('VERIFICATION_MAIL_FAILED', [
+                'user_id'    => $user->id,
+                'exception'  => $e::class,
+            ]);
+
+            return back()->withErrors([
+                'resend' => "We couldn't send the verification email right now. Please try again later.",
+            ]);
+        }
 
         RateLimiter::hit($rateLimitKey, $decayMinutes * 60);
 
