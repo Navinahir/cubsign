@@ -207,7 +207,6 @@ onUnmounted(() => observer?.disconnect());
                                 <BlogArticleMeta
                                     :published-at="post.publishedAt"
                                     :updated-at="post.updatedAt"
-                                    :last-reviewed="post.lastReviewed || post.updatedAt"
                                     :reading-time="post.readingTime"
                                 />
                             </div>
@@ -292,7 +291,7 @@ onUnmounted(() => observer?.disconnect());
                                                 class="mt-1"
                                                 compact
                                                 :published-at="related.publishedAt"
-                                                :last-reviewed="related.lastReviewed || related.updatedAt"
+                                                :updated-at="related.updatedAt"
                                                 :reading-time="related.readingTime"
                                             />
                                         </Link>

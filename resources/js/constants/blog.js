@@ -5066,13 +5066,7 @@ export function paginatePosts(posts, page = 1, perPage = POSTS_PER_PAGE) {
     };
 }
 
-export function formatDate(dateStr) {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-}
+export { formatDate, formatBlogDateDisplay } from '../utils/blogDates.js';
 
 export function categoryColor(name) {
     return blogCategories.find((c) => c.name === name)?.color ?? 'from-gray-500 to-gray-600';

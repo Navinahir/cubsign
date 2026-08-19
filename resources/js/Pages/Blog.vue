@@ -198,7 +198,6 @@ function goToPage(pageNumber) {
                                 <BlogArticleMeta
                                     :published-at="featuredPost.publishedAt"
                                     :updated-at="featuredPost.updatedAt"
-                                    :last-reviewed="featuredPost.lastReviewed || featuredPost.updatedAt"
                                     :reading-time="featuredPost.readingTime"
                                     :category="featuredPost.category"
                                 />
@@ -236,7 +235,7 @@ function goToPage(pageNumber) {
                                         <BlogArticleMeta
                                             compact
                                             :published-at="post.publishedAt"
-                                            :last-reviewed="post.lastReviewed || post.updatedAt"
+                                            :updated-at="post.updatedAt"
                                             :reading-time="post.readingTime"
                                             :category="post.category"
                                         />
