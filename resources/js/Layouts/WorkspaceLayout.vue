@@ -10,32 +10,55 @@ import SeoRobotsHead from '@/Components/SeoRobotsHead.vue';
 const page = usePage();
 const user = computed(() => page.props.auth.user);
 const mobileOpen = ref(false);
+const canManageBlogs = computed(() => page.props.auth.can?.manageBlogs ?? false);
 
-const navItems = [
-    {
-        label: 'Dashboard',
-        routeName: 'overview',
-        icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-    },
-    {
-        label: 'My Documents',
-        routeName: 'documents.index',
-        icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-    },
-    {
-        label: 'Templates',
-        routeName: 'templates.index',
-        icon: 'M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2',
-    },
-    {
-        label: 'Settings',
-        routeName: 'profile.edit',
-        icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
-    },
-];
+const homeRouteName = computed(() => page.props.auth?.home || 'overview');
+
+const navItems = computed(() => {
+    if (canManageBlogs.value) {
+        return [
+            {
+                label: 'Admin Dashboard',
+                routeName: 'admin.dashboard',
+                icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+            },
+            {
+                label: 'Blogs',
+                routeName: 'blogs.index',
+                icon: 'M4 5a2 2 0 012-2h14v16a2 2 0 01-2 2H6a2 2 0 01-2-2V5z M8 7h4v4H8V7z M14 7h4 M14 10h4 M8 14h10 M8 17h6',
+            },
+        ];
+    }
+
+    return [
+        {
+            label: 'Dashboard',
+            routeName: 'overview',
+            icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+        },
+        {
+            label: 'My Documents',
+            routeName: 'documents.index',
+            icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+        },
+        {
+            label: 'Templates',
+            routeName: 'templates.index',
+            icon: 'M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2',
+        },
+        {
+            label: 'Settings',
+            routeName: 'profile.edit',
+            icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+        },
+    ];
+});
 
 function isActive(item) {
     if (item.routeName === 'profile.edit') return route().current('profile.*');
+    if (item.routeName === 'blogs.index') {
+        return route().current('blogs.*') || route().current('blog-categories.*');
+    }
     return route().current(item.routeName);
 }
 
@@ -81,7 +104,7 @@ const initials = computed(() => {
         >
             <!-- Logo -->
             <div class="flex h-16 shrink-0 items-center border-b border-slate-800 px-6">
-                <Link :href="route('overview')" class="transition-opacity hover:opacity-90" aria-label="CubSign dashboard">
+                <Link :href="route(homeRouteName)" class="transition-opacity hover:opacity-90" aria-label="CubSign dashboard">
                     <BrandLogo variant="workspace" />
                 </Link>
             </div>
@@ -160,7 +183,7 @@ const initials = computed(() => {
                             </button>
                         </template>
                         <template #content>
-                            <DropdownLink :href="route('profile.edit')">Profile</DropdownLink>
+                            <DropdownLink v-if="!canManageBlogs" :href="route('profile.edit')">Profile</DropdownLink>
                             <DropdownLink :href="route('logout')" method="post" as="button">
                                 Log Out
                             </DropdownLink>

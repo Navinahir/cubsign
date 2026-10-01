@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.28",
         "laravel/tinker": "^2.10",
+        "resend/resend-php": "^1.14",
         "setasign/fpdf": "^1.9",
         "setasign/fpdi": "^2.6",
         "tightenco/ziggy": "^2.0"

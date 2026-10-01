@@ -25,7 +25,7 @@ export const featuresShowcases = [
         links: [
             { label: 'Start signing', routeName: 'sign.index' },
             { label: 'How to sign a PDF', href: '/help-center/how-to-sign-a-pdf-online' },
-            { label: 'Signing guide on the blog', href: '/blog/how-to-sign-a-pdf-online' },
+            { label: 'Signing guide on the blog', href: '/blog' },
         ],
         mockup: 'signature',
         screenshot: 'signing-editor',
@@ -54,7 +54,7 @@ export const featuresShowcases = [
         links: [
             { label: 'Create a free account', routeName: 'register' },
             { label: 'Share and send help', href: '/help-center/share-documents' },
-            { label: 'Request signatures guide', href: '/blog/how-to-request-digital-signatures' },
+            { label: 'Request signatures guide', href: '/blog' },
         ],
         mockup: 'request',
         screenshot: null,

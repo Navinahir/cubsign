@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Blog;
 use Illuminate\Http\Request;
 
 /**
@@ -160,13 +161,40 @@ class SeoSchema
     }
 
     /**
+     * Resolve a published blog post for schema.
+     *
+     * @return array<string, mixed>|null
+     */
+    private static function resolveBlogPost(string $slug): ?array
+    {
+        $blog = BlogQuery::published(Blog::query())
+            ->with('user')
+            ->where('slug', $slug)
+            ->first();
+
+        if (! $blog) {
+            return null;
+        }
+
+        return [
+            'slug' => $blog->slug,
+            'title' => $blog->title,
+            'excerpt' => $blog->excerpt,
+            'author' => BlogPresenter::author($blog)['name'],
+            'published_at' => optional($blog->published_at)?->toDateString(),
+            'updated_at' => optional($blog->updated_at)?->toDateString(),
+            'cover_image' => BlogPresenter::coverImageUrl($blog),
+            'faq' => $blog->faq ?? [],
+        ];
+    }
+
+    /**
      * @param  array<string, mixed>  $meta
      * @return array<string, mixed>|null
      */
     private static function blogArticle(string $slug, array $meta): ?array
     {
-        $post = collect(config('blog.posts', []))
-            ->first(fn (array $item) => ($item['slug'] ?? null) === $slug);
+        $post = self::resolveBlogPost($slug);
 
         if (! is_array($post)) {
             return null;
@@ -259,8 +287,7 @@ class SeoSchema
     private static function faqsFor(string $path, Request $request): array
     {
         if ($request->routeIs('blog.show')) {
-            $post = collect(config('blog.posts', []))
-                ->first(fn (array $item) => ($item['slug'] ?? null) === $request->route('slug'));
+            $post = self::resolveBlogPost((string) $request->route('slug'));
 
             return self::normalizeFaqs($post['faq'] ?? []);
         }
@@ -282,8 +309,7 @@ class SeoSchema
     private static function breadcrumbsFor(string $path, array $meta, Request $request): array
     {
         if ($request->routeIs('blog.show')) {
-            $post = collect(config('blog.posts', []))
-                ->first(fn (array $item) => ($item['slug'] ?? null) === $request->route('slug'));
+            $post = self::resolveBlogPost((string) $request->route('slug'));
 
             if (! is_array($post)) {
                 return [];

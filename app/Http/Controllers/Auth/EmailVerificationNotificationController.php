@@ -19,7 +19,7 @@ class EmailVerificationNotificationController extends Controller
         $user = $request->user();
 
         if ($user->hasVerifiedEmail()) {
-            return redirect()->intended(route('overview', absolute: false));
+            return redirect()->intended(route($user->homeRouteName(), absolute: false));
         }
 
         $cooldownKey = "verification-resend-cooldown:{$user->id}";

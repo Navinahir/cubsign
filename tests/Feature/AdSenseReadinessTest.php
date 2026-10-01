@@ -2,10 +2,14 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesPublishedBlog;
 use Tests\TestCase;
 
 class AdSenseReadinessTest extends TestCase
 {
+    use CreatesPublishedBlog;
+    use RefreshDatabase;
     /** @return array<int, string> */
     private function publicMarketingPaths(): array
     {
@@ -70,11 +74,12 @@ class AdSenseReadinessTest extends TestCase
         }
     }
 
-    public function test_all_blog_posts_load(): void
+    public function test_published_blog_posts_load(): void
     {
-        foreach (config('blog.posts', []) as $post) {
-            $this->get('/blog/'.$post['slug'])->assertOk();
-        }
+        $blog = $this->createPublishedBlog();
+
+        $this->get('/blog/'.$blog->slug)->assertOk();
+        $this->get('/blog/missing-article')->assertNotFound();
     }
 
     public function test_all_help_center_articles_load(): void

@@ -5,10 +5,12 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Support\SeoRobots;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesPublishedBlog;
 use Tests\TestCase;
 
 class SeoInitialHtmlTest extends TestCase
 {
+    use CreatesPublishedBlog;
     use RefreshDatabase;
 
     protected function setUp(): void
@@ -71,21 +73,24 @@ class SeoInitialHtmlTest extends TestCase
 
     public function test_blog_article_initial_html_contains_article_seo(): void
     {
-        $post = collect(config('blog.posts'))->firstWhere('slug', 'how-to-sign-a-pdf-online');
-        $this->assertNotNull($post);
+        $blog = $this->createPublishedBlog([
+            'slug' => 'tips-before-you-sign',
+            'title' => 'Tips Before You Sign',
+            'excerpt' => 'Prepare the PDF and avoid common mistakes before you sign.',
+        ]);
 
-        $html = $this->get('/blog/how-to-sign-a-pdf-online')->assertOk()->getContent();
+        $html = $this->get('/blog/'.$blog->slug)->assertOk()->getContent();
 
         $this->assertInitialSeo(
             $html,
-            title: $post['meta_title'],
-            description: $post['meta_description'],
-            canonical: 'https://cubsign.com/blog/how-to-sign-a-pdf-online',
+            title: 'Tips Before You Sign — CubSign Blog',
+            description: 'Prepare the PDF and avoid common mistakes before you sign.',
+            canonical: 'https://cubsign.com/blog/'.$blog->slug,
             ogType: 'article',
         );
 
         $this->assertStringContainsString(
-            'property="article:published_time" content="'.$post['published_at'].'"',
+            'property="article:published_time" content="2025-12-02"',
             $html,
         );
     }

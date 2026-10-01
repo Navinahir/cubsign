@@ -2,10 +2,15 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesPublishedBlog;
 use Tests\TestCase;
 
 class BlogRssTest extends TestCase
 {
+    use CreatesPublishedBlog;
+    use RefreshDatabase;
+
     public function test_rss_returns_xml_with_correct_headers(): void
     {
         config(['app.url' => 'https://cubsign.com']);
@@ -19,17 +24,22 @@ class BlogRssTest extends TestCase
         $this->assertStringContainsString('<title>CubSign Blog</title>', $response->getContent());
     }
 
-    public function test_rss_includes_blog_posts(): void
+    public function test_rss_includes_published_blog_posts(): void
     {
         config(['app.url' => 'https://cubsign.com']);
+
+        $blog = $this->createPublishedBlog([
+            'slug' => 'workspace-signing-notes',
+            'title' => 'Workspace Signing Notes',
+        ]);
 
         $content = $this->get('/rss.xml')->getContent();
 
         $this->assertStringContainsString(
-            '<link>https://cubsign.com/blog/how-to-sign-a-pdf-online</link>',
+            '<link>https://cubsign.com/blog/'.$blog->slug.'</link>',
             $content,
         );
-        $this->assertStringContainsString('<title>How to Sign a PDF Online</title>', $content);
+        $this->assertStringContainsString('<title>Workspace Signing Notes</title>', $content);
     }
 
     public function test_rss_does_not_require_authentication(): void

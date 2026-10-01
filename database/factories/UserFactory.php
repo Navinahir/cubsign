@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -30,6 +31,7 @@ class UserFactory extends Factory
             'email'             => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'status'            => UserStatus::Active,
+            'role'              => UserRole::User,
             'password'          => static::$password ??= Hash::make('password'),
             'remember_token'    => Str::random(10),
         ];
@@ -44,5 +46,20 @@ class UserFactory extends Factory
             'email_verified_at' => null,
             'status'            => UserStatus::PendingVerification,
         ]);
+    }
+
+    /**
+     * Workspace Blog CMS admin (UserRole::Admin).
+     */
+    public function blogAdmin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::Admin,
+        ]);
+    }
+
+    public function admin(): static
+    {
+        return $this->blogAdmin();
     }
 }

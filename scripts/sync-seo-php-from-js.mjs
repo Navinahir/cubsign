@@ -1,18 +1,15 @@
 /**
- * Sync SEO metadata into config/blog.php and config/help.php from the
- * current JS constants WITHOUT regenerating article body content.
+ * Sync SEO metadata into config/help.php from the current JS constants
+ * WITHOUT regenerating article body content.
  *
  * Run: node scripts/sync-seo-php-from-js.mjs
  */
 import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { blogPosts } from '../resources/js/constants/blog.js';
 import { helpArticles } from '../resources/js/constants/help.js';
-import { BLOG_COVER_SLUGS } from '../resources/js/Components/Blog/covers/illustrations.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const coverSlugs = new Set(BLOG_COVER_SLUGS);
 
 function phpStr(value) {
     return `'${String(value ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
@@ -35,41 +32,6 @@ function phpFaqs(faq) {
 
     return `[\n${rows},\n        ]`;
 }
-
-const phpPosts = blogPosts
-    .map((p) => {
-        const cover = coverSlugs.has(p.slug) ? `/images/blog/covers/${p.slug}.png` : null;
-        const coverLine = cover ? `\n            'cover_image' => ${phpStr(cover)},` : '';
-
-        return `        [
-            'slug' => ${phpStr(p.slug)},
-            'published_at' => ${phpStr(p.publishedAt)},
-            'updated_at' => ${phpStr(p.updatedAt)},
-            'title' => ${phpStr(p.title)},
-            'excerpt' => ${phpStr(p.excerpt)},
-            'meta_title' => ${phpStr(p.metaTitle)},
-            'meta_description' => ${phpStr(p.metaDescription)},
-            'author' => ${phpStr(p.author?.name ?? 'CubSign Team')},${coverLine}
-            'faq' => ${phpFaqs(p.faq)},
-        ]`;
-    })
-    .join(',\n');
-
-const blogPhp = `<?php
-
-/**
- * Blog post metadata for server-side features (sitemap, RSS, SEO head, JSON-LD).
- * Keep in sync with resources/js/constants/blog.js, run: node scripts/generate-blog-content.mjs
- * Or sync SEO fields only: node scripts/sync-seo-php-from-js.mjs
- */
-return [
-
-    'posts' => [
-${phpPosts},
-    ],
-
-];
-`;
 
 const phpArticles = helpArticles
     .map(
@@ -103,11 +65,8 @@ ${phpArticles}
 ];
 `;
 
-const blogPath = join(__dirname, '../config/blog.php');
 const helpPath = join(__dirname, '../config/help.php');
 
-writeFileSync(blogPath, blogPhp);
 writeFileSync(helpPath, helpPhp);
 
-console.log('Synced', blogPosts.length, 'blog posts ->', blogPath);
 console.log('Synced', helpArticles.length, 'help articles ->', helpPath);

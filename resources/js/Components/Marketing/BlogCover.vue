@@ -1,36 +1,27 @@
 <script setup>
-import { computed } from 'vue';
-import { getBlogCoverAlt, getBlogCoverPng, getBlogCoverWebp } from '@/Components/Blog/covers/coverUtils';
-
-const props = defineProps({
-    slug: { type: String, required: true },
+defineProps({
     title: { type: String, default: '' },
     category: { type: String, default: '' },
+    coverImage: { type: String, default: '' },
     featured: { type: Boolean, default: false },
     popular: { type: Boolean, default: false },
     priority: { type: Boolean, default: false },
 });
-
-const alt = computed(() => getBlogCoverAlt(props.title || props.category));
-const webpSrc = computed(() => getBlogCoverWebp(props.slug));
-const pngSrc = computed(() => getBlogCoverPng(props.slug));
 </script>
 
 <template>
     <div class="relative aspect-[16/9] overflow-hidden bg-blue-50">
-        <picture>
-            <source :srcset="webpSrc" type="image/webp" />
-            <img
-                :src="pngSrc"
-                :alt="alt"
-                :loading="priority ? 'eager' : 'lazy'"
-                :fetchpriority="priority ? 'high' : 'auto'"
-                decoding="async"
-                width="1200"
-                height="675"
-                class="h-full w-full object-cover"
-            />
-        </picture>
+        <img
+            v-if="coverImage"
+            :src="coverImage"
+            :alt="title || category"
+            :loading="priority ? 'eager' : 'lazy'"
+            :fetchpriority="priority ? 'high' : 'auto'"
+            decoding="async"
+            width="1200"
+            height="675"
+            class="h-full w-full object-cover"
+        />
 
         <span
             v-if="featured"

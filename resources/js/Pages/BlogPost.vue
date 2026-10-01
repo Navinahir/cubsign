@@ -10,37 +10,31 @@ import BlogToc from '@/Components/Blog/BlogToc.vue';
 import BlogShare from '@/Components/Blog/BlogShare.vue';
 import BlogFaq from '@/Components/Blog/BlogFaq.vue';
 import BlogFeedback from '@/Components/Blog/BlogFeedback.vue';
-import {
-    getPostBySlug,
-    getRelatedPosts,
-    getAdjacentPosts,
-    getPostsByCategory,
-    blogAuthor,
-} from '@/constants/blog';
-import { normalizeBlogBlocks } from '@/utils/marketingContent';
 import { CTA_START_SIGNING, btnPrimary } from '@/constants/marketing';
 
 const props = defineProps({
     slug: { type: String, required: true },
+    post: { type: Object, default: null },
+    relatedPosts: { type: Array, default: null },
+    categoryPosts: { type: Array, default: null },
+    adjacentPosts: { type: Object, default: null },
 });
 
-const post = computed(() => getPostBySlug(props.slug));
-const relatedPosts = computed(() => getRelatedPosts(props.slug));
-const adjacent = computed(() => getAdjacentPosts(props.slug));
-const categoryPosts = computed(() =>
-    post.value ? getPostsByCategory(post.value.category).filter((p) => p.slug !== props.slug) : [],
-);
+const post = computed(() => props.post ?? null);
+const relatedPosts = computed(() => (Array.isArray(props.relatedPosts) ? props.relatedPosts : []));
+const adjacent = computed(() => ({
+    previous: props.adjacentPosts?.previous ?? null,
+    next: props.adjacentPosts?.next ?? null,
+}));
+const categoryPosts = computed(() => (Array.isArray(props.categoryPosts) ? props.categoryPosts : []));
 
 const activeHeading = ref('');
 const mobileTocOpen = ref(false);
+const headings = ref([]);
 
-const contentBlocks = computed(() => normalizeBlogBlocks(post.value?.content ?? []));
-
-const headings = computed(() =>
-    contentBlocks.value
-        .filter((block) => block.type === 'h2')
-        .map((block, index) => ({ id: `heading-${index}`, title: block.text })),
-);
+function onContentHeadings(value) {
+    headings.value = Array.isArray(value) ? value : [];
+}
 
 const seoTitle = computed(() => post.value?.metaTitle ?? `${post.value?.title} — CubSign Blog`);
 const seoDescription = computed(() => post.value?.metaDescription ?? post.value?.excerpt ?? '');
@@ -86,9 +80,15 @@ onMounted(async () => {
     setupHeadingObserver();
 });
 
+watch(headings, async () => {
+    await nextTick();
+    setupHeadingObserver();
+});
+
 watch(() => props.slug, async () => {
     activeHeading.value = '';
     mobileTocOpen.value = false;
+    headings.value = [];
     await nextTick();
     setupHeadingObserver();
     window.scrollTo({ top: 0 });
@@ -131,9 +131,9 @@ onUnmounted(() => observer?.disconnect());
             </div>
 
             <BlogCover
-                :slug="post.slug"
                 :title="post.title"
                 :category="post.category"
+                :cover-image="post.coverImage || ''"
                 :popular="post.popular"
                 priority
             />
@@ -216,7 +216,10 @@ onUnmounted(() => observer?.disconnect());
                         </header>
 
                         <article class="pt-2">
-                            <BlogContent :blocks="post.content" :current-slug="post.slug" />
+                            <BlogContent
+                                :content="post.content"
+                                @headings="onContentHeadings"
+                            />
 
                             <div v-if="post.tags?.length" class="mt-8 flex flex-wrap gap-2">
                                 <span
@@ -231,13 +234,13 @@ onUnmounted(() => observer?.disconnect());
                             <BlogFaq :items="post.faq ?? []" />
 
                             <div class="mt-10 flex items-start gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-6">
-                                <div :class="['flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white', blogAuthor.avatarBg]">
-                                    {{ blogAuthor.initials }}
+                                <div :class="['flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white', post.author.avatarBg]">
+                                    {{ post.author.initials }}
                                 </div>
                                 <div>
-                                    <p class="font-semibold text-gray-900">{{ blogAuthor.name }}</p>
+                                    <p class="font-semibold text-gray-900">{{ post.author.name }}</p>
                                     <p class="mt-1 text-sm leading-relaxed text-gray-600">
-                                        {{ blogAuthor.bio }}
+                                        <template v-if="post.author.bio">{{ post.author.bio }} </template>
                                         <Link :href="route('about')" class="font-medium text-blue-600 hover:text-blue-700">About CubSign</Link>
                                     </p>
                                 </div>
@@ -247,7 +250,11 @@ onUnmounted(() => observer?.disconnect());
                                 <BlogFeedback :post-slug="post.slug" />
                             </div>
 
-                            <nav aria-label="Article pagination" class="mt-10 grid gap-3 sm:grid-cols-2">
+                            <nav
+                                v-if="adjacent.previous || adjacent.next"
+                                aria-label="Article pagination"
+                                class="mt-10 grid gap-3 sm:grid-cols-2"
+                            >
                                 <Link
                                     v-if="adjacent.previous"
                                     :href="route('blog.show', adjacent.previous.slug)"
@@ -271,7 +278,7 @@ onUnmounted(() => observer?.disconnect());
                                 </Link>
                             </nav>
 
-                            <div class="mt-10 rounded-2xl border border-gray-200 p-5">
+                            <div v-if="relatedPosts.length" class="mt-10 rounded-2xl border border-gray-200 p-5">
                                 <div class="flex items-center justify-between gap-3">
                                     <h2 class="text-sm font-semibold text-gray-900">Related articles</h2>
                                     <Link :href="route('blog')" class="text-xs font-semibold text-blue-600 hover:text-blue-700">
@@ -336,21 +343,7 @@ onUnmounted(() => observer?.disconnect());
                                 <p class="font-semibold text-gray-900">Resources</p>
                                 <ul class="mt-3 space-y-2 text-gray-600">
                                     <li>
-                                        <Link
-                                            v-if="post.slug === 'how-to-sign-a-pdf-online'"
-                                            :href="route('help-center.show', 'how-to-sign-a-pdf-online')"
-                                            class="hover:text-blue-600"
-                                        >
-                                            Full CubSign step-by-step guide
-                                        </Link>
-                                        <Link
-                                            v-else-if="post.slug === 'how-to-sign-pdfs-on-mobile'"
-                                            :href="route('help-center.show', 'mobile-support')"
-                                            class="hover:text-blue-600"
-                                        >
-                                            Full CubSign mobile guide
-                                        </Link>
-                                        <Link v-else :href="route('help-center')" class="hover:text-blue-600">Help Center</Link>
+                                        <Link :href="route('help-center')" class="hover:text-blue-600">Help Center</Link>
                                     </li>
                                     <li>
                                         <Link :href="route('features')" class="hover:text-blue-600">Features</Link>

@@ -405,7 +405,7 @@ Final marketing UI cleanup before production. Simplified footer and contact page
 | Contact form backend | ⚠️ Open | Frontend validation + success state only; no email sent |
 | OG image (`/images/og-cubsign.png`) | ⚠️ Open | Referenced in SEO meta; file not in `public/images/` |
 | Testimonials | ⚠️ Open | Fictional names/quotes on homepage — acceptable for Early Access or replace with real quotes |
-| Blog authors | ⚠️ Open | Static fictional authors in `blog.js` |
+| Blog authors | ✅ Fixed | Authors come from the workspace user on each published post |
 | DevNav component | ⚠️ Open | Dev shortcut bar visible on all public pages — hide in production `.env` or build flag |
 
 ### Medium Priority

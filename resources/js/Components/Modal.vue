@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps({
     show: {
@@ -22,12 +22,15 @@ const showSlot = ref(props.show);
 
 watch(
     () => props.show,
-    () => {
-        if (props.show) {
+    async (show) => {
+        if (show) {
             document.body.style.overflow = 'hidden';
             showSlot.value = true;
 
-            dialog.value?.showModal();
+            await nextTick();
+            if (dialog.value && !dialog.value.open) {
+                dialog.value.showModal();
+            }
         } else {
             document.body.style.overflow = '';
 
@@ -70,6 +73,7 @@ const maxWidthClass = computed(() => {
         lg: 'sm:max-w-lg',
         xl: 'sm:max-w-xl',
         '2xl': 'sm:max-w-2xl',
+        '3xl': 'sm:max-w-3xl',
     }[props.maxWidth];
 });
 </script>
@@ -112,8 +116,9 @@ const maxWidthClass = computed(() => {
             >
                 <div
                     v-show="show"
-                    class="mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full"
+                    class="relative z-10 mb-6 overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full"
                     :class="maxWidthClass"
+                    @click.stop
                 >
                     <slot v-if="showSlot" />
                 </div>

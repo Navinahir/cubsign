@@ -2,55 +2,24 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesPublishedBlog;
 use Tests\TestCase;
 
 class MobileIntentDifferentiationTest extends TestCase
 {
+    use CreatesPublishedBlog;
+    use RefreshDatabase;
     protected function setUp(): void
     {
         parent::setUp();
         config(['app.url' => 'https://cubsign.com']);
     }
 
-    public function test_blog_mobile_article_is_educational_and_links_to_help_and_sign(): void
+    public function test_static_blog_source_is_not_shipped(): void
     {
-        $blog = file_get_contents(resource_path('js/constants/blog.js'));
-        $this->assertIsString($blog);
-
-        $this->assertStringContainsString(
-            'Signing a PDF on a phone or tablet is often the fastest way',
-            $blog,
-        );
-        $this->assertStringContainsString('full CubSign mobile guide', $blog);
-        $this->assertStringContainsString("slug: 'mobile-support'", $blog);
-        $this->assertStringContainsString('Start signing a PDF', $blog);
-        $this->assertStringContainsString('Before you sign on a phone', $blog);
-        $this->assertStringContainsString('Common mobile mistakes', $blog);
-
-        $this->assertStringNotContainsString(
-            'Mobile signing steps',
-            $blog,
-            'Blog must not retain the long CubSign mobile step-list heading.',
-        );
-        $this->assertStringNotContainsString(
-            'CubSign runs in mobile browsers—no app install.',
-            $blog,
-            'Blog must not lead with the old product-tutorial intro.',
-        );
-
-        $post = collect(config('blog.posts'))->firstWhere('slug', 'how-to-sign-pdfs-on-mobile');
-        $this->assertNotNull($post);
-        $this->assertSame('How to Sign PDFs on Mobile | CubSign', $post['meta_title']);
-        $this->assertStringNotContainsString('with CubSign, placement', $post['meta_description']);
-        $this->assertTrue(
-            str_contains(strtolower($post['meta_description']), 'tip')
-                || str_contains(strtolower($post['meta_description']), 'mistake')
-                || str_contains(strtolower($post['meta_description']), 'prepare'),
-        );
-
-        $appFaq = collect($post['faq'] ?? [])->firstWhere('question', 'Do I need an app to sign on mobile?');
-        $this->assertNotNull($appFaq);
-        $this->assertStringContainsString('full CubSign mobile guide', $appFaq['answer']);
+        $this->assertFileDoesNotExist(resource_path('js/constants/blog.js'));
+        $this->assertFileDoesNotExist(config_path('blog.php'));
     }
 
     public function test_help_mobile_support_remains_product_focused_with_optional_blog_link(): void
@@ -73,11 +42,22 @@ class MobileIntentDifferentiationTest extends TestCase
 
     public function test_blog_and_help_mobile_pages_keep_canonical_and_schema(): void
     {
-        $blogHtml = $this->get('/blog/how-to-sign-pdfs-on-mobile')->assertOk()->getContent();
+        $blog = $this->createPublishedBlog([
+            'slug' => 'signing-on-a-phone',
+            'title' => 'Signing on a Phone',
+            'excerpt' => 'Prepare a PDF before you sign on a small screen.',
+            'faq' => [
+                [
+                    'question' => 'Do I need an app to sign on mobile?',
+                    'answer' => 'A current mobile browser is enough for most documents.',
+                ],
+            ],
+        ]);
+        $blogHtml = $this->get('/blog/'.$blog->slug)->assertOk()->getContent();
         $helpHtml = $this->get('/help-center/mobile-support')->assertOk()->getContent();
 
         $this->assertStringContainsString(
-            '<link head-key="canonical" rel="canonical" href="https://cubsign.com/blog/how-to-sign-pdfs-on-mobile">',
+            '<link head-key="canonical" rel="canonical" href="https://cubsign.com/blog/'.$blog->slug.'">',
             $blogHtml,
         );
         $this->assertStringContainsString(
@@ -99,7 +79,7 @@ class MobileIntentDifferentiationTest extends TestCase
         $this->assertNotNull($blogFaq);
         $encoded = json_encode($blogFaq);
         $this->assertIsString($encoded);
-        $this->assertStringContainsString('full CubSign mobile guide', $encoded);
+        $this->assertStringContainsString('Do I need an app to sign on mobile?', $encoded);
     }
 
     public function test_sign_page_source_was_not_modified_for_mobile_phase(): void

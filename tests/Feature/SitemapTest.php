@@ -2,11 +2,15 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Tests\Support\CreatesPublishedBlog;
 use Tests\TestCase;
 
 class SitemapTest extends TestCase
 {
+    use CreatesPublishedBlog;
+    use RefreshDatabase;
     protected function setUp(): void
     {
         parent::setUp();
@@ -48,15 +52,21 @@ class SitemapTest extends TestCase
     public function test_sitemap_includes_blog_posts(): void
     {
         config(['app.url' => 'https://cubsign.com']);
+        Cache::forget('sitemap.xml');
+
+        $blog = $this->createPublishedBlog([
+            'slug' => 'workspace-signing-notes',
+            'updated_at' => '2026-03-01 00:00:00',
+        ]);
 
         $response = $this->get('/sitemap.xml');
         $content = $response->getContent();
 
         $this->assertStringContainsString(
-            '<loc>https://cubsign.com/blog/introducing-cubsign-early-access</loc>',
+            '<loc>https://cubsign.com/blog/'.$blog->slug.'</loc>',
             $content,
         );
-        $this->assertStringContainsString('<lastmod>2026-08-08</lastmod>', $content);
+        $this->assertStringContainsString('<lastmod>2026-03-01</lastmod>', $content);
     }
 
     public function test_sitemap_includes_help_center_articles(): void

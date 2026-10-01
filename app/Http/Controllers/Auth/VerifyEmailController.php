@@ -27,7 +27,7 @@ class VerifyEmailController extends Controller
             Auth::login($user);
             $request->session()->regenerate();
 
-            return redirect()->route('overview');
+            return redirect()->route($user->homeRouteName());
         }
 
         if ($user->markEmailAsVerified()) {
@@ -38,7 +38,7 @@ class VerifyEmailController extends Controller
         $request->session()->regenerate();
 
         return redirect()
-            ->route('overview')
+            ->route($user->homeRouteName())
             ->with('status', 'email-verified');
     }
 }

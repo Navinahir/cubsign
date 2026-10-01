@@ -20,7 +20,7 @@ class SentController extends Controller
         $summary = $request->session()->pull('sign_sent_summary');
 
         if (! is_array($summary) || empty($summary['document_id'])) {
-            return redirect()->route('overview');
+            return redirect()->route($request->user()->homeRouteName());
         }
 
         $document = Document::query()
@@ -29,7 +29,7 @@ class SentController extends Controller
             ->first();
 
         if (! $document) {
-            return redirect()->route('overview');
+            return redirect()->route($request->user()->homeRouteName());
         }
 
         return Inertia::render('Sign/Sent', [

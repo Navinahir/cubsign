@@ -3,6 +3,9 @@ User-agent: *
 Allow: /
 
 Disallow: /overview
+Disallow: /admin
+Disallow: /blogs
+Disallow: /blog-categories
 Disallow: /documents
 Disallow: /templates
 Disallow: /profile

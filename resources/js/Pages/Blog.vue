@@ -5,24 +5,31 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import BlogCover from '@/Components/Marketing/BlogCover.vue';
 import BlogArticleMeta from '@/Components/Blog/BlogArticleMeta.vue';
-import {
-    blogCategories,
-    blogCategoryNames,
-    popularSearches,
-    POSTS_PER_PAGE,
-    getFeaturedPost,
-    getPopularPosts,
-    getRecentPosts,
-    getRecentlyUpdatedPosts,
-    getPostsByCategory,
-    filterBlogPosts,
-    paginatePosts,
-} from '@/constants/blog';
+
+const POSTS_PER_PAGE = 6;
+
+const popularSearches = [
+    'sign PDF online',
+    'electronic signature',
+    'security',
+    'mobile signing',
+    'request signature',
+    'contracts',
+];
+
+const props = defineProps({
+    posts: { type: Array, default: () => [] },
+    categories: { type: Array, default: () => [] },
+});
 
 const page = usePage();
 const searchQuery = ref('');
 const activeCategory = ref('All');
 const currentPage = ref(1);
+
+const allPosts = computed(() => (Array.isArray(props.posts) ? props.posts : []));
+const categories = computed(() => (Array.isArray(props.categories) ? props.categories : []));
+const categoryNames = computed(() => categories.value.map((c) => c.name));
 
 onMounted(() => {
     const params = page.url.includes('?')
@@ -32,7 +39,7 @@ onMounted(() => {
     const cat = params?.get('category');
     const pg = params?.get('page');
     if (q) searchQuery.value = q;
-    if (cat && (cat === 'All' || blogCategoryNames.includes(cat))) activeCategory.value = cat;
+    if (cat && (cat === 'All' || categoryNames.value.includes(cat))) activeCategory.value = cat;
     if (pg) currentPage.value = Math.max(1, parseInt(pg, 10) || 1);
 });
 
@@ -63,20 +70,47 @@ watch(currentPage, (value) => {
     window.history.replaceState({}, '', url.pathname + url.search);
 });
 
-const featuredPost = computed(() => getFeaturedPost());
-const popularPosts = computed(() => getPopularPosts(5));
-const recentPosts = computed(() => getRecentPosts(5));
-const recentlyUpdated = computed(() => getRecentlyUpdatedPosts(5));
+function postHaystack(post) {
+    return [
+        post.title,
+        post.excerpt,
+        post.category,
+        ...(post.tags ?? []),
+        ...(post.keywords ?? []),
+    ].join(' ').toLowerCase();
+}
+
+const featuredPost = computed(() => allPosts.value.find((p) => p.featured) ?? allPosts.value[0] ?? null);
+const popularPosts = computed(() => {
+    const flagged = allPosts.value.filter((p) => p.popular);
+    const pool = flagged.length ? flagged : [...allPosts.value];
+    return pool.slice(0, 5);
+});
+const recentPosts = computed(() =>
+    [...allPosts.value]
+        .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+        .slice(0, 5),
+);
+const recentlyUpdated = computed(() =>
+    [...allPosts.value]
+        .filter((p) => p.updatedAt && p.updatedAt !== p.publishedAt)
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+        .slice(0, 5),
+);
 
 const isDefaultView = computed(
     () => !searchQuery.value.trim() && activeCategory.value === 'All',
 );
 
 const filteredPosts = computed(() => {
-    let posts = filterBlogPosts({
-        query: searchQuery.value,
-        category: activeCategory.value,
-    });
+    let posts = [...allPosts.value].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+    const q = searchQuery.value.trim().toLowerCase();
+    if (q) {
+        posts = posts.filter((p) => postHaystack(p).includes(q));
+    }
+    if (activeCategory.value && activeCategory.value !== 'All') {
+        posts = posts.filter((p) => p.category === activeCategory.value);
+    }
     if (isDefaultView.value && featuredPost.value) {
         posts = posts.filter((p) => p.slug !== featuredPost.value.slug);
     }
@@ -86,9 +120,9 @@ const filteredPosts = computed(() => {
 const paginated = computed(() => paginatePosts(filteredPosts.value, currentPage.value, POSTS_PER_PAGE));
 
 const categoryCounts = computed(() =>
-    blogCategories.map((category) => ({
+    categories.value.map((category) => ({
         ...category,
-        count: getPostsByCategory(category.name).length,
+        count: allPosts.value.filter((p) => p.category === category.name).length,
     })),
 );
 
@@ -105,6 +139,22 @@ function selectCategory(category) {
 function goToPage(pageNumber) {
     currentPage.value = pageNumber;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function paginatePosts(posts, page = 1, perPage = POSTS_PER_PAGE) {
+    const safePage = Math.max(1, page);
+    const total = posts.length;
+    const totalPages = Math.max(1, Math.ceil(total / perPage) || 1);
+    const current = Math.min(safePage, totalPages);
+    const start = (current - 1) * perPage;
+
+    return {
+        items: posts.slice(start, start + perPage),
+        currentPage: current,
+        totalPages,
+        total,
+        perPage,
+    };
 }
 </script>
 
@@ -157,7 +207,7 @@ function goToPage(pageNumber) {
         <section class="border-b border-gray-100 bg-white px-4 py-4 sm:px-6 lg:px-8">
             <div class="mx-auto flex max-w-7xl flex-wrap gap-2">
                 <button
-                    v-for="cat in ['All', ...blogCategoryNames]"
+                    v-for="cat in ['All', ...categoryNames]"
                     :key="cat"
                     type="button"
                     :class="[
@@ -188,9 +238,9 @@ function goToPage(pageNumber) {
                             class="group block overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
                         >
                             <BlogCover
-                                :slug="featuredPost.slug"
                                 :title="featuredPost.title"
                                 :category="featuredPost.category"
+                                :cover-image="featuredPost.coverImage || ''"
                                 featured
                                 priority
                             />
@@ -226,9 +276,9 @@ function goToPage(pageNumber) {
                                     class="group marketing-card-lift flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
                                 >
                                     <BlogCover
-                                        :slug="post.slug"
                                         :title="post.title"
                                         :category="post.category"
+                                        :cover-image="post.coverImage || ''"
                                         :popular="post.popular"
                                     />
                                     <div class="flex flex-1 flex-col p-5">
@@ -245,7 +295,7 @@ function goToPage(pageNumber) {
                                         <p class="mt-2 flex-1 text-sm text-gray-500 line-clamp-2">{{ post.excerpt }}</p>
                                         <div class="mt-4 flex flex-wrap gap-1.5">
                                             <span
-                                                v-for="tag in post.tags.slice(0, 2)"
+                                                v-for="tag in (post.tags || []).slice(0, 2)"
                                                 :key="tag"
                                                 class="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] text-gray-500"
                                             >
@@ -300,7 +350,7 @@ function goToPage(pageNumber) {
                     </div>
 
                     <aside class="space-y-8">
-                        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div v-if="categoryCounts.length" class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 class="font-semibold text-gray-900">Categories</h3>
                             <ul class="mt-4 space-y-2">
                                 <li v-for="category in categoryCounts" :key="category.slug">
@@ -319,7 +369,7 @@ function goToPage(pageNumber) {
                             </ul>
                         </div>
 
-                        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div v-if="popularPosts.length" class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 class="font-semibold text-gray-900">Popular articles</h3>
                             <ul class="mt-4 space-y-4">
                                 <li v-for="post in popularPosts" :key="`pop-${post.slug}`">
@@ -331,7 +381,7 @@ function goToPage(pageNumber) {
                             </ul>
                         </div>
 
-                        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div v-if="recentlyUpdated.length" class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 class="font-semibold text-gray-900">Recently updated</h3>
                             <ul class="mt-4 space-y-3">
                                 <li v-for="post in recentlyUpdated" :key="`upd-${post.slug}`">
@@ -342,7 +392,7 @@ function goToPage(pageNumber) {
                             </ul>
                         </div>
 
-                        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div v-if="recentPosts.length" class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 class="font-semibold text-gray-900">Recent posts</h3>
                             <ul class="mt-4 space-y-3">
                                 <li v-for="post in recentPosts" :key="`rec-${post.slug}`">
