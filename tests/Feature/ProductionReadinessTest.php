@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ProductionReadinessTest extends TestCase
 {
+    use RefreshDatabase;
     /** @return array<int, string> */
     private function publicPagePaths(): array
     {
@@ -22,7 +24,6 @@ class ProductionReadinessTest extends TestCase
             '/terms',
             '/cookies',
             '/blog',
-            '/blog/how-to-sign-a-pdf-online',
             '/sign',
         ];
     }

@@ -1,5 +1,5 @@
 /**
- * Insert real product-screenshot blocks into selected Help and Blog articles.
+ * Insert real product-screenshot blocks into selected Help articles.
  * Idempotent: skips if a product-screenshot with the same key already exists nearby.
  */
 import fs from 'fs';
@@ -110,41 +110,6 @@ const HELP_PLAN = {
     ],
 };
 
-const BLOG_PLAN = {
-    'how-to-sign-a-pdf-online': [
-        { afterText: 'upload', blocks: [shot('pdf-upload')] },
-        { afterText: 'editor', blocks: [shot('signing-editor')] },
-        { afterText: 'signature', blocks: [shot('signature-placement')] },
-        { afterText: 'download', blocks: [shot('signed-pdf-download')] },
-    ],
-    'how-to-sign-pdfs-on-mobile': [
-        { afterText: 'browser', blocks: [shot('signing-editor', 'CubSign editor in the browser — usable on phones and tablets.')] },
-        { afterText: 'draw', blocks: [shot('draw-signature')] },
-    ],
-    'draw-vs-type-your-signature': [
-        { afterText: 'draw', blocks: [shot('draw-signature')] },
-        { afterText: 'type', blocks: [shot('type-signature')] },
-        { afterText: 'upload', blocks: [shot('upload-signature')] },
-    ],
-    'how-to-create-a-reusable-signature': [
-        // Per-session signature creation only — not a persistent vault
-        { afterText: 'draw', blocks: [shot('draw-signature')] },
-        { afterText: 'type', blocks: [shot('type-signature')] },
-        { afterText: 'upload', blocks: [shot('upload-signature')] },
-    ],
-    'electronic-signature-vs-digital-signature': [
-        { afterText: 'CubSign', blocks: [shot('signing-editor', 'CubSign captures electronic signatures in the browser editor.')] },
-    ],
-    'best-practices-for-signing-contracts-online': [
-        { afterText: 'review', blocks: [shot('signature-placement')] },
-        { afterText: 'download', blocks: [shot('signed-pdf-download')] },
-    ],
-    'how-small-businesses-save-time-using-esignatures': [
-        { afterText: 'upload', blocks: [shot('pdf-upload')] },
-        { afterText: 'sign', blocks: [shot('signature-placement')] },
-    ],
-};
-
 function serializeArticles(articles, varName) {
     // Keep readable enough JSON-ish JS
     return `export const ${varName} = ${JSON.stringify(articles, null, 4)};\n`;
@@ -184,13 +149,10 @@ async function patchHelp() {
 
 async function main() {
     const helpPath = path.join(ROOT, 'resources/js/constants/help.js');
-    const blogPath = path.join(ROOT, 'resources/js/constants/blog.js');
 
     const helpMod = await import(`file:///${helpPath.replace(/\\/g, '/')}?v=${Date.now()}`);
-    const blogMod = await import(`file:///${blogPath.replace(/\\/g, '/')}?v=${Date.now()}`);
 
     const helpArticles = helpMod.helpArticles;
-    const blogPosts = blogMod.blogPosts;
 
     const helpChanged = [];
     for (const article of helpArticles) {
@@ -209,34 +171,12 @@ async function main() {
         }
     }
 
-    const blogChanged = [];
-    for (const post of blogPosts) {
-        const plan = BLOG_PLAN[post.slug];
-        if (!plan) continue;
-        const unique = [];
-        const seen = new Set(post.content.filter((b) => b.type === 'product-screenshot').map((b) => b.key));
-        for (const ins of plan) {
-            const blocks = ins.blocks.filter((b) => !seen.has(b.key));
-            blocks.forEach((b) => seen.add(b.key));
-            if (blocks.length) unique.push({ ...ins, blocks });
-        }
-        if (unique.length && ensureShots(post, unique.slice(0, 4))) {
-            blogChanged.push(post.slug);
-        }
-    }
-
-    // Persist by rewriting exports while preserving other exports.
-    // Strategy: write patched arrays to temporary JSON and use a small rewriter.
     const helpJson = path.join(ROOT, 'storage/app/demo/help-articles.patched.json');
-    const blogJson = path.join(ROOT, 'storage/app/demo/blog-posts.patched.json');
     fs.writeFileSync(helpJson, JSON.stringify(helpArticles, null, 2));
-    fs.writeFileSync(blogJson, JSON.stringify(blogPosts, null, 2));
 
     rewriteExportArray(helpPath, 'helpArticles', helpArticles);
-    rewriteExportArray(blogPath, 'blogPosts', blogPosts);
 
     console.log('Help articles updated:', helpChanged.join(', ') || '(none)');
-    console.log('Blog posts updated:', blogChanged.join(', ') || '(none)');
 }
 
 function rewriteExportArray(filePath, exportName, data) {

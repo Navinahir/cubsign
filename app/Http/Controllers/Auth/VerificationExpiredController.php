@@ -16,7 +16,7 @@ class VerificationExpiredController extends Controller
     public function __invoke(Request $request): Response|RedirectResponse
     {
         if ($request->user()?->hasVerifiedEmail()) {
-            return redirect()->route('overview');
+            return redirect()->route($request->user()->homeRouteName());
         }
 
         return Inertia::render('Auth/VerificationExpired', [

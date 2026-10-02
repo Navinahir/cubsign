@@ -4,13 +4,9 @@ export function hasMarketingText(value) {
     return String(value).trim().length > 0;
 }
 
-/** Drop empty strings from metadata / label lists. */
-export function nonEmptyStrings(values) {
-    return (values ?? []).filter(hasMarketingText);
-}
-
 /**
  * Normalize blog content blocks for rendering.
+ * Supports legacy flat blocks (p/h2/ul/…) and admin {type,data} blocks.
  * Skips empty paragraphs, headings, list items, and unknown block types.
  */
 export function normalizeBlogBlocks(blocks) {
@@ -18,10 +14,17 @@ export function normalizeBlogBlocks(blocks) {
 
     const normalized = [];
 
-    for (const block of blocks) {
-        if (!block || typeof block !== 'object' || !block.type) continue;
+    for (const raw of blocks) {
+        if (!raw || typeof raw !== 'object' || !raw.type) continue;
 
-        if (block.type === 'p' || block.type === 'h2' || block.type === 'tip' || block.type === 'note') {
+        // Admin editor shape → public flat shape
+        const block = raw.data && typeof raw.data === 'object'
+            ? expandEditorBlock(raw)
+            : raw;
+
+        if (!block) continue;
+
+        if (block.type === 'p' || block.type === 'h1' || block.type === 'h2' || block.type === 'h3' || block.type === 'h4' || block.type === 'h5' || block.type === 'h6' || block.type === 'tip' || block.type === 'note' || block.type === 'quote') {
             if (!hasMarketingText(block.text)) continue;
             normalized.push({ ...block });
             continue;
@@ -31,6 +34,17 @@ export function normalizeBlogBlocks(blocks) {
             const items = (block.items ?? []).filter(hasMarketingText);
             if (!items.length) continue;
             normalized.push({ ...block, items });
+            continue;
+        }
+
+        if (block.type === 'image') {
+            if (!hasMarketingText(block.url)) continue;
+            normalized.push({ ...block });
+            continue;
+        }
+
+        if (block.type === 'divider') {
+            normalized.push({ type: 'divider' });
             continue;
         }
 
@@ -55,14 +69,66 @@ export function normalizeBlogBlocks(blocks) {
     return normalized;
 }
 
-/** Build stable heading anchors from normalized h2 blocks. */
+function expandEditorBlock(block) {
+    const data = block.data || {};
+    switch (block.type) {
+        case 'paragraph':
+            return { type: 'p', text: data.text || '' };
+        case 'heading':
+            return { type: `h${Math.min(6, Math.max(1, Number(data.level) || 2))}`, text: data.text || '' };
+        case 'image':
+            return { type: 'image', url: data.url || '', alt: data.alt || '' };
+        case 'unordered_list':
+            return { type: 'ul', items: data.items || [] };
+        case 'ordered_list':
+            return { type: 'ol', items: data.items || [] };
+        case 'quote':
+            return { type: 'quote', text: data.text || '' };
+        case 'tip':
+            return { type: 'tip', text: data.text || '' };
+        case 'note':
+            return { type: 'note', text: data.text || '' };
+        case 'divider':
+            return { type: 'divider' };
+        case 'figure':
+            return {
+                type: 'figure',
+                slug: data.slug || '',
+                asset: data.asset || '',
+                alt: data.alt || '',
+                caption: data.caption || '',
+                variant: data.variant || '',
+            };
+        case 'product_screenshot':
+        case 'product-screenshot':
+            return {
+                type: 'product-screenshot',
+                key: data.key || '',
+                caption: data.caption || '',
+                alt: data.alt || '',
+            };
+        case 'callout':
+            return {
+                type: 'callout',
+                title: data.title || '',
+                text: data.text || '',
+                asset: data.asset || '',
+                slug: data.slug || '',
+                alt: data.alt || '',
+            };
+        default:
+            return null;
+    }
+}
+
+/** Build stable heading anchors from normalized heading blocks. */
 export function blogHeadingAnchors(blocks) {
-    let h2Index = 0;
+    let headingIndex = 0;
 
     return blocks.map((block) => {
-        if (block.type !== 'h2') return block;
-        const anchor = { ...block, id: `heading-${h2Index}` };
-        h2Index += 1;
+        if (!/^h[1-6]$/.test(block.type)) return block;
+        const anchor = { ...block, id: `heading-${headingIndex}` };
+        headingIndex += 1;
         return anchor;
     });
 }

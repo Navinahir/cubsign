@@ -2,10 +2,14 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesPublishedBlog;
 use Tests\TestCase;
 
 class SeoSchemaTest extends TestCase
 {
+    use CreatesPublishedBlog;
+    use RefreshDatabase;
     protected function setUp(): void
     {
         parent::setUp();
@@ -87,28 +91,30 @@ class SeoSchemaTest extends TestCase
 
     public function test_blog_post_initial_html_contains_article_breadcrumb_and_faq(): void
     {
-        $post = collect(config('blog.posts'))->firstWhere('slug', 'how-to-sign-a-pdf-online');
-        $this->assertNotNull($post);
+        $blog = $this->createPublishedBlog([
+            'slug' => 'tips-before-you-sign',
+            'cover_image' => '/images/blog/sample-cover.png',
+        ]);
 
         $schemas = $this->jsonLdBlocks(
-            $this->get('/blog/how-to-sign-a-pdf-online')->assertOk()->getContent(),
+            $this->get('/blog/'.$blog->slug)->assertOk()->getContent(),
         );
 
         $this->assertSchemaTypes($schemas, ['Article', 'BreadcrumbList', 'FAQPage']);
 
         $article = collect($schemas)->first(fn (array $s) => ($s['@type'] ?? null) === 'Article');
-        $this->assertSame($post['published_at'], $article['datePublished'] ?? null);
-        $this->assertSame($post['updated_at'], $article['dateModified'] ?? null);
-        $this->assertNotSame($post['updated_at'], $article['datePublished'] ?? null);
+        $this->assertSame('2025-12-02', $article['datePublished'] ?? null);
+        $this->assertSame('2026-08-11', $article['dateModified'] ?? null);
+        $this->assertNotSame('2026-08-11', $article['datePublished'] ?? null);
         $this->assertSame(
-            'https://cubsign.com/images/blog/covers/how-to-sign-a-pdf-online.png',
+            'https://cubsign.com/images/blog/sample-cover.png',
             $article['image'][0] ?? null,
         );
 
         $this->assertBreadcrumbItems($schemas, [
             'https://cubsign.com/',
             'https://cubsign.com/blog',
-            'https://cubsign.com/blog/how-to-sign-a-pdf-online',
+            'https://cubsign.com/blog/'.$blog->slug,
         ]);
         $this->assertBreadcrumbHasNoQueryUrls($schemas);
     }
@@ -138,7 +144,9 @@ class SeoSchemaTest extends TestCase
 
     public function test_json_ld_blocks_are_valid_json_and_use_absolute_urls(): void
     {
-        foreach (['/', '/about', '/faq', '/security', '/blog/how-to-sign-a-pdf-online', '/help-center/what-is-cubsign'] as $uri) {
+        $blog = $this->createPublishedBlog(['slug' => 'schema-sample']);
+
+        foreach (['/', '/about', '/faq', '/security', '/blog/'.$blog->slug, '/help-center/what-is-cubsign'] as $uri) {
             $schemas = $this->jsonLdBlocks($this->get($uri)->assertOk()->getContent());
             $this->assertNotEmpty($schemas, "Expected JSON-LD on {$uri}");
 

@@ -5,12 +5,12 @@ import { Link, usePage } from '@inertiajs/vue3';
 const isLocal = computed(() => usePage().props.app?.isLocal ?? false);
 const open = ref(false);
 
-const links = [
+const links = computed(() => [
     { label: 'Upload',    routeName: 'sign.index' },
     { label: 'Editor',    routeName: 'sign.editor' },
     { label: 'Complete',  routeName: 'sign.complete' },
-    { label: 'Workspace', routeName: 'overview' },
-];
+    { label: 'Workspace', routeName: usePage().props.auth?.home || 'overview' },
+]);
 </script>
 
 <template>

@@ -446,7 +446,7 @@ Reusable components live in `resources/js/Components/Marketing/`:
 ### Shared Constants
 
 - `resources/js/constants/marketing.js` — copy, `homePricingComparison`, `securityPageFeatures` (reserved for future Trust Center), footer links
-- `resources/js/constants/blog.js` — static blog posts and helpers
+- Blog articles are stored in the database and managed from the workspace
 
 ### Responsive Checklist
 

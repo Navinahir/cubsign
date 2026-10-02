@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import SignLayout from '@/Layouts/SignLayout.vue';
 
 const props = defineProps({
@@ -65,7 +65,7 @@ const props = defineProps({
                     View Document
                 </Link>
                 <Link
-                    :href="route('overview')"
+                    :href="route(usePage().props.auth?.home || 'overview')"
                     class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-300 hover:bg-gray-50"
                 >
                     Back to Dashboard

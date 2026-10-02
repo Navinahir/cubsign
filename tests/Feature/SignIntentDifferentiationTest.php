@@ -2,10 +2,14 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesPublishedBlog;
 use Tests\TestCase;
 
 class SignIntentDifferentiationTest extends TestCase
 {
+    use CreatesPublishedBlog;
+    use RefreshDatabase;
     protected function setUp(): void
     {
         parent::setUp();
@@ -21,7 +25,8 @@ class SignIntentDifferentiationTest extends TestCase
         $this->assertStringContainsString('CubSign signing guide', $source);
         $this->assertStringContainsString('/help-center/how-to-sign-a-pdf-online', $source);
         $this->assertStringContainsString('Tips before you sign', $source);
-        $this->assertStringContainsString('/blog/how-to-sign-a-pdf-online', $source);
+        $this->assertStringContainsString('href="/blog"', $source);
+        $this->assertStringNotContainsString('/blog/how-to-sign-a-pdf-online', $source);
 
         $this->assertStringNotContainsString('>Help Center guide<', $source);
         $this->assertStringNotContainsString('>Blog walkthrough<', $source);
@@ -40,28 +45,20 @@ class SignIntentDifferentiationTest extends TestCase
     public function test_help_and_blog_meta_titles_are_differentiated(): void
     {
         $help = collect(config('help.articles'))->firstWhere('slug', 'how-to-sign-a-pdf-online');
-        $blog = collect(config('blog.posts'))->firstWhere('slug', 'how-to-sign-a-pdf-online');
+        $blog = $this->createPublishedBlog([
+            'slug' => 'tips-before-you-sign',
+            'title' => 'Tips Before You Sign',
+            'excerpt' => 'Prepare the PDF and avoid common mistakes before you sign.',
+        ]);
 
         $this->assertNotNull($help);
-        $this->assertNotNull($blog);
-
         $this->assertSame('How to Sign a PDF in CubSign | CubSign', $help['meta_title']);
-        $this->assertSame(
-            'How to Sign a PDF Online: Tips & Common Mistakes | CubSign',
-            $blog['meta_title'],
-        );
-        $this->assertNotSame($help['meta_title'], $blog['meta_title']);
-        $this->assertNotSame($help['meta_description'], $blog['meta_description']);
+        $this->assertNotSame($help['meta_title'], $blog->title.' — CubSign Blog');
+        $this->assertNotSame($help['meta_description'], $blog->excerpt);
 
         $this->assertStringContainsString('upload', strtolower($help['meta_description']));
         $this->assertStringContainsString('download', strtolower($help['meta_description']));
-
-        $this->assertTrue(
-            str_contains(strtolower($blog['meta_description']), 'mistake')
-                || str_contains(strtolower($blog['meta_description']), 'prepare')
-                || str_contains(strtolower($blog['meta_description']), 'tip'),
-            'Blog meta description should emphasize educational guidance.',
-        );
+        $this->assertStringContainsString('prepare', strtolower((string) $blog->excerpt));
     }
 
     public function test_help_article_initial_html_uses_product_meta_and_valid_schema(): void
@@ -93,14 +90,19 @@ class SignIntentDifferentiationTest extends TestCase
 
     public function test_blog_article_initial_html_uses_educational_meta_and_valid_schema(): void
     {
-        $html = $this->get('/blog/how-to-sign-a-pdf-online')->assertOk()->getContent();
+        $blog = $this->createPublishedBlog([
+            'slug' => 'tips-before-you-sign',
+            'title' => 'Tips Before You Sign',
+            'excerpt' => 'Prepare the PDF and avoid common mistakes before you sign.',
+        ]);
+        $html = $this->get('/blog/'.$blog->slug)->assertOk()->getContent();
 
         $this->assertStringContainsString(
-            '<title inertia>How to Sign a PDF Online: Tips &amp; Common Mistakes | CubSign</title>',
+            '<title inertia>Tips Before You Sign — CubSign Blog</title>',
             $html,
         );
         $this->assertStringContainsString(
-            '<link head-key="canonical" rel="canonical" href="https://cubsign.com/blog/how-to-sign-a-pdf-online">',
+            '<link head-key="canonical" rel="canonical" href="https://cubsign.com/blog/'.$blog->slug.'">',
             $html,
         );
         $this->assertSame(1, substr_count($html, 'rel="canonical"'));
@@ -114,31 +116,19 @@ class SignIntentDifferentiationTest extends TestCase
         $this->assertBreadcrumbItems($schemas, [
             'https://cubsign.com/',
             'https://cubsign.com/blog',
-            'https://cubsign.com/blog/how-to-sign-a-pdf-online',
+            'https://cubsign.com/blog/'.$blog->slug,
         ]);
     }
 
-    public function test_blog_and_help_js_sources_contain_cross_links(): void
+    public function test_help_js_source_still_links_into_the_product(): void
     {
-        $blog = file_get_contents(resource_path('js/constants/blog.js'));
         $help = file_get_contents(resource_path('js/constants/help.js'));
-        $this->assertIsString($blog);
         $this->assertIsString($help);
-
-        $this->assertStringContainsString('Full CubSign step-by-step guide', $blog);
-        $this->assertStringContainsString("kind: 'help'", $blog);
-        $this->assertStringContainsString('Start signing a PDF', $blog);
-        $this->assertStringContainsString('Try it on CubSign', $blog);
+        $this->assertFileDoesNotExist(resource_path('js/constants/blog.js'));
 
         $this->assertStringContainsString('Learn how to sign a PDF in CubSign', $help);
         $this->assertStringContainsString('Start signing', $help);
         $this->assertStringContainsString('Upload PDF page', $help);
-
-        $this->assertStringNotContainsString(
-            'Step-by-step in the CubSign editor',
-            $blog,
-            'Blog must not retain the long duplicate CubSign editor walkthrough heading.',
-        );
     }
 
     /**

@@ -2,11 +2,12 @@
 
 namespace App\Support;
 
+use App\Models\Blog;
 use Illuminate\Http\Request;
 
 /**
  * Central SEO metadata resolver for Blade initial HTML and Inertia shared props.
- * Values come from config/seo.php (static pages) and config/blog.php / config/help.php.
+ * Values come from config/seo.php (static pages), published blog rows, and config/help.php.
  */
 class SeoMeta
 {
@@ -75,31 +76,34 @@ class SeoMeta
      */
     public static function forBlogPost(string $slug): ?array
     {
-        $post = collect(config('blog.posts', []))
-            ->first(fn (array $item) => ($item['slug'] ?? null) === $slug);
+        $blog = BlogQuery::published(Blog::query())
+            ->with('user')
+            ->where('slug', $slug)
+            ->first();
 
-        if (! is_array($post)) {
+        if (! $blog) {
             return null;
         }
 
-        $title = (string) ($post['meta_title'] ?? $post['title'] ?? '');
-        $description = (string) ($post['meta_description'] ?? $post['excerpt'] ?? '');
+        $title = trim((string) $blog->title);
+        $description = trim((string) ($blog->excerpt ?? ''));
 
         if ($title === '' || $description === '') {
             return null;
         }
 
+        $author = BlogPresenter::author($blog)['name'];
+
         return self::buildPayload(
-            title: $title,
+            title: $title.' — CubSign Blog',
             description: $description,
             path: '/blog/'.$slug,
             type: 'article',
             article: [
-                'published_at' => $post['published_at'] ?? null,
-                'updated_at' => $post['updated_at'] ?? null,
-                'author' => $post['author'] ?? 'CubSign Team',
+                'published_at' => optional($blog->published_at)?->toDateString(),
+                'updated_at' => optional($blog->updated_at)?->toDateString(),
+                'author' => $author ?: 'CubSign',
             ],
-            // Keep OG on the default image (matches prior MarketingSeo). Cover is used in Article JSON-LD.
             coverImage: null,
         );
     }

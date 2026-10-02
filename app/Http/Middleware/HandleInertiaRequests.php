@@ -35,9 +35,14 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'home' => $request->user()?->homeRouteName() ?? 'overview',
+                'can'  => [
+                    'manageBlogs' => $request->user()?->canManageBlogs() ?? false,
+                ],
             ],
             'flash' => [
-                'status' => fn () => $request->session()->get('status'),
+                'status'  => fn () => $request->session()->get('status'),
+                'success' => fn () => $request->session()->get('success'),
             ],
             'app' => [
                 'isLocal' => app()->environment('local'),

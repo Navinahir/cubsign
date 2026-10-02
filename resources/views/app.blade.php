@@ -21,6 +21,9 @@
         @inertiaHead
         @unless(request()->routeIs(
             'overview',
+            'admin.dashboard',
+            'blogs.*',
+            'blog-categories.*',
             'documents.*',
             'templates.*',
             'profile.*',

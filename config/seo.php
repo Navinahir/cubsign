@@ -3,7 +3,7 @@
 /**
  * Static marketing page SEO catalog (title + description).
  * Values match the existing MarketingSeo props in Vue page components.
- * Dynamic blog/help article meta lives in config/blog.php and config/help.php.
+ * Dynamic blog article meta comes from published blog rows. Help article meta lives in config/help.php.
  *
  * FAQ / breadcrumb entries must match visible page content only.
  */

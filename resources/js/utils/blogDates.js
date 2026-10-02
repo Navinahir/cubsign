@@ -2,8 +2,10 @@
  * Calendar-date helpers for CubSign blog UI.
  *
  * YYYY-MM-DD values are treated as calendar dates, not UTC midnight, so the
- * visible day matches published_at / updated_at. "Today" is only used when
- * updated_at is the viewer's calendar date.
+ * visible day matches published_at / updated_at. Laravel datetimes such as
+ * "2026-09-16 07:20:16" keep their time for "was this edited after publish?".
+ * "Today" is only used when updated_at is a later calendar day that is also
+ * the viewer's calendar date.
  */
 
 const DATE_PREFIX = /^(\d{4})-(\d{2})-(\d{2})/;
@@ -48,15 +50,54 @@ export function formatDate(dateStr) {
     );
 }
 
-function isLaterCalendarDate(updatedAt, publishedAt) {
-    const updated = parseBlogCalendarDate(updatedAt);
-    const published = parseBlogCalendarDate(publishedAt);
+/**
+ * Comparable instant for published_at / updated_at.
+ * Date-only values (YYYY-MM-DD) are start-of-day; Laravel datetimes such as
+ * "2026-09-16 07:20:16" and ISO strings keep their time component.
+ */
+export function parseBlogTimestamp(dateStr) {
+    if (dateStr == null || dateStr === '') {
+        return null;
+    }
 
-    if (!updated || !published) {
+    const value = String(dateStr).trim();
+    if (!value) {
+        return null;
+    }
+
+    if (/^\d{4}-\d{2}-\d{2}T/.test(value)) {
+        const iso = new Date(value);
+        return Number.isNaN(iso.getTime()) ? null : iso.getTime();
+    }
+
+    const match = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2}))?)?/.exec(value);
+    if (!match) {
+        return null;
+    }
+
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    const hour = Number(match[4] ?? 0);
+    const minute = Number(match[5] ?? 0);
+    const second = Number(match[6] ?? 0);
+
+    if (!year || month < 1 || month > 12 || day < 1 || day > 31) {
+        return null;
+    }
+
+    return Date.UTC(year, month - 1, day, hour, minute, second);
+}
+
+function isLaterThanPublished(updatedAt, publishedAt) {
+    const updated = parseBlogTimestamp(updatedAt);
+    const published = parseBlogTimestamp(publishedAt);
+
+    if (updated == null || published == null) {
         return false;
     }
 
-    return updated.key > published.key;
+    return updated > published;
 }
 
 function isSameCalendarDateAs(dateStr, now) {
@@ -72,8 +113,15 @@ function isSameCalendarDateAs(dateStr, now) {
     return parsed.key === `${year}-${month}-${day}`;
 }
 
-function formatUpdatedPortion(updatedAt, now) {
-    if (isSameCalendarDateAs(updatedAt, now)) {
+function formatUpdatedPortion(updatedAt, publishedAt, now) {
+    const published = parseBlogCalendarDate(publishedAt);
+    const updated = parseBlogCalendarDate(updatedAt);
+    const sameCalendarDayAsPublished = Boolean(
+        published && updated && published.key === updated.key,
+    );
+
+    // Keep "Today" only when the update is on a later calendar day than publish.
+    if (!sameCalendarDayAsPublished && isSameCalendarDateAs(updatedAt, now)) {
         return 'Today';
     }
 
@@ -91,17 +139,18 @@ export function formatBlogDateDisplay(
     const published = parseBlogCalendarDate(publishedAt);
     const updated = parseBlogCalendarDate(updatedAt);
     const publishedLabel = published ? formatDate(publishedAt) : '';
+    const wasUpdatedAfterPublish = isLaterThanPublished(updatedAt, publishedAt);
 
-    if (published && !isLaterCalendarDate(updatedAt, publishedAt)) {
+    if (published && !wasUpdatedAfterPublish) {
         return `Published ${publishedLabel}`;
     }
 
-    if (published && isLaterCalendarDate(updatedAt, publishedAt)) {
-        return `Published ${publishedLabel} · Updated ${formatUpdatedPortion(updatedAt, now)}`;
+    if (published && wasUpdatedAfterPublish) {
+        return `Published ${publishedLabel} · Updated ${formatUpdatedPortion(updatedAt, publishedAt, now)}`;
     }
 
     if (!published && updated) {
-        return `Updated ${formatUpdatedPortion(updatedAt, now)}`;
+        return `Updated ${formatUpdatedPortion(updatedAt, publishedAt, now)}`;
     }
 
     return '';

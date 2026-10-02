@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Blog;
+use App\Support\BlogQuery;
 use Illuminate\Support\Facades\Cache;
 
 class SitemapService
@@ -91,13 +93,21 @@ class SitemapService
      */
     private function blogPostUrls(): array
     {
-        $posts = config('blog.posts', []);
+        $defaults = config('sitemap.blog_posts', []);
+        $posts = BlogQuery::published(Blog::query())
+            ->latest('published_at')
+            ->get(['slug', 'published_at', 'updated_at'])
+            ->map(fn ($blog) => [
+                'slug' => $blog->slug,
+                'published_at' => optional($blog->published_at)?->toDateString(),
+                'updated_at' => optional($blog->updated_at)?->toDateString(),
+            ])
+            ->all();
 
         if ($posts === []) {
             return [];
         }
 
-        $defaults = config('sitemap.blog_posts', []);
         $urls = [];
 
         foreach ($posts as $post) {

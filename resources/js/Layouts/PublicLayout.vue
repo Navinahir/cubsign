@@ -20,7 +20,7 @@ const navLinks = computed(() => {
         { label: 'Blog', routeName: 'blog' },
     ];
     if (user.value) {
-        links.push({ label: 'Dashboard', routeName: 'overview' });
+        links.push({ label: 'Dashboard', routeName: page.props.auth?.home || 'overview' });
     }
     return links;
 });

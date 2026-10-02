@@ -390,7 +390,7 @@ function formatSize(bytes) {
                     Need more detail?
                     <Link href="/help-center/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">CubSign signing steps</Link>
                     ·
-                    <Link href="/blog/how-to-sign-a-pdf-online" class="font-medium text-blue-600 hover:text-blue-700">Tips before you sign</Link>
+                    <Link href="/blog" class="font-medium text-blue-600 hover:text-blue-700">Tips before you sign</Link>
                     ·
                     <Link :href="route('features')" class="font-medium text-blue-600 hover:text-blue-700">Features</Link>
                 </p>

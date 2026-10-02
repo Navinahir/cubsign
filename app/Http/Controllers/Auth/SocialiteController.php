@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -51,6 +52,7 @@ class SocialiteController extends Controller
                 'google_id'         => $socialUser->getId(),
                 'email_verified_at' => now(),
                 'status'            => UserStatus::Active,
+                'role'              => UserRole::User,
                 'password'          => bcrypt(Str::random(32)),
             ]);
 
@@ -63,6 +65,6 @@ class SocialiteController extends Controller
         Auth::login($user, remember: true);
         session()->forget('guest_completed');
 
-        return redirect()->intended(route('overview'));
+        return redirect()->intended(route($user->homeRouteName()));
     }
 }

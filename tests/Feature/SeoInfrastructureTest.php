@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class SeoInfrastructureTest extends TestCase
 {
+    use RefreshDatabase;
     private function getWithTrailingSlash(string $uri): \Illuminate\Testing\TestResponse
     {
         $request = Request::create($uri, 'GET');

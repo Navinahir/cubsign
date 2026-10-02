@@ -19,7 +19,7 @@ class ChangeVerificationEmailController extends Controller
     public function edit(Request $request): Response|RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('overview');
+            return redirect()->route($request->user()->homeRouteName());
         }
 
         return Inertia::render('Auth/ChangeEmail', [
@@ -35,7 +35,7 @@ class ChangeVerificationEmailController extends Controller
         $user = $request->user();
 
         if ($user->hasVerifiedEmail()) {
-            return redirect()->route('overview');
+            return redirect()->route($user->homeRouteName());
         }
 
         $validated = $request->validate([
