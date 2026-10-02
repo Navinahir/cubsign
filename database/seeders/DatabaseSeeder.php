@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,19 +17,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::unguarded(function () {
+            User::query()->updateOrCreate(
+                ['email' => 'test@example.com'],
+                [
+                    'name'              => 'Test User',
+                    'password'          => 'password',
+                    'email_verified_at' => now(),
+                    'status'            => UserStatus::Active,
+                    'role'              => UserRole::User,
+                ],
+            );
 
-        User::factory()->create([
-            'name'  => 'Test User',
-            'email' => 'test@example.com',
-            'role'  => UserRole::User,
-        ]);
-
-        User::factory()->blogAdmin()->create([
-            'name'     => 'CubSign Product & Engineering Team',
-            'email'    => 'admin@gmail.com',
-            'password' => bcrypt('password'),
-        ]);
+            User::query()->updateOrCreate(
+                ['email' => 'admin@gmail.com'],
+                [
+                    'name'              => 'CubSign Product & Engineering Team',
+                    'password'          => 'password',
+                    'email_verified_at' => now(),
+                    'status'            => UserStatus::Active,
+                    'role'              => UserRole::Admin,
+                ],
+            );
+        });
 
         $this->call([
             BlogCategorySeeder::class,
