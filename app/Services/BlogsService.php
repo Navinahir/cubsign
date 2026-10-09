@@ -31,7 +31,8 @@ class BlogsService
             ->with(['category:id,name,slug', 'user'])
             ->when($status !== '', fn ($query) => $query->where('status', $status))
             ->latest()
-            ->paginate(12)
+            ->paginate(10)
+            ->withQueryString()
             ->through(fn (Blog $blog) => [
                 'id'           => $blog->id,
                 'title'        => $blog->title,

@@ -267,29 +267,38 @@ function statusClass(status) {
                     </tr>
                 </tbody>
             </table>
-        </div>
 
-        <div v-if="blogs.last_page > 1" class="mt-5 flex items-center justify-between">
-            <p class="text-sm text-gray-500">
-                Page {{ blogs.current_page }} of {{ blogs.last_page }}
-            </p>
-            <div class="flex gap-2">
-                <Link
-                    v-if="blogs.prev_page_url"
-                    :href="blogs.prev_page_url"
-                    class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                    preserve-scroll
-                >
-                    Previous
-                </Link>
-                <Link
-                    v-if="blogs.next_page_url"
-                    :href="blogs.next_page_url"
-                    class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                    preserve-scroll
-                >
-                    Next
-                </Link>
+            <!-- ── Pagination footer ── -->
+            <div class="flex items-center justify-between border-t border-gray-100 px-6 py-3">
+                <p class="text-xs text-gray-500">
+                    Showing
+                    <span class="font-medium text-gray-700">{{ blogs.from }}–{{ blogs.to }}</span>
+                    of
+                    <span class="font-medium text-gray-700">{{ blogs.total }}</span>
+                    posts
+                </p>
+
+                <div class="flex items-center gap-1">
+                    <template v-for="link in blogs.links" :key="link.label">
+                        <Link
+                            v-if="link.url && !link.active"
+                            :href="link.url"
+                            class="rounded px-2.5 py-1 text-xs font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+                            preserve-scroll
+                            v-html="link.label"
+                        />
+                        <span
+                            v-else-if="link.active"
+                            class="rounded bg-blue-600 px-2.5 py-1 text-xs font-medium text-white"
+                            v-html="link.label"
+                        />
+                        <span
+                            v-else
+                            class="rounded px-2.5 py-1 text-xs text-gray-300"
+                            v-html="link.label"
+                        />
+                    </template>
+                </div>
             </div>
         </div>
 
