@@ -1,10 +1,11 @@
 <script setup>
 import { computed } from 'vue';
-import { formatBlogDateDisplay } from '@/utils/blogDates';
+import { formatBlogDateDisplay, formatTimeAgo } from '@/utils/blogDates';
 
 const props = defineProps({
     publishedAt: { type: String, default: '' },
     updatedAt: { type: String, default: '' },
+    createdAt: { type: String, default: '' },
     readingTime: { type: Number, default: 0 },
     category: { type: String, default: '' },
     compact: { type: Boolean, default: false },
@@ -16,6 +17,8 @@ const dateLabel = computed(() =>
         updatedAt: props.updatedAt,
     }),
 );
+
+const timeAgo = computed(() => formatTimeAgo(props.createdAt));
 </script>
 
 <template>
@@ -34,10 +37,13 @@ const dateLabel = computed(() =>
             </svg>
             <span>{{ dateLabel }}</span>
         </span>
-        <span v-if="readingTime" class="inline-flex items-center gap-1.5">
+        <span v-if="timeAgo" class="inline-flex items-center gap-1.5">
             <svg class="h-3.5 w-3.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
+            <span>{{ timeAgo }}</span>
+        </span>
+        <span v-if="readingTime" class="inline-flex items-center gap-1.5">
             <span>{{ readingTime }} min read</span>
         </span>
     </div>

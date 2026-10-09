@@ -155,3 +155,53 @@ export function formatBlogDateDisplay(
 
     return '';
 }
+
+const MINUTE_MS = 60 * 1000;
+const HOUR_MS = 60 * MINUTE_MS;
+const DAY_MS = 24 * HOUR_MS;
+const MONTH_MS = 30 * DAY_MS;
+const YEAR_MS = 365 * DAY_MS;
+
+function pluralUnit(count, unit) {
+    return count === 1 ? unit : `${unit}s`;
+}
+
+/**
+ * Age of a post from its created timestamp.
+ * "1 min ago", "5 min ago", "1 hour ago", "2 days ago", then months and years.
+ * A post created in the last minute shows "1 min ago".
+ */
+export function formatTimeAgo(dateStr, now = new Date()) {
+    const then = parseBlogTimestamp(dateStr);
+    if (then == null || !(now instanceof Date) || Number.isNaN(now.getTime())) {
+        return '';
+    }
+
+    const elapsed = now.getTime() - then;
+    if (elapsed < MINUTE_MS) {
+        return '1 min ago';
+    }
+
+    const minutes = Math.floor(elapsed / MINUTE_MS);
+    if (minutes < 60) {
+        return `${minutes} min ago`;
+    }
+
+    const hours = Math.floor(elapsed / HOUR_MS);
+    if (hours < 24) {
+        return `${hours} ${pluralUnit(hours, 'hour')} ago`;
+    }
+
+    const days = Math.floor(elapsed / DAY_MS);
+    if (days < 30) {
+        return `${days} ${pluralUnit(days, 'day')} ago`;
+    }
+
+    const years = Math.floor(elapsed / YEAR_MS);
+    if (years >= 1) {
+        return `${years} ${pluralUnit(years, 'year')} ago`;
+    }
+
+    const months = Math.floor(elapsed / MONTH_MS);
+    return `${months} ${pluralUnit(months, 'month')} ago`;
+}
