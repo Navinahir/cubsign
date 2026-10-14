@@ -123,6 +123,50 @@ function statusClass(status) {
     };
     return map[status] || map.draft;
 }
+
+/**
+ * Sliding window:
+ * Page 1–2: 1 2 3 … last
+ * Page 3:   1 … 2 3 4 … last
+ * Page 4:   1 … 3 4 5 … last
+ * Near end: 1 … last-2 last-1 last
+ */
+function visiblePageNumbers(current, last) {
+    if (last <= 5) {
+        return Array.from({ length: last }, (_, i) => i + 1);
+    }
+
+    if (current <= 2) {
+        return [1, 2, 3, '...', last];
+    }
+
+    if (current >= last - 1) {
+        return [1, '...', last - 2, last - 1, last];
+    }
+
+    return [1, '...', current - 1, current, current + 1, '...', last];
+}
+
+const paginationLinks = computed(() => {
+    const links = props.blogs?.links || [];
+    if (links.length < 3) return links;
+
+    const prev = links[0];
+    const next = links[links.length - 1];
+    const numbered = links.slice(1, -1).filter((link) => /^\d+$/.test(String(link.label)));
+    const byPage = Object.fromEntries(numbered.map((link) => [Number(link.label), link]));
+    const pages = visiblePageNumbers(props.blogs.current_page, props.blogs.last_page);
+
+    return [
+        prev,
+        ...pages.map((item) => (
+            item === '...'
+                ? { label: '...', url: null, active: false }
+                : byPage[item]
+        )).filter(Boolean),
+        next,
+    ];
+});
 </script>
 
 <template>
@@ -279,7 +323,7 @@ function statusClass(status) {
                 </p>
 
                 <div class="flex items-center gap-1">
-                    <template v-for="link in blogs.links" :key="link.label">
+                    <template v-for="(link, index) in paginationLinks" :key="`${link.label}-${index}`">
                         <Link
                             v-if="link.url && !link.active"
                             :href="link.url"
