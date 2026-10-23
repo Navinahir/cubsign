@@ -5,6 +5,7 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import MarketingSeo from '@/Components/MarketingSeo.vue';
 import BlogCover from '@/Components/Marketing/BlogCover.vue';
 import BlogArticleMeta from '@/Components/Blog/BlogArticleMeta.vue';
+import { formatTimeAgo } from '@/utils/blogDates';
 
 const POSTS_PER_PAGE = 6;
 
@@ -30,6 +31,13 @@ const currentPage = ref(1);
 const allPosts = computed(() => (Array.isArray(props.posts) ? props.posts : []));
 const categories = computed(() => (Array.isArray(props.categories) ? props.categories : []));
 const categoryNames = computed(() => categories.value.map((c) => c.name));
+
+function popularMeta(post) {
+    const ago = formatTimeAgo(post?.createdAt || '');
+    const read = post?.readingTime ? `${post.readingTime} min read` : '';
+
+    return [ago, read].filter(Boolean).join(' · ');
+}
 
 onMounted(() => {
     const params = page.url.includes('?')
@@ -248,6 +256,7 @@ function paginatePosts(posts, page = 1, perPage = POSTS_PER_PAGE) {
                                 <BlogArticleMeta
                                     :published-at="featuredPost.publishedAt"
                                     :updated-at="featuredPost.updatedAt"
+                                    :created-at="featuredPost.createdAt"
                                     :reading-time="featuredPost.readingTime"
                                     :category="featuredPost.category"
                                 />
@@ -286,6 +295,7 @@ function paginatePosts(posts, page = 1, perPage = POSTS_PER_PAGE) {
                                             compact
                                             :published-at="post.publishedAt"
                                             :updated-at="post.updatedAt"
+                                            :created-at="post.createdAt"
                                             :reading-time="post.readingTime"
                                             :category="post.category"
                                         />
@@ -375,7 +385,7 @@ function paginatePosts(posts, page = 1, perPage = POSTS_PER_PAGE) {
                                 <li v-for="post in popularPosts" :key="`pop-${post.slug}`">
                                     <Link :href="route('blog.show', post.slug)" class="group block">
                                         <p class="text-sm font-medium text-gray-900 group-hover:text-blue-600">{{ post.title }}</p>
-                                        <p class="mt-0.5 text-xs text-gray-400">{{ post.readingTime }} min read</p>
+                                        <p v-if="popularMeta(post)" class="mt-0.5 text-xs text-gray-400">{{ popularMeta(post) }}</p>
                                     </Link>
                                 </li>
                             </ul>

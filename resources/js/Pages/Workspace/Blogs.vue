@@ -123,6 +123,50 @@ function statusClass(status) {
     };
     return map[status] || map.draft;
 }
+
+/**
+ * Sliding window:
+ * Page 1–2: 1 2 3 … last
+ * Page 3:   1 … 2 3 4 … last
+ * Page 4:   1 … 3 4 5 … last
+ * Near end: 1 … last-2 last-1 last
+ */
+function visiblePageNumbers(current, last) {
+    if (last <= 5) {
+        return Array.from({ length: last }, (_, i) => i + 1);
+    }
+
+    if (current <= 2) {
+        return [1, 2, 3, '...', last];
+    }
+
+    if (current >= last - 1) {
+        return [1, '...', last - 2, last - 1, last];
+    }
+
+    return [1, '...', current - 1, current, current + 1, '...', last];
+}
+
+const paginationLinks = computed(() => {
+    const links = props.blogs?.links || [];
+    if (links.length < 3) return links;
+
+    const prev = links[0];
+    const next = links[links.length - 1];
+    const numbered = links.slice(1, -1).filter((link) => /^\d+$/.test(String(link.label)));
+    const byPage = Object.fromEntries(numbered.map((link) => [Number(link.label), link]));
+    const pages = visiblePageNumbers(props.blogs.current_page, props.blogs.last_page);
+
+    return [
+        prev,
+        ...pages.map((item) => (
+            item === '...'
+                ? { label: '...', url: null, active: false }
+                : byPage[item]
+        )).filter(Boolean),
+        next,
+    ];
+});
 </script>
 
 <template>
@@ -267,29 +311,38 @@ function statusClass(status) {
                     </tr>
                 </tbody>
             </table>
-        </div>
 
-        <div v-if="blogs.last_page > 1" class="mt-5 flex items-center justify-between">
-            <p class="text-sm text-gray-500">
-                Page {{ blogs.current_page }} of {{ blogs.last_page }}
-            </p>
-            <div class="flex gap-2">
-                <Link
-                    v-if="blogs.prev_page_url"
-                    :href="blogs.prev_page_url"
-                    class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                    preserve-scroll
-                >
-                    Previous
-                </Link>
-                <Link
-                    v-if="blogs.next_page_url"
-                    :href="blogs.next_page_url"
-                    class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                    preserve-scroll
-                >
-                    Next
-                </Link>
+            <!-- ── Pagination footer ── -->
+            <div class="flex items-center justify-between border-t border-gray-100 px-6 py-3">
+                <p class="text-xs text-gray-500">
+                    Showing
+                    <span class="font-medium text-gray-700">{{ blogs.from }}–{{ blogs.to }}</span>
+                    of
+                    <span class="font-medium text-gray-700">{{ blogs.total }}</span>
+                    posts
+                </p>
+
+                <div class="flex items-center gap-1">
+                    <template v-for="(link, index) in paginationLinks" :key="`${link.label}-${index}`">
+                        <Link
+                            v-if="link.url && !link.active"
+                            :href="link.url"
+                            class="rounded px-2.5 py-1 text-xs font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+                            preserve-scroll
+                            v-html="link.label"
+                        />
+                        <span
+                            v-else-if="link.active"
+                            class="rounded bg-blue-600 px-2.5 py-1 text-xs font-medium text-white"
+                            v-html="link.label"
+                        />
+                        <span
+                            v-else
+                            class="rounded px-2.5 py-1 text-xs text-gray-300"
+                            v-html="link.label"
+                        />
+                    </template>
+                </div>
             </div>
         </div>
 

@@ -88,6 +88,7 @@ class BlogPresenter
             'categorySlug'    => $category?->slug,
             'publishedAt'     => optional($blog->published_at)?->toDateString(),
             'updatedAt'       => $blog->updated_at?->format('Y-m-d H:i:s'),
+            'createdAt'       => $blog->created_at?->format('Y-m-d H:i:s'),
             'tags'            => $blog->tags ?? [],
             'keywords'        => $blog->keywords ?? [],
             'featured'        => (bool) $blog->featured,
@@ -95,7 +96,7 @@ class BlogPresenter
             'metaTitle'       => $blog->title ? $blog->title.' — CubSign Blog' : null,
             'metaDescription' => $blog->excerpt,
             'author'          => self::author($blog),
-            'readingTime'     => self::minutesSinceCreated($blog),
+            'readingTime'     => (int) ($blog->reading_time ?? 0),
             'content'         => self::htmlContent($blog),
             'faq'             => $blog->faq ?? [],
             'coverImage'      => self::coverImageUrl($blog),
@@ -106,17 +107,5 @@ class BlogPresenter
     public static function htmlContent(Blog $blog): string
     {
         return BlogContent::storedToHtml($blog->content);
-    }
-
-    /**
-     * Whole minutes since the post was created. The public "min read" label uses this number.
-     */
-    private static function minutesSinceCreated(Blog $blog): int
-    {
-        if (! $blog->created_at) {
-            return (int) ($blog->reading_time ?? 0);
-        }
-
-        return max(0, (int) abs($blog->created_at->diffInMinutes(now())));
     }
 }
